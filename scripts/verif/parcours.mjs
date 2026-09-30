@@ -550,6 +550,16 @@ async function passerLaCible(cible) {
   await verifierTirets(page, `${nom} questions`);
   await capturer(`Questions${suffixe}`, `${nom} questions`);
 
+  // Les lignes de contexte ne doivent pas faire déborder une carte d'un écran :
+  // le questionnaire doit rester faisable en 2 à 3 minutes.
+  const cartesTropHautes = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('.affirmation'))
+      .filter((c) => c.getBoundingClientRect().height > window.innerHeight)
+      .length);
+  if (cartesTropHautes > 0) {
+    soucis.push(`[${nom}] questions : ${cartesTropHautes} cartes dépassent un écran`);
+  }
+
   // La pousse de progression grandit sans jamais montrer de chiffre.
   const avancee = async () => page.evaluate(() => {
     const barre = document.querySelector('[data-barre]');
