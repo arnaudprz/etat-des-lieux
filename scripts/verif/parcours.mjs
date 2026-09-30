@@ -1041,6 +1041,68 @@ async function passerLaCible(cible) {
     }
   }
 
+  // Le bandeau qui invite à garder la page. Ici, c'est bien l'adresse du
+  // résultat qu'on garde, contrairement au partage de l'accueil juste au-dessus.
+  const retour = await page.evaluate(async () => {
+    const bouton = document.querySelector('[data-garder-page]');
+    if (!bouton) return null;
+
+    let partage = null;
+    let copie = null;
+    const partageOriginal = navigator.share;
+    const ecrireOriginal = navigator.clipboard && navigator.clipboard.writeText;
+    navigator.share = async (d) => { partage = d; };
+    if (navigator.clipboard) navigator.clipboard.writeText = async (t) => { copie = t; };
+
+    bouton.click();
+    await new Promise((r) => setTimeout(r, 300));
+
+    const apresClic = bouton.textContent;
+    navigator.share = partageOriginal;
+    if (navigator.clipboard && ecrireOriginal) navigator.clipboard.writeText = ecrireOriginal;
+
+    const raccourci = document.querySelector('[data-retour-raccourci]');
+    return {
+      titre: document.querySelector('[data-retour-titre]')?.textContent || '',
+      texte: document.querySelector('[data-retour-texte]')?.textContent || '',
+      pousse: document.querySelector('[data-retour-pousse]')?.getAttribute('src') || null,
+      adresse: partage ? partage.url : copie,
+      partageDispo: typeof partageOriginal === 'function',
+      apresClic,
+      raccourci: raccourci && !raccourci.hidden ? raccourci.textContent : null,
+      // L'ancienne ligne « Bientôt… » doit avoir disparu.
+      ancienneLigne: document.querySelectorAll('.bientot').length,
+    };
+  });
+
+  if (!retour) {
+    soucis.push(`[${nom}] resultat : pas de bandeau « Revenez bientôt »`);
+  } else {
+    if (retour.titre !== 'Revenez bientôt sur votre lien') {
+      soucis.push(`[${nom}] resultat : titre du bandeau « ${retour.titre} »`);
+    }
+    if (retour.pousse !== 'assets/img/icone-germe.svg') {
+      soucis.push(`[${nom}] resultat : pousse du bandeau ${retour.pousse}`);
+    }
+    if (retour.ancienneLigne > 0) {
+      soucis.push(`[${nom}] resultat : la ligne « Bientôt… » subsiste`);
+    }
+    if (!retour.adresse || !retour.adresse.includes('#v2-')) {
+      soucis.push(`[${nom}] resultat : « Garder cette page » ne garde pas le résultat (${retour.adresse})`);
+    }
+    // Sans partage natif, on copie et on le dit, avec le raccourci clavier.
+    if (!retour.partageDispo) {
+      if (!retour.apresClic.startsWith('Lien copié')) {
+        soucis.push(`[${nom}] resultat : après copie, le bouton dit « ${retour.apresClic} »`);
+      }
+      if (!retour.raccourci || !/D\b/.test(retour.raccourci)) {
+        soucis.push(`[${nom}] resultat : pas de mention du raccourci de favoris`);
+      }
+    } else if (retour.raccourci) {
+      soucis.push(`[${nom}] resultat : le raccourci clavier s'affiche là où le partage existe`);
+    }
+  }
+
   // Tous les liens et boutons secondaires tiennent 44px au doigt.
   const tropPetits = await page.evaluate(() =>
     Array.from(document.querySelectorAll(

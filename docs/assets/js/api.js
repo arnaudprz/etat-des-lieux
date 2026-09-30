@@ -50,7 +50,7 @@ export function envoyerReponse(reponse) {
 
 /**
  * Enregistre un événement d'entonnoir.
- * @param {'visite'|'commence'|'termine'|'lien_copie'|'partage_accueil'} type
+ * @param {'visite'|'commence'|'termine'|'lien_copie'|'partage_accueil'|'garder_page'} type
  * @param {string} session identifiant aléatoire propre à la visite
  */
 export function envoyerEvenement(type, session) {

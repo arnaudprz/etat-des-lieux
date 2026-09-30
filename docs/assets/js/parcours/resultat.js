@@ -198,6 +198,70 @@ function brancherPartage(contenu) {
   });
 }
 
+/** Le raccourci de mise en favoris, selon la plateforme quand on la reconnaît. */
+function raccourciFavoris(contenu) {
+  const r = contenu.engagement.retour;
+  let plateforme = '';
+  try {
+    plateforme = (navigator.userAgentData && navigator.userAgentData.platform)
+      || navigator.platform || '';
+  } catch (e) { /* plateforme inconnue */ }
+
+  if (/mac/i.test(plateforme)) return r.raccourci_mac;
+  if (/win|linux|cros/i.test(plateforme)) return r.raccourci_pc;
+  return r.raccourci_inconnu;
+}
+
+/**
+ * Le bandeau « Revenez bientôt sur votre lien ».
+ *
+ * Le bouton garde la page : partage du téléphone là où il existe, copie du lien
+ * ailleurs. Ici c'est bien l'adresse du résultat qu'on garde, contrairement au
+ * partage de l'accueil juste au-dessus.
+ */
+function brancherRetour(contenu) {
+  const bouton = $('[data-garder-page]');
+  if (!bouton) return;
+
+  const r = contenu.engagement.retour;
+  const pousse = $('[data-retour-pousse]');
+  if (pousse) pousse.src = chemin(icone('germe'));
+  texte($('[data-retour-titre]'), r.titre);
+  texte($('[data-retour-texte]'), r.texte);
+  texte(bouton, r.bouton);
+
+  const partageDispo = typeof navigator.share === 'function';
+  const raccourci = $('[data-retour-raccourci]');
+
+  // Le raccourci clavier n'a de sens que là où il y a un clavier.
+  if (raccourci && !partageDispo) {
+    texte(raccourci, raccourciFavoris(contenu));
+    raccourci.hidden = false;
+  }
+
+  bouton.addEventListener('click', async () => {
+    evenement('garder_page');
+
+    if (partageDispo) {
+      try {
+        await navigator.share({
+          title: r.titre_partage,
+          text: r.phrase_partage,
+          url: location.href,
+        });
+        return;
+      } catch (e) { /* partage refusé ou annulé : on retombe sur la copie */ }
+    }
+
+    try {
+      await navigator.clipboard.writeText(location.href);
+    } catch (e) { /* presse-papiers refusé : le lien reste visible plus haut */ }
+    texte(bouton, r.copie);
+    annoncer(r.copie);
+    window.setTimeout(() => texte(bouton, r.bouton), 3500);
+  });
+}
+
 function brancherEtude() {
   const formulaire = $('[data-etude]');
   const message = $('[data-message-etude]');
@@ -305,6 +369,7 @@ async function demarrer() {
   brancherRaccourciLien();
   brancherCopie();
   brancherPartage(contenu);
+  brancherRetour(contenu);
   brancherEtude();
   typographierPage();
 }

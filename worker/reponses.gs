@@ -164,7 +164,7 @@ function ecrireReponse(donnees) {
  * Ne contient que la date, un identifiant de visite aléatoire et le type.
  */
 function enregistrerEvenement(corps) {
-  var types = ['visite', 'commence', 'termine', 'lien_copie', 'partage_accueil'];
+  var types = ['visite', 'commence', 'termine', 'lien_copie', 'partage_accueil', 'garder_page'];
   if (!dansListe(corps.type, types)) return { ok: false, erreur: 'Type inconnu.' };
 
   var session = tronquer(corps.session, 64);

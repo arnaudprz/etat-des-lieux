@@ -1011,6 +1011,18 @@
       "titre_partage": "État des lieux d'équipe Greatly",
       "phrase_partage": "Un état des lieux d'équipe en 2 minutes, anonyme et sans compte à créer.",
       "copie": "Lien de l'accueil copié"
+    },
+    "retour": {
+      "titre": "Revenez bientôt sur votre lien",
+      "texte": "Quand assez de personnes auront répondu, votre état des lieux montrera aussi ce que vous partagez avec d'autres équipes. Pas de classement, pas de note : juste savoir que vous n'êtes pas seul. Ajoutez cette page à vos favoris pour y revenir facilement.",
+      "texte_actif": "Votre état des lieux montre maintenant ce que vous partagez avec d'autres équipes. Revenez de temps en temps : il s'enrichit avec chaque nouvelle réponse.",
+      "bouton": "Garder cette page",
+      "copie": "Lien copié. Ajoutez la page à vos favoris avec ⌘ D ou Ctrl D.",
+      "raccourci_mac": "ou ⌘ D sur Mac",
+      "raccourci_pc": "ou Ctrl D sur PC",
+      "raccourci_inconnu": "ou ⌘ D sur Mac, Ctrl D sur PC",
+      "titre_partage": "Mon état des lieux d'équipe",
+      "phrase_partage": "Mon état des lieux d'équipe, à garder."
     }
   },
   "profil": {

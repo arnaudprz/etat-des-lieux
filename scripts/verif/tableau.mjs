@@ -66,6 +66,9 @@ const etapesEntonnoir = await page
 if (!etapesEntonnoir.some((t) => t.includes("Partages de l'accueil"))) {
   soucis.push(`l'entonnoir ne compte pas les partages de l'accueil : ${etapesEntonnoir.join(', ')}`);
 }
+if (!etapesEntonnoir.some((t) => t.includes('Pages gardées'))) {
+  soucis.push(`l'entonnoir ne compte pas les pages gardées : ${etapesEntonnoir.join(', ')}`);
+}
 
 // A4 : l'entonnoir dit qu'il ne suit que la période.
 const sousTitreEntonnoir = await page

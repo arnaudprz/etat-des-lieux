@@ -246,6 +246,7 @@ export function donneesFictives(contenu) {
       commence: Math.round(enLigne * 1.64),
       termine: enLigne,
       lien_copie: Math.round(enLigne * 0.56),
+      garder_page: Math.round(enLigne * 0.34),
       partage_accueil: Math.round(enLigne * 0.11),
     },
     nombre_contacts: 87,

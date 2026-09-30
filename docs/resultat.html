@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
-<link rel="stylesheet" href="assets/css/base.css?v=6">
-<link rel="stylesheet" href="assets/css/parcours.css?v=6">
+<link rel="stylesheet" href="assets/css/base.css?v=7">
+<link rel="stylesheet" href="assets/css/parcours.css?v=7">
 </head>
 <body>
 
@@ -69,7 +69,7 @@
     <!-- Une seule ligne sobre, si la personne a coché au moins une idée. -->
     <p class="ligne-idees" data-ligne-idees hidden></p>
 
-    <p class="bientot">Bientôt : votre état des lieux à côté de celui des autres répondants.</p>
+
 
     <section class="carte bloc" id="lien-personnel">
       <h2 class="bloc__titre">Votre lien personnel</h2>
@@ -97,6 +97,20 @@
     <section class="carte-pointillee partage">
       <p class="partage__texte" data-partage-texte></p>
       <button class="bouton-doux" type="button" data-partager-accueil></button>
+    </section>
+
+    <!-- Inviter à garder la page et à revenir : la comparaison avec les autres
+         équipes arrivera quand assez de personnes auront répondu. -->
+    <section class="carte retour">
+      <img class="retour__pousse" alt="" aria-hidden="true" data-retour-pousse>
+      <div class="retour__texte">
+        <h2 class="retour__titre" data-retour-titre></h2>
+        <p data-retour-texte></p>
+      </div>
+      <div class="retour__action">
+        <button class="btn" type="button" data-garder-page></button>
+        <p class="retour__raccourci" data-retour-raccourci hidden></p>
+      </div>
     </section>
 
     <section class="greatly" id="greatly">
@@ -156,6 +170,6 @@
   </div>
 </main>
 
-<script type="module" src="assets/js/parcours/resultat.js?v=6"></script>
+<script type="module" src="assets/js/parcours/resultat.js?v=7"></script>
 </body>
 </html>

@@ -176,6 +176,11 @@ describe('événements d’entonnoir', () => {
     assert.equal(d.entonnoir.partage_accueil, 2);
   });
 
+  test('accepte le fait de garder la page', () => {
+    assert.equal(w.__post({ action: 'evenement', type: 'garder_page', session: 'abc' }).ok, true);
+    assert.equal(w.__lignes('evenements')[0].type, 'garder_page');
+  });
+
   test('refuse un type inconnu', () => {
     assert.equal(w.__post({ action: 'evenement', type: 'achat', session: 'abc' }).ok, false);
   });

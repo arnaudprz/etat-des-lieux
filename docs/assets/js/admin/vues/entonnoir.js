@@ -18,6 +18,7 @@ export function afficherEntonnoir(hote, entonnoir, nombreContacts) {
     { libelle: 'Questionnaires commencés', valeur: entonnoir.commence, couleur: 'var(--enracine)' },
     { libelle: 'Questionnaires terminés', valeur: entonnoir.termine, couleur: 'var(--enracine)' },
     { libelle: 'Liens personnels copiés', valeur: entonnoir.lien_copie, couleur: 'var(--croissance)' },
+    { libelle: 'Pages gardées', valeur: entonnoir.garder_page, couleur: 'var(--croissance)' },
     { libelle: "Partages de l'accueil", valeur: entonnoir.partage_accueil, couleur: 'var(--croissance)' },
     { libelle: "Demandes de l'étude complète", valeur: nombreContacts, couleur: 'var(--croissance)' },
   ];

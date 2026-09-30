@@ -1261,7 +1261,72 @@
   color: var(--texte-doux);
 }
 
-.bientot { margin: 0; font-size: 14px; color: var(--taupe); }
+/* Le bandeau qui invite à garder la page et à revenir. */
+.retour {
+  background: var(--vert-pale);
+  border-color: rgba(107, 125, 92, .3);
+  border-radius: var(--rayon-carte);
+  padding: 22px;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  grid-template-areas:
+    'pousse titre'
+    'texte  texte'
+    'action action';
+  gap: 12px 14px;
+  align-items: center;
+}
+
+.retour__pousse {
+  grid-area: pousse;
+  width: 40px;
+  height: 40px;
+}
+
+.retour__texte { display: contents; }
+
+.retour__titre {
+  grid-area: titre;
+  margin: 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.retour__texte p {
+  grid-area: texte;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--texte-doux);
+}
+
+.retour__action {
+  grid-area: action;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: stretch;
+}
+
+/* Le message de confirmation est long : ce bouton peut aller à la ligne,
+   contrairement aux autres. */
+.retour__action .btn {
+  white-space: normal;
+  height: auto;
+  padding: 12px 24px;
+  line-height: 1.35;
+}
+
+.retour__raccourci {
+  margin: 0;
+  font-size: 13px;
+  color: var(--taupe);
+  text-align: center;
+}
+
+.retour__raccourci[hidden] { display: none; }
 
 .bloc {
   padding: 24px 22px;
@@ -1495,6 +1560,24 @@
   .greatly { grid-template-columns: 300px minmax(0, 1fr); }
   .greatly__photo { min-height: 360px; }
   .partage { padding: 24px 32px; flex-direction: row; align-items: center; justify-content: space-between; gap: 24px; }
+
+  /* La pousse à gauche, le texte au milieu, le bouton à droite. */
+  .retour {
+    padding: 28px 32px;
+    grid-template-columns: 64px minmax(0, 1fr) auto;
+    grid-template-areas: 'pousse texte action';
+    gap: 24px;
+  }
+  .retour__pousse { width: 64px; height: 64px; }
+  .retour__texte {
+    grid-area: texte;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .retour__titre { grid-area: auto; font-size: 24px; }
+  .retour__texte p { grid-area: auto; }
+  .retour__action { align-items: center; }
   .greatly__texte { padding: 40px 44px; }
   .greatly__titre { font-size: 30px; }
   .etude { padding: 36px 40px; }

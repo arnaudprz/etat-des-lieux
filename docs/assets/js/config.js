@@ -10,7 +10,7 @@ export const API_URL = '';
 export const VERSION_QUESTIONNAIRE = 'v1';
 
 /** Cache-buster des imports. À incrémenter à chaque déploiement. */
-export const V = 6;
+export const V = 7;
 
 /** Valeur affichée par le compteur si l'API ne répond pas. */
 export const COMPTEUR_REPLI = 255;
