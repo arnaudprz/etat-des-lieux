@@ -1,0 +1,138 @@
+/**
+ * Vérifie le tableau de bord dans un vrai navigateur, en mode démo.
+ * Usage : node scripts/verif/tableau.mjs [URL_DE_BASE] [DOSSIER_DE_SORTIE]
+ */
+
+import { chromium } from 'playwright';
+import { mkdirSync } from 'node:fs';
+
+const BASE = process.argv[2] || 'http://127.0.0.1:8127';
+const SORTIE = process.argv[3] || '/tmp/edl-captures';
+mkdirSync(SORTIE, { recursive: true });
+
+const soucis = [];
+const navigateur = await chromium.launch();
+const contexte = await navigateur.newContext({ viewport: { width: 1280, height: 900 }, locale: 'fr-FR' });
+const page = await contexte.newPage();
+
+page.on('console', (m) => { if (m.type() === 'error') soucis.push(`console : ${m.text()}`); });
+page.on('pageerror', (e) => soucis.push(`erreur JS : ${e.message}`));
+
+await page.goto(`${BASE}/admin/`, { waitUntil: 'networkidle' });
+await page.waitForSelector('[data-tableau]:not([hidden])');
+await page.waitForSelector('.affirmation-admin');
+
+// Les 10 sections attendues, dans l'ordre du cahier des charges.
+const titres = await page.locator('.section-admin__titre').allInnerTexts();
+if (titres.length !== 10) soucis.push(`${titres.length} sections au lieu de 10`);
+
+const attendus = [
+  'Ce que disent les réponses',
+  'Les 4 conditions des Fondations',
+  'Qui a répondu',
+  "Du premier clic à l'état des lieux",
+  'Demandes de l’étude complète',
+];
+attendus.forEach((t, i) => {
+  if (titres[i] !== t) soucis.push(`section ${i + 1} : « ${titres[i]} » au lieu de « ${t} »`);
+});
+
+// Les indicateurs
+const tuiles = await page.locator('.tuile').count();
+if (tuiles !== 4) soucis.push(`${tuiles} indicateurs au lieu de 4`);
+
+// L'essentiel : 4 constats
+const constats = await page.locator('.constat').count();
+if (constats !== 4) soucis.push(`${constats} constats au lieu de 4`);
+const aCreuser = await page.locator('.a-creuser li').count();
+if (aCreuser !== 3) soucis.push(`${aCreuser} questions à creuser au lieu de 3`);
+
+// Chaque constat doit être une phrase : majuscule en tête, point final.
+const textesConstats = await page.locator('.constat__texte').allInnerTexts();
+textesConstats.forEach((t) => {
+  const debut = t.trim().charAt(0);
+  if (debut !== debut.toUpperCase()) {
+    soucis.push(`constat qui commence par une minuscule : « ${t.slice(0, 60)}… »`);
+  }
+  if (!t.trim().endsWith('.')) {
+    soucis.push(`constat sans point final : « …${t.trim().slice(-40)} »`);
+  }
+});
+
+// Une seule ligne de filtres en 1280, comme dans la maquette.
+const lignesFiltres = await page.evaluate(() => {
+  const hauts = new Set(
+    Array.from(document.querySelectorAll('.filtre')).map((f) => Math.round(f.getBoundingClientRect().top))
+  );
+  return hauts.size;
+});
+if (lignesFiltres !== 1) soucis.push(`les filtres tiennent sur ${lignesFiltres} lignes au lieu d'une`);
+
+// Les 4 conditions
+const conditions = await page.locator('.bloc-chiffre').count();
+if (conditions !== 4) soucis.push(`${conditions} conditions au lieu de 4`);
+
+// Les 8 dimensions en barres empilées et les 4 cartes
+const cartesRecues = await page.locator('.carte-recue').count();
+if (cartesRecues !== 4) soucis.push(`${cartesRecues} cartes d'ensemble au lieu de 4`);
+
+// Les 16 affirmations, et la bascule
+const affirmations = await page.locator('.affirmation-admin').count();
+if (affirmations !== 16) soucis.push(`${affirmations} affirmations au lieu de 16`);
+
+const enonceMembre = await page.locator('.affirmation-admin__enonce').nth(3).innerText();
+await page.locator('.bascule__bouton', { hasText: 'Managers' }).click();
+await page.waitForTimeout(250);
+const enonceManager = await page.locator('.affirmation-admin__enonce').nth(3).innerText();
+if (enonceMembre === enonceManager) {
+  soucis.push('la bascule Membres / Managers ne change pas le texte de l’affirmation 4');
+}
+await page.locator('.bascule__bouton', { hasText: 'Membres' }).click();
+await page.waitForTimeout(250);
+
+// Chaque graphique doit donner son effectif au survol.
+const sansTitre = await page.evaluate(() =>
+  document.querySelectorAll('.barre-empilee__tranche:not([title]), .ligne-barre__jauge:not([title])').length
+);
+if (sansTitre > 0) soucis.push(`${sansTitre} barres sans effectif au survol`);
+
+await page.screenshot({ path: `${SORTIE}/Dashboard.png`, fullPage: true });
+
+// ------------------------------------------- le seuil d'anonymat k >= 3
+// On filtre jusqu'à isoler un groupe minuscule : aucun chiffre ne doit sortir.
+await page.selectOption('#filtre-secteur', 'Immobilier');
+await page.selectOption('#filtre-taille_equipe', '13 personnes et plus');
+await page.selectOption('#filtre-genre', 'Non binaire');
+await page.waitForTimeout(350);
+
+const repondants = Number((await page.locator('.tuile__valeur').first().innerText()).replace(/\D/g, ''));
+if (repondants >= 3) {
+  soucis.push(`le filtre n'isole pas un groupe de moins de 3 personnes (${repondants})`);
+} else {
+  const messages = await page.locator('.trop-petit').count();
+  if (messages === 0) {
+    soucis.push(`groupe de ${repondants} personnes, mais aucun « Pas assez de réponses » affiché`);
+  }
+  const constatsRestants = await page.locator('.constat').count();
+  if (constatsRestants > 0) {
+    soucis.push(`groupe de ${repondants} personnes, mais ${constatsRestants} constats affichés`);
+  }
+  const affirmationsRestantes = await page.locator('.affirmation-admin').count();
+  if (affirmationsRestantes > 0) {
+    soucis.push(`groupe de ${repondants} personnes, mais ${affirmationsRestantes} affirmations chiffrées`);
+  }
+}
+await page.screenshot({ path: `${SORTIE}/Dashboard-k3.png`, fullPage: true });
+
+const debord = await page.evaluate(() =>
+  Math.max(0, document.documentElement.scrollWidth - window.innerWidth));
+if (debord > 1) soucis.push(`défilement horizontal de ${debord}px`);
+
+await navigateur.close();
+
+if (soucis.length === 0) console.log('Tableau de bord : aucun souci relevé.');
+else {
+  console.log(`${soucis.length} souci(s) :`);
+  soucis.forEach((s) => console.log(`  - ${s}`));
+  process.exitCode = 1;
+}

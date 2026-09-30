@@ -10,7 +10,9 @@ let promesse = null;
 /** Charge contenu.json. Renvoie toujours la même promesse. */
 export function chargerContenu() {
   if (!promesse) {
-    promesse = fetch(new URL(`./assets/data/contenu.json?v=${V}`, document.baseURI))
+    // Résolu depuis ce module, pas depuis la page : docs/admin/ est un niveau
+    // plus bas et n'a pas le même chemin de base.
+    promesse = fetch(new URL(`../data/contenu.json?v=${V}`, import.meta.url))
       .then((r) => {
         if (!r.ok) throw new Error(`contenu.json : ${r.status}`);
         return r.json();

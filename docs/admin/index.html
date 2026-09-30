@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Tableau de bord · État des lieux Greatly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
+<link rel="stylesheet" href="../assets/css/base.css?v=1">
+<link rel="stylesheet" href="../assets/css/admin.css?v=1">
+</head>
+<body class="admin">
+
+<main class="admin__page">
+
+  <header class="admin__entete">
+    <div class="admin__identite">
+      <span class="admin__surtitre">Greatly · Tableau de bord</span>
+      <h1 class="admin__titre serif">État des lieux d'équipe</h1>
+    </div>
+    <div class="admin__actions">
+      <span class="badge badge--sable" data-badge hidden></span>
+      <button class="bouton-secondaire" type="button" data-deconnexion>Oublier la clé</button>
+    </div>
+  </header>
+
+  <!-- Écran d'accès, masqué en mode démo. -->
+  <section class="carte acces" data-acces hidden>
+    <h2 class="acces__titre serif">Accès au tableau de bord</h2>
+    <p class="acces__texte">Saisissez la clé d'administration. Elle est gardée le temps de l'onglet, jamais au-delà.</p>
+    <form class="acces__formulaire" data-formulaire-cle>
+      <label class="lecteur-ecran" for="cle">Clé d'administration</label>
+      <input class="champ-texte" id="cle" type="password" autocomplete="current-password" required>
+      <button class="btn" type="submit">Ouvrir</button>
+    </form>
+    <p class="message" data-message-cle role="alert" hidden></p>
+  </section>
+
+  <div data-tableau hidden>
+    <div class="carte filtres" data-filtres></div>
+    <div class="tuiles" data-indicateurs></div>
+    <div class="sections" data-sections></div>
+  </div>
+
+</main>
+
+<script type="module" src="../assets/js/admin/tableau.js?v=1"></script>
+</body>
+</html>

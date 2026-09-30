@@ -36,3 +36,9 @@ export function minusculeInitiale(texte) {
   if (typeof texte !== 'string' || texte === '') return texte;
   return texte.charAt(0).toLowerCase() + texte.slice(1);
 }
+
+/** Première lettre en majuscule, quand le nom ouvre une phrase. */
+export function majusculeInitiale(texte) {
+  if (typeof texte !== 'string' || texte === '') return texte;
+  return texte.charAt(0).toUpperCase() + texte.slice(1);
+}
