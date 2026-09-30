@@ -125,4 +125,4 @@ chacune, et régénère `docs/assets/js/illustrations.js`.
 | 30/09/2026 | `129ba79` | Passe 2, point 4 : les affirmations sur mobile. |
 | 30/09/2026 | `5efb9b9` | Passe 2, point 5 : raccourci « Garder mon résultat ». |
 | 30/09/2026 | `2c13ddf` | Passe 3, sections 1 à 4 : nouvel accueil et illustration des pousses. |
-| 30/09/2026 | `à venir` | Passe 3, sections 5 à 7 : illustrations du résultat et du tableau de bord. |
+| 30/09/2026 | `aa25b2b` | Passe 3, sections 5 à 7 : illustrations du résultat et du tableau de bord. |
