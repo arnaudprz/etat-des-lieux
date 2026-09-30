@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>État des lieux d'équipe, vos réponses</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Playfair+Display:ital,wght@0,400;0,500;1,400&amp;display=swap">
+<style>
+body{margin:0;font-family:'DM Sans',sans-serif;color:#1A1A1A;background:#F7F4EF}
+a{color:#5A6B4D}a:hover{color:#2D3626}
+.serif{font-family:'Playfair Display',serif;font-weight:400}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 32px;border-radius:999px;background:#5A6B4D;color:#FFFFFF;font-weight:500;font-size:16px;text-decoration:none}
+.btn:hover{background:#2D3626;color:#FFFFFF}
+.card{background:#FFFFFF;border:1px solid rgba(138,155,122,.18);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.step{display:flex;align-items:center;gap:10px;font-size:14px;color:#6B6460}
+.dot{width:12px;height:12px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;background:rgba(138,155,122,.15);color:#2D3626}
+.dot.on{background:#5A6B4D;color:#FFFFFF}
+.group{margin:20px 0 0;font-family:'Playfair Display',serif;font-weight:400;font-size:26px;color:#2D3626}
+.q{padding:28px 32px;display:flex;flex-direction:column;gap:16px}
+.num{font-family:'Playfair Display',serif;font-size:26px;color:#8A9B7A;min-width:28px}
+.qtext{margin:0;font-size:19px;line-height:1.45;font-weight:500}
+.seg{height:40px;padding:0 18px;border:0;border-radius:999px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer}
+.seg:focus-visible{outline:3px solid rgba(107,125,92,.35);outline-offset:2px}
+.scale{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.sc{height:52px;border-radius:12px;border:1px solid;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;cursor:pointer}
+.sc:focus-visible{outline:3px solid rgba(107,125,92,.35);outline-offset:2px}
+.ends{display:flex;justify-content:space-between;font-size:13px;color:#6B6460}
+.why{border:0;margin:4px 0 0;padding:20px 22px;border-radius:12px;background:rgba(138,155,122,.1);display:flex;flex-direction:column;gap:12px}
+.whyq{padding:0;margin-bottom:12px;font-size:16px;font-weight:600;color:#2D3626}
+.whysub{font-weight:400;font-size:14px;color:#6B6460;margin-left:8px}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opt{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(138,155,122,.4);background:#FFFFFF;font-size:15px;cursor:pointer}
+.opt input{width:18px;height:18px;accent-color:#5A6B4D}
+.opt:has(input:checked){border-color:#5A6B4D;background:#EEF1EA}
+</style>
+</helmet>
+<div style="width: 1280px; height: 4740px; box-sizing: border-box; background: #F7F4EF; display: flex; flex-direction: column">
+<div data-bandeau style="height: 40px; flex-shrink: 0; box-sizing: border-box; background: #2D3626; color: #E6E1D8; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 24px; font-size: 13px; white-space: nowrap; overflow: hidden">
+<span style="overflow: hidden; text-overflow: ellipsis">Un état des lieux proposé par Greatly, qui accompagne dirigeants, managers et équipes à la Greatly House, près de Lille</span>
+<a href="https://greatly.club" style="color: #F7F4EF; font-weight: 600; text-decoration: underline; text-underline-offset: 3px">Qui sommes-nous</a>
+</div>
+
+<header style="display: flex; justify-content: space-between; align-items: center; padding: 28px 80px">
+<a href="Main.dc.html" class="serif" style="font-size: 28px; color: #2D3626; text-decoration: none">Greatly</a>
+<div style="display: flex; gap: 28px">
+<span class="step"><span class="dot"></span>Profil</span>
+<span class="step"><span class="dot on"></span>Vos réponses</span>
+<span class="step"><span class="dot"></span>Votre état des lieux</span>
+</div>
+</header>
+
+<main style="width: 820px; margin: 32px auto 0; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px">
+<h1 class="serif" style="margin: 0; font-size: 44px">Comment vivez-vous le travail ensemble ?</h1>
+<p style="margin: 0; font-size: 17px; line-height: 1.6; color: #6B6460">Pour chaque affirmation, choisissez la réponse qui vous ressemble le plus. Il n'y a pas de bonne réponse. Pour vos deux réponses les plus réservées, une question en plus vous demande pourquoi.</p>
+</div>
+
+<div class="card" style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; background: #EEF1EA; border-color: rgba(107,125,92,.25)">
+<p style="margin: 0; font-size: 14px; color: #4F4A46">Aperçu : dans le parcours, la version suit la réponse du profil.</p>
+<div role="group" aria-label="Version du questionnaire" style="display: flex; gap: 6px; background: #FFFFFF; border-radius: 999px; padding: 4px">
+<button type="button" class="seg" aria-pressed="{{memberPressed}}" onClick="{{toMember}}" style="background: {{memberBg}}; color: {{memberFg}}">Membre de l'équipe</button>
+<button type="button" class="seg" aria-pressed="{{managerPressed}}" onClick="{{toManager}}" style="background: {{managerBg}}; color: {{managerFg}}">Manager</button>
+</div>
+</div>
+
+<h2 class="group">Ce qu'on vise ensemble</h2>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<p class="qtext">Dans mon équipe, nous visons tous le même résultat.</p>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 1">
+<sc-for list="{{s1}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q1}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Qu'on se donne un cap commun</label>
+<label class="opt"><input type="checkbox">Mieux comprendre ce que vise l'entreprise</label>
+<label class="opt"><input type="checkbox">Qu'on parle plus souvent de nos priorités</label>
+<label class="opt"><input type="checkbox">Voir comment chaque métier y contribue</label>
+<label class="opt"><input type="checkbox">Qu'on célèbre davantage nos réussites</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</div>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}"><p class="qtext">Quand un résultat est bon, c'est la réussite de toute l'équipe.</p></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><p class="qtext">Quand un résultat est bon, mon équipe le vit comme une réussite commune.</p></sc-if>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 2">
+<sc-for list="{{s2}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q2}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Qu'on parle plus souvent de nos réussites communes</label>
+<label class="opt"><input type="checkbox">Que la contribution de chacun soit plus souvent nommée</label>
+<label class="opt"><input type="checkbox">Qu'on dise plus souvent « nous »</label>
+<label class="opt"><input type="checkbox">Qu'on prenne le temps de fêter nos résultats</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</div>
+<h2 class="group">Ce qu'on sait les uns des autres</h2>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}"><p class="qtext">Je connais les contraintes quotidiennes des autres métiers de mon équipe.</p></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><p class="qtext">Les membres de mon équipe connaissent les contraintes quotidiennes des autres métiers.</p></sc-if>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 3">
+<sc-for list="{{s3}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q3}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Découvrir le poste d'un collègue, le temps d'une journée</label>
+<label class="opt"><input type="checkbox">Que chaque métier présente son quotidien</label>
+<label class="opt"><input type="checkbox">Qu'on se retrouve plus souvent entre métiers</label>
+<label class="opt"><input type="checkbox">Qu'on partage davantage nos outils</label>
+<label class="opt"><input type="checkbox">Partager plus de moments informels</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</div>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}"><p class="qtext">Mes collègues des autres métiers savent ce que je fais et ce que ça implique pour eux.</p></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><p class="qtext">Les membres de mon équipe savent ce que j'attends d'eux, et pourquoi.</p></sc-if>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 4">
+<sc-for list="{{s4}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q4}}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais que mes collègues… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Découvrent mes contraintes de temps</label>
+<label class="opt"><input type="checkbox">Connaissent mieux mes outils</label>
+<label class="opt"><input type="checkbox">Comprennent mieux ma charge de travail</label>
+<label class="opt"><input type="checkbox">Sachent mieux ce dont j'ai besoin d'eux</label>
+<label class="opt"><input type="checkbox">Voient l'effet de leur travail sur le mien</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais que mon équipe… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Voie plus clairement nos priorités</label>
+<label class="opt"><input type="checkbox">Sache mieux ce que j'attends de chacun</label>
+<label class="opt"><input type="checkbox">Comprenne le sens de certaines décisions</label>
+<label class="opt"><input type="checkbox">Connaisse mieux ses marges de manœuvre</label>
+<label class="opt"><input type="checkbox">Découvre la façon dont je regarde le travail</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</sc-if>
+</div>
+<h2 class="group">La place de chacun</h2>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<p class="qtext">Le travail de chaque métier est reconnu dans l'équipe.</p>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 5">
+<sc-for list="{{s5}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q5}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Qu'on se dise merci plus souvent, et plus précisément</label>
+<label class="opt"><input type="checkbox">Qu'on demande davantage l'avis de chacun</label>
+<label class="opt"><input type="checkbox">Que chaque métier soit davantage associé aux décisions</label>
+<label class="opt"><input type="checkbox">Que le travail de chacun soit plus mis en avant</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</div>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}"><p class="qtext">En réunion, chacun peut prendre la parole et être écouté.</p></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><p class="qtext">En réunion, chacun prend la parole, pas seulement moi.</p></sc-if>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 6">
+<sc-for list="{{s6}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q6}}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Qu'on prenne l'habitude d'un tour de parole</label>
+<label class="opt"><input type="checkbox">Qu'on partage l'ordre du jour à l'avance</label>
+<label class="opt"><input type="checkbox">Que le manager laisse parler l'équipe d'abord</label>
+<label class="opt"><input type="checkbox">Des réunions plus courtes, où chacun s'exprime</label>
+<label class="opt"><input type="checkbox">Qu'on aborde des sujets plus concrets</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Qu'on prenne l'habitude d'un tour de parole</label>
+<label class="opt"><input type="checkbox">Qu'on partage l'ordre du jour à l'avance</label>
+<label class="opt"><input type="checkbox">Laisser parler l'équipe d'abord</label>
+<label class="opt"><input type="checkbox">Des réunions plus courtes, où chacun s'exprime</label>
+<label class="opt"><input type="checkbox">Qu'on aborde des sujets plus concrets</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</sc-if>
+</div>
+<h2 class="group">Comment l'info circule</h2>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}"><p class="qtext">L'info des autres métiers m'arrive au bon moment.</p></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><p class="qtext">Entre les métiers de mon équipe, l'info circule au bon moment.</p></sc-if>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 7">
+<sc-for list="{{s7}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q7}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Qu'on échange plus souvent en direct</label>
+<label class="opt"><input type="checkbox">Qu'on se retrouve pour un point d'équipe régulier</label>
+<label class="opt"><input type="checkbox">Que notre messagerie soit mieux organisée</label>
+<label class="opt"><input type="checkbox">Qu'on se parle plus, et qu'on s'écrive moins</label>
+<label class="opt"><input type="checkbox">Qu'on partage un outil ou un planning commun</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</div>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}"><p class="qtext">Quand je reçois une info d'un collègue, je peux agir dessus directement.</p></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><p class="qtext">Les infos que les membres de mon équipe se transmettent sont utilisables telles quelles.</p></sc-if>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 8">
+<sc-for list="{{s8}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q8}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais recevoir des infos… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Plus complètes</label>
+<label class="opt"><input type="checkbox">Plus tôt</label>
+<label class="opt"><input type="checkbox">Dans un format partagé par tous</label>
+<label class="opt"><input type="checkbox">Plus cohérentes entre elles</label>
+<label class="opt"><input type="checkbox">Plus fiables, sans avoir à vérifier</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</div>
+<h2 class="group">Quand ça accroche</h2>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}"><p class="qtext">Quand quelque chose ne marche pas, nous cherchons une solution ensemble.</p></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><p class="qtext">Quand quelque chose ne marche pas, mon équipe cherche une solution ensemble, sans attendre que je tranche.</p></sc-if>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 9">
+<sc-for list="{{s9}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q9}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Qu'on en parle plus vite entre personnes concernées</label>
+<label class="opt"><input type="checkbox">Qu'on prenne un moment pour faire le point après coup</label>
+<label class="opt"><input type="checkbox">Qu'on cherche d'abord la solution, plutôt qu'un responsable</label>
+<label class="opt"><input type="checkbox">Qu'on règle davantage les choses ensemble</label>
+<label class="opt"><input type="checkbox">Qu'on en tire des leçons ensemble</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</div>
+<h2 class="group">Le soutien du manager</h2>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}"><p class="qtext">Mon manager m'aide à travailler avec les autres.</p></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><p class="qtext">J'aide mon équipe à travailler ensemble.</p></sc-if>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 10">
+<sc-for list="{{s10}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q10}}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais que mon manager… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Soit plus disponible</label>
+<label class="opt"><input type="checkbox">Me fasse plus de retours</label>
+<label class="opt"><input type="checkbox">Fasse davantage le lien avec les autres métiers</label>
+<label class="opt"><input type="checkbox">M'aide davantage à dépasser les désaccords</label>
+<label class="opt"><input type="checkbox">Me laisse plus d'autonomie</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Passer plus de temps avec l'équipe</label>
+<label class="opt"><input type="checkbox">Découvrir d'autres façons d'animer les réunions</label>
+<label class="opt"><input type="checkbox">Bénéficier d'un regard extérieur</label>
+<label class="opt"><input type="checkbox">Mieux connaître chaque métier</label>
+<label class="opt"><input type="checkbox">Avoir des repères pour dépasser les désaccords</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</sc-if>
+</div>
+
+<h2 class="group">La confiance et le soutien</h2>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}"><p class="qtext">Dans mon équipe, je peux dire ce que je pense, même quand je ne suis pas d'accord.</p></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><p class="qtext">Dans mon équipe, chacun peut dire ce qu'il pense, même quand il n'est pas d'accord avec moi.</p></sc-if>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 11">
+<sc-for list="{{s11}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q11}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Pouvoir tout dire sans crainte</label>
+<label class="opt"><input type="checkbox">Qu'on prenne plus de temps pour en parler</label>
+<label class="opt"><input type="checkbox">Sentir que ma parole compte davantage</label>
+<label class="opt"><input type="checkbox">Me sentir plus proche de la hiérarchie</label>
+<label class="opt"><input type="checkbox">Que nos relations soient plus apaisées</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</div>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}"><p class="qtext">Je peux parler franchement à mon manager, y compris d'une erreur.</p></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><p class="qtext">Les membres de mon équipe peuvent me parler franchement, y compris d'une erreur.</p></sc-if>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 12">
+<sc-for list="{{s12}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q12}}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Passer plus de temps en tête à tête</label>
+<label class="opt"><input type="checkbox">Que mon manager partage aussi ses doutes et ses erreurs</label>
+<label class="opt"><input type="checkbox">Mieux savoir ce qu'il fait de ce qu'on lui dit</label>
+<label class="opt"><input type="checkbox">Qu'on pose un cadre clair sur ce qui reste entre nous</label>
+<label class="opt"><input type="checkbox">Qu'il soit plus disponible</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Passer plus de temps en tête à tête</label>
+<label class="opt"><input type="checkbox">Oser partager mes doutes et mes erreurs</label>
+<label class="opt"><input type="checkbox">Mieux montrer ce que je fais de leurs retours</label>
+<label class="opt"><input type="checkbox">Qu'on pose un cadre clair sur ce qui reste entre nous</label>
+<label class="opt"><input type="checkbox">Être plus disponible</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</sc-if>
+</div>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}"><p class="qtext">Quand j'ai besoin d'aide, je peux compter sur mes collègues.</p></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><p class="qtext">Dans mon équipe, chacun peut compter sur les autres quand il a besoin d'aide.</p></sc-if>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 13">
+<sc-for list="{{s13}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q13}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Avoir un peu plus de temps</label>
+<label class="opt"><input type="checkbox">Savoir plus facilement à qui demander</label>
+<label class="opt"><input type="checkbox">Me sentir plus libre de demander</label>
+<label class="opt"><input type="checkbox">Que la charge soit mieux répartie</label>
+<label class="opt"><input type="checkbox">Qu'on prenne des moments pour s'entraider</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</div>
+<h2 class="group">Le sens et les résultats</h2>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}"><p class="qtext">Je vois le sens et l'utilité de ce que fait mon équipe.</p></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><p class="qtext">Les membres de mon équipe voient le sens et l'utilité de leur travail.</p></sc-if>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 14">
+<sc-for list="{{s14}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q14}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Mieux voir à quoi sert notre travail</label>
+<label class="opt"><input type="checkbox">Avoir plus de retours de nos clients</label>
+<label class="opt"><input type="checkbox">Voir davantage les fruits de nos efforts</label>
+<label class="opt"><input type="checkbox">Mieux comprendre les décisions</label>
+<label class="opt"><input type="checkbox">Qu'on parle plus souvent de ce qui compte vraiment</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</div>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<sc-if value="{{isMember}}" hint-placeholder-val="{{ true }}"><p class="qtext">Dans mon équipe, on parle autant de la façon de travailler ensemble que des chiffres à atteindre.</p></sc-if>
+<sc-if value="{{isManager}}" hint-placeholder-val="{{ false }}"><p class="qtext">Avec mon équipe, je parle autant de la façon de travailler ensemble que des chiffres à atteindre.</p></sc-if>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 15">
+<sc-for list="{{s15}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q15}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais qu'on prenne aussi le temps de parler de… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Notre façon de travailler ensemble</label>
+<label class="opt"><input type="checkbox">Ce qui nous aide au quotidien</label>
+<label class="opt"><input type="checkbox">Ce qui pourrait nous faciliter la vie</label>
+<label class="opt"><input type="checkbox">Nos réussites collectives</label>
+<label class="opt"><input type="checkbox">Ce qu'on apprend ensemble</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</div>
+<div class="card q">
+<div style="display: flex; gap: 16px; align-items: baseline">
+<div>
+<p class="qtext">Mon équipe obtient les résultats qu'elle vise.</p>
+</div>
+</div>
+<div class="scale" role="group" aria-label="Votre réponse à l'affirmation 16">
+<sc-for list="{{s16}}" as="n" hint-placeholder-count="4"><button type="button" class="sc" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}" style="background: {{n.bg}}; color: {{n.fg}}; border-color: {{n.bd}}">{{n.label}}</button></sc-for>
+</div>
+<sc-if value="{{low.q16}}" hint-placeholder-val="{{ false }}">
+<fieldset class="why">
+<legend class="whyq">J'aimerais… <span class="whysub">Deux réponses au plus</span></legend>
+<div class="opts">
+<label class="opt"><input type="checkbox">Que la charge soit plus soutenable</label>
+<label class="opt"><input type="checkbox">Avoir plus d'infos pour avancer</label>
+<label class="opt"><input type="checkbox">Que les priorités soient plus stables</label>
+<label class="opt"><input type="checkbox">Avoir plus de moyens</label>
+<label class="opt"><input type="checkbox">Que les métiers se coordonnent mieux</label>
+<label class="opt"><input type="checkbox">Autre</label>
+</div>
+</fieldset>
+</sc-if>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px">
+<a href="Profil.dc.html" style="font-size: 15px">Retour</a>
+<a class="btn" href="Resultat.dc.html">Voir mon résultat</a>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":4740}}'>
+class Component extends DCLogic {
+renderVals() {
+const base = [2, 2, 1, 1, 2, 2, 0, 0, 2, 3, 2, 3, 2, 2, 1, 2];
+const a = (this.state && this.state.a) ? this.state.a : base;
+const LABELS = ['Pas du tout', 'Plutôt pas', 'Plutôt', 'Tout à fait'];
+const mk = (qi) => LABELS.map((lab, n) => {
+const on = a[qi] === n;
+return {
+label: lab,
+pressed: on ? 'true' : 'false',
+bg: on ? '#5A6B4D' : '#FFFFFF',
+fg: on ? '#FFFFFF' : '#1A1A1A',
+bd: on ? '#5A6B4D' : 'rgba(138,155,122,.4)',
+pick: () => { const b = a.slice(); b[qi] = n; this.setState({ a: b }); }
+};
+});
+const two = a.map((v, i) => ({ v: v, i: i })).filter((o) => o.v <= 1).sort((x, y) => (x.v - y.v) || (x.i - y.i)).slice(0, 2).map((o) => o.i);
+const low = {};
+for (let i = 0; i < 16; i++) { low['q' + (i + 1)] = two.indexOf(i) >= 0; }
+const mgr = !!(this.state && this.state.mgr);
+return { s1: mk(0), s2: mk(1), s3: mk(2), s4: mk(3), s5: mk(4), s6: mk(5), s7: mk(6), s8: mk(7), s9: mk(8), s10: mk(9), s11: mk(10), s12: mk(11), s13: mk(12), s14: mk(13), s15: mk(14), s16: mk(15), low: low,
+isMember: !mgr, isManager: mgr,
+memberPressed: mgr ? 'false' : 'true', managerPressed: mgr ? 'true' : 'false',
+memberBg: mgr ? 'transparent' : '#5A6B4D', memberFg: mgr ? '#1A1A1A' : '#FFFFFF',
+managerBg: mgr ? '#5A6B4D' : 'transparent', managerFg: mgr ? '#FFFFFF' : '#1A1A1A',
+toMember: () => this.setState({ mgr: false }), toManager: () => this.setState({ mgr: true }) };
+}
+}
+</script>
+</body>
+</html>

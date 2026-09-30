@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Les cartes d'ensemble</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Playfair+Display:ital,wght@0,400;0,500;1,400&amp;display=swap">
+<style>
+body{margin:0;font-family:'DM Sans',sans-serif;color:#1A1A1A;background:#F7F4EF}
+.serif{font-family:'Playfair Display',serif;font-weight:400}
+.card{background:#FFFFFF;border:1px solid rgba(138,155,122,.18);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+</style>
+</helmet>
+<div style="width: 1280px; height: 980px; box-sizing: border-box; background: #F7F4EF; padding: 48px 56px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">Outil interne</span>
+<h1 class="serif" style="margin: 0; font-size: 42px">Les cartes d'ensemble</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #6B6460; max-width: 900px">La carte qui ouvre le résultat. Elle dépend de l'ensemble des réponses, sans jamais afficher de note.</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+<div class="card" style="overflow: hidden; display: flex; flex-direction: column">
+<div style="background: #3F4F35; color: #FFFFFF; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center">
+<span style="font-size: 16px; font-weight: 600">Bien enraciné</span>
+</div>
+<div style="padding: 28px; display: flex; flex-direction: column; gap: 12px">
+<h2 class="serif" style="margin: 0; font-size: 30px; line-height: 1.25">Une équipe bien enracinée</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.7; color: #3F3B38">Ce que vous décrivez ressemble à une équipe où l'on se sent bien pour travailler. Un cap partagé, des collègues qui se connaissent, une info qui circule. Ce n'est pas un hasard : c'est le fruit de ce que chacun y met, vous compris.</p>
+</div>
+</div>
+<div class="card" style="overflow: hidden; display: flex; flex-direction: column">
+<div style="background: #8FA878; color: #1A1A1A; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center">
+<span style="font-size: 16px; font-weight: 600">En croissance</span>
+</div>
+<div style="padding: 28px; display: flex; flex-direction: column; gap: 12px">
+<h2 class="serif" style="margin: 0; font-size: 30px; line-height: 1.25">Une équipe en croissance</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.7; color: #3F3B38">Dans votre regard, beaucoup de choses fonctionnent déjà entre vous. D'autres se cherchent encore, et c'est normal : une équipe se construit dans le temps. Ce qui est déjà là est une base solide pour avancer, à votre rythme.</p>
+</div>
+</div>
+<div class="card" style="overflow: hidden; display: flex; flex-direction: column">
+<div style="background: #E3CF9E; color: #1A1A1A; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center">
+<span style="font-size: 16px; font-weight: 600">En germe</span>
+</div>
+<div style="padding: 28px; display: flex; flex-direction: column; gap: 12px">
+<h2 class="serif" style="margin: 0; font-size: 30px; line-height: 1.25">Une équipe en germe</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.7; color: #3F3B38">Travailler ensemble demande sans doute parfois plus d'efforts qu'il ne faudrait. Votre regard le dit avec justesse. Il montre aussi ce qui est déjà là, et qui peut servir d'appui. Rien n'est figé : chaque dimension peut grandir.</p>
+</div>
+</div>
+<div class="card" style="overflow: hidden; display: flex; flex-direction: column">
+<div style="background: #A9743A; color: #1A1A1A; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center">
+<span style="font-size: 16px; font-weight: 600">À semer</span>
+</div>
+<div style="padding: 28px; display: flex; flex-direction: column; gap: 12px">
+<h2 class="serif" style="margin: 0; font-size: 30px; line-height: 1.25">Un terrain prêt à semer</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.7; color: #3F3B38">Travailler ensemble n'a peut-être pas été simple ces derniers temps. Merci d'avoir pris ce moment pour le regarder : c'est souvent le premier pas. Ce que vous vivez aujourd'hui n'est pas une fin, c'est un point de départ.</p>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":980}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

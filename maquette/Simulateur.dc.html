@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Simulateur de l'état des lieux</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Playfair+Display:ital,wght@0,400;0,500;1,400&amp;display=swap">
+<style>
+body{margin:0;font-family:'DM Sans',sans-serif;color:#1A1A1A;background:#F7F4EF}
+.serif{font-family:'Playfair Display',serif;font-weight:400}
+.card{background:#FFFFFF;border:1px solid rgba(138,155,122,.18);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.lv{min-height:40px;padding:0 10px;border-radius:10px;border:1px solid rgba(138,155,122,.35);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.lv:focus-visible,.pre:focus-visible{outline:3px solid rgba(107,125,92,.35);outline-offset:2px}
+.pre{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid rgba(138,155,122,.4);background:#FFFFFF;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
+.pre:hover{background:#EEF1EA}
+.dotc{width:10px;height:10px;border-radius:999px;display:inline-block}
+</style>
+</helmet>
+<div style="width: 1280px; height: 1760px; box-sizing: border-box; background: #F7F4EF; padding: 48px 56px; display: flex; flex-direction: column; gap: 28px">
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">Outil interne</span>
+<h1 class="serif" style="margin: 0; font-size: 42px">Simulateur de l'état des lieux</h1>
+<p style="margin: 0; font-size: 16px; color: #6B6460">Choisissez une couleur par dimension : le texte du résultat s'assemble selon les règles. La question sur les résultats n'entre pas dans le texte. Version membre de l'équipe.</p>
+</div>
+
+<div style="display: grid; grid-template-columns: 440px minmax(0, 1fr); gap: 32px; align-items: start">
+
+<div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 14px; font-weight: 600">Profils types</span>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" class="pre" onClick="{{p1}}">Exemple de la maquette</button>
+<button type="button" class="pre" onClick="{{p2}}">Équipe régulière</button>
+<button type="button" class="pre" onClick="{{p3}}">Tout bien enraciné</button>
+<button type="button" class="pre" onClick="{{p4}}">Tout à semer</button>
+</div>
+</div>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+<div role="group" aria-label="{{r.name}}" style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid rgba(138,155,122,.18)">
+<span style="font-size: 15px; font-weight: 600">{{r.name}}</span>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px">
+<sc-for list="{{r.opts}}" as="o" hint-placeholder-count="4">
+<button type="button" class="lv" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}" style="background: {{o.bg}}; color: {{o.fg}}; border-color: {{o.bd}}"><span class="dotc" style="background: {{o.dot}}"></span>{{o.name}}</button>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 16px">
+<span style="font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">Ce que la personne lit, dans cet ordre</span>
+
+<div class="card" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 14px; background: #EEF1EA; border-color: rgba(107,125,92,.25)">
+<span style="font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">Le regard d'ensemble</span>
+<span style="align-self: flex-start; padding: 6px 14px; border-radius: 999px; background: {{gBg}}; color: {{gFg}}; font-size: 14px; font-weight: 600">Votre équipe, dans votre regard : {{gName}}</span>
+<h2 class="serif" style="margin: 0; font-size: 30px; line-height: 1.25">{{title}}</h2>
+<p style="margin: 0; font-size: 16px; line-height: 1.7; color: #3F3B38">{{text}}</p>
+<sc-if value="{{hasAppui}}" hint-placeholder-val="{{ true }}">
+<p style="margin: 0; font-size: 16px; line-height: 1.7; color: #3F3B38">{{appui}}</p>
+</sc-if>
+<sc-if value="{{hasShape}}" hint-placeholder-val="{{ true }}">
+<p style="margin: 0; font-size: 16px; line-height: 1.7; color: #3F3B38">{{shape}}</p>
+</sc-if>
+</div>
+
+<div class="card" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 14px">
+<span style="font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">Les dimensions en couleurs</span>
+<div style="display: flex; gap: 12px; align-items: flex-start">
+<sc-for list="{{cols}}" as="c" hint-placeholder-count="3">
+<div style="flex: 1 1 0; min-width: 0; background: #F7F4EF; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column">
+<div style="background: {{c.bg}}; color: {{c.fg}}; padding: 12px 16px; font-size: 14px; font-weight: 600">{{c.name}}</div>
+<div style="padding: 16px; display: flex; flex-direction: column; gap: 14px">
+<sc-for list="{{c.items}}" as="it" hint-placeholder-count="2">
+<div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 14px; font-weight: 600">{{it.dim}}</span><span style="font-size: 14px; line-height: 1.55; color: #4F4A46">{{it.text}}</span></div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1760}}'>
+class Component extends DCLogic {
+renderVals() {
+const LV = [
+{ name: 'Bien enraciné', bg: '#3F4F35', fg: '#FFFFFF', note: 3 },
+{ name: 'En croissance', bg: '#8FA878', fg: '#1A1A1A', note: 2 },
+{ name: 'En germe', bg: '#E3CF9E', fg: '#1A1A1A', note: 1 },
+{ name: 'À semer', bg: '#A9743A', fg: '#1A1A1A', note: 0 }
+];
+const DIMS = [
+{ name: "Ce qu'on vise ensemble", w: 2, t: ["Vous partagez un cap clair, et chacun sait vers quoi il avance. C'est précieux.", "Le cap est là. Chacun ne le dit pas encore tout à fait de la même façon, et c'est souvent comme ça que ça commence.", "Un cap commun se dessine. Il reste encore un peu flou au quotidien, ce qui peut rendre certains choix plus lourds.", "Chacun avance surtout avec l'objectif de son métier. Le cap commun reste à dire ensemble, et c'est une belle chose à construire."] },
+{ name: "Ce qu'on sait les uns des autres", w: 2, t: ["Vous connaissez bien le travail des autres, et eux le vôtre. Ça rend le quotidien plus fluide.", "Vous connaissez une bonne partie du travail des autres. Certaines contraintes restent encore dans l'ombre.", "Vous connaissez surtout les métiers les plus proches du vôtre. Le reste est parfois difficile à voir d'où vous êtes.", "Le travail de chacun reste encore peu connu des autres, dans un sens comme dans l'autre. Ce n'est pas un manque d'envie, souvent un manque d'occasions."] },
+{ name: "La place de chacun", w: 2, t: ["Chacun se sent reconnu et trouve sa place pour s'exprimer. C'est une vraie force.", "La reconnaissance et la parole circulent bien, même si ce n'est pas encore pareil pour tout le monde.", "La reconnaissance et la parole existent, mais certains métiers se sentent sans doute moins vus que d'autres.", "Certaines voix et certains métiers sont encore peu entendus. Ce que vous en percevez compte."] },
+{ name: "Comment l'info circule", w: 2, t: ["L'info arrive au bon moment, et vous pouvez vous appuyer dessus. Un vrai confort au quotidien.", "L'info circule, avec parfois un temps de retard ou un besoin de vérifier. Rien d'anormal, et de la marge pour que ce soit plus fluide.", "L'info arrive assez souvent tard ou incomplète. Ça peut être usant, et vous n'êtes sans doute pas la seule personne à le ressentir.", "L'info arrive souvent tard ou incomplète, ce qui demande des allers et retours. C'est fatigant, et on comprend que ça pèse."] },
+{ name: "Quand ça accroche", w: 1, t: ["Quand quelque chose coince, vous cherchez une solution ensemble. C'est un beau signe de confiance.", "Les solutions se cherchent souvent ensemble, pas encore à chaque fois. Le réflexe est en train de s'installer.", "Il arrive que vous cherchiez une solution ensemble, sans que ce soit encore un réflexe. Les moments de tension peuvent alors peser un peu plus.", "Quand quelque chose coince, chacun le règle plutôt de son côté. C'est souvent une façon de se protéger, et c'est humain."] },
+{ name: "Le soutien du manager", w: 1, t: ["Votre manager vous aide vraiment à travailler avec les autres. C'est un appui qui compte.", "Votre manager vous soutient. Il y a encore de la place pour qu'il fasse davantage le lien entre les métiers.", "Le soutien de votre manager est là par moments. Vous aimeriez sans doute le sentir plus présent.", "Pour travailler avec les autres, le soutien de votre manager se fait peu sentir aujourd'hui. Ce que vous ressentez est légitime, et ça peut évoluer."] },
+{ name: "La confiance et le soutien", w: 3, t: ["Vous pouvez dire ce que vous pensez, parler franchement et compter sur les autres. C'est une chance.", "La confiance et l'entraide sont là, même si tout ne se dit pas encore facilement.", "La confiance existe avec certains. Demander de l'aide ou dire son désaccord dépend encore des personnes.", "Dire ce que vous pensez ou demander de l'aide ne va pas encore de soi. Le reconnaître demande déjà du courage."] },
+{ name: "Le sens du travail", w: 2, t: ["Vous voyez le sens de votre travail, et les chiffres restent au service de ce que vous faites ensemble.", "Le sens du travail est là, même si les chiffres prennent parfois beaucoup de place.", "Le sens du travail se voit par moments. Les chiffres occupent souvent le devant, et ça peut essouffler.", "Au quotidien, les chiffres prennent le pas sur le sens du travail. Retrouver pourquoi on fait les choses compte, et vous le sentez."] }
+];
+const ECL = [{ s: "Chez Southwest, quand un avion partait en retard à cause de plusieurs métiers, les équipes se disputaient pour savoir à qui la faute. En 1991, la compagnie a créé le « retard d'équipe » : le retard est compté pour tout le monde. Les disputes ont cessé, et chacun s'est mis à regarder le même but : un avion qui part à l'heure.", b: "Un but commun ne tient pas qu'à une phrase : il se voit dans la façon dont on compte les réussites et les ratés." }, { s: "Dans les escales qui marchaient le mieux, un bagagiste savait ce que vivait un agent de porte, et inversement. Chacun voyait tout le départ, pas seulement sa part, parce qu'ils se parlaient souvent.", b: "Connaître le travail des autres, c'est ce qui permet d'anticiper plutôt que de subir." }, { s: "Dans l'aérien, certains métiers comptaient plus que d'autres : les pilotes d'un côté, les bagagistes de l'autre. Les escales qui travaillaient le mieux ensemble avaient une culture où aucun métier ne valait plus qu'un autre.", b: "La reconnaissance entre métiers est l'une des bases du travail ensemble." }, { s: "Gittell a remarqué que le temps en trop entre deux vols servait souvent de coussin : tant qu'il y avait de la marge, les métiers n'avaient pas besoin de se parler. Quand la marge se réduisait, les problèmes apparaissaient, et les métiers apprenaient à se parler pour les régler ensemble.", b: "Quand l'info arrive tard, c'est souvent le signe que les métiers ont peu d'occasions de se parler directement." }, { s: "Chez American, chaque retard était attribué au service responsable. Chacun cherchait d'abord à ne pas être le fautif, et défendait son propre chiffre. Là où la responsabilité était partagée, l'énergie allait à la solution plutôt qu'au coupable.", b: "La façon de compter les erreurs change la façon d'en parler." }, { s: "On pensait qu'avec des équipes qui se coordonnent bien, on pouvait supprimer des chefs. Gittell a trouvé l'inverse : les escales avec plus de responsables allaient plus vite, à condition que ces responsables soient là pour soutenir et conseiller, pas pour contrôler les chiffres.", b: "Le rôle du manager compte autant par sa présence que par son regard." }, { s: "Dans les escales qui marchaient le mieux, s'entraider entre métiers faisait partie du quotidien, et la direction prenait le temps de construire la confiance avec les équipes.", b: "La confiance se construit dans les petits gestes de tous les jours." }, { s: "Là où tous les métiers partageaient le même objectif, les salariés décrivaient un meilleur moral. Et ces escales faisaient partir leurs avions plus vite, sans perdre en qualité.", b: "Le sens partagé et les résultats vont souvent ensemble." }];
+const GLOBAL = [
+{ min: 2.5, lvl: 0, title: "Une équipe bien enracinée", text: "Ce que vous décrivez ressemble à une équipe où l'on se sent bien pour travailler. Un cap partagé, des collègues qui se connaissent, une info qui circule. Ce n'est pas un hasard : c'est le fruit de ce que chacun y met, vous compris." },
+{ min: 1.75, lvl: 1, title: "Une équipe en croissance", text: "Dans votre regard, beaucoup de choses fonctionnent déjà entre vous. D'autres se cherchent encore, et c'est normal : une équipe se construit dans le temps. Ce qui est déjà là est une base solide pour avancer, à votre rythme." },
+{ min: 1, lvl: 2, title: "Une équipe en germe", text: "Travailler ensemble demande sans doute parfois plus d'efforts qu'il ne faudrait. Votre regard le dit avec justesse. Il montre aussi ce qui est déjà là, et qui peut servir d'appui. Rien n'est figé : chaque dimension peut grandir." },
+{ min: 0, lvl: 3, title: "Un terrain prêt à semer", text: "Travailler ensemble n'a peut-être pas été simple ces derniers temps. Merci d'avoir pris ce moment pour le regarder : c'est souvent le premier pas. Ce que vous vivez aujourd'hui n'est pas une fin, c'est un point de départ." }
+];
+const st = this.state || {};
+const lv = st.lv || [1, 2, 1, 3, 1, 0, 1, 1];
+const set = (arr) => () => this.setState({ lv: arr });
+const rows = DIMS.map((d, i) => ({
+name: d.name,
+opts: LV.map((l, k) => {
+const on = lv[i] === k;
+return {
+name: l.name, dot: l.bg,
+pressed: on ? 'true' : 'false',
+bg: on ? l.bg : '#FFFFFF', fg: on ? l.fg : '#1A1A1A', bd: on ? l.bg : 'rgba(138,155,122,.35)',
+pick: () => { const b = lv.slice(); b[i] = k; this.setState({ lv: b }); }
+};
+})
+}));
+let sum = 0, wsum = 0;
+DIMS.forEach((d, i) => { sum += LV[lv[i]].note * d.w; wsum += d.w; });
+const avg = sum / wsum;
+const g = GLOBAL.find((x) => avg >= x.min);
+const best = Math.min.apply(null, lv), worst = Math.max.apply(null, lv);
+const tops = DIMS.filter((d, i) => lv[i] === best).map((d) => d.name);
+const hasAppui = best <= 1 && tops.length <= 2 && best !== worst;
+const appui = hasAppui ? 'Ce qui vous porte le plus : ' + tops.map((n) => n.charAt(0).toLowerCase() + n.slice(1)).join(' et ') + '.' : '';
+let shape = '';
+if (best === worst) { shape = 'Votre regard est homogène : toutes les dimensions sont au même niveau.'; }
+else if (worst - best >= 2) { shape = 'Votre regard est contrasté : certaines dimensions sont déjà solides, d’autres encore peu installées.'; }
+const cols = LV.map((l, k) => ({
+name: l.name, bg: l.bg, fg: l.fg,
+items: DIMS.map((d, i) => ({ dim: d.name, text: d.t[k], lvl: lv[i] })).filter((x) => x.lvl === k)
+})).filter((c) => c.items.length > 0);
+const eIdx = worst >= 2 ? lv.indexOf(worst) : lv.indexOf(best);
+const eclTitle = (worst >= 2 ? 'Un éclairage sur votre dimension « ' : 'Pourquoi ça compte : « ') + DIMS[eIdx].name + ' »';
+const eclText = ECL[eIdx].s;
+const eclBridge = ECL[eIdx].b;
+const rule = 'moyenne cachée de ' + avg.toFixed(2).replace('.', ',') + ' sur 3 (pondérée par le nombre d’affirmations), ' + (worst - best) + ' couleur(s) d’écart.';
+return {
+rows: rows, title: g.title, text: g.text, gName: LV[g.lvl].name, gBg: LV[g.lvl].bg, gFg: LV[g.lvl].fg,
+hasAppui: hasAppui, appui: appui, hasShape: shape !== '', shape: shape,
+cols: cols, rule: rule, eclTitle: eclTitle, eclText: eclText, eclBridge: eclBridge,
+p1: set([1, 2, 1, 3, 1, 0, 1, 1]), p2: set([1, 1, 1, 2, 1, 1, 1, 1]), p3: set([0, 0, 0, 0, 0, 0, 0, 0]), p4: set([3, 3, 3, 3, 3, 3, 3, 3])
+};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>État des lieux d'équipe, accueil mobile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Playfair+Display:ital,wght@0,400;0,500;1,400&amp;display=swap">
+<style>
+body{margin:0;font-family:'DM Sans',sans-serif;color:#1A1A1A;background:#F7F4EF}
+a{color:#5A6B4D}a:hover{color:#2D3626}
+.serif{font-family:'Playfair Display',serif;font-weight:400}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 28px;border-radius:999px;background:#5A6B4D;color:#FFFFFF;font-weight:500;font-size:16px;text-decoration:none}
+.btn:hover{background:#2D3626;color:#FFFFFF}
+.card{background:#FFFFFF;border:1px solid rgba(138,155,122,.18);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(138,155,122,.15);color:#2D3626;font-size:13px;font-weight:500}
+.bar{height:10px;border-radius:999px;background:rgba(138,155,122,.15);overflow:hidden}
+</style>
+</helmet>
+<div style="width: 390px; height: 3100px; box-sizing: border-box; background: #F7F4EF; display: flex; flex-direction: column">
+<div data-bandeau style="height: 40px; flex-shrink: 0; box-sizing: border-box; background: #2D3626; color: #E6E1D8; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 16px; font-size: 13px; white-space: nowrap; overflow: hidden">
+<span style="overflow: hidden; text-overflow: ellipsis">Proposé par Greatly, près de Lille</span>
+<a href="https://greatly.club" style="color: #F7F4EF; font-weight: 600; text-decoration: underline; text-underline-offset: 3px">En savoir plus</a>
+</div>
+
+<header style="display: flex; justify-content: space-between; align-items: center; padding: 18px 20px">
+<div class="serif" style="font-size: 24px; color: #2D3626">Greatly</div>
+<nav style="display: flex; gap: 16px; font-size: 14px">
+<a href="#dimensions">Les dimensions</a>
+</nav>
+</header>
+
+<section style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; padding: 16px 20px 40px; align-items: center">
+<div style="display: flex; flex-direction: column; gap: 24px">
+<span class="badge" style="align-self: flex-start">État des lieux d'équipe · 2 minutes</span>
+<h1 class="serif" style="margin: 0; font-size: 36px; line-height: 1.12; color: #1A1A1A">Faites le point sur votre façon de travailler ensemble</h1>
+<p style="margin: 0; font-size: 17px; line-height: 1.6; color: #6B6460">Le travail ensemble, on le vit tous les jours, sans toujours prendre le temps d'y penser. Prenez ce moment pour vous. Répondez avec ce que vous vivez, simplement. Vous repartez avec un regard plus clair sur ce qui vous porte déjà, et sur ce qui peut encore grandir.</p>
+<div style="display: flex; flex-direction: column; gap: 14px; align-items: stretch; margin-top: 8px">
+<a class="btn" href="Profil-mobile.dc.html">Faire mon état des lieux</a>
+<span style="display: inline-flex; align-items: center; gap: 10px; font-size: 15px; color: #2D3626"><span style="width: 10px; height: 10px; border-radius: 999px; background: #8FA878; box-shadow: 0 0 0 4px rgba(143,168,120,.25)"></span><strong style="font-weight: 600">255</strong> personnes ont déjà participé</span>
+</div>
+<p style="margin: 0; font-size: 14px; color: #6B6460">Anonyme · Aucun compte à créer · Résultat immédiat</p>
+</div>
+
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="font-size: 14px; font-weight: 600; color: #2D3626">Aperçu du résultat</span>
+<span style="font-size: 13px; color: #6B6460">Exemple</span>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 15px"><span>Ce qu'on vise ensemble</span><span style="padding: 4px 12px; border-radius: 999px; background: #8FA878; color: #1A1A1A; font-size: 13px; font-weight: 500; white-space: nowrap">En croissance</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 15px"><span>Ce qu'on sait les uns des autres</span><span style="padding: 4px 12px; border-radius: 999px; background: #E3CF9E; color: #1A1A1A; font-size: 13px; font-weight: 500; white-space: nowrap">En germe</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 15px"><span>Le soutien du manager</span><span style="padding: 4px 12px; border-radius: 999px; background: #3F4F35; color: #FFFFFF; font-size: 13px; font-weight: 500; white-space: nowrap">Bien enraciné</span></div>
+<div style="border-top: 1px solid rgba(138,155,122,.25); padding-top: 16px; font-size: 15px; line-height: 1.5; color: #6B6460">Pas de note ni de classement : une photo de votre équipe aujourd'hui.</div>
+</div>
+</section>
+
+<section style="padding: 40px 20px; background: #FFFFFF; display: flex; flex-direction: column; gap: 24px">
+<h2 class="serif" style="margin: 0; font-size: 28px">À la fin, vous recevez</h2>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px">
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 12px; background: #F7F4EF">
+<h3 style="margin: 0; font-size: 20px; font-weight: 600">Votre état des lieux</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #6B6460">En quelques lignes, votre regard d'ensemble sur la façon dont votre équipe travaille ensemble.</p>
+</div>
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 12px; background: #F7F4EF">
+<h3 style="margin: 0; font-size: 20px; font-weight: 600">Vos dimensions en couleurs</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #6B6460">Chacune prend l'une de ces couleurs. Pas de note, pas de classement.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 6px"><span style="padding: 4px 10px; border-radius: 999px; background: #3F4F35; color: #FFFFFF; font-size: 12px; font-weight: 500">Bien enraciné</span><span style="padding: 4px 10px; border-radius: 999px; background: #8FA878; color: #1A1A1A; font-size: 12px; font-weight: 500">En croissance</span><span style="padding: 4px 10px; border-radius: 999px; background: #E3CF9E; color: #1A1A1A; font-size: 12px; font-weight: 500">En germe</span><span style="padding: 4px 10px; border-radius: 999px; background: #A9743A; color: #1A1A1A; font-size: 12px; font-weight: 500">À semer</span></div>
+</div>
+<div class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 12px; background: #F7F4EF">
+<h3 style="margin: 0; font-size: 20px; font-weight: 600">Une phrase pour chacune</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #6B6460">Ce qui est déjà là, et ce qui peut encore grandir, décrit simplement et sans jugement.</p>
+</div>
+</div>
+</section>
+
+<section id="dimensions" style="padding: 40px 20px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 20px">
+<h2 class="serif" style="margin: 0; font-size: 28px">Sur quoi repose l'état des lieux</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.7; color: #6B6460">Sur les travaux de Jody Hoffer Gittell, à l'université Brandeis : des objectifs partagés, des connaissances partagées et le respect mutuel aident une équipe à mieux travailler ensemble.</p>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 15px">
+<li><a href="https://dspace.mit.edu/handle/1721.1/11074">Gittell, thèse de doctorat, MIT, 1995</a></li>
+<li><a href="https://journals.sagepub.com/doi/10.1177/0021886321991597">Bolton, Logan et Gittell, revue systématique, 2021</a></li>
+<li><a href="https://heller.brandeis.edu/relational-coordination/index.html">Relational Coordination Collaborative, Brandeis</a></li>
+</ul>
+<p style="margin: 0; font-size: 14px; color: #6B6460">Formulations Greatly, inspirées de ces travaux.</p>
+</div>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; align-content: start">
+<div class="card" style="padding: 18px 20px; font-size: 16px; font-weight: 500">Ce qu'on vise ensemble</div>
+<div class="card" style="padding: 18px 20px; font-size: 16px; font-weight: 500">Ce qu'on sait les uns des autres</div>
+<div class="card" style="padding: 18px 20px; font-size: 16px; font-weight: 500">La place de chacun</div>
+<div class="card" style="padding: 18px 20px; font-size: 16px; font-weight: 500">Comment l'info circule</div>
+<div class="card" style="padding: 18px 20px; font-size: 16px; font-weight: 500">Quand ça accroche</div>
+<div class="card" style="padding: 18px 20px; font-size: 16px; font-weight: 500">Le soutien du manager</div>
+<div class="card" style="padding: 18px 20px; font-size: 16px; font-weight: 500">La confiance et le soutien</div>
+<div class="card" style="padding: 18px 20px; font-size: 16px; font-weight: 500">Le sens du travail</div>
+</div>
+</section>
+
+<section style="padding: 0 20px 40px; display: flex; justify-content: stretch; flex-direction: column">
+<a class="btn" href="Profil-mobile.dc.html">Faire mon état des lieux</a>
+</section>
+
+<footer style="margin-top: auto; background: #2D3626; color: #F7F4EF; padding: 32px 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 16px">
+<div class="serif" style="font-size: 24px">Greatly</div>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; max-width: 640px; color: #E6E1D8">Vos réponses sont anonymes. Elles servent à calculer votre résultat et, regroupées, à publier un baromètre. <a href="#" style="color: #F7F4EF">Politique de confidentialité [LIEN]</a></p>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":3100}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

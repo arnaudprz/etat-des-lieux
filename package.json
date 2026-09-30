@@ -1,0 +1,11 @@
+{
+  "name": "etat-des-lieux",
+  "version": "1.0.0",
+  "private": true,
+  "description": "État des lieux d'équipe Greatly. Site statique, aucune dépendance.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/",
+    "local": "python3 -m http.server 8080 --directory docs"
+  }
+}

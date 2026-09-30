@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>État des lieux d'équipe, profil mobile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Playfair+Display:ital,wght@0,400;0,500;1,400&amp;display=swap">
+<style>
+body{margin:0;font-family:'DM Sans',sans-serif;color:#1A1A1A;background:#F7F4EF}
+a{color:#5A6B4D}a:hover{color:#2D3626}
+.serif{font-family:'Playfair Display',serif;font-weight:400}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 32px;border-radius:999px;background:#5A6B4D;color:#FFFFFF;font-weight:500;font-size:16px;text-decoration:none}
+.btn:hover{background:#2D3626;color:#FFFFFF}
+.card{background:#FFFFFF;border:1px solid rgba(138,155,122,.18);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+legend{font-size:17px;font-weight:600;padding:0;margin-bottom:14px}
+.pills{display:flex;flex-wrap:wrap;gap:10px}
+.pill{position:relative;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(138,155,122,.4);background:#FFFFFF;font-size:15px;cursor:pointer}
+.pill input{position:absolute;opacity:0;width:1px;height:1px}
+.pill:has(input:checked){background:#5A6B4D;border-color:#5A6B4D;color:#FFFFFF}
+.pill:has(input:focus-visible){outline:3px solid rgba(107,125,92,.35);outline-offset:2px}
+.step{display:flex;align-items:center;gap:10px;font-size:14px;color:#6B6460}
+.dot{width:12px;height:12px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;background:rgba(138,155,122,.15);color:#2D3626}
+.dot.on{background:#5A6B4D;color:#FFFFFF}
+.opt-s{display:block;width:100%;text-align:left;min-height:44px;padding:0 14px;border:0;border-radius:8px;background:transparent;font-family:'DM Sans',sans-serif;font-size:15px;color:#1A1A1A;cursor:pointer}
+.opt-s:hover,.opt-s:focus-visible{background:rgba(138,155,122,.15);outline:none}
+</style>
+</helmet>
+<div style="width: 390px; height: 1580px; box-sizing: border-box; background: #F7F4EF; display: flex; flex-direction: column">
+<div data-bandeau style="height: 40px; flex-shrink: 0; box-sizing: border-box; background: #2D3626; color: #E6E1D8; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 16px; font-size: 13px; white-space: nowrap; overflow: hidden">
+<span style="overflow: hidden; text-overflow: ellipsis">Proposé par Greatly, près de Lille</span>
+<a href="https://greatly.club" style="color: #F7F4EF; font-weight: 600; text-decoration: underline; text-underline-offset: 3px">En savoir plus</a>
+</div>
+
+<header style="display: flex; justify-content: space-between; align-items: center; padding: 18px 20px">
+<a href="Main-mobile.dc.html" class="serif" style="font-size: 24px; color: #2D3626; text-decoration: none">Greatly</a>
+<div role="img" aria-label="Progression" style="display: flex; gap: 8px; align-items: center">
+<span class="dot on"></span>
+<span class="dot"></span>
+<span class="dot"></span>
+</div>
+</header>
+
+<main style="margin: 8px 20px 40px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<h1 class="serif" style="margin: 0; font-size: 30px; line-height: 1.2">Quelques mots sur votre équipe</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #6B6460">Pour comparer votre résultat à des équipes qui vous ressemblent. Rien ne permet de vous identifier.</p>
+</div>
+
+<form class="card" style="padding: 22px; display: flex; flex-direction: column; gap: 28px">
+<fieldset>
+<legend>Dans votre équipe, vous êtes</legend>
+<div class="pills">
+<label class="pill"><input type="radio" name="role" checked>Le manager</label>
+<label class="pill"><input type="radio" name="role">Un membre de l'équipe</label>
+</div>
+</fieldset>
+
+<fieldset>
+<legend>Vous êtes <span style="font-weight: 400; font-size: 15px; color: #6B6460">(facultatif)</span></legend>
+<div class="pills">
+<label class="pill"><input type="radio" name="genre">Une femme</label>
+<label class="pill"><input type="radio" name="genre">Un homme</label>
+<label class="pill"><input type="radio" name="genre">Non binaire</label>
+<label class="pill"><input type="radio" name="genre">Je préfère ne pas répondre</label>
+</div>
+</fieldset>
+
+<fieldset>
+<legend>Taille de votre entreprise</legend>
+<div class="pills">
+<label class="pill"><input type="radio" name="taille">1 à 9 salariés</label>
+<label class="pill"><input type="radio" name="taille">10 à 49 salariés</label>
+<label class="pill"><input type="radio" name="taille" checked>50 à 299 salariés</label>
+<label class="pill"><input type="radio" name="taille">300 à 999 salariés</label>
+<label class="pill"><input type="radio" name="taille">1 000 à 4 999 salariés</label>
+<label class="pill"><input type="radio" name="taille">5 000 salariés et plus</label>
+</div>
+</fieldset>
+
+<div style="display: flex; flex-direction: column; gap: 14px">
+<label for="secteur" style="font-size: 18px; font-weight: 600">Secteur d'activité</label>
+<div style="position: relative">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B6460" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 16px; top: 16px"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+<input id="secteur" type="text" role="combobox" aria-autocomplete="list" aria-controls="secteurs" aria-expanded="{{expanded}}" autocomplete="off" placeholder="Tapez, par exemple « santé »" value="{{q}}" onChange="{{onType}}" onFocus="{{onOpen}}" style="width: 100%; box-sizing: border-box; height: 52px; border-radius: 12px; border: 1px solid rgba(138,155,122,.4); padding: 0 16px 0 48px; font-size: 16px; font-family: 'DM Sans', sans-serif; background: #FFFFFF; color: #1A1A1A">
+<sc-if value="{{open}}" hint-placeholder-val="{{ true }}">
+<ul id="secteurs" role="listbox" aria-label="Secteurs" style="position: absolute; z-index: 5; left: 0; right: 0; top: 58px; margin: 0; padding: 6px; list-style: none; background: #FFFFFF; border: 1px solid rgba(138,155,122,.3); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.08); max-height: 300px; overflow-y: auto">
+<sc-for list="{{items}}" as="it" hint-placeholder-count="4">
+<li role="option" aria-selected="{{it.selected}}"><button type="button" class="opt-s" onClick="{{it.pick}}">{{it.label}}</button></li>
+</sc-for>
+</ul>
+</sc-if>
+</div>
+</div>
+
+<fieldset>
+<legend>Taille de votre équipe</legend>
+<div class="pills">
+<label class="pill"><input type="radio" name="equipe">2 à 5 personnes</label>
+<label class="pill"><input type="radio" name="equipe" checked>6 à 12 personnes</label>
+<label class="pill"><input type="radio" name="equipe">13 personnes et plus</label>
+</div>
+</fieldset>
+</form>
+
+<div style="display: flex; flex-direction: column-reverse; gap: 16px; align-items: stretch; text-align: center">
+<a href="Main-mobile.dc.html" style="font-size: 15px">Retour</a>
+<a class="btn" href="Questions-mobile.dc.html">Continuer</a>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1580}}'>
+class Component extends DCLogic {
+renderVals() {
+const all = ['Agriculture et agroalimentaire', 'Industrie et production', 'Énergie, eau et environnement', 'BTP et construction', 'Commerce de gros', 'Commerce de détail et distribution', 'Transport et logistique', 'Hôtellerie, restauration et tourisme', 'Numérique, télécoms et médias', 'Banque, finance et assurance', 'Immobilier', 'Professions juridiques et du chiffre', 'Conseil et services aux entreprises', 'Santé', 'Médico-social et action sociale', 'Éducation et formation', 'Culture, sport et loisirs', 'Administration publique', 'Associations et économie sociale et solidaire'];
+const st = this.state || {};
+const q = st.q !== undefined ? st.q : 'com';
+const open = st.open !== undefined ? st.open : true;
+const sel = st.sel || '';
+const norm = (x) => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const nq = norm(q.trim());
+const found = all.filter((x) => nq === '' || norm(x).indexOf(nq) >= 0);
+found.push('Autre');
+const items = found.map((x) => ({
+label: x,
+selected: x === sel ? 'true' : 'false',
+pick: () => this.setState({ q: x, sel: x, open: false })
+}));
+return {
+q: q,
+open: open,
+expanded: open ? 'true' : 'false',
+items: items,
+onType: (e) => this.setState({ q: e.target.value, open: true, sel: '' }),
+onOpen: () => this.setState({ open: true })
+};
+}
+}
+</script>
+</body>
+</html>

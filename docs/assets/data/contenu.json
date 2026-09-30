@@ -1,0 +1,757 @@
+{
+  "version": "2026-09-30",
+  "echelle": [
+    {
+      "valeur": 0,
+      "libelle": "Pas du tout"
+    },
+    {
+      "valeur": 1,
+      "libelle": "Plutôt pas"
+    },
+    {
+      "valeur": 2,
+      "libelle": "Plutôt"
+    },
+    {
+      "valeur": 3,
+      "libelle": "Tout à fait"
+    }
+  ],
+  "niveaux": [
+    {
+      "cle": "enracine",
+      "nom": "Bien enraciné",
+      "couleur": "vert forêt",
+      "hex": "#3F4F35",
+      "texte": "#FFFFFF",
+      "valeur": 3
+    },
+    {
+      "cle": "croissance",
+      "nom": "En croissance",
+      "couleur": "sauge",
+      "hex": "#8FA878",
+      "texte": "#1A1A1A",
+      "valeur": 2
+    },
+    {
+      "cle": "germe",
+      "nom": "En germe",
+      "couleur": "sable",
+      "hex": "#E3CF9E",
+      "texte": "#1A1A1A",
+      "valeur": 1
+    },
+    {
+      "cle": "semer",
+      "nom": "À semer",
+      "couleur": "terre",
+      "hex": "#A9743A",
+      "texte": "#1A1A1A",
+      "valeur": 0
+    }
+  ],
+  "dimensions": [
+    {
+      "cle": "vise",
+      "nom": "Ce qu'on vise ensemble",
+      "affirmations": [
+        1,
+        2
+      ],
+      "phrases": {
+        "enracine": "Vous partagez un cap clair, et chacun sait vers quoi il avance. C'est précieux.",
+        "croissance": "Le cap est là. Chacun ne le dit pas encore tout à fait de la même façon, et c'est souvent comme ça que ça commence.",
+        "germe": "Un cap commun se dessine. Il reste encore un peu flou au quotidien, ce qui peut rendre certains choix plus lourds.",
+        "semer": "Chacun avance surtout avec l'objectif de son métier. Le cap commun reste à dire ensemble, et c'est une belle chose à construire."
+      }
+    },
+    {
+      "cle": "sait",
+      "nom": "Ce qu'on sait les uns des autres",
+      "affirmations": [
+        3,
+        4
+      ],
+      "phrases": {
+        "enracine": "Vous connaissez bien le travail des autres, et eux le vôtre. Ça rend le quotidien plus fluide.",
+        "croissance": "Vous connaissez une bonne partie du travail des autres. Certaines contraintes restent encore dans l'ombre.",
+        "germe": "Vous connaissez surtout les métiers les plus proches du vôtre. Le reste est parfois difficile à voir d'où vous êtes.",
+        "semer": "Le travail de chacun reste encore peu connu des autres, dans un sens comme dans l'autre. Ce n'est pas un manque d'envie, souvent un manque d'occasions."
+      }
+    },
+    {
+      "cle": "place",
+      "nom": "La place de chacun",
+      "affirmations": [
+        5,
+        6
+      ],
+      "phrases": {
+        "enracine": "Chacun se sent reconnu et trouve sa place pour s'exprimer. C'est une vraie force.",
+        "croissance": "La reconnaissance et la parole circulent bien, même si ce n'est pas encore pareil pour tout le monde.",
+        "germe": "La reconnaissance et la parole existent, mais certains métiers se sentent sans doute moins vus que d'autres.",
+        "semer": "Certaines voix et certains métiers sont encore peu entendus. Ce que vous en percevez compte."
+      }
+    },
+    {
+      "cle": "info",
+      "nom": "Comment l'info circule",
+      "affirmations": [
+        7,
+        8
+      ],
+      "phrases": {
+        "enracine": "L'info arrive au bon moment, et vous pouvez vous appuyer dessus. Un vrai confort au quotidien.",
+        "croissance": "L'info circule, avec parfois un temps de retard ou un besoin de vérifier. Rien d'anormal, et de la marge pour que ce soit plus fluide.",
+        "germe": "L'info arrive assez souvent tard ou incomplète. Ça peut être usant, et vous n'êtes sans doute pas la seule personne à le ressentir.",
+        "semer": "L'info arrive souvent tard ou incomplète, ce qui demande des allers et retours. C'est fatigant, et on comprend que ça pèse."
+      }
+    },
+    {
+      "cle": "accroche",
+      "nom": "Quand ça accroche",
+      "affirmations": [
+        9
+      ],
+      "phrases": {
+        "enracine": "Quand quelque chose coince, vous cherchez une solution ensemble. C'est un beau signe de confiance.",
+        "croissance": "Les solutions se cherchent souvent ensemble, pas encore à chaque fois. Le réflexe est en train de s'installer.",
+        "germe": "Il arrive que vous cherchiez une solution ensemble, sans que ce soit encore un réflexe. Les moments de tension peuvent alors peser un peu plus.",
+        "semer": "Quand quelque chose coince, chacun le règle plutôt de son côté. C'est souvent une façon de se protéger, et c'est humain."
+      }
+    },
+    {
+      "cle": "manager",
+      "nom": "Le soutien du manager",
+      "affirmations": [
+        10
+      ],
+      "phrases": {
+        "enracine": "Votre manager vous aide vraiment à travailler avec les autres. C'est un appui qui compte.",
+        "croissance": "Votre manager vous soutient. Il y a encore de la place pour qu'il fasse davantage le lien entre les métiers.",
+        "germe": "Le soutien de votre manager est là par moments. Vous aimeriez sans doute le sentir plus présent.",
+        "semer": "Pour travailler avec les autres, le soutien de votre manager se fait peu sentir aujourd'hui. Ce que vous ressentez est légitime, et ça peut évoluer."
+      }
+    },
+    {
+      "cle": "confiance",
+      "nom": "La confiance et le soutien",
+      "affirmations": [
+        11,
+        12,
+        13
+      ],
+      "phrases": {
+        "enracine": "Vous pouvez dire ce que vous pensez, parler franchement et compter sur les autres. C'est une chance.",
+        "croissance": "La confiance et l'entraide sont là, même si tout ne se dit pas encore facilement.",
+        "germe": "La confiance existe avec certains. Demander de l'aide ou dire son désaccord dépend encore des personnes.",
+        "semer": "Dire ce que vous pensez ou demander de l'aide ne va pas encore de soi. Le reconnaître demande déjà du courage."
+      }
+    },
+    {
+      "cle": "sens",
+      "nom": "Le sens du travail",
+      "affirmations": [
+        14,
+        15
+      ],
+      "phrases": {
+        "enracine": "Vous voyez le sens de votre travail, et les chiffres restent au service de ce que vous faites ensemble.",
+        "croissance": "Le sens du travail est là, même si les chiffres prennent parfois beaucoup de place.",
+        "germe": "Le sens du travail se voit par moments. Les chiffres occupent souvent le devant, et ça peut essouffler.",
+        "semer": "Au quotidien, les chiffres prennent le pas sur le sens du travail. Retrouver pourquoi on fait les choses compte, et vous le sentez."
+      }
+    }
+  ],
+  "affirmation_resultats": 16,
+  "affirmations": [
+    {
+      "n": 1,
+      "groupe": "Ce qu'on vise ensemble",
+      "membre": "Dans mon équipe, nous visons tous le même résultat.",
+      "manager": "Dans mon équipe, nous visons tous le même résultat.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Qu'on se donne un cap commun",
+            "Mieux comprendre ce que vise l'entreprise",
+            "Qu'on parle plus souvent de nos priorités",
+            "Voir comment chaque métier y contribue",
+            "Qu'on célèbre davantage nos réussites"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Qu'on se donne un cap commun",
+            "Mieux comprendre ce que vise l'entreprise",
+            "Qu'on parle plus souvent de nos priorités",
+            "Voir comment chaque métier y contribue",
+            "Qu'on célèbre davantage nos réussites"
+          ]
+        }
+      }
+    },
+    {
+      "n": 2,
+      "groupe": "Ce qu'on vise ensemble",
+      "membre": "Quand un résultat est bon, c'est la réussite de toute l'équipe.",
+      "manager": "Quand un résultat est bon, mon équipe le vit comme une réussite commune.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Qu'on parle plus souvent de nos réussites communes",
+            "Que la contribution de chacun soit plus souvent nommée",
+            "Qu'on dise plus souvent « nous »",
+            "Qu'on prenne le temps de fêter nos résultats"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Qu'on parle plus souvent de nos réussites communes",
+            "Que la contribution de chacun soit plus souvent nommée",
+            "Qu'on dise plus souvent « nous »",
+            "Qu'on prenne le temps de fêter nos résultats"
+          ]
+        }
+      }
+    },
+    {
+      "n": 3,
+      "groupe": "Ce qu'on sait les uns des autres",
+      "membre": "Je connais les contraintes quotidiennes des autres métiers de mon équipe.",
+      "manager": "Les membres de mon équipe connaissent les contraintes quotidiennes des autres métiers.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Découvrir le poste d'un collègue, le temps d'une journée",
+            "Que chaque métier présente son quotidien",
+            "Qu'on se retrouve plus souvent entre métiers",
+            "Qu'on partage davantage nos outils",
+            "Partager plus de moments informels"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Découvrir le poste d'un collègue, le temps d'une journée",
+            "Que chaque métier présente son quotidien",
+            "Qu'on se retrouve plus souvent entre métiers",
+            "Qu'on partage davantage nos outils",
+            "Partager plus de moments informels"
+          ]
+        }
+      }
+    },
+    {
+      "n": 4,
+      "groupe": "Ce qu'on sait les uns des autres",
+      "membre": "Mes collègues des autres métiers savent ce que je fais et ce que ça implique pour eux.",
+      "manager": "Les membres de mon équipe savent ce que j'attends d'eux, et pourquoi.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais que mes collègues…",
+          "choix": [
+            "Découvrent mes contraintes de temps",
+            "Connaissent mieux mes outils",
+            "Comprennent mieux ma charge de travail",
+            "Sachent mieux ce dont j'ai besoin d'eux",
+            "Voient l'effet de leur travail sur le mien"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais que mon équipe…",
+          "choix": [
+            "Voie plus clairement nos priorités",
+            "Sache mieux ce que j'attends de chacun",
+            "Comprenne le sens de certaines décisions",
+            "Connaisse mieux ses marges de manœuvre",
+            "Découvre la façon dont je regarde le travail"
+          ]
+        }
+      }
+    },
+    {
+      "n": 5,
+      "groupe": "La place de chacun",
+      "membre": "Le travail de chaque métier est reconnu dans l'équipe.",
+      "manager": "Le travail de chaque métier est reconnu dans l'équipe.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Qu'on se dise merci plus souvent, et plus précisément",
+            "Qu'on demande davantage l'avis de chacun",
+            "Que chaque métier soit davantage associé aux décisions",
+            "Que le travail de chacun soit plus mis en avant"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Qu'on se dise merci plus souvent, et plus précisément",
+            "Qu'on demande davantage l'avis de chacun",
+            "Que chaque métier soit davantage associé aux décisions",
+            "Que le travail de chacun soit plus mis en avant"
+          ]
+        }
+      }
+    },
+    {
+      "n": 6,
+      "groupe": "La place de chacun",
+      "membre": "En réunion, chacun peut prendre la parole et être écouté.",
+      "manager": "En réunion, chacun prend la parole, pas seulement moi.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Qu'on prenne l'habitude d'un tour de parole",
+            "Qu'on partage l'ordre du jour à l'avance",
+            "Que le manager laisse parler l'équipe d'abord",
+            "Des réunions plus courtes, où chacun s'exprime",
+            "Qu'on aborde des sujets plus concrets"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Qu'on prenne l'habitude d'un tour de parole",
+            "Qu'on partage l'ordre du jour à l'avance",
+            "Laisser parler l'équipe d'abord",
+            "Des réunions plus courtes, où chacun s'exprime",
+            "Qu'on aborde des sujets plus concrets"
+          ]
+        }
+      }
+    },
+    {
+      "n": 7,
+      "groupe": "Comment l'info circule",
+      "membre": "L'info des autres métiers m'arrive au bon moment.",
+      "manager": "Entre les métiers de mon équipe, l'info circule au bon moment.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Qu'on échange plus souvent en direct",
+            "Qu'on se retrouve pour un point d'équipe régulier",
+            "Que notre messagerie soit mieux organisée",
+            "Qu'on se parle plus, et qu'on s'écrive moins",
+            "Qu'on partage un outil ou un planning commun"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Qu'on échange plus souvent en direct",
+            "Qu'on se retrouve pour un point d'équipe régulier",
+            "Que notre messagerie soit mieux organisée",
+            "Qu'on se parle plus, et qu'on s'écrive moins",
+            "Qu'on partage un outil ou un planning commun"
+          ]
+        }
+      }
+    },
+    {
+      "n": 8,
+      "groupe": "Comment l'info circule",
+      "membre": "Quand je reçois une info d'un collègue, je peux agir dessus directement.",
+      "manager": "Les infos que les membres de mon équipe se transmettent sont utilisables telles quelles.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais recevoir des infos…",
+          "choix": [
+            "Plus complètes",
+            "Plus tôt",
+            "Dans un format partagé par tous",
+            "Plus cohérentes entre elles",
+            "Plus fiables, sans avoir à vérifier"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais recevoir des infos…",
+          "choix": [
+            "Plus complètes",
+            "Plus tôt",
+            "Dans un format partagé par tous",
+            "Plus cohérentes entre elles",
+            "Plus fiables, sans avoir à vérifier"
+          ]
+        }
+      }
+    },
+    {
+      "n": 9,
+      "groupe": "Quand ça accroche",
+      "membre": "Quand quelque chose ne marche pas, nous cherchons une solution ensemble.",
+      "manager": "Quand quelque chose ne marche pas, mon équipe cherche une solution ensemble, sans attendre que je tranche.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Qu'on en parle plus vite entre personnes concernées",
+            "Qu'on prenne un moment pour faire le point après coup",
+            "Qu'on cherche d'abord la solution, plutôt qu'un responsable",
+            "Qu'on règle davantage les choses ensemble",
+            "Qu'on en tire des leçons ensemble"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Qu'on en parle plus vite entre personnes concernées",
+            "Qu'on prenne un moment pour faire le point après coup",
+            "Qu'on cherche d'abord la solution, plutôt qu'un responsable",
+            "Qu'on règle davantage les choses ensemble",
+            "Qu'on en tire des leçons ensemble"
+          ]
+        }
+      }
+    },
+    {
+      "n": 10,
+      "groupe": "Le soutien du manager",
+      "membre": "Mon manager m'aide à travailler avec les autres.",
+      "manager": "J'aide mon équipe à travailler ensemble.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais que mon manager…",
+          "choix": [
+            "Soit plus disponible",
+            "Me fasse plus de retours",
+            "Fasse davantage le lien avec les autres métiers",
+            "M'aide davantage à dépasser les désaccords",
+            "Me laisse plus d'autonomie"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Passer plus de temps avec l'équipe",
+            "Découvrir d'autres façons d'animer les réunions",
+            "Bénéficier d'un regard extérieur",
+            "Mieux connaître chaque métier",
+            "Avoir des repères pour dépasser les désaccords"
+          ]
+        }
+      }
+    },
+    {
+      "n": 11,
+      "groupe": "La confiance et le soutien",
+      "membre": "Dans mon équipe, je peux dire ce que je pense, même quand je ne suis pas d'accord.",
+      "manager": "Dans mon équipe, chacun peut dire ce qu'il pense, même quand il n'est pas d'accord avec moi.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Pouvoir tout dire sans crainte",
+            "Qu'on prenne plus de temps pour en parler",
+            "Sentir que ma parole compte davantage",
+            "Me sentir plus proche de la hiérarchie",
+            "Que nos relations soient plus apaisées"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Pouvoir tout dire sans crainte",
+            "Qu'on prenne plus de temps pour en parler",
+            "Sentir que ma parole compte davantage",
+            "Me sentir plus proche de la hiérarchie",
+            "Que nos relations soient plus apaisées"
+          ]
+        }
+      }
+    },
+    {
+      "n": 12,
+      "groupe": "La confiance et le soutien",
+      "membre": "Je peux parler franchement à mon manager, y compris d'une erreur.",
+      "manager": "Les membres de mon équipe peuvent me parler franchement, y compris d'une erreur.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Passer plus de temps en tête à tête",
+            "Que mon manager partage aussi ses doutes et ses erreurs",
+            "Mieux savoir ce qu'il fait de ce qu'on lui dit",
+            "Qu'on pose un cadre clair sur ce qui reste entre nous",
+            "Qu'il soit plus disponible"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Passer plus de temps en tête à tête",
+            "Oser partager mes doutes et mes erreurs",
+            "Mieux montrer ce que je fais de leurs retours",
+            "Qu'on pose un cadre clair sur ce qui reste entre nous",
+            "Être plus disponible"
+          ]
+        }
+      }
+    },
+    {
+      "n": 13,
+      "groupe": "La confiance et le soutien",
+      "membre": "Quand j'ai besoin d'aide, je peux compter sur mes collègues.",
+      "manager": "Dans mon équipe, chacun peut compter sur les autres quand il a besoin d'aide.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Avoir un peu plus de temps",
+            "Savoir plus facilement à qui demander",
+            "Me sentir plus libre de demander",
+            "Que la charge soit mieux répartie",
+            "Qu'on prenne des moments pour s'entraider"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Avoir un peu plus de temps",
+            "Savoir plus facilement à qui demander",
+            "Me sentir plus libre de demander",
+            "Que la charge soit mieux répartie",
+            "Qu'on prenne des moments pour s'entraider"
+          ]
+        }
+      }
+    },
+    {
+      "n": 14,
+      "groupe": "Le sens et les résultats",
+      "membre": "Je vois le sens et l'utilité de ce que fait mon équipe.",
+      "manager": "Les membres de mon équipe voient le sens et l'utilité de leur travail.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Mieux voir à quoi sert notre travail",
+            "Avoir plus de retours de nos clients",
+            "Voir davantage les fruits de nos efforts",
+            "Mieux comprendre les décisions",
+            "Qu'on parle plus souvent de ce qui compte vraiment"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Mieux voir à quoi sert notre travail",
+            "Avoir plus de retours de nos clients",
+            "Voir davantage les fruits de nos efforts",
+            "Mieux comprendre les décisions",
+            "Qu'on parle plus souvent de ce qui compte vraiment"
+          ]
+        }
+      }
+    },
+    {
+      "n": 15,
+      "groupe": "Le sens et les résultats",
+      "membre": "Dans mon équipe, on parle autant de la façon de travailler ensemble que des chiffres à atteindre.",
+      "manager": "Avec mon équipe, je parle autant de la façon de travailler ensemble que des chiffres à atteindre.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais qu'on prenne aussi le temps de parler de…",
+          "choix": [
+            "Notre façon de travailler ensemble",
+            "Ce qui nous aide au quotidien",
+            "Ce qui pourrait nous faciliter la vie",
+            "Nos réussites collectives",
+            "Ce qu'on apprend ensemble"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais qu'on prenne aussi le temps de parler de…",
+          "choix": [
+            "Notre façon de travailler ensemble",
+            "Ce qui nous aide au quotidien",
+            "Ce qui pourrait nous faciliter la vie",
+            "Nos réussites collectives",
+            "Ce qu'on apprend ensemble"
+          ]
+        }
+      }
+    },
+    {
+      "n": 16,
+      "groupe": "Le sens et les résultats",
+      "membre": "Mon équipe obtient les résultats qu'elle vise.",
+      "manager": "Mon équipe obtient les résultats qu'elle vise.",
+      "relance": {
+        "membre": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Que la charge soit plus soutenable",
+            "Avoir plus d'infos pour avancer",
+            "Que les priorités soient plus stables",
+            "Avoir plus de moyens",
+            "Que les métiers se coordonnent mieux"
+          ]
+        },
+        "manager": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Que la charge soit plus soutenable",
+            "Avoir plus d'infos pour avancer",
+            "Que les priorités soient plus stables",
+            "Avoir plus de moyens",
+            "Que les métiers se coordonnent mieux"
+          ]
+        }
+      }
+    }
+  ],
+  "relance": {
+    "sous_titre": "Deux réponses au plus",
+    "autre": "Autre",
+    "max_choix": 2,
+    "max_affirmations": 2,
+    "seuil_valeur_max": 1
+  },
+  "cartes_ensemble": [
+    {
+      "niveau": "enracine",
+      "seuil_min": 2.5,
+      "etiquette": "Votre équipe, dans votre regard : Bien enraciné",
+      "titre": "Une équipe bien enracinée",
+      "texte": "Ce que vous décrivez ressemble à une équipe où l'on se sent bien pour travailler. Un cap partagé, des collègues qui se connaissent, une info qui circule. Ce n'est pas un hasard : c'est le fruit de ce que chacun y met, vous compris."
+    },
+    {
+      "niveau": "croissance",
+      "seuil_min": 1.75,
+      "etiquette": "Votre équipe, dans votre regard : En croissance",
+      "titre": "Une équipe en croissance",
+      "texte": "Dans votre regard, beaucoup de choses fonctionnent déjà entre vous. D'autres se cherchent encore, et c'est normal : une équipe se construit dans le temps. Ce qui est déjà là est une base solide pour avancer, à votre rythme."
+    },
+    {
+      "niveau": "germe",
+      "seuil_min": 1.0,
+      "etiquette": "Votre équipe, dans votre regard : En germe",
+      "titre": "Une équipe en germe",
+      "texte": "Travailler ensemble demande sans doute parfois plus d'efforts qu'il ne faudrait. Votre regard le dit avec justesse. Il montre aussi ce qui est déjà là, et qui peut servir d'appui. Rien n'est figé : chaque dimension peut grandir."
+    },
+    {
+      "niveau": "semer",
+      "seuil_min": 0,
+      "etiquette": "Votre équipe, dans votre regard : À semer",
+      "titre": "Un terrain prêt à semer",
+      "texte": "Travailler ensemble n'a peut-être pas été simple ces derniers temps. Merci d'avoir pris ce moment pour le regarder : c'est souvent le premier pas. Ce que vous vivez aujourd'hui n'est pas une fin, c'est un point de départ."
+    }
+  ],
+  "phrases_forme": {
+    "contraste": "Votre regard est contrasté : certaines dimensions sont déjà solides, d'autres encore peu installées.",
+    "homogene": "Votre regard est homogène : toutes les dimensions sont au même niveau.",
+    "appui": "Ce qui vous porte le plus : {dimensions}."
+  },
+  "profil": {
+    "titre": "Quelques mots sur votre équipe",
+    "texte": "Pour comparer votre résultat à des équipes qui vous ressemblent. Rien ne permet de vous identifier.",
+    "role": {
+      "question": "Dans votre équipe, vous êtes",
+      "choix": [
+        "Le manager",
+        "Un membre de l'équipe"
+      ]
+    },
+    "genre": {
+      "question": "Vous êtes",
+      "facultatif": true,
+      "choix": [
+        "Une femme",
+        "Un homme",
+        "Non binaire",
+        "Je préfère ne pas répondre"
+      ]
+    },
+    "taille_entreprise": {
+      "question": "Taille de votre entreprise",
+      "choix": [
+        "1 à 9 salariés",
+        "10 à 49 salariés",
+        "50 à 299 salariés",
+        "300 à 999 salariés",
+        "1 000 à 4 999 salariés",
+        "5 000 salariés et plus"
+      ]
+    },
+    "secteur": {
+      "question": "Secteur d'activité",
+      "placeholder": "Tapez pour rechercher, par exemple « santé »",
+      "choix": [
+        "Agriculture et agroalimentaire",
+        "Industrie et production",
+        "Énergie, eau et environnement",
+        "BTP et construction",
+        "Commerce de gros",
+        "Commerce de détail et distribution",
+        "Transport et logistique",
+        "Hôtellerie, restauration et tourisme",
+        "Numérique, télécoms et médias",
+        "Banque, finance et assurance",
+        "Immobilier",
+        "Professions juridiques et du chiffre",
+        "Conseil et services aux entreprises",
+        "Santé",
+        "Médico-social et action sociale",
+        "Éducation et formation",
+        "Culture, sport et loisirs",
+        "Administration publique",
+        "Associations et économie sociale et solidaire",
+        "Autre"
+      ]
+    },
+    "taille_equipe": {
+      "question": "Taille de votre équipe",
+      "choix": [
+        "2 à 5 personnes",
+        "6 à 12 personnes",
+        "13 personnes et plus"
+      ]
+    }
+  },
+  "fondations": {
+    "confiance": [
+      11,
+      12
+    ],
+    "soutien": [
+      10,
+      13
+    ],
+    "cohesion": [
+      1,
+      2,
+      5,
+      6
+    ],
+    "engagement": [
+      14,
+      15
+    ]
+  },
+  "compteur_papier": 255,
+  "marque": {
+    "sauge": "#6B7D5C",
+    "sauge_fonce": "#5A6B4D",
+    "sauge_clair": "#8A9B7A",
+    "creme": "#F7F4EF",
+    "encre": "#1A1A1A",
+    "taupe": "#6B6460",
+    "foret": "#2D3626",
+    "polices": [
+      "Playfair Display",
+      "DM Sans"
+    ]
+  }
+}

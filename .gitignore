@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+
+# Secrets et configuration locale du backend : jamais dans le repo
+worker/.clasp.json
+worker/.env
+*.local.js
+*.local.json
+
+# Aucune réponse ne doit jamais être commitée : les données vivent dans le Google Sheet
+export/

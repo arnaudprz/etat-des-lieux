@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Tableau de bord, état des lieux d'équipe</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Playfair+Display:ital,wght@0,400;0,500;1,400&amp;display=swap">
+<style>
+body{margin:0;font-family:'DM Sans',sans-serif;color:#1A1A1A;background:#F7F4EF}
+.serif{font-family:'Playfair Display',serif;font-weight:400}
+.card{background:#FFFFFF;border:1px solid rgba(138,155,122,.18);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.badge{display:inline-flex;align-items:center;padding:6px 14px;border-radius:999px;background:#F1E9DA;color:#5C4A2E;font-size:13px;font-weight:500}
+select.f{height:42px;border-radius:10px;border:1px solid rgba(138,155,122,.4);padding:0 12px;font-size:14px;font-family:'DM Sans',sans-serif;background:#FFFFFF;color:#1A1A1A}
+h2.t{margin:0;font-family:'Playfair Display',serif;font-weight:400;font-size:26px}
+p.s{margin:0;font-size:14px;color:#6B6460;line-height:1.5}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12px;font-weight:600;color:#6B6460;text-transform:uppercase;letter-spacing:.04em;padding:10px 12px;border-bottom:1px solid rgba(138,155,122,.3)}
+td{padding:12px;border-bottom:1px solid rgba(138,155,122,.15)}
+</style>
+</helmet>
+<div style="width: 1280px; height: 8640px; box-sizing: border-box; background: #F7F4EF; padding: 40px 56px; display: flex; flex-direction: column; gap: 28px">
+
+<header style="display: flex; justify-content: space-between; align-items: flex-end">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">Greatly · Tableau de bord</span>
+<h1 class="serif" style="margin: 0; font-size: 42px">État des lieux d'équipe</h1>
+</div>
+<span class="badge">Données fictives, pour la maquette</span>
+</header>
+
+<div class="card" style="padding: 18px 20px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px"><label style="font-size: 12px; font-weight: 600; color: #6B6460; text-transform: uppercase; letter-spacing: .04em">Source</label><select class="f"><option>Toutes</option><option>En ligne</option><option>Papier</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label style="font-size: 12px; font-weight: 600; color: #6B6460; text-transform: uppercase; letter-spacing: .04em">Période</label><select class="f"><option>30 derniers jours</option><option>7 derniers jours</option><option>Depuis le lancement</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label style="font-size: 12px; font-weight: 600; color: #6B6460; text-transform: uppercase; letter-spacing: .04em">Rôle</label><select class="f"><option>Tous</option><option>Managers</option><option>Membres</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label style="font-size: 12px; font-weight: 600; color: #6B6460; text-transform: uppercase; letter-spacing: .04em">Taille d'entreprise</label><select class="f"><option>Toutes</option><option>1 à 9</option><option>10 à 49</option><option>50 à 299</option><option>300 à 999</option><option>1 000 à 4 999</option><option>5 000 et plus</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label style="font-size: 12px; font-weight: 600; color: #6B6460; text-transform: uppercase; letter-spacing: .04em">Secteur</label><select class="f"><option>Tous les secteurs</option><option>Commerce de détail et distribution</option><option>Industrie et production</option><option>Santé</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label style="font-size: 12px; font-weight: 600; color: #6B6460; text-transform: uppercase; letter-spacing: .04em">Genre</label><select class="f"><option>Tous</option><option>Femmes</option><option>Hommes</option><option>Non binaire</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label style="font-size: 12px; font-weight: 600; color: #6B6460; text-transform: uppercase; letter-spacing: .04em">Taille d'équipe</label><select class="f"><option>Toutes</option><option>2 à 5</option><option>6 à 12</option><option>13 et plus</option></select></div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+<div class="card" style="padding: 22px 24px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #6B6460">Répondants</span><span class="serif" style="font-size: 40px; line-height: 1.1">412</span><span style="font-size: 13px; color: #6B6460">dont 96 managers et 316 membres</span></div>
+<div class="card" style="padding: 22px 24px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #6B6460">Taux de complétion</span><span class="serif" style="font-size: 40px; line-height: 1.1">71 %</span><span style="font-size: 13px; color: #6B6460">412 terminés sur 580 commencés</span></div>
+<div class="card" style="padding: 22px 24px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #6B6460">Secteurs représentés</span><span class="serif" style="font-size: 40px; line-height: 1.1">14</span><span style="font-size: 13px; color: #6B6460">sur 20 dans la liste</span></div>
+<div class="card" style="padding: 22px 24px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #6B6460">Liens personnels copiés</span><span class="serif" style="font-size: 40px; line-height: 1.1">231</span><span style="font-size: 13px; color: #6B6460">56 % des répondants</span></div>
+</div>
+
+<section class="card" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 18px; background: #EEF1EA; border-color: rgba(107,125,92,.25)">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">L'essentiel</span>
+<h2 class="t">Ce que disent les réponses</h2>
+<p class="s">Une lecture qui se met à jour avec les filtres. Elle décrit des perceptions, pas des causes.</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<div style="border-radius: 14px; overflow: hidden; background: #F7F4EF; display: flex; flex-direction: column">
+<div style="background: #3F4F35; color: #FFFFFF; padding: 12px 18px; font-size: 14px; font-weight: 600">Ce qui porte les équipes</div>
+<p style="margin: 0; padding: 16px 18px 18px; font-size: 15px; line-height: 1.6; color: #3F3B38">Le sens du travail et le cap commun sont les plus installés : 67 % des répondants y répondent Plutôt ou Tout à fait. C'est la base sur laquelle les équipes peuvent s'appuyer.</p>
+</div>
+<div style="border-radius: 14px; overflow: hidden; background: #F7F4EF; display: flex; flex-direction: column">
+<div style="background: #A9743A; color: #1A1A1A; padding: 12px 18px; font-size: 14px; font-weight: 600">Ce qui peut grandir</div>
+<p style="margin: 0; padding: 16px 18px 18px; font-size: 15px; line-height: 1.6; color: #3F3B38">La circulation de l'info (35 %) et la connaissance du travail des autres (38 %) sont les moins installées. Quand l'info coince, le souhait le plus exprimé est de la recevoir plus tôt (46 %).</p>
+</div>
+<div style="border-radius: 14px; overflow: hidden; background: #F7F4EF; display: flex; flex-direction: column">
+<div style="background: #8FA878; color: #1A1A1A; padding: 12px 18px; font-size: 14px; font-weight: 600">Deux regards différents</div>
+<p style="margin: 0; padding: 16px 18px 18px; font-size: 15px; line-height: 1.6; color: #3F3B38">Les managers voient leur équipe plus installée que les membres sur toutes les dimensions. L'écart le plus fort porte sur le soutien du manager (27 points), puis sur la confiance (22 points).</p>
+</div>
+<div style="border-radius: 14px; overflow: hidden; background: #F7F4EF; display: flex; flex-direction: column">
+<div style="background: #E3CF9E; color: #1A1A1A; padding: 12px 18px; font-size: 14px; font-weight: 600">Le lien avec les résultats</div>
+<p style="margin: 0; padding: 16px 18px 18px; font-size: 15px; line-height: 1.6; color: #3F3B38">Là où le sens du travail est installé, 77 % disent que leur équipe atteint ses résultats, contre 39 % ailleurs. C'est l'écart le plus marqué des 8 dimensions.</p>
+</div>
+</div>
+<div style="background: #FFFFFF; border-radius: 14px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 14px; font-weight: 600">À creuser</span>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.55; color: #3F3B38">
+<li>L'écart entre managers et membres est-il le même dans toutes les tailles d'entreprise ?</li>
+<li>Les secteurs où l'info circule le moins sont-ils aussi ceux où les résultats perçus sont les plus bas ?</li>
+<li>Les réponses papier racontent-elles la même chose que les réponses en ligne ?</li>
+</ul>
+</div>
+</section>
+
+<section class="card" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 16px">
+<h2 class="t">Les 4 conditions des Fondations</h2>
+<p class="s">Part des réponses « Plutôt » ou « Tout à fait » sur les affirmations qui correspondent à chaque condition.</p>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px">
+<div style="background: #F7F4EF; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 15px; font-weight: 600">La confiance</span><span class="serif" style="font-size: 34px; line-height: 1.1">56 %</span><span style="font-size: 13px; color: #6B6460">Affirmations 11 et 12</span></div>
+<div style="background: #F7F4EF; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 15px; font-weight: 600">Le soutien</span><span class="serif" style="font-size: 34px; line-height: 1.1">58 %</span><span style="font-size: 13px; color: #6B6460">Affirmations 10 et 13</span></div>
+<div style="background: #F7F4EF; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 15px; font-weight: 600">La cohésion</span><span class="serif" style="font-size: 34px; line-height: 1.1">60 %</span><span style="font-size: 13px; color: #6B6460">Affirmations 1, 2, 5 et 6</span></div>
+<div style="background: #F7F4EF; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 15px; font-weight: 600">L'engagement</span><span class="serif" style="font-size: 34px; line-height: 1.1">64 %</span><span style="font-size: 13px; color: #6B6460">Affirmations 14 et 15</span></div>
+</div>
+</section>
+
+<section class="card" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 14px">
+<h2 class="t">Qui a répondu</h2>
+<div style="display: flex; gap: 14px; flex-wrap: wrap">
+<div style="background: #F7F4EF; border-radius: 12px; padding: 14px 18px"><span class="serif" style="font-size: 30px">412</span><span style="font-size: 14px; color: #6B6460; margin-left: 8px">réponses en ligne</span></div>
+<div style="background: #F7F4EF; border-radius: 12px; padding: 14px 18px"><span class="serif" style="font-size: 30px">255</span><span style="font-size: 14px; color: #6B6460; margin-left: 8px">réponses papier, à importer</span></div>
+</div>
+<p class="s">Profil des 412 répondants en ligne. Pour chaque critère : le nombre de personnes, puis leur part. Un groupe de moins de 3 personnes n'est jamais affiché seul.</p>
+<div style="display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 20px; align-items: start; padding: 16px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<span style="font-size: 15px; font-weight: 600; padding-top: 6px">Rôle</span>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; gap: 2px; height: 30px; border-radius: 6px; overflow: hidden"><div title="Membres : 316 (77 %)" style="width: 76.7%; background: #3F4F35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">77 %</div><div title="Managers : 96 (23 %)" style="width: 23.3%; background: #6B7D5C; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">23 %</div></div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px 22px"><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #3F4F35; border: 1px solid rgba(0,0,0,.08)"></span>Membres <span style="color: #6B6460">316 · 77 %</span></span><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #6B7D5C; border: 1px solid rgba(0,0,0,.08)"></span>Managers <span style="color: #6B6460">96 · 23 %</span></span></div>
+</div>
+</div><div style="display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 20px; align-items: start; padding: 16px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<span style="font-size: 15px; font-weight: 600; padding-top: 6px">Genre</span>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; gap: 2px; height: 30px; border-radius: 6px; overflow: hidden"><div title="Femmes : 198 (48 %)" style="width: 48.1%; background: #3F4F35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">48 %</div><div title="Hommes : 176 (43 %)" style="width: 42.7%; background: #6B7D5C; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">43 %</div><div title="Non binaire : 4 (1 %)" style="width: 1.0%; background: #8FA878; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600"></div><div title="Sans réponse : 34 (8 %)" style="width: 8.3%; background: #B5C4A6; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">8 %</div></div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px 22px"><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #3F4F35; border: 1px solid rgba(0,0,0,.08)"></span>Femmes <span style="color: #6B6460">198 · 48 %</span></span><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #6B7D5C; border: 1px solid rgba(0,0,0,.08)"></span>Hommes <span style="color: #6B6460">176 · 43 %</span></span><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #8FA878; border: 1px solid rgba(0,0,0,.08)"></span>Non binaire <span style="color: #6B6460">4 · 1 %</span></span><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #B5C4A6; border: 1px solid rgba(0,0,0,.08)"></span>Sans réponse <span style="color: #6B6460">34 · 8 %</span></span></div>
+</div>
+</div><div style="display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 20px; align-items: start; padding: 16px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<span style="font-size: 15px; font-weight: 600; padding-top: 6px">Taille d'entreprise</span>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; gap: 2px; height: 30px; border-radius: 6px; overflow: hidden"><div title="1 à 9 : 22 (5 %)" style="width: 5.3%; background: #3F4F35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600"></div><div title="10 à 49 : 71 (17 %)" style="width: 17.2%; background: #6B7D5C; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">17 %</div><div title="50 à 299 : 138 (33 %)" style="width: 33.5%; background: #8FA878; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">33 %</div><div title="300 à 999 : 84 (20 %)" style="width: 20.4%; background: #B5C4A6; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">20 %</div><div title="1 000 à 4 999 : 58 (14 %)" style="width: 14.1%; background: #D5DECB; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">14 %</div><div title="5 000 et plus : 39 (9 %)" style="width: 9.5%; background: #EEF1EA; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">9 %</div></div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px 22px"><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #3F4F35; border: 1px solid rgba(0,0,0,.08)"></span>1 à 9 <span style="color: #6B6460">22 · 5 %</span></span><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #6B7D5C; border: 1px solid rgba(0,0,0,.08)"></span>10 à 49 <span style="color: #6B6460">71 · 17 %</span></span><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #8FA878; border: 1px solid rgba(0,0,0,.08)"></span>50 à 299 <span style="color: #6B6460">138 · 33 %</span></span><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #B5C4A6; border: 1px solid rgba(0,0,0,.08)"></span>300 à 999 <span style="color: #6B6460">84 · 20 %</span></span><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #D5DECB; border: 1px solid rgba(0,0,0,.08)"></span>1 000 à 4 999 <span style="color: #6B6460">58 · 14 %</span></span><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #EEF1EA; border: 1px solid rgba(0,0,0,.08)"></span>5 000 et plus <span style="color: #6B6460">39 · 9 %</span></span></div>
+</div>
+</div><div style="display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 20px; align-items: start; padding: 16px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<span style="font-size: 15px; font-weight: 600; padding-top: 6px">Taille d'équipe</span>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; gap: 2px; height: 30px; border-radius: 6px; overflow: hidden"><div title="2 à 5 : 98 (24 %)" style="width: 23.8%; background: #3F4F35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">24 %</div><div title="6 à 12 : 221 (54 %)" style="width: 53.6%; background: #6B7D5C; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">54 %</div><div title="13 et plus : 93 (23 %)" style="width: 22.6%; background: #8FA878; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">23 %</div></div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px 22px"><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #3F4F35; border: 1px solid rgba(0,0,0,.08)"></span>2 à 5 <span style="color: #6B6460">98 · 24 %</span></span><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #6B7D5C; border: 1px solid rgba(0,0,0,.08)"></span>6 à 12 <span style="color: #6B6460">221 · 54 %</span></span><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #8FA878; border: 1px solid rgba(0,0,0,.08)"></span>13 et plus <span style="color: #6B6460">93 · 23 %</span></span></div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 20px; align-items: start; padding: 16px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<span style="font-size: 15px; font-weight: 600">Secteur</span>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: grid; grid-template-columns: 300px minmax(0, 1fr) 90px; gap: 14px; align-items: center"><span style="font-size: 14px">Commerce de détail et distribution</span><div style="height: 14px; border-radius: 0 4px 4px 0; width: 61%; background: #8FA878"></div><span style="font-size: 14px; font-weight: 600; text-align: right">74 · 18 %</span></div>
+<div style="display: grid; grid-template-columns: 300px minmax(0, 1fr) 90px; gap: 14px; align-items: center"><span style="font-size: 14px">Industrie et production</span><div style="height: 14px; border-radius: 0 4px 4px 0; width: 50%; background: #8FA878"></div><span style="font-size: 14px; font-weight: 600; text-align: right">61 · 15 %</span></div>
+<div style="display: grid; grid-template-columns: 300px minmax(0, 1fr) 90px; gap: 14px; align-items: center"><span style="font-size: 14px">Santé et médico-social</span><div style="height: 14px; border-radius: 0 4px 4px 0; width: 39%; background: #8FA878"></div><span style="font-size: 14px; font-weight: 600; text-align: right">48 · 12 %</span></div>
+<div style="display: grid; grid-template-columns: 300px minmax(0, 1fr) 90px; gap: 14px; align-items: center"><span style="font-size: 14px">Conseil et services aux entreprises</span><div style="height: 14px; border-radius: 0 4px 4px 0; width: 37%; background: #8FA878"></div><span style="font-size: 14px; font-weight: 600; text-align: right">45 · 11 %</span></div>
+<div style="display: grid; grid-template-columns: 300px minmax(0, 1fr) 90px; gap: 14px; align-items: center"><span style="font-size: 14px">Professions juridiques et du chiffre</span><div style="height: 14px; border-radius: 0 4px 4px 0; width: 27%; background: #8FA878"></div><span style="font-size: 14px; font-weight: 600; text-align: right">33 · 8 %</span></div>
+<div style="display: grid; grid-template-columns: 300px minmax(0, 1fr) 90px; gap: 14px; align-items: center"><span style="font-size: 14px">Transport et logistique</span><div style="height: 14px; border-radius: 0 4px 4px 0; width: 24%; background: #8FA878"></div><span style="font-size: 14px; font-weight: 600; text-align: right">29 · 7 %</span></div>
+<div style="display: grid; grid-template-columns: 300px minmax(0, 1fr) 90px; gap: 14px; align-items: center"><span style="font-size: 14px">Autres secteurs (8)</span><div style="height: 14px; border-radius: 0 4px 4px 0; width: 100%; background: #8FA878"></div><span style="font-size: 14px; font-weight: 600; text-align: right">122 · 30 %</span></div>
+</div>
+</div>
+</section>
+
+<section class="card" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 16px">
+<h2 class="t">Du premier clic à l'état des lieux</h2>
+<p class="s">Où les personnes s'arrêtent dans le parcours.</p>
+<div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 70px; gap: 16px; align-items: center">
+<span style="font-size: 14px">Visites de la page</span>
+<div title="Visites de la page : 1 240" style="height: 22px; border-radius: 0 4px 4px 0; width: 100.0%; background: #3F4F35"></div>
+<span style="font-size: 14px; font-weight: 600; text-align: right">1 240</span>
+</div>
+<div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 70px; gap: 16px; align-items: center">
+<span style="font-size: 14px">Questionnaires commencés</span>
+<div title="Questionnaires commencés : 580" style="height: 22px; border-radius: 0 4px 4px 0; width: 46.8%; background: #3F4F35"></div>
+<span style="font-size: 14px; font-weight: 600; text-align: right">580</span>
+</div>
+<div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 70px; gap: 16px; align-items: center">
+<span style="font-size: 14px">Questionnaires terminés</span>
+<div title="Questionnaires terminés : 412" style="height: 22px; border-radius: 0 4px 4px 0; width: 33.2%; background: #3F4F35"></div>
+<span style="font-size: 14px; font-weight: 600; text-align: right">412</span>
+</div>
+<div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 70px; gap: 16px; align-items: center">
+<span style="font-size: 14px">Liens personnels copiés</span>
+<div title="Liens personnels copiés : 231" style="height: 22px; border-radius: 0 4px 4px 0; width: 18.6%; background: #8FA878"></div>
+<span style="font-size: 14px; font-weight: 600; text-align: right">231</span>
+</div>
+<div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 70px; gap: 16px; align-items: center">
+<span style="font-size: 14px">Demandes de l'étude complète</span>
+<div title="Demandes de l'étude complète : 87" style="height: 22px; border-radius: 0 4px 4px 0; width: 7.0%; background: #8FA878"></div>
+<span style="font-size: 14px; font-weight: 600; text-align: right">87</span>
+</div>
+</section>
+
+<section class="card" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h2 class="t">Demandes de l'étude complète</h2>
+<p class="s">87 personnes, soit 21 % des répondants. Ces coordonnées ne sont jamais reliées aux réponses.</p>
+</div>
+<button type="button" style="height: 42px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(138,155,122,.5); background: #FFFFFF; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer">Exporter les contacts (CSV)</button>
+</div>
+<table><thead><tr><th>Nom</th><th>Entreprise</th><th>E-mail</th><th>Date</th></tr></thead><tbody>
+<tr><td>[Prénom Nom]</td><td>[Entreprise]</td><td>[e-mail]</td><td>29 sept.</td></tr>
+<tr><td>[Prénom Nom]</td><td>[Entreprise]</td><td>[e-mail]</td><td>28 sept.</td></tr>
+<tr><td>[Prénom Nom]</td><td>[Entreprise]</td><td>[e-mail]</td><td>28 sept.</td></tr>
+<tr><td>[Prénom Nom]</td><td>[Entreprise]</td><td>[e-mail]</td><td>26 sept.</td></tr>
+</tbody></table>
+</section>
+
+<section class="card" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 18px">
+<h2 class="t">Ce qu'on sait les uns des autres et la circulation de l'info sont les moins installés</h2>
+<p class="s">Part des répondants dans chaque couleur, par dimension.</p>
+<div style="display: flex; gap: 22px; font-size: 14px; color: #4F4A46"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #3F4F35"></span>Bien enraciné</span><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #8FA878"></span>En croissance</span><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #E3CF9E"></span>En germe</span><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #A9743A"></span>À semer</span></div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">Ce qu'on vise ensemble</span>
+<div style="display: flex; gap: 2px; height: 34px; border-radius: 6px; overflow: hidden"><div title="Ce qu'on vise ensemble · Bien enraciné : 18 %" style="width: 18%; background: #3F4F35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">18 %</div><div title="Ce qu'on vise ensemble · En croissance : 46 %" style="width: 46%; background: #8FA878; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">46 %</div><div title="Ce qu'on vise ensemble · En germe : 26 %" style="width: 26%; background: #E3CF9E; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">26 %</div><div title="Ce qu'on vise ensemble · À semer : 10 %" style="width: 10%; background: #A9743A; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500"></div></div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">Ce qu'on sait les uns des autres</span>
+<div style="display: flex; gap: 2px; height: 34px; border-radius: 6px; overflow: hidden"><div title="Ce qu'on sait les uns des autres · Bien enraciné : 9 %" style="width: 9%; background: #3F4F35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500"></div><div title="Ce qu'on sait les uns des autres · En croissance : 31 %" style="width: 31%; background: #8FA878; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">31 %</div><div title="Ce qu'on sait les uns des autres · En germe : 38 %" style="width: 38%; background: #E3CF9E; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">38 %</div><div title="Ce qu'on sait les uns des autres · À semer : 22 %" style="width: 22%; background: #A9743A; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">22 %</div></div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">La place de chacun</span>
+<div style="display: flex; gap: 2px; height: 34px; border-radius: 6px; overflow: hidden"><div title="La place de chacun · Bien enraciné : 14 %" style="width: 14%; background: #3F4F35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">14 %</div><div title="La place de chacun · En croissance : 40 %" style="width: 40%; background: #8FA878; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">40 %</div><div title="La place de chacun · En germe : 31 %" style="width: 31%; background: #E3CF9E; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">31 %</div><div title="La place de chacun · À semer : 15 %" style="width: 15%; background: #A9743A; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">15 %</div></div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">Comment l'info circule</span>
+<div style="display: flex; gap: 2px; height: 34px; border-radius: 6px; overflow: hidden"><div title="Comment l'info circule · Bien enraciné : 8 %" style="width: 8%; background: #3F4F35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500"></div><div title="Comment l'info circule · En croissance : 29 %" style="width: 29%; background: #8FA878; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">29 %</div><div title="Comment l'info circule · En germe : 37 %" style="width: 37%; background: #E3CF9E; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">37 %</div><div title="Comment l'info circule · À semer : 26 %" style="width: 26%; background: #A9743A; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">26 %</div></div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">Quand ça accroche</span>
+<div style="display: flex; gap: 2px; height: 34px; border-radius: 6px; overflow: hidden"><div title="Quand ça accroche · Bien enraciné : 16 %" style="width: 16%; background: #3F4F35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">16 %</div><div title="Quand ça accroche · En croissance : 42 %" style="width: 42%; background: #8FA878; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">42 %</div><div title="Quand ça accroche · En germe : 29 %" style="width: 29%; background: #E3CF9E; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">29 %</div><div title="Quand ça accroche · À semer : 13 %" style="width: 13%; background: #A9743A; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">13 %</div></div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">Le soutien du manager</span>
+<div style="display: flex; gap: 2px; height: 34px; border-radius: 6px; overflow: hidden"><div title="Le soutien du manager · Bien enraciné : 22 %" style="width: 22%; background: #3F4F35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">22 %</div><div title="Le soutien du manager · En croissance : 38 %" style="width: 38%; background: #8FA878; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">38 %</div><div title="Le soutien du manager · En germe : 24 %" style="width: 24%; background: #E3CF9E; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">24 %</div><div title="Le soutien du manager · À semer : 16 %" style="width: 16%; background: #A9743A; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">16 %</div></div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">La confiance et le soutien</span>
+<div style="display: flex; gap: 2px; height: 34px; border-radius: 6px; overflow: hidden"><div title="La confiance et le soutien · Bien enraciné : 15 %" style="width: 15%; background: #3F4F35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">15 %</div><div title="La confiance et le soutien · En croissance : 41 %" style="width: 41%; background: #8FA878; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">41 %</div><div title="La confiance et le soutien · En germe : 30 %" style="width: 30%; background: #E3CF9E; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">30 %</div><div title="La confiance et le soutien · À semer : 14 %" style="width: 14%; background: #A9743A; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">14 %</div></div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">Le sens du travail</span>
+<div style="display: flex; gap: 2px; height: 34px; border-radius: 6px; overflow: hidden"><div title="Le sens du travail · Bien enraciné : 20 %" style="width: 20%; background: #3F4F35; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">20 %</div><div title="Le sens du travail · En croissance : 44 %" style="width: 44%; background: #8FA878; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">44 %</div><div title="Le sens du travail · En germe : 25 %" style="width: 25%; background: #E3CF9E; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500">25 %</div><div title="Le sens du travail · À semer : 11 %" style="width: 11%; background: #A9743A; color: #1A1A1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500"></div></div>
+</div>
+</section>
+
+<section class="card" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 16px">
+<h2 class="t">Les cartes d'ensemble reçues</h2>
+<p class="s">Part des répondants selon la carte qui ouvre leur état des lieux.</p>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px">
+<div style="border-radius: 12px; overflow: hidden; background: #F7F4EF"><div style="background: #3F4F35; color: #FFFFFF; padding: 10px 16px; font-size: 14px; font-weight: 600">Bien enraciné</div><div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 4px"><span class="serif" style="font-size: 32px; line-height: 1.1">12 %</span><span style="font-size: 13px; color: #6B6460">Une équipe bien enracinée</span></div></div>
+<div style="border-radius: 12px; overflow: hidden; background: #F7F4EF"><div style="background: #8FA878; color: #1A1A1A; padding: 10px 16px; font-size: 14px; font-weight: 600">En croissance</div><div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 4px"><span class="serif" style="font-size: 32px; line-height: 1.1">41 %</span><span style="font-size: 13px; color: #6B6460">Une équipe en croissance</span></div></div>
+<div style="border-radius: 12px; overflow: hidden; background: #F7F4EF"><div style="background: #E3CF9E; color: #1A1A1A; padding: 10px 16px; font-size: 14px; font-weight: 600">En germe</div><div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 4px"><span class="serif" style="font-size: 32px; line-height: 1.1">34 %</span><span style="font-size: 13px; color: #6B6460">Une équipe en germe</span></div></div>
+<div style="border-radius: 12px; overflow: hidden; background: #F7F4EF"><div style="background: #A9743A; color: #1A1A1A; padding: 10px 16px; font-size: 14px; font-weight: 600">À semer</div><div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 4px"><span class="serif" style="font-size: 32px; line-height: 1.1">13 %</span><span style="font-size: 13px; color: #6B6460">Un terrain prêt à semer</span></div></div>
+</div>
+</section>
+
+<section class="card" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h2 class="t">Toutes les réponses, affirmation par affirmation</h2>
+<p class="s">Pour chaque affirmation, la part des répondants d'accord, le détail des 4 réponses, et ce que souhaitent le plus ceux qui ne sont pas d'accord.</p>
+</div>
+<div role="group" aria-label="Version" style="display: flex; gap: 4px; background: #F7F4EF; border-radius: 999px; padding: 4px; flex-shrink: 0"><button type="button" style="height: 36px; padding: 0 16px; border: 0; border-radius: 999px; background: #5A6B4D; color: #FFFFFF; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500">Membres</button><button type="button" style="height: 36px; padding: 0 16px; border: 0; border-radius: 999px; background: transparent; color: #1A1A1A; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500">Managers</button></div>
+</div>
+<h3 style="margin: 18px 0 2px; font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">Ce qu'on vise ensemble</h3>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">67 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="67 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 67%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 20 % · Plutôt 47 %<br>Plutôt pas 24 % · Pas du tout 9 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Dans mon équipe, nous visons tous le même résultat.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Qu'on se donne un cap commun</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">44 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">61 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="61 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 61%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 16 % · Plutôt 45 %<br>Plutôt pas 28 % · Pas du tout 11 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Quand un résultat est bon, c'est la réussite de toute l'équipe.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Qu'on parle plus souvent de nos réussites communes</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">38 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<h3 style="margin: 18px 0 2px; font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">Ce qu'on sait les uns des autres</h3>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">38 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="38 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 38%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 8 % · Plutôt 30 %<br>Plutôt pas 39 % · Pas du tout 23 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Je connais les contraintes quotidiennes des autres métiers de mon équipe.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Que chaque métier présente son quotidien</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">41 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">42 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="42 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 42%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 10 % · Plutôt 32 %<br>Plutôt pas 37 % · Pas du tout 21 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Mes collègues des autres métiers savent ce que je fais et ce que ça implique pour eux.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais que mes collègues… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Sachent mieux ce dont j'ai besoin d'eux</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">36 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<h3 style="margin: 18px 0 2px; font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">La place de chacun</h3>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">56 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="56 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 56%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 15 % · Plutôt 41 %<br>Plutôt pas 30 % · Pas du tout 14 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Le travail de chaque métier est reconnu dans l'équipe.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Qu'on se dise merci plus souvent, et plus précisément</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">33 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">52 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="52 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 52%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 13 % · Plutôt 39 %<br>Plutôt pas 32 % · Pas du tout 16 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">En réunion, chacun peut prendre la parole et être écouté.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Qu'on prenne l'habitude d'un tour de parole</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">35 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<h3 style="margin: 18px 0 2px; font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">Comment l'info circule</h3>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">35 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="35 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 35%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 7 % · Plutôt 28 %<br>Plutôt pas 38 % · Pas du tout 27 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">L'info des autres métiers m'arrive au bon moment.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Qu'on partage un outil ou un planning commun</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">38 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">39 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="39 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 39%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 9 % · Plutôt 30 %<br>Plutôt pas 36 % · Pas du tout 25 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Quand je reçois une info d'un collègue, je peux agir dessus directement.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais recevoir des infos… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Plus tôt</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">46 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<h3 style="margin: 18px 0 2px; font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">Quand ça accroche</h3>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">58 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="58 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 58%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 16 % · Plutôt 42 %<br>Plutôt pas 29 % · Pas du tout 13 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Quand quelque chose ne marche pas, nous cherchons une solution ensemble.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Qu'on règle davantage les choses ensemble</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">39 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<h3 style="margin: 18px 0 2px; font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">Le soutien du manager</h3>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">60 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="60 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 60%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 22 % · Plutôt 38 %<br>Plutôt pas 24 % · Pas du tout 16 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Mon manager m'aide à travailler avec les autres.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais que mon manager… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Fasse davantage le lien avec les autres métiers</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">36 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<h3 style="margin: 18px 0 2px; font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">La confiance et le soutien</h3>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">54 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="54 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 54%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 14 % · Plutôt 40 %<br>Plutôt pas 31 % · Pas du tout 15 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Dans mon équipe, je peux dire ce que je pense, même quand je ne suis pas d'accord.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Pouvoir tout dire sans crainte</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">37 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">59 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="59 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 59%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 17 % · Plutôt 42 %<br>Plutôt pas 27 % · Pas du tout 14 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Je peux parler franchement à mon manager, y compris d'une erreur.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Mieux savoir ce qu'il fait de ce qu'on lui dit</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">34 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">56 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="56 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 56%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 15 % · Plutôt 41 %<br>Plutôt pas 31 % · Pas du tout 13 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Quand j'ai besoin d'aide, je peux compter sur mes collègues.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Me sentir plus libre de demander</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">31 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<h3 style="margin: 18px 0 2px; font-size: 13px; font-weight: 600; color: #5A6B4D; letter-spacing: .04em; text-transform: uppercase">Le sens et les résultats</h3>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">67 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="67 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 67%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 22 % · Plutôt 45 %<br>Plutôt pas 23 % · Pas du tout 10 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Je vois le sens et l'utilité de ce que fait mon équipe.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Voir davantage les fruits de nos efforts</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">40 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">61 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="61 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 61%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 18 % · Plutôt 43 %<br>Plutôt pas 27 % · Pas du tout 12 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Dans mon équipe, on parle autant de la façon de travailler ensemble que des chiffres à atteindre.</span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais qu'on prenne aussi le temps de parler de… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Ce qui nous aide au quotidien</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">42 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(138,155,122,.15)">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span class="serif" style="font-size: 48px; line-height: 1; color: #2D3626">67 %</span>
+<span style="font-size: 13px; font-weight: 600; color: #3F4F35">d'accord</span>
+<div title="67 % d'accord" style="height: 10px; border-radius: 999px; background: rgba(138,155,122,.18); overflow: hidden"><div style="width: 67%; height: 10px; background: #3F4F35"></div></div>
+<span style="font-size: 12px; color: #6B6460">Tout à fait 19 % · Plutôt 48 %<br>Plutôt pas 24 % · Pas du tout 9 %</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 500; line-height: 1.45">Mon équipe obtient les résultats qu'elle vise. <span style="font-size: 12px; color: #6B6460; font-weight: 400">(jamais montrée au répondant)</span></span>
+<div style="align-self: stretch; display: flex; flex-direction: column; gap: 6px; background: #F6EEDF; border-radius: 10px; padding: 12px 14px">
+<span style="font-size: 13px; color: #7A5424">Ceux qui ne sont pas d'accord ont complété : <strong style="font-weight: 600">« J'aimerais… »</strong></span>
+<span style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap"><span style="font-size: 13px; color: #6B6460">Le souhait le plus choisi :</span><span style="font-size: 15px; font-weight: 600; color: #1A1A1A">Que les priorités soient plus stables</span><span style="font-size: 13px; font-weight: 600; color: #FFFFFF; background: #7A5424; border-radius: 999px; padding: 2px 10px">39 % d'entre eux</span></span>
+</div>
+</div>
+</div>
+</section>
+
+<section class="card" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 18px">
+<h2 class="t">Les managers voient leur équipe plus installée que les membres</h2>
+<p class="s">Part des réponses « Plutôt » ou « Tout à fait », de 0 à 100 %. À droite, l'écart en points.</p>
+<div style="display: flex; gap: 22px; font-size: 14px; color: #4F4A46"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 14px; height: 14px; border-radius: 999px; background: #3F4F35"></span>Managers (96)</span><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 14px; height: 14px; border-radius: 999px; background: #A9743A"></span>Membres (316)</span></div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr) 70px; gap: 20px; align-items: center">
+<span style="font-size: 15px">Ce qu'on vise ensemble</span>
+<div style="position: relative; height: 28px">
+<div style="position: absolute; left: 0; right: 0; top: 13px; height: 1px; background: rgba(138,155,122,.25)"></div>
+<div style="position: absolute; left: 61%; width: 17%; top: 12px; height: 3px; background: rgba(107,125,92,.35)"></div>
+<div title="Membres : 61 %" style="position: absolute; left: calc(61% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #A9743A; box-shadow: 0 0 0 2px #FFFFFF"></div>
+<div title="Managers : 78 %" style="position: absolute; left: calc(78% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #3F4F35; box-shadow: 0 0 0 2px #FFFFFF"></div>
+</div>
+<span style="font-size: 14px; font-weight: 600; text-align: right">17 pts</span>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr) 70px; gap: 20px; align-items: center">
+<span style="font-size: 15px">Ce qu'on sait les uns des autres</span>
+<div style="position: relative; height: 28px">
+<div style="position: absolute; left: 0; right: 0; top: 13px; height: 1px; background: rgba(138,155,122,.25)"></div>
+<div style="position: absolute; left: 37%; width: 18%; top: 12px; height: 3px; background: rgba(107,125,92,.35)"></div>
+<div title="Membres : 37 %" style="position: absolute; left: calc(37% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #A9743A; box-shadow: 0 0 0 2px #FFFFFF"></div>
+<div title="Managers : 55 %" style="position: absolute; left: calc(55% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #3F4F35; box-shadow: 0 0 0 2px #FFFFFF"></div>
+</div>
+<span style="font-size: 14px; font-weight: 600; text-align: right">18 pts</span>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr) 70px; gap: 20px; align-items: center">
+<span style="font-size: 15px">La place de chacun</span>
+<div style="position: relative; height: 28px">
+<div style="position: absolute; left: 0; right: 0; top: 13px; height: 1px; background: rgba(138,155,122,.25)"></div>
+<div style="position: absolute; left: 51%; width: 19%; top: 12px; height: 3px; background: rgba(107,125,92,.35)"></div>
+<div title="Membres : 51 %" style="position: absolute; left: calc(51% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #A9743A; box-shadow: 0 0 0 2px #FFFFFF"></div>
+<div title="Managers : 70 %" style="position: absolute; left: calc(70% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #3F4F35; box-shadow: 0 0 0 2px #FFFFFF"></div>
+</div>
+<span style="font-size: 14px; font-weight: 600; text-align: right">19 pts</span>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr) 70px; gap: 20px; align-items: center">
+<span style="font-size: 15px">Comment l'info circule</span>
+<div style="position: relative; height: 28px">
+<div style="position: absolute; left: 0; right: 0; top: 13px; height: 1px; background: rgba(138,155,122,.25)"></div>
+<div style="position: absolute; left: 34%; width: 18%; top: 12px; height: 3px; background: rgba(107,125,92,.35)"></div>
+<div title="Membres : 34 %" style="position: absolute; left: calc(34% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #A9743A; box-shadow: 0 0 0 2px #FFFFFF"></div>
+<div title="Managers : 52 %" style="position: absolute; left: calc(52% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #3F4F35; box-shadow: 0 0 0 2px #FFFFFF"></div>
+</div>
+<span style="font-size: 14px; font-weight: 600; text-align: right">18 pts</span>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr) 70px; gap: 20px; align-items: center">
+<span style="font-size: 15px">Quand ça accroche</span>
+<div style="position: relative; height: 28px">
+<div style="position: absolute; left: 0; right: 0; top: 13px; height: 1px; background: rgba(138,155,122,.25)"></div>
+<div style="position: absolute; left: 55%; width: 17%; top: 12px; height: 3px; background: rgba(107,125,92,.35)"></div>
+<div title="Membres : 55 %" style="position: absolute; left: calc(55% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #A9743A; box-shadow: 0 0 0 2px #FFFFFF"></div>
+<div title="Managers : 72 %" style="position: absolute; left: calc(72% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #3F4F35; box-shadow: 0 0 0 2px #FFFFFF"></div>
+</div>
+<span style="font-size: 14px; font-weight: 600; text-align: right">17 pts</span>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr) 70px; gap: 20px; align-items: center">
+<span style="font-size: 15px">Le soutien du manager</span>
+<div style="position: relative; height: 28px">
+<div style="position: absolute; left: 0; right: 0; top: 13px; height: 1px; background: rgba(138,155,122,.25)"></div>
+<div style="position: absolute; left: 57%; width: 27%; top: 12px; height: 3px; background: rgba(107,125,92,.35)"></div>
+<div title="Membres : 57 %" style="position: absolute; left: calc(57% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #A9743A; box-shadow: 0 0 0 2px #FFFFFF"></div>
+<div title="Managers : 84 %" style="position: absolute; left: calc(84% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #3F4F35; box-shadow: 0 0 0 2px #FFFFFF"></div>
+</div>
+<span style="font-size: 14px; font-weight: 600; text-align: right">27 pts</span>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr) 70px; gap: 20px; align-items: center">
+<span style="font-size: 15px">La confiance et le soutien</span>
+<div style="position: relative; height: 28px">
+<div style="position: absolute; left: 0; right: 0; top: 13px; height: 1px; background: rgba(138,155,122,.25)"></div>
+<div style="position: absolute; left: 58%; width: 22%; top: 12px; height: 3px; background: rgba(107,125,92,.35)"></div>
+<div title="Membres : 58 %" style="position: absolute; left: calc(58% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #A9743A; box-shadow: 0 0 0 2px #FFFFFF"></div>
+<div title="Managers : 80 %" style="position: absolute; left: calc(80% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #3F4F35; box-shadow: 0 0 0 2px #FFFFFF"></div>
+</div>
+<span style="font-size: 14px; font-weight: 600; text-align: right">22 pts</span>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr) 70px; gap: 20px; align-items: center">
+<span style="font-size: 15px">Le sens du travail</span>
+<div style="position: relative; height: 28px">
+<div style="position: absolute; left: 0; right: 0; top: 13px; height: 1px; background: rgba(138,155,122,.25)"></div>
+<div style="position: absolute; left: 62%; width: 14%; top: 12px; height: 3px; background: rgba(107,125,92,.35)"></div>
+<div title="Membres : 62 %" style="position: absolute; left: calc(62% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #A9743A; box-shadow: 0 0 0 2px #FFFFFF"></div>
+<div title="Managers : 76 %" style="position: absolute; left: calc(76% - 7px); top: 7px; width: 14px; height: 14px; border-radius: 999px; background: #3F4F35; box-shadow: 0 0 0 2px #FFFFFF"></div>
+</div>
+<span style="font-size: 14px; font-weight: 600; text-align: right">14 pts</span>
+</div>
+</section>
+
+<section class="card" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 18px">
+<h2 class="t">Là où une dimension est installée, les résultats perçus suivent plus souvent</h2>
+<p class="s">Part des répondants qui disent que leur équipe obtient les résultats qu'elle vise (affirmation 16), selon que la dimension est installée (Bien enraciné ou En croissance) ou à construire (En germe ou À semer). Un lien observé entre des perceptions, pas une cause.</p>
+<div style="display: flex; gap: 22px; font-size: 14px; color: #4F4A46"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #3F4F35"></span>Dimension installée</span><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #A9743A"></span>Dimension à construire</span></div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">Ce qu'on vise ensemble</span>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension installée : 74 %" style="width: 62.9%; height: 14px; border-radius: 0 4px 4px 0; background: #3F4F35"></div><span style="font-size: 13px; font-weight: 600">74 %</span></div>
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension à construire : 41 %" style="width: 34.85%; height: 14px; border-radius: 0 4px 4px 0; background: #A9743A"></div><span style="font-size: 13px; font-weight: 600">41 %</span></div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">Ce qu'on sait les uns des autres</span>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension installée : 71 %" style="width: 60.35%; height: 14px; border-radius: 0 4px 4px 0; background: #3F4F35"></div><span style="font-size: 13px; font-weight: 600">71 %</span></div>
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension à construire : 52 %" style="width: 44.199999999999996%; height: 14px; border-radius: 0 4px 4px 0; background: #A9743A"></div><span style="font-size: 13px; font-weight: 600">52 %</span></div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">La place de chacun</span>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension installée : 70 %" style="width: 59.5%; height: 14px; border-radius: 0 4px 4px 0; background: #3F4F35"></div><span style="font-size: 13px; font-weight: 600">70 %</span></div>
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension à construire : 48 %" style="width: 40.8%; height: 14px; border-radius: 0 4px 4px 0; background: #A9743A"></div><span style="font-size: 13px; font-weight: 600">48 %</span></div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">Comment l'info circule</span>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension installée : 73 %" style="width: 62.05%; height: 14px; border-radius: 0 4px 4px 0; background: #3F4F35"></div><span style="font-size: 13px; font-weight: 600">73 %</span></div>
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension à construire : 45 %" style="width: 38.25%; height: 14px; border-radius: 0 4px 4px 0; background: #A9743A"></div><span style="font-size: 13px; font-weight: 600">45 %</span></div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">Quand ça accroche</span>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension installée : 75 %" style="width: 63.75%; height: 14px; border-radius: 0 4px 4px 0; background: #3F4F35"></div><span style="font-size: 13px; font-weight: 600">75 %</span></div>
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension à construire : 43 %" style="width: 36.55%; height: 14px; border-radius: 0 4px 4px 0; background: #A9743A"></div><span style="font-size: 13px; font-weight: 600">43 %</span></div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">Le soutien du manager</span>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension installée : 69 %" style="width: 58.65%; height: 14px; border-radius: 0 4px 4px 0; background: #3F4F35"></div><span style="font-size: 13px; font-weight: 600">69 %</span></div>
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension à construire : 50 %" style="width: 42.5%; height: 14px; border-radius: 0 4px 4px 0; background: #A9743A"></div><span style="font-size: 13px; font-weight: 600">50 %</span></div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">La confiance et le soutien</span>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension installée : 76 %" style="width: 64.6%; height: 14px; border-radius: 0 4px 4px 0; background: #3F4F35"></div><span style="font-size: 13px; font-weight: 600">76 %</span></div>
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension à construire : 40 %" style="width: 34.0%; height: 14px; border-radius: 0 4px 4px 0; background: #A9743A"></div><span style="font-size: 13px; font-weight: 600">40 %</span></div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: center">
+<span style="font-size: 15px">Le sens du travail</span>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension installée : 77 %" style="width: 65.45%; height: 14px; border-radius: 0 4px 4px 0; background: #3F4F35"></div><span style="font-size: 13px; font-weight: 600">77 %</span></div>
+<div style="display: flex; align-items: center; gap: 10px"><div title="Dimension à construire : 39 %" style="width: 33.15%; height: 14px; border-radius: 0 4px 4px 0; background: #A9743A"></div><span style="font-size: 13px; font-weight: 600">39 %</span></div>
+</div>
+</div>
+</section>
+
+
+
+
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":8640}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

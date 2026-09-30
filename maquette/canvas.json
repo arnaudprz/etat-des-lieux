@@ -1,0 +1,144 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Dashboard.dc.html": {
+      "h": 8640,
+      "title": "Mon tableau de bord",
+      "w": 1280,
+      "x": 0,
+      "y": 5100
+    },
+    "Global.dc.html": {
+      "h": 980,
+      "title": "Outil interne : les 4 cartes d'ensemble",
+      "w": 1280,
+      "x": 6800,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "h": 2140,
+      "title": "1. Accueil",
+      "w": 1280,
+      "x": 0,
+      "y": 0
+    },
+    "Profil.dc.html": {
+      "h": 1420,
+      "is_interactive": true,
+      "title": "2. Profil",
+      "w": 1280,
+      "x": 1360,
+      "y": 0
+    },
+    "Questions.dc.html": {
+      "h": 4740,
+      "is_interactive": true,
+      "title": "3. Les 10 affirmations",
+      "w": 1280,
+      "x": 2720,
+      "y": 0
+    },
+    "Resultat.dc.html": {
+      "h": 2860,
+      "title": "4. Résultat",
+      "w": 1280,
+      "x": 4080,
+      "y": 0
+    },
+    "Simulateur.dc.html": {
+      "h": 1760,
+      "is_interactive": true,
+      "title": "Outil interne : simulateur",
+      "w": 1280,
+      "x": 5440,
+      "y": 0
+    },
+    "Main-mobile.dc.html": {
+      "x": 1440,
+      "y": 5100,
+      "w": 390,
+      "h": 3100,
+      "title": "Mobile · 1. Accueil"
+    },
+    "Profil-mobile.dc.html": {
+      "x": 1910,
+      "y": 5100,
+      "w": 390,
+      "h": 1580,
+      "title": "Mobile · 2. Profil",
+      "is_interactive": true
+    },
+    "Questions-mobile.dc.html": {
+      "x": 2380,
+      "y": 5100,
+      "w": 390,
+      "h": 5960,
+      "title": "Mobile · 3. Vos réponses",
+      "is_interactive": true
+    },
+    "Resultat-mobile.dc.html": {
+      "x": 2850,
+      "y": 5100,
+      "w": 390,
+      "h": 4200,
+      "title": "Mobile · 4. Résultat"
+    },
+    "Complementaires.dc.html": {
+      "x": 8160,
+      "y": 0,
+      "w": 1280,
+      "h": 6560,
+      "title": "Outil interne : les questions complémentaires"
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-09-30T09:59:48Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "titre": {
+      "kind": "title1",
+      "maxW": 5360,
+      "text": "État des lieux d'équipe : le parcours en 4 écrans",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "titre2": {
+      "kind": "title1",
+      "maxW": 1280,
+      "text": "Mon côté : le tableau de bord",
+      "w": 240,
+      "x": 0,
+      "y": 4800
+    },
+    "titre3": {
+      "x": 1440,
+      "y": 4800,
+      "text": "La version mobile",
+      "kind": "title1",
+      "maxW": 1800
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Profil.dc.html",
+    "Questions.dc.html",
+    "Resultat.dc.html",
+    "Simulateur.dc.html",
+    "Dashboard.dc.html",
+    "Global.dc.html",
+    "Main-mobile.dc.html",
+    "Profil-mobile.dc.html",
+    "Questions-mobile.dc.html",
+    "Resultat-mobile.dc.html",
+    "Complementaires.dc.html"
+  ],
+  "pages": [],
+  "title": "État des lieux d'équipe Greatly"
+}
