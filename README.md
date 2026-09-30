@@ -131,4 +131,4 @@ chacune, et régénère `docs/assets/js/illustrations.js`.
 | 30/09/2026 | `196d587` | Passe 4, point 4 : données, backend et tableau de bord. |
 | 30/09/2026 | `1773103` | Passe 4, point 5 : corrections UX et UI. |
 | 30/09/2026 | `ad3ed74` | Passe 5, section 0 : le résultat en bandes pleine largeur. |
-| 30/09/2026 | `à venir` | Passe 5, section 4 : le lien personnel v2 porte les idées. |
+| 30/09/2026 | `6198f05` | Passe 5, section 4 : le lien personnel v2 porte les idées. |
