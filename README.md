@@ -128,4 +128,4 @@ chacune, et régénère `docs/assets/js/illustrations.js`.
 | 30/09/2026 | `aa25b2b` | Passe 3, sections 5 à 7 : illustrations du résultat et du tableau de bord. |
 | 30/09/2026 | `9bdb81f` | Passe 4, point 0 : nouvelle échelle de réponse. |
 | 30/09/2026 | `848b764` | Passe 4, points 1 à 3 : chaque réponse réservée ouvre sa relance. |
-| 30/09/2026 | `à venir` | Passe 4, point 4 : données, backend et tableau de bord. |
+| 30/09/2026 | `196d587` | Passe 4, point 4 : données, backend et tableau de bord. |
