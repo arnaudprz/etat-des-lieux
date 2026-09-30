@@ -109,4 +109,4 @@ node scripts/generer-contenu-gs.mjs
 | 30/09/2026 | `dfbea85` | Corrections passe 1, groupe B : parcours public et maquettes. |
 | 30/09/2026 | `33e7a74` | Corrections passe 1, groupe C : barres de dimension compactées. |
 | 30/09/2026 | `2c1e597` | Corrections passe 1, groupe D : npm test portable. |
-| 30/09/2026 | `à venir` | Passe 2, point 0 : WebKit dans les vérifications, serveur local sans cache. |
+| 30/09/2026 | `2124945` | Passe 2, point 0 : WebKit dans les vérifications, serveur local sans cache. |
