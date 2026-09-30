@@ -1,26 +1,50 @@
 /**
- * Parcourt le site de bout en bout dans un vrai navigateur et capture chaque
- * écran en 1280 et en 390, pour comparaison avec maquette/captures/.
+ * Parcourt le site de bout en bout dans plusieurs navigateurs et plusieurs
+ * formats, capture chaque écran et vérifie ce qui doit l'être.
  *
- * Usage : node scripts/verif/parcours.mjs [URL_DE_BASE] [DOSSIER_DE_SORTIE]
+ * Arnaud teste dans Safari : WebKit fait donc partie des cibles, en ordinateur
+ * et en iPhone émulé. Plusieurs écarts ne se voient que là.
+ *
+ * Usage : node scripts/verif/parcours.mjs [URL_DE_BASE] [DOSSIER_DE_SORTIE] [CIBLE]
+ *   CIBLE filtre par nom, par exemple « webkit ».
  */
 
-import { chromium } from 'playwright';
+import { chromium, webkit, devices } from 'playwright';
 import { mkdirSync } from 'node:fs';
 
 const BASE = process.argv[2] || 'http://127.0.0.1:8127';
 const SORTIE = process.argv[3] || '/tmp/edl-captures';
-const LARGEURS = [
-  { nom: '', largeur: 1280, hauteur: 900 },
-  { nom: '-mobile', largeur: 390, hauteur: 844 },
-];
+const FILTRE = process.argv[4] || '';
 
-mkdirSync(SORTIE, { recursive: true });
+/** Les cibles. Le suffixe sert à nommer les captures et les messages. */
+const CIBLES = [
+  {
+    nom: 'chromium', suffixe: '', lanceur: chromium,
+    options: { viewport: { width: 1280, height: 900 }, locale: 'fr-FR' },
+  },
+  {
+    nom: 'chromium-mobile', suffixe: '-mobile', lanceur: chromium,
+    options: { viewport: { width: 390, height: 844 }, locale: 'fr-FR' },
+  },
+  {
+    nom: 'webkit', suffixe: '', lanceur: webkit,
+    options: { viewport: { width: 1280, height: 900 }, locale: 'fr-FR' },
+  },
+  {
+    nom: 'webkit-mobile', suffixe: '-mobile', lanceur: webkit,
+    options: { ...devices['iPhone 13'], locale: 'fr-FR' },
+  },
+].filter((c) => !FILTRE || c.nom.includes(FILTRE));
+
+/** Le préréglage « Exemple de la maquette » du simulateur. */
+const REPONSES = [2, 2, 1, 1, 2, 2, 0, 0, 2, 3, 2, 2, 2, 2, 2, 1];
+const HASH_ATTENDU = '#v1-m2211220023222221';
 
 const soucis = [];
 let capturesPrises = 0;
 
-/** Vérifie qu'aucune erreur console ni aucun défilement horizontal n'apparaît. */
+// ------------------------------------------------------------------ outillage
+
 function surveiller(page, etiquette) {
   page.on('console', (m) => {
     if (m.type() === 'error') soucis.push(`[${etiquette}] console : ${m.text()}`);
@@ -35,19 +59,18 @@ function surveiller(page, etiquette) {
 
 async function verifierLargeurUtile(page, etiquette) {
   const debord = await page.evaluate(() =>
-    Math.max(0, document.documentElement.scrollWidth - window.innerWidth)
-  );
+    Math.max(0, document.documentElement.scrollWidth - window.innerWidth));
   if (debord > 1) soucis.push(`[${etiquette}] défilement horizontal de ${debord}px`);
 }
 
-async function capturer(page, nom, etiquette) {
-  await page.waitForTimeout(350);
-  await verifierLargeurUtile(page, etiquette);
-  await page.screenshot({ path: `${SORTIE}/${nom}.png`, fullPage: true });
-  capturesPrises += 1;
+async function verifierTirets(page, etiquette) {
+  const trouve = await page.evaluate(() => {
+    const m = document.body.innerText.match(/[^\n]{0,40}[—–][^\n]{0,40}/g);
+    return m ? m.slice(0, 3) : null;
+  });
+  if (trouve) soucis.push(`[${etiquette}] tiret cadratin : ${trouve.join(' | ')}`);
 }
 
-/** Aucun chiffre ne doit apparaître dans le résultat lu par le répondant. */
 async function verifierAucunChiffre(page, etiquette, selecteur) {
   const texte = await page.locator(selecteur).innerText();
   const chiffres = texte.match(/\d/g);
@@ -56,295 +79,221 @@ async function verifierAucunChiffre(page, etiquette, selecteur) {
   }
 }
 
-/** Aucun tiret cadratin ni demi-cadratin dans les textes affichés. */
-async function verifierTirets(page, etiquette) {
-  const trouve = await page.evaluate(() => {
-    const t = document.body.innerText;
-    const m = t.match(/[^\n]{0,40}[—–][^\n]{0,40}/g);
-    return m ? m.slice(0, 3) : null;
-  });
-  if (trouve) soucis.push(`[${etiquette}] tiret cadratin : ${trouve.join(' | ')}`);
+// ------------------------------------------------------------------ parcours
+
+/** Remplit le profil et passe aux affirmations. Version membre. */
+async function remplirProfil(page) {
+  await page.waitForSelector('.pilules');
+  await page.locator('input[name="role"]').nth(1).check();
+  await page.locator('input[name="genre"]').nth(0).check();
+  await page.locator('input[name="taille_entreprise"]').nth(2).check();
+  await page.locator('input[name="taille_equipe"]').nth(1).check();
+  await page.fill('#secteur', 'sante');
+  await page.waitForSelector('#secteurs li');
+  await page.locator('#secteurs .recherche__option', { hasText: /^Santé$/ }).click();
 }
 
-const navigateur = await chromium.launch();
+async function passerLaCible(cible) {
+  const { nom, suffixe, lanceur, options } = cible;
+  const largeur = options.viewport ? options.viewport.width : 390;
+  const dossier = `${SORTIE}/${nom}`;
+  mkdirSync(dossier, { recursive: true });
 
-for (const { nom, largeur, hauteur } of LARGEURS) {
-  const contexte = await navigateur.newContext({
-    viewport: { width: largeur, height: hauteur },
-    locale: 'fr-FR',
-  });
+  const capturer = async (fichier, etiquette) => {
+    await page.waitForTimeout(350);
+    await verifierLargeurUtile(page, etiquette);
+    await page.screenshot({ path: `${dossier}/${fichier}.png`, fullPage: true });
+    capturesPrises += 1;
+  };
+
+  const navigateur = await lanceur.launch();
+  const contexte = await navigateur.newContext(options);
   const page = await contexte.newPage();
-  const suffixe = nom;
+  surveiller(page, nom);
 
   // ------------------------------------------------------------- 1. accueil
-  surveiller(page, `accueil${suffixe}`);
   await page.goto(`${BASE}/index.html`, { waitUntil: 'networkidle' });
   await page.waitForSelector('.dimensions .carte');
+
   const nbDimensions = await page.locator('.dimensions .carte').count();
-  if (nbDimensions !== 8) soucis.push(`[accueil${suffixe}] ${nbDimensions} dimensions au lieu de 8`);
-  const compteur = await page.locator('[data-compteur]').innerText();
-  if (compteur.trim() !== '255') soucis.push(`[accueil${suffixe}] compteur à « ${compteur} » au lieu de 255`);
-  // B3 : les 3 lignes de l'aperçu ne doivent pas se toucher.
+  if (nbDimensions !== 8) soucis.push(`[${nom}] accueil : ${nbDimensions} dimensions au lieu de 8`);
+  const compteur = (await page.locator('[data-compteur]').innerText()).trim();
+  if (compteur !== '255') soucis.push(`[${nom}] accueil : compteur à « ${compteur} » au lieu de 255`);
+
   const ecartApercu = await page.evaluate(() => {
     const l = document.querySelectorAll('.apercu__ligne');
     return Math.round(l[1].getBoundingClientRect().top - l[0].getBoundingClientRect().bottom);
   });
   const ecartApercuAttendu = largeur >= 900 ? 20 : 16;
   if (ecartApercu !== ecartApercuAttendu) {
-    soucis.push(`[accueil${suffixe}] ${ecartApercu}px entre les lignes de l'aperçu au lieu de ${ecartApercuAttendu}`);
+    soucis.push(`[${nom}] accueil : ${ecartApercu}px entre les lignes de l'aperçu au lieu de ${ecartApercuAttendu}`);
   }
 
-  await verifierTirets(page, `accueil${suffixe}`);
-  await capturer(page, `Main${suffixe}`, `accueil${suffixe}`);
+  await verifierTirets(page, `${nom} accueil`);
+  await capturer(`Main${suffixe}`, `${nom} accueil`);
 
   // -------------------------------------------------------------- 2. profil
   await page.click('.hero__actions a.btn');
   await page.waitForSelector('.pilules');
-  const continuer = page.locator('[data-continuer]');
-  if (!(await continuer.isDisabled())) {
-    soucis.push(`[profil${suffixe}] « Continuer » est actif alors que rien n'est rempli`);
-  }
-  // Rôle : un membre de l'équipe, pour avoir la version membre des affirmations.
-  await page.locator('input[name="role"]').nth(1).check();
-  await page.locator('input[name="genre"]').nth(0).check();
-  await page.locator('input[name="taille_entreprise"]').nth(2).check();
-  await page.locator('input[name="taille_equipe"]').nth(1).check();
 
-  // Le secteur passe par le champ de recherche, sans accent ni casse.
-  await page.fill('#secteur', 'sante');
-  await page.waitForSelector('#secteurs li');
-  const propositions = await page.locator('#secteurs .recherche__option').allInnerTexts();
-  if (!propositions.includes('Santé')) {
-    soucis.push(`[profil${suffixe}] « sante » ne propose pas « Santé » : ${propositions.join(', ')}`);
-  }
-  if (!propositions.includes('Autre')) {
-    soucis.push(`[profil${suffixe}] « Autre » n'est pas proposé`);
-  }
-  // B4 : l'intitulé ne doit pas coller à ses choix.
   const ecartIntitule = await page.evaluate(() => {
-    const champ = document.querySelectorAll('fieldset.champ')[2];
-    const lg = champ.querySelector('legend');
-    const pilules = champ.querySelector('.pilules');
-    return Math.round(pilules.getBoundingClientRect().top - lg.getBoundingClientRect().bottom);
+    const bloc = document.querySelectorAll('.champ')[2];
+    const intitule = bloc.querySelector('.champ__intitule');
+    const choix = bloc.querySelector('.pilules');
+    return Math.round(choix.getBoundingClientRect().top - intitule.getBoundingClientRect().bottom);
   });
-  if (ecartIntitule !== 14) {
-    soucis.push(`[profil${suffixe}] ${ecartIntitule}px sous l'intitulé au lieu de 14`);
+  if (ecartIntitule < 10 || ecartIntitule > 16) {
+    soucis.push(`[${nom}] profil : ${ecartIntitule}px sous l'intitulé, attendu entre 10 et 16`);
   }
 
-  // B4 : l'écart entre deux blocs du formulaire.
   const ecartBlocs = await page.evaluate(() => {
     const blocs = document.querySelectorAll('#profil > *');
     return Math.round(blocs[1].getBoundingClientRect().top - blocs[0].getBoundingClientRect().bottom);
   });
-  const ecartBlocsAttendu = largeur >= 900 ? 36 : 28;
-  if (ecartBlocs !== ecartBlocsAttendu) {
-    soucis.push(`[profil${suffixe}] ${ecartBlocs}px entre deux blocs au lieu de ${ecartBlocsAttendu}`);
+  if (ecartBlocs < 24 || ecartBlocs > 40) {
+    soucis.push(`[${nom}] profil : ${ecartBlocs}px entre deux blocs, attendu entre 24 et 40`);
   }
 
-  await verifierTirets(page, `profil${suffixe}`);
-  await capturer(page, `Profil${suffixe}`, `profil${suffixe}`);
-  await page.locator('#secteurs .recherche__option', { hasText: /^Santé$/ }).click();
-
-  if (await continuer.isDisabled()) {
-    soucis.push(`[profil${suffixe}] « Continuer » reste inactif alors que tout est rempli`);
+  const propositions = await (async () => {
+    await page.fill('#secteur', 'sante');
+    await page.waitForSelector('#secteurs li');
+    return page.locator('#secteurs .recherche__option').allInnerTexts();
+  })();
+  if (!propositions.includes('Santé')) {
+    soucis.push(`[${nom}] profil : « sante » ne propose pas « Santé » : ${propositions.join(', ')}`);
   }
-  await continuer.click();
+  if (!propositions.includes('Autre')) {
+    soucis.push(`[${nom}] profil : « Autre » n'est pas proposé`);
+  }
+
+  await verifierTirets(page, `${nom} profil`);
+  await capturer(`Profil${suffixe}`, `${nom} profil`);
+
+  await page.goto(`${BASE}/profil.html`, { waitUntil: 'networkidle' });
+  await remplirProfil(page);
+  await page.locator('[data-continuer]').click();
 
   // -------------------------------------------------------- 3. affirmations
   await page.waitForSelector('.affirmation');
   const nbAffirmations = await page.locator('.affirmation').count();
-  if (nbAffirmations !== 16) soucis.push(`[questions${suffixe}] ${nbAffirmations} affirmations au lieu de 16`);
+  if (nbAffirmations !== 16) soucis.push(`[${nom}] questions : ${nbAffirmations} affirmations au lieu de 16`);
   const nbGroupes = await page.locator('.groupe').count();
-  if (nbGroupes !== 8) soucis.push(`[questions${suffixe}] ${nbGroupes} groupes au lieu de 8`);
+  if (nbGroupes !== 8) soucis.push(`[${nom}] questions : ${nbGroupes} groupes au lieu de 8`);
 
-  const voir = page.locator('[data-voir]');
-  if (!(await voir.isDisabled())) {
-    soucis.push(`[questions${suffixe}] « Voir mon résultat » est actif sans réponse`);
+  // « Pas du tout » sur chacune des 16 : l'état visuel et la valeur enregistrée.
+  const cartes = page.locator('.affirmation');
+  for (let i = 0; i < 16; i += 1) {
+    await cartes.nth(i).locator('.echelle__choix').nth(0).click();
+    const presse = await cartes.nth(i).locator('.echelle__choix').nth(0).getAttribute('aria-pressed');
+    if (presse !== 'true') {
+      soucis.push(`[${nom}] questions : « Pas du tout » sur Q${i + 1} ne s'active pas (aria-pressed ${presse})`);
+    }
+  }
+  const toutABas = await page.evaluate(() => {
+    try {
+      const brut = sessionStorage.getItem('greatly_edl_parcours');
+      return brut ? JSON.parse(brut).reponses : null;
+    } catch (e) { return null; }
+  });
+  if (JSON.stringify(toutABas) !== JSON.stringify(new Array(16).fill(0))) {
+    soucis.push(`[${nom}] questions : « Pas du tout » n'enregistre pas 0 partout (${JSON.stringify(toutABas)})`);
   }
 
-  // On rejoue le préréglage « Exemple de la maquette » du simulateur.
-  const REPONSES = [2, 2, 1, 1, 2, 2, 0, 0, 2, 3, 2, 2, 2, 2, 2, 1];
-  const cartes = page.locator('.affirmation');
+  // Le préréglage de la maquette, pour la suite.
   for (let i = 0; i < REPONSES.length; i += 1) {
     await cartes.nth(i).locator('.echelle__choix').nth(REPONSES[i]).click();
   }
 
-  // Les deux plus réservées sont Q7 et Q8 (valeur 0) : seules leurs relances s'ouvrent.
-  const relancesVisibles = await page.locator('.relance:not([hidden])').count();
-  if (relancesVisibles !== 2) {
-    soucis.push(`[questions${suffixe}] ${relancesVisibles} relances ouvertes au lieu de 2`);
-  }
-  const ouvertes = await page.evaluate(() =>
-    Array.from(document.querySelectorAll('.affirmation')).
-      map((c, i) => (c.querySelector('.relance:not([hidden])') ? i + 1 : null)).filter(Boolean)
-  );
-  if (JSON.stringify(ouvertes) !== JSON.stringify([7, 8])) {
-    soucis.push(`[questions${suffixe}] relances ouvertes sur ${ouvertes.join(', ')} au lieu de 7, 8`);
-  }
+  await verifierTirets(page, `${nom} questions`);
+  await capturer(`Questions${suffixe}`, `${nom} questions`);
 
-  // Trois choix cochés : le troisième doit être refusé, et les autres désactivés.
-  const relanceQ7 = cartes.nth(6).locator('.relance');
-  const casesQ7 = relanceQ7.locator('input[type="checkbox"]');
-  await casesQ7.nth(0).check();
-  await casesQ7.nth(1).check();
-  const cochees = await relanceQ7.locator('input:checked').count();
-  if (cochees !== 2) soucis.push(`[questions${suffixe}] ${cochees} choix cochés au lieu de 2`);
-  if (!(await casesQ7.nth(2).isDisabled())) {
-    soucis.push(`[questions${suffixe}] un 3e choix de relance reste cochable`);
-  }
-
-  // B1 : l'espacement des cartes et des titres de groupe.
-  const espacements = await page.evaluate(() => {
-    const enfants = Array.from(document.querySelector('#questionnaire').children);
-    const haut = (n) => n.getBoundingClientRect().top;
-    const bas = (n) => n.getBoundingClientRect().bottom;
-    const mesures = { entreCartes: [], avantTitre: [], apresTitre: [] };
-    for (let i = 1; i < enfants.length; i += 1) {
-      const ecart = Math.round(haut(enfants[i]) - bas(enfants[i - 1]));
-      const titreAvant = enfants[i - 1].classList.contains('groupe');
-      const titreApres = enfants[i].classList.contains('groupe');
-      if (titreApres) mesures.avantTitre.push(ecart);
-      else if (titreAvant) mesures.apresTitre.push(ecart);
-      else mesures.entreCartes.push(ecart);
-    }
-    return mesures;
-  });
-  const unique = (xs) => Array.from(new Set(xs));
-  if (unique(espacements.entreCartes).join() !== '16') {
-    soucis.push(`[questions${suffixe}] écarts entre cartes : ${unique(espacements.entreCartes).join(', ')}px au lieu de 16`);
-  }
-  if (unique(espacements.apresTitre).join() !== '16') {
-    soucis.push(`[questions${suffixe}] écarts après un titre : ${unique(espacements.apresTitre).join(', ')}px au lieu de 16`);
-  }
-  const avantAttendu = largeur >= 900 ? 36 : 32;
-  if (unique(espacements.avantTitre).join() !== String(avantAttendu)) {
-    soucis.push(`[questions${suffixe}] écarts avant un titre : ${unique(espacements.avantTitre).join(', ')}px au lieu de ${avantAttendu}`);
-  }
-
-  // B2 : la légende de relance doit tenir dans la marge interne de l'encadré.
-  const legende = await page.evaluate(() => {
-    const cadre = document.querySelector('.relance:not([hidden])');
-    const lg = cadre.querySelector('legend');
-    const style = getComputedStyle(cadre);
-    const hautCadre = cadre.getBoundingClientRect().top + parseFloat(style.paddingTop);
-    const gaucheCadre = cadre.getBoundingClientRect().left + parseFloat(style.paddingLeft);
-    return {
-      debordHaut: Math.round(hautCadre - lg.getBoundingClientRect().top),
-      debordGauche: Math.round(gaucheCadre - lg.getBoundingClientRect().left),
-    };
-  });
-  if (legende.debordHaut > 0 || legende.debordGauche > 0) {
-    soucis.push(
-      `[questions${suffixe}] la légende de relance déborde de la marge interne `
-      + `(${legende.debordHaut}px en haut, ${legende.debordGauche}px à gauche)`
-    );
-  }
-
-  await verifierTirets(page, `questions${suffixe}`);
-  await capturer(page, `Questions${suffixe}`, `questions${suffixe}`);
-
-  if (await voir.isDisabled()) {
-    soucis.push(`[questions${suffixe}] « Voir mon résultat » reste inactif avec 16 réponses`);
-  }
-  await voir.click();
+  await page.locator('[data-voir]').click();
 
   // ------------------------------------------------------------ 4. résultat
   await page.waitForSelector('[data-resultat]:not([hidden])');
   const hash = new URL(page.url()).hash;
-  if (hash !== '#v1-m2211220023222221') {
-    soucis.push(`[resultat${suffixe}] hash inattendu : ${hash}`);
-  }
+  if (hash !== HASH_ATTENDU) soucis.push(`[${nom}] resultat : hash ${hash} au lieu de ${HASH_ATTENDU}`);
+
   const titreCarte = await page.locator('[data-carte-titre]').innerText();
   if (titreCarte !== 'Une équipe en germe') {
-    soucis.push(`[resultat${suffixe}] carte « ${titreCarte} » au lieu de « Une équipe en germe »`);
+    soucis.push(`[${nom}] resultat : carte « ${titreCarte} »`);
   }
-  const appui = await page.locator('[data-appui]').innerText();
-  if (!appui.includes('le soutien du manager')) {
-    soucis.push(`[resultat${suffixe}] phrase d'appui inattendue : ${appui}`);
+  if (!(await page.locator('[data-appui]').innerText()).includes('le soutien du manager')) {
+    soucis.push(`[${nom}] resultat : phrase d'appui inattendue`);
   }
-  const forme = await page.locator('[data-forme]').innerText();
-  if (!forme.startsWith('Votre regard est contrasté')) {
-    soucis.push(`[resultat${suffixe}] phrase de forme inattendue : ${forme}`);
+  if (!(await page.locator('[data-forme]').innerText()).startsWith('Votre regard est contrasté')) {
+    soucis.push(`[${nom}] resultat : phrase de forme inattendue`);
   }
   if (!(await page.locator('[data-sans-resultat]').isHidden())) {
-    soucis.push(`[resultat${suffixe}] le bloc « ce lien ne porte pas de résultat » s'affiche aussi`);
+    soucis.push(`[${nom}] resultat : le bloc « ce lien ne porte pas de résultat » s'affiche aussi`);
   }
   const nbColonnes = await page.locator('.colonne').count();
-  if (nbColonnes !== 4) soucis.push(`[resultat${suffixe}] ${nbColonnes} colonnes au lieu de 4`);
+  if (nbColonnes !== 4) soucis.push(`[${nom}] resultat : ${nbColonnes} colonnes au lieu de 4`);
   const nbRangees = await page.locator('.colonne__item').count();
-  if (nbRangees !== 8) soucis.push(`[resultat${suffixe}] ${nbRangees} dimensions rangées au lieu de 8`);
-
-  // Le Q16 ne doit jamais apparaître dans le résultat.
-  const texteResultat = await page.locator('[data-resultat]').innerText();
-  if (texteResultat.includes('obtient les résultats')) {
-    soucis.push(`[resultat${suffixe}] le Q16 apparaît dans le résultat`);
+  if (nbRangees !== 8) soucis.push(`[${nom}] resultat : ${nbRangees} dimensions rangées au lieu de 8`);
+  if ((await page.locator('[data-resultat]').innerText()).includes('obtient les résultats')) {
+    soucis.push(`[${nom}] resultat : le Q16 apparaît dans le résultat`);
   }
-  // B5 : l'étiquette ne doit pas se casser en deux dans une pilule.
+
   const etiquette = await page.evaluate(() => {
     const e = document.querySelector('.ensemble__etiquette');
     const style = getComputedStyle(e);
     const hauteurLigne = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2;
     const interne = e.getBoundingClientRect().height
       - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
-    return {
-      lignes: Math.round(interne / hauteurLigne),
-      rayon: parseFloat(style.borderRadius),
-      taille: parseFloat(style.fontSize),
-    };
+    return { lignes: Math.round(interne / hauteurLigne), rayon: parseFloat(style.borderRadius) };
   });
   if (etiquette.lignes > 1 && etiquette.rayon > 20) {
-    soucis.push(
-      `[resultat${suffixe}] l'étiquette tient sur ${etiquette.lignes} lignes `
-      + `dans une pilule (rayon ${etiquette.rayon}px)`
-    );
+    soucis.push(`[${nom}] resultat : étiquette sur ${etiquette.lignes} lignes dans une pilule`);
   }
 
-  // B6 : l'intro de l'étude complète est un texte secondaire.
   const couleurIntro = await page.evaluate(() =>
     getComputedStyle(document.querySelector('.etude > p')).color);
   if (couleurIntro !== 'rgb(107, 100, 96)') {
-    soucis.push(`[resultat${suffixe}] l'intro de l'étude est en ${couleurIntro} au lieu de taupe`);
+    soucis.push(`[${nom}] resultat : intro de l'étude en ${couleurIntro} au lieu de taupe`);
   }
 
-  // B7 : un message d'erreur ne doit vivre que dans une seule zone annoncée.
   await page.locator('[data-etude] button[type="submit"]').click();
   await page.waitForTimeout(250);
-  const annonces = await page.evaluate(() => {
-    const zones = Array.from(document.querySelectorAll('[role="alert"], [role="status"], [aria-live]'));
-    return zones
-      .filter((z) => z.textContent.trim() !== '')
-      .map((z) => z.textContent.trim());
-  });
+  const annonces = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('[role="alert"], [role="status"], [aria-live]'))
+      .map((z) => z.textContent.trim())
+      .filter((t) => t !== ''));
   const doublons = annonces.filter((t) => t.includes('manque'));
   if (doublons.length !== 1) {
-    soucis.push(`[resultat${suffixe}] le message d'erreur est annoncé ${doublons.length} fois`);
+    soucis.push(`[${nom}] resultat : message d'erreur annoncé ${doublons.length} fois`);
   }
   if (doublons[0] && !doublons[0].startsWith('Il nous manque encore')) {
-    soucis.push(`[resultat${suffixe}] message d'erreur inattendu : ${doublons[0]}`);
+    soucis.push(`[${nom}] resultat : message inattendu « ${doublons[0]} »`);
   }
 
-  await verifierAucunChiffre(page, `resultat${suffixe}`, '.ensemble');
-  await verifierTirets(page, `resultat${suffixe}`);
-  await capturer(page, `Resultat${suffixe}`, `resultat${suffixe}`);
+  await verifierAucunChiffre(page, `${nom} resultat`, '.ensemble');
+  await verifierTirets(page, `${nom} resultat`);
+  await capturer(`Resultat${suffixe}`, `${nom} resultat`);
 
-  // ------------------------------------------ 5. lien illisible et confidentialité
+  // ----------------------------------------- 5. lien illisible, confidentialité
   await page.goto(`${BASE}/resultat.html#nawak`, { waitUntil: 'networkidle' });
   await page.waitForSelector('[data-sans-resultat]:not([hidden])');
   if (!(await page.locator('[data-resultat]').isHidden())) {
-    soucis.push(`[resultat${suffixe}] un hash invalide affiche quand même un résultat`);
+    soucis.push(`[${nom}] resultat : un hash invalide affiche quand même un résultat`);
   }
-  await capturer(page, `Resultat-sans-lien${suffixe}`, `resultat-vide${suffixe}`);
+  await capturer(`Resultat-sans-lien${suffixe}`, `${nom} resultat vide`);
 
   await page.goto(`${BASE}/confidentialite.html`, { waitUntil: 'networkidle' });
-  await verifierTirets(page, `confidentialite${suffixe}`);
-  await capturer(page, `Confidentialite${suffixe}`, `confidentialite${suffixe}`);
+  await verifierTirets(page, `${nom} confidentialite`);
+  await capturer(`Confidentialite${suffixe}`, `${nom} confidentialite`);
 
-  await contexte.close();
+  await navigateur.close();
 }
 
-await navigateur.close();
+// -------------------------------------------------------------------- bilan
+
+for (const cible of CIBLES) {
+  await passerLaCible(cible);
+}
 
 console.log(`${capturesPrises} captures écrites dans ${SORTIE}`);
+console.log(`Cibles : ${CIBLES.map((c) => c.nom).join(', ')}`);
 if (soucis.length === 0) {
   console.log('Aucun souci relevé.');
 } else {

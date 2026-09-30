@@ -32,8 +32,10 @@ Il faut un navigateur, et Node seulement pour les tests.
 npm run local
 ```
 
-Puis ouvrir <http://127.0.0.1:8080/> pour le parcours public, et
-<http://127.0.0.1:8080/admin/> pour le tableau de bord.
+Le serveur affiche les adresses à ouvrir, dont celle à utiliser depuis un
+téléphone sur le même réseau. Il envoie `Cache-Control: no-store` : le test
+local montre toujours la dernière version, sans quoi Safari peut garder un
+ancien fichier JavaScript avec un nouveau HTML.
 
 Tant qu'aucune API n'est configurée dans `docs/assets/js/config.js`, le site est
 automatiquement en **mode démo** : rien n'est enregistré, et le tableau de bord
@@ -47,19 +49,24 @@ les polices de repli, tout reste lisible.
 ```sh
 npm test                                    # 133 tests, sans dépendance
 node scripts/verif/cahier-des-charges.mjs   # les 17 points de la section 10.5
-node scripts/verif/parcours.mjs             # rejoue tout le parcours dans un navigateur
+node scripts/verif/parcours.mjs             # rejoue le parcours dans Chromium et WebKit
+node scripts/verif/parcours.mjs '' '' webkit  # une seule famille de navigateurs
 node scripts/verif/tableau.mjs              # vérifie le tableau de bord
 node scripts/verif/calibrer-demo.mjs        # mesure les données fictives
 ```
 
 Le premier et le deuxième ne demandent rien d'autre que Node.
 
-Les deux derniers demandent Playwright (`npm install`) et un serveur local sur
-le port 8127 :
+Les vérifications par navigateur demandent Playwright et ses navigateurs :
 
 ```sh
-python3 -m http.server 8127 --directory docs
+npm install
+npx playwright install chromium webkit
+node scripts/serveur.mjs 8127
 ```
+
+Arnaud teste dans Safari : **WebKit fait partie des cibles**, en ordinateur et
+en iPhone émulé. Plusieurs écarts ne se voient que là.
 
 Ils écrivent leurs captures dans `/tmp/edl-captures`, à comparer avec
 `maquette/captures/`.
@@ -102,3 +109,4 @@ node scripts/generer-contenu-gs.mjs
 | 30/09/2026 | `dfbea85` | Corrections passe 1, groupe B : parcours public et maquettes. |
 | 30/09/2026 | `33e7a74` | Corrections passe 1, groupe C : barres de dimension compactées. |
 | 30/09/2026 | `2c1e597` | Corrections passe 1, groupe D : npm test portable. |
+| 30/09/2026 | `à venir` | Passe 2, point 0 : WebKit dans les vérifications, serveur local sans cache. |
