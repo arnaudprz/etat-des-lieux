@@ -65,10 +65,18 @@ function groupePilules(cle, definition, surChoix, deuxColonnes = false) {
     classe: 'pilules' + (deuxColonnes ? ' pilules--colonnes' : ''),
     attrs: { role: 'radiogroup', 'aria-labelledby': idIntitule },
   });
-  definition.choix.forEach((choix) => {
-    const entree = el('input', { attrs: { type: 'radio', name: cle, value: choix } });
+  definition.choix.forEach((choix, i) => {
+    // La valeur enregistrée reste celle de contenu.json ; seule l'étiquette
+    // raccourcit, pour qu'aucune pastille ne passe sur 2 lignes à 390px.
+    const etiquette = (definition.courts && definition.courts[i]) || choix;
+    const entree = el('input', {
+      attrs: { type: 'radio', name: cle, value: choix, 'aria-label': choix },
+    });
     entree.addEventListener('change', () => surChoix(choix));
-    pilules.appendChild(el('label', { classe: 'pilule' }, [entree, choix]));
+    pilules.appendChild(el('label', { classe: 'pilule' }, [
+      entree,
+      el('span', { classe: 'pilule__libelle', texte: etiquette }),
+    ]));
   });
 
   return el('div', { classe: 'champ', attrs: { 'data-champ': cle } }, [intitule, pilules]);

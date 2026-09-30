@@ -27,14 +27,11 @@ function afficherEnsemble(resultat) {
   texte(etiquette, resultat.carte.etiquette);
 
   texte($('[data-carte-titre]'), resultat.carte.titre);
-  texte($('[data-carte-texte]'), resultat.carte.texte);
 
-  // L'ordre suit le simulateur : la phrase d'appui, puis la phrase de forme.
-  const appui = $('[data-appui]');
-  if (resultat.appui) { texte(appui, resultat.appui); appui.hidden = false; }
-
-  const forme = $('[data-forme]');
-  if (resultat.forme) { texte(forme, resultat.forme); forme.hidden = false; }
+  // La carte se lit d'une traite : le texte, puis la phrase d'appui, puis la
+  // phrase de forme, dans le même paragraphe. L'ordre suit le simulateur.
+  const phrases = [resultat.carte.texte, resultat.appui, resultat.forme].filter(Boolean);
+  texte($('[data-carte-texte]'), phrases.join(' '));
 }
 
 /** La légende des 4 couleurs : chaque couleur porte toujours son nom écrit. */
@@ -104,6 +101,25 @@ function brancherCopie() {
   const champ = $('[data-lien]');
   const bouton = $('[data-copier]');
   champ.value = location.href;
+
+  // Le partage du téléphone, pour se l'envoyer par message. Absent sur
+  // ordinateur, où l'astuce des favoris le remplace.
+  const partager = $('[data-partager]');
+  if (partager && typeof navigator.share === 'function') {
+    partager.hidden = false;
+    partager.addEventListener('click', async () => {
+      try {
+        await navigator.share({
+          title: 'Mon état des lieux',
+          text: 'Mon état des lieux d’équipe',
+          url: location.href,
+        });
+      } catch (e) { /* partage refusé ou annulé : rien à faire */ }
+    });
+  } else {
+    const astuce = $('[data-astuce]');
+    if (astuce) astuce.hidden = false;
+  }
 
   bouton.addEventListener('click', async () => {
     try {

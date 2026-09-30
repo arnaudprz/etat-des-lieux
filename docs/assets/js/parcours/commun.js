@@ -54,15 +54,35 @@ export function typographierPage(racine = document.body) {
   });
 }
 
-/** Affiche un bandeau discret quand le site tourne sans backend. */
+/**
+ * Signale que rien n'est enregistré.
+ *
+ * En mode démo explicite (?demo=1), un bandeau en haut : c'est une
+ * démonstration, autant que ce soit clair. En local sans API, une mention
+ * discrète en bas de page : le site est en cours de fabrication, le bandeau
+ * volerait la place du contenu à chaque écran.
+ */
 export function signalerModeDemo() {
   if (!modeDemo()) return;
-  const b = el('p', {
-    classe: 'demo',
-    texte: 'Mode démo : aucune réponse n’est enregistrée.',
-    attrs: { role: 'status' },
-  });
-  document.body.insertBefore(b, document.body.firstChild);
+
+  let demoExplicite = false;
+  try {
+    demoExplicite = new URLSearchParams(location.search).get('demo') === '1';
+  } catch (e) { /* environnement sans location */ }
+
+  const texteDemo = 'Mode démo : aucune réponse n’est enregistrée.';
+
+  if (demoExplicite) {
+    document.body.insertBefore(
+      el('p', { classe: 'demo', texte: texteDemo, attrs: { role: 'status' } }),
+      document.body.firstChild
+    );
+    return;
+  }
+
+  document.body.appendChild(
+    el('p', { classe: 'demo demo--pied', texte: texteDemo, attrs: { role: 'status' } })
+  );
 }
 
 /** Enregistre un événement d'entonnoir, sans jamais bloquer la page. */

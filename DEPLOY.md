@@ -166,6 +166,13 @@ git remote add origin https://github.com/arnaudprz/etat-des-lieux.git
 git push -u origin main
 ```
 
+> **L'aperçu des réseaux sociaux** est déclaré en adresse absolue dans
+> `docs/index.html` (`og:url` et `og:image`), pointant vers
+> `https://arnaudprz.github.io/etat-des-lieux/`. Si tu publies ailleurs,
+> corrige ces deux balises, sinon LinkedIn et WhatsApp n'afficheront pas
+> l'image. Pour la régénérer après un changement de titre :
+> `node scripts/generer-images.mjs`.
+
 ### Activer GitHub Pages
 
 Sur le repo : **Settings ▸ Pages**.

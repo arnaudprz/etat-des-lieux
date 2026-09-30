@@ -784,7 +784,7 @@
       ]
     },
     "taille_entreprise": {
-      "question": "Taille de votre entreprise",
+      "question": "Taille de votre entreprise (nombre de salariés)",
       "choix": [
         "1 à 9 salariés",
         "10 à 49 salariés",
@@ -792,6 +792,14 @@
         "300 à 999 salariés",
         "1 000 à 4 999 salariés",
         "5 000 salariés et plus"
+      ],
+      "courts": [
+        "1 à 9",
+        "10 à 49",
+        "50 à 299",
+        "300 à 999",
+        "1 000 à 4 999",
+        "5 000 et plus"
       ]
     },
     "secteur": {
@@ -821,11 +829,16 @@
       ]
     },
     "taille_equipe": {
-      "question": "Taille de votre équipe",
+      "question": "Taille de votre équipe (nombre de personnes)",
       "choix": [
         "2 à 5 personnes",
         "6 à 12 personnes",
         "13 personnes et plus"
+      ],
+      "courts": [
+        "2 à 5",
+        "6 à 12",
+        "13 et plus"
       ]
     }
   },

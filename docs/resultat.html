@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Votre état des lieux · Greatly</title>
 <meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
@@ -67,11 +69,23 @@
 
     <section class="carte bloc" id="lien-personnel">
       <h2 class="bloc__titre">Votre lien personnel</h2>
-      <p>Voici votre lien. Gardez-le en favoris pour retrouver votre état des lieux quand vous le souhaitez. Il ne contient ni votre nom ni aucune donnée personnelle.</p>
+      <p>Votre lien est prêt. Gardez-le pour retrouver votre état des lieux quand vous le souhaitez. Il ne contient ni votre nom ni aucune donnée personnelle.</p>
+
       <div class="lien-perso">
-        <input class="champ-texte" type="text" aria-label="Votre lien personnel" data-lien readonly>
         <button class="btn" type="button" data-copier>Copier le lien</button>
+        <!-- Seulement là où le téléphone sait partager. -->
+        <button class="bouton-doux" type="button" data-partager hidden>Envoyer à moi-même</button>
       </div>
+
+      <!-- L'URL brute est longue : on la garde, repliée. -->
+      <details class="lien-perso__details">
+        <summary>Voir le lien</summary>
+        <input class="champ-texte" type="text" aria-label="Votre lien personnel" data-lien readonly>
+      </details>
+
+      <p class="lien-perso__astuce" data-astuce hidden>
+        Ajoutez cette page à vos favoris (⌘ D sur Mac, Ctrl D sur PC).
+      </p>
     </section>
 
     <section class="greatly" id="greatly">

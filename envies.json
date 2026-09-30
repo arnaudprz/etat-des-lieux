@@ -1,8 +1,9 @@
 {
-  "debut": "Vous aimeriez",
-  "autre": "d'autres choses encore",
-  "autre_seul": "Vous aimeriez que les choses évoluent sur ce point.",
+  "titre": "Vos idées pour faire évoluer",
+  "autre": "d'autres idées encore",
+  "autre_seul": "Une idée à préciser.",
   "resultats_titre": "Pour avancer vers vos objectifs",
+  "phrase_finale": "Ces idées sont les vôtres. Elles peuvent nourrir une prochaine discussion, avec vos collègues ou votre manager.",
   "fragments": {
     "1": {
       "membre": [
@@ -173,71 +174,6 @@
         "plus de moyens",
         "des métiers qui se coordonnent mieux"
       ]
-    }
-  },
-  "empathie": {
-    "vise": {
-      "membre": "Cette envie dit que vous tenez à avancer dans la même direction que les autres. Un cap partagé, c'est souvent ce qui rend les choix du quotidien plus simples."
-    },
-    "sait": {
-      "membre": "Être mieux compris, et mieux comprendre : quand chaque métier voit ce que vivent les autres, beaucoup de petites tensions s'apaisent d'elles-mêmes.",
-      "manager": "Une équipe qui voit le travail avec clarté : c'est une attention à ce que chacun comprend, pas seulement à ce qu'il fait."
-    },
-    "place": {
-      "membre": "Cette envie parle de reconnaissance. Se sentir vu et entendu, c'est ce qui donne envie de s'engager pour le collectif."
-    },
-    "info": {
-      "membre": "Ces envies sont très concrètes. Elles disent combien la façon dont l'info circule pèse sur le quotidien, bien au-delà des outils."
-    },
-    "accroche": {
-      "membre": "Chercher ensemble plutôt que chacun de son côté : c'est souvent quand une difficulté se partage qu'elle devient plus légère."
-    },
-    "manager": {
-      "membre": "Ce que vous attendez de votre manager dit ce qui vous aiderait à bien travailler avec les autres. C'est une information précieuse, et légitime.",
-      "manager": "Ces envies montrent l'attention que vous portez à votre rôle. Accompagner une équipe, cela s'apprend aussi, avec le temps et avec d'autres."
-    },
-    "confiance": {
-      "membre": "Ces envies parlent de confiance. Pouvoir parler franchement et compter sur les autres, c'est ce qui permet à chacun d'être pleinement lui-même au travail."
-    },
-    "sens": {
-      "membre": "Donner plus de place au sens, à côté des chiffres : c'est souvent lui qui donne de l'énergie dans la durée."
-    },
-    "resultats": {
-      "membre": "Ces envies disent ce qui vous aiderait à atteindre vos objectifs sereinement. Elles parlent des conditions du travail, pas de l'effort de chacun."
-    }
-  },
-  "encouragement": {
-    "vise": {
-      "membre": "C'est une bonne idée. Elle mérite d'être partagée avec votre équipe : un cap devient commun quand on en parle ensemble.",
-      "manager": "Faites-vous confiance : en parler avec votre équipe, c'est déjà commencer à rendre ce cap commun."
-    },
-    "sait": {
-      "membre": "Votre idée est bonne, faites-vous confiance. En parler avec vos collègues, c'est déjà leur ouvrir une porte sur votre travail.",
-      "manager": "Faites-vous confiance : en parler avec votre équipe, c'est déjà rendre les choses plus claires pour chacun."
-    },
-    "place": {
-      "membre": "Ce besoin est légitime, faites-vous confiance. Il mérite d'être dit, en équipe ou à votre manager.",
-      "manager": "Faites-vous confiance : dire à votre équipe que chaque voix compte, c'est déjà lui faire de la place."
-    },
-    "info": {
-      "membre": "Ce sont de bonnes idées, et simples à proposer. Un point d'équipe est souvent le bon moment pour en parler."
-    },
-    "accroche": {
-      "membre": "Proposer de chercher ensemble, c'est une bonne idée. Faites-vous confiance : la prochaine fois que ça coince, dites-le."
-    },
-    "manager": {
-      "membre": "Votre manager ne peut pas tout deviner. Lui dire simplement ce qui vous aiderait, c'est une bonne idée.",
-      "manager": "Ce sont de bonnes pistes, faites-vous confiance. En parler avec d'autres managers, ou avec votre équipe, peut vous aider à avancer."
-    },
-    "confiance": {
-      "membre": "Ce que vous ressentez compte, faites-vous confiance. En parler d'abord à une personne de confiance, c'est souvent un bon début.",
-      "manager": "Faites-vous confiance : en parler avec votre équipe, c'est déjà montrer qu'on peut parler franchement."
-    },
-    "sens": {
-      "membre": "C'est une bonne idée. Elle mérite une place en équipe, à côté des chiffres : osez la proposer."
-    },
-    "resultats": {
-      "membre": "Ces idées peuvent aider tout le monde, faites-vous confiance. Elles méritent d'être partagées avec votre équipe ou votre manager."
     }
   }
 }

@@ -360,9 +360,18 @@ a:hover { color: var(--foret); }
 
 /* Bandeau de mode démo, jamais affiché en production. */
 .demo {
+  margin: 0;
   background: var(--germe);
   color: var(--encre);
   font-size: 13px;
   text-align: center;
   padding: 8px 16px;
+}
+
+/* En local sans API : une mention discrète en bas, qui ne vole pas la place. */
+.demo--pied {
+  background: none;
+  color: var(--taupe);
+  font-size: 12px;
+  padding: 12px 16px 24px;
 }

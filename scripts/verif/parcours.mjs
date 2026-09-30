@@ -221,12 +221,62 @@ async function passerLaCible(cible) {
     soucis.push(`[${nom}] accueil : ${ecartApercu}px entre les lignes de l'aperçu au lieu de ${ecartApercuAttendu}`);
   }
 
+  // Le bandeau de démo ne doit pas voler le haut de page hors mode explicite.
+  const demo = await page.evaluate(() => {
+    const n = document.querySelector('.demo');
+    if (!n) return null;
+    return { enHaut: n === document.body.firstElementChild, enPied: n.classList.contains('demo--pied') };
+  });
+  if (demo && demo.enHaut) {
+    soucis.push(`[${nom}] accueil : le bandeau de démo occupe le haut de page sans ?demo=1`);
+  }
+  if (demo && !demo.enPied) {
+    soucis.push(`[${nom}] accueil : le bandeau de démo n'est pas en pied de page`);
+  }
+
+  // Icône et aperçu des réseaux.
+  const metas = await page.evaluate(() => ({
+    icone: document.querySelector('link[rel="icon"]')?.getAttribute('href') || null,
+    ecranAccueil: document.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href') || null,
+    image: document.querySelector('meta[property="og:image"]')?.getAttribute('content') || '',
+    url: document.querySelector('meta[property="og:url"]')?.getAttribute('content') || '',
+    carte: document.querySelector('meta[name="twitter:card"]')?.getAttribute('content') || '',
+    titre: document.querySelector('meta[property="og:title"]')?.getAttribute('content') || '',
+  }));
+  if (!metas.icone) soucis.push(`[${nom}] accueil : pas de favicon`);
+  if (!metas.ecranAccueil) soucis.push(`[${nom}] accueil : pas d'icône d'écran d'accueil`);
+  if (!metas.image.startsWith('http') || !metas.image.endsWith('.png')) {
+    soucis.push(`[${nom}] accueil : og:image « ${metas.image} » n'est pas un PNG en adresse absolue`);
+  }
+  if (!metas.url.startsWith('http')) soucis.push(`[${nom}] accueil : og:url manquant`);
+  if (metas.carte !== 'summary_large_image') soucis.push(`[${nom}] accueil : twitter:card manquant`);
+  if (metas.titre !== 'Ce qui vous aide à bien travailler ensemble') {
+    soucis.push(`[${nom}] accueil : og:title « ${metas.titre} » ne suit pas le titre`);
+  }
+
   await verifierTirets(page, `${nom} accueil`);
   await capturer(`Main${suffixe}`, `${nom} accueil`);
 
   // -------------------------------------------------------------- 2. profil
   await page.click('.hero__actions a.btn');
   await page.waitForSelector('.pilules');
+
+  // Aucune pastille de taille ne doit passer sur 2 lignes.
+  const pastillesLongues = await page.evaluate(() =>
+    Array.from(document.querySelectorAll(
+      '[data-champ="taille_entreprise"] .pilule, [data-champ="taille_equipe"] .pilule'
+    ))
+      .map((p) => {
+        // On mesure le texte lui-même : la pastille a une hauteur minimale de
+        // 46px qui ne dit rien du nombre de lignes.
+        const libelle = p.querySelector('.pilule__libelle');
+        const lignes = libelle ? libelle.getClientRects().length : 0;
+        return { texte: p.innerText.trim(), lignes };
+      })
+      .filter((p) => p.lignes > 1));
+  if (pastillesLongues.length > 0) {
+    soucis.push(`[${nom}] profil : pastilles sur 2 lignes : ${pastillesLongues.map((p) => p.texte).join(', ')}`);
+  }
 
   // Les trois écarts doivent être identiques dans Chromium et WebKit.
   const ecarts = await page.evaluate(() => {
@@ -688,11 +738,19 @@ async function passerLaCible(cible) {
   if (titreCarte !== 'Une équipe en germe') {
     soucis.push(`[${nom}] resultat : carte « ${titreCarte} »`);
   }
-  if (!(await page.locator('[data-appui]').innerText()).includes('le soutien du manager')) {
-    soucis.push(`[${nom}] resultat : phrase d'appui inattendue`);
+  // La carte se lit d'une traite : texte, appui et forme dans un seul paragraphe.
+  const texteCarte = await page.locator('[data-carte-texte]').innerText();
+  if (!texteCarte.includes('le soutien du manager')) {
+    soucis.push(`[${nom}] resultat : la phrase d'appui manque dans la carte`);
   }
-  if (!(await page.locator('[data-forme]').innerText()).startsWith('Votre regard est contrasté')) {
-    soucis.push(`[${nom}] resultat : phrase de forme inattendue`);
+  if (!texteCarte.includes('Votre regard est contrasté')) {
+    soucis.push(`[${nom}] resultat : la phrase de forme manque dans la carte`);
+  }
+  const paragraphesCarte = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('.ensemble__haut p'))
+      .filter((p) => p.innerText.trim() !== '').length);
+  if (paragraphesCarte !== 1) {
+    soucis.push(`[${nom}] resultat : la carte tient sur ${paragraphesCarte} paragraphes au lieu d'un`);
   }
   if (!(await page.locator('[data-sans-resultat]').isHidden())) {
     soucis.push(`[${nom}] resultat : le bloc « ce lien ne porte pas de résultat » s'affiche aussi`);
@@ -769,6 +827,48 @@ async function passerLaCible(cible) {
   });
   if (etiquette.lignes > 1 && etiquette.rayon > 20) {
     soucis.push(`[${nom}] resultat : étiquette sur ${etiquette.lignes} lignes dans une pilule`);
+  }
+
+  // Le lien personnel : des boutons, et l'URL brute repliée.
+  const lien = await page.evaluate(() => {
+    const details = document.querySelector('.lien-perso__details');
+    const champ = document.querySelector('[data-lien]');
+    const partager = document.querySelector('[data-partager]');
+    const astuce = document.querySelector('[data-astuce]');
+    return {
+      replie: details ? !details.open : null,
+      // Un <details> replié masque son contenu sans forcément annuler
+      // offsetParent : on regarde s'il occupe vraiment de la place.
+      champVisible: champ ? champ.getClientRects().length > 0 : null,
+      valeur: champ ? champ.value : '',
+      partageVisible: partager ? !partager.hidden : null,
+      astuceVisible: astuce ? !astuce.hidden : null,
+      partageDisponible: typeof navigator.share === 'function',
+    };
+  });
+  if (lien.replie !== true) soucis.push(`[${nom}] resultat : l'URL brute n'est pas repliée`);
+  if (lien.champVisible) soucis.push(`[${nom}] resultat : l'URL brute s'affiche d'emblée`);
+  if (!lien.valeur.includes('#v1-')) soucis.push(`[${nom}] resultat : le lien ne porte pas le résultat`);
+  if (lien.partageDisponible && !lien.partageVisible) {
+    soucis.push(`[${nom}] resultat : le partage existe mais le bouton est caché`);
+  }
+  if (!lien.partageDisponible && !lien.astuceVisible) {
+    soucis.push(`[${nom}] resultat : ni partage ni astuce des favoris`);
+  }
+  if (lien.partageVisible && lien.astuceVisible) {
+    soucis.push(`[${nom}] resultat : le partage et l'astuce s'affichent tous les deux`);
+  }
+
+  // Tous les liens et boutons secondaires tiennent 44px au doigt.
+  const tropPetits = await page.evaluate(() =>
+    Array.from(document.querySelectorAll(
+      '.lien-discret, .bouton-doux, .navigation__retour, .lien-perso__details summary, .secteur-choisi button'
+    ))
+      .filter((n) => n.offsetParent !== null)
+      .filter((n) => n.getBoundingClientRect().height < 44)
+      .map((n) => `${n.className.split(' ')[0]} (${Math.round(n.getBoundingClientRect().height)}px)`));
+  if (tropPetits.length > 0) {
+    soucis.push(`[${nom}] resultat : zones tactiles sous 44px : ${tropPetits.join(', ')}`);
   }
 
   // « Garder mon résultat » amène au lien personnel, qui arrive très bas.
