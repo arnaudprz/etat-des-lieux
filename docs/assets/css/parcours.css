@@ -1316,6 +1316,30 @@
 
 .lien-perso__astuce[hidden] { display: none; }
 
+/* Faire connaître l'état des lieux : une invitation discrète, en pointillé,
+   pour qu'on la distingue des blocs de contenu. */
+.carte-pointillee {
+  border: 1px dashed var(--sauge-clair);
+  border-radius: var(--rayon-carte);
+  background: transparent;
+}
+
+.partage {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.partage__texte {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--taupe);
+  max-width: 760px;
+}
+
 /* Bloc Greatly */
 .greatly {
   background: var(--foret);
@@ -1470,6 +1494,7 @@
   .bloc__titre { font-size: 28px; }
   .greatly { grid-template-columns: 300px minmax(0, 1fr); }
   .greatly__photo { min-height: 360px; }
+  .partage { padding: 24px 32px; flex-direction: row; align-items: center; justify-content: space-between; gap: 24px; }
   .greatly__texte { padding: 40px 44px; }
   .greatly__titre { font-size: 30px; }
   .etude { padding: 36px 40px; }

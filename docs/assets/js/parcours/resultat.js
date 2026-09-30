@@ -157,6 +157,47 @@ function enumerer(elements) {
   return `${elements.slice(0, -1).join(', ')} et ${elements[elements.length - 1]}`;
 }
 
+/**
+ * Faire connaître l'état des lieux.
+ *
+ * Seule la page d'accueil est partagée : jamais l'URL du résultat, jamais le
+ * hash, qui porte les réponses de la personne. Pas d'invitation d'équipe, pas
+ * de formulaire : un simple partage.
+ */
+function brancherPartage(contenu) {
+  const bouton = $('[data-partager-accueil]');
+  const texteBloc = $('[data-partage-texte]');
+  if (!bouton) return;
+
+  const p = contenu.engagement.partage;
+  texte(texteBloc, p.texte);
+  texte(bouton, p.bouton);
+
+  // L'accueil, sans requête ni hash : on repart de l'adresse de cette page.
+  const accueil = new URL('index.html', location.href);
+  accueil.hash = '';
+  accueil.search = '';
+  const adresse = accueil.href;
+
+  bouton.addEventListener('click', async () => {
+    evenement('partage_accueil');
+
+    if (typeof navigator.share === 'function') {
+      try {
+        await navigator.share({ title: p.titre_partage, text: p.phrase_partage, url: adresse });
+        return;
+      } catch (e) { /* partage refusé ou annulé : on retombe sur la copie */ }
+    }
+
+    try {
+      await navigator.clipboard.writeText(adresse);
+    } catch (e) { /* presse-papiers refusé : le message reste juste, l'adresse est visible */ }
+    texte(bouton, p.copie);
+    annoncer(p.copie);
+    window.setTimeout(() => texte(bouton, p.bouton), 2500);
+  });
+}
+
 function brancherEtude() {
   const formulaire = $('[data-etude]');
   const message = $('[data-message-etude]');
@@ -263,6 +304,7 @@ async function demarrer() {
   }
   brancherRaccourciLien();
   brancherCopie();
+  brancherPartage(contenu);
   brancherEtude();
   typographierPage();
 }

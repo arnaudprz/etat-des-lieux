@@ -162,6 +162,20 @@ describe('événements d’entonnoir', () => {
     assert.deepEqual(Object.keys(l[0]), ['date', 'session', 'type']);
   });
 
+  test('accepte le partage de l’accueil', () => {
+    assert.equal(w.__post({ action: 'evenement', type: 'partage_accueil', session: 'abc' }).ok, true);
+    assert.equal(w.__lignes('evenements')[0].type, 'partage_accueil');
+  });
+
+  test('le tableau de bord compte les partages de l’accueil', () => {
+    w.__post({ action: 'evenement', type: 'partage_accueil', session: 'a' });
+    w.__post({ action: 'evenement', type: 'partage_accueil', session: 'a' });
+    w.__post({ action: 'evenement', type: 'partage_accueil', session: 'b' });
+    const d = w.__get({ action: 'donnees', cle: CLE });
+    // On compte les visites, pas les clics.
+    assert.equal(d.entonnoir.partage_accueil, 2);
+  });
+
   test('refuse un type inconnu', () => {
     assert.equal(w.__post({ action: 'evenement', type: 'achat', session: 'abc' }).ok, false);
   });

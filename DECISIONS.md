@@ -89,6 +89,16 @@ Les choix faits avec Arnaud pendant la conception des maquettes (septembre 2026)
 | Deux cartes « Pour vous » et « Pour Greatly et ses intervenants » sous le haut de page | Dire franchement ce que la personne y gagne, et ce que Greatly en fait. On parle d'intervenants, jamais d'experts. |
 | « Ce que vous recevez en 2 minutes », en 4 points numérotés | L'ancienne section en 3 boîtes ne disait pas ce qu'on obtient concrètement. |
 
+## Donner envie de répondre jusqu'au bout (septembre 2026)
+
+| Décision | Pourquoi |
+| --- | --- |
+| On dit pourquoi on s'intéresse à chaque sujet, sous chaque titre de groupe | Répondre à 16 affirmations sans savoir ce qu'on en fera est ingrat. Dire ce qu'on cherche donne du sens à chaque question. |
+| Un encadré « Ce qu'on cherche à comprendre » avant la première affirmation, sur la même page | La personne sait où elle met les pieds, sans un clic de plus. |
+| La pousse montre l'avancée, sans chiffre | Une barre nue ne dit rien. Une pousse qui grandit vers un arbre raconte le chemin. Ce n'est pas un score : la jauge reste sauge et ne reprend jamais les couleurs du résultat. |
+| Un mot à mi-parcours | Le milieu est l'endroit où l'on décroche. Un merci suffit. |
+| On partage l'accueil, jamais le résultat | Le résultat appartient à la personne, et son lien contient ses réponses. Faire connaître l'outil ne doit jamais exposer ce qu'elle a répondu. |
+
 ## Le public et la marque
 
 | Décision | Pourquoi |

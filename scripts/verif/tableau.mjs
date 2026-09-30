@@ -59,6 +59,14 @@ if (!texteCompletion.includes('parcours en ligne seulement')) {
   soucis.push('le taux de complétion ne précise pas qu’il ne concerne que l’en ligne');
 }
 
+// L'entonnoir compte aussi les partages de l'accueil.
+const etapesEntonnoir = await page
+  .locator('.section-admin', { hasText: "Du premier clic à l'état des lieux" })
+  .locator('.ligne-barre__nom').allInnerTexts();
+if (!etapesEntonnoir.some((t) => t.includes("Partages de l'accueil"))) {
+  soucis.push(`l'entonnoir ne compte pas les partages de l'accueil : ${etapesEntonnoir.join(', ')}`);
+}
+
 // A4 : l'entonnoir dit qu'il ne suit que la période.
 const sousTitreEntonnoir = await page
   .locator('.section-admin', { hasText: "Du premier clic à l'état des lieux" })

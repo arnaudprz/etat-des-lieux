@@ -979,6 +979,58 @@ async function passerLaCible(cible) {
     soucis.push(`[${nom}] resultat : le partage et l'astuce s'affichent tous les deux`);
   }
 
+  // Faire connaître l'état des lieux : jamais le résultat, jamais le hash.
+  const partage = await page.evaluate(async () => {
+    const bouton = document.querySelector('[data-partager-accueil]');
+    if (!bouton) return null;
+
+    // On intercepte ce que la page tente de partager ou de copier.
+    let partage = null;
+    let copie = null;
+    const partageOriginal = navigator.share;
+    navigator.share = async (d) => { partage = d; };
+    const ecrireOriginal = navigator.clipboard && navigator.clipboard.writeText;
+    if (navigator.clipboard) navigator.clipboard.writeText = async (t) => { copie = t; };
+
+    bouton.click();
+    await new Promise((r) => setTimeout(r, 300));
+
+    navigator.share = partageOriginal;
+    if (navigator.clipboard && ecrireOriginal) navigator.clipboard.writeText = ecrireOriginal;
+
+    return {
+      texte: document.querySelector('[data-partage-texte]')?.textContent || '',
+      etiquette: bouton.textContent,
+      pointille: getComputedStyle(bouton.closest('.carte-pointillee') || bouton).borderStyle,
+      adressePartagee: partage ? partage.url : null,
+      adresseCopiee: copie,
+    };
+  });
+
+  if (!partage) {
+    soucis.push(`[${nom}] resultat : pas de bouton pour faire connaître l'état des lieux`);
+  } else {
+    const adresse = partage.adressePartagee || partage.adresseCopiee || '';
+    if (!adresse) {
+      soucis.push(`[${nom}] resultat : le partage ne propose aucune adresse`);
+    }
+    if (adresse.includes('#')) {
+      soucis.push(`[${nom}] resultat : le partage emporte un hash : ${adresse}`);
+    }
+    if (adresse.includes('resultat.html')) {
+      soucis.push(`[${nom}] resultat : le partage emporte l'adresse du résultat : ${adresse}`);
+    }
+    if (!adresse.endsWith('/index.html')) {
+      soucis.push(`[${nom}] resultat : le partage ne pointe pas vers l'accueil : ${adresse}`);
+    }
+    if (!partage.texte.includes("page d'accueil")) {
+      soucis.push(`[${nom}] resultat : le texte ne dit pas que seule l'accueil est partagée`);
+    }
+    if (partage.pointille !== 'dashed') {
+      soucis.push(`[${nom}] resultat : l'encadré de partage n'est pas en pointillé`);
+    }
+  }
+
   // Tous les liens et boutons secondaires tiennent 44px au doigt.
   const tropPetits = await page.evaluate(() =>
     Array.from(document.querySelectorAll(

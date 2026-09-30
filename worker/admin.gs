@@ -56,7 +56,7 @@ function formaterJour(valeur) {
  * On compte les sessions, pas les lignes, pour qu'un rechargement ne gonfle rien.
  */
 function entonnoir() {
-  var vus = { visite: {}, commence: {}, termine: {}, lien_copie: {} };
+  var vus = { visite: {}, commence: {}, termine: {}, lien_copie: {}, partage_accueil: {} };
   lignes(ONGLETS.evenements).forEach(function (e) {
     var type = e.type;
     if (!vus[type]) return;
@@ -66,7 +66,8 @@ function entonnoir() {
     visite: Object.keys(vus.visite).length,
     commence: Object.keys(vus.commence).length,
     termine: Object.keys(vus.termine).length,
-    lien_copie: Object.keys(vus.lien_copie).length
+    lien_copie: Object.keys(vus.lien_copie).length,
+    partage_accueil: Object.keys(vus.partage_accueil).length
   };
 }
 
