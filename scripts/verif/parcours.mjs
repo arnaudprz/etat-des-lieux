@@ -431,7 +431,7 @@ async function passerLaCible(cible) {
   if (echelle.lignes !== 1) soucis.push(`[${nom}] échelle : ${echelle.lignes} lignes au lieu d'une`);
   if (!echelle.largeurEgale) soucis.push(`[${nom}] échelle : les 4 réponses n'ont pas la même largeur`);
   if (echelle.hauteur < 52) soucis.push(`[${nom}] échelle : hauteur de ${echelle.hauteur}px au lieu de 52`);
-  if (echelle.premier !== 'Pas du tout' || echelle.dernier !== 'Tout à fait') {
+  if (echelle.premier !== 'Pas encore' || echelle.dernier !== 'Pleinement') {
     soucis.push(`[${nom}] échelle : ordre inattendu, de « ${echelle.premier} » à « ${echelle.dernier} »`);
   }
 
@@ -471,13 +471,13 @@ async function passerLaCible(cible) {
     }
   }
 
-  // « Pas du tout » sur chacune des 16 : l'état visuel et la valeur enregistrée.
+  // « Pas encore » sur chacune des 16 : l'état visuel et la valeur enregistrée.
   const cartes = page.locator('.affirmation');
   for (let i = 0; i < 16; i += 1) {
     await cartes.nth(i).locator('.echelle__choix').nth(0).click();
     const presse = await cartes.nth(i).locator('.echelle__choix').nth(0).getAttribute('aria-pressed');
     if (presse !== 'true') {
-      soucis.push(`[${nom}] questions : « Pas du tout » sur Q${i + 1} ne s'active pas (aria-pressed ${presse})`);
+      soucis.push(`[${nom}] questions : « Pas encore » sur Q${i + 1} ne s'active pas (aria-pressed ${presse})`);
     }
   }
   const toutABas = await page.evaluate(() => {
@@ -487,7 +487,7 @@ async function passerLaCible(cible) {
     } catch (e) { return null; }
   });
   if (JSON.stringify(toutABas) !== JSON.stringify(new Array(16).fill(0))) {
-    soucis.push(`[${nom}] questions : « Pas du tout » n'enregistre pas 0 partout (${JSON.stringify(toutABas)})`);
+    soucis.push(`[${nom}] questions : « Pas encore » n'enregistre pas 0 partout (${JSON.stringify(toutABas)})`);
   }
 
   // Répondre pour la première fois amène l'affirmation suivante à l'écran.
@@ -518,7 +518,7 @@ async function passerLaCible(cible) {
     soucis.push(`[${nom}] questions : modifier une réponse fait sauter la page de ${Math.abs(apresModif - avantModif)}px`);
   }
 
-  // On répond « Pas du tout » partout pour la suite.
+  // On répond « Pas encore » partout pour la suite.
   for (let i = 0; i < 16; i += 1) {
     await page.locator('.affirmation').nth(i).locator('.echelle__choix').nth(0).click();
   }
@@ -531,7 +531,7 @@ async function passerLaCible(cible) {
   await verifierTirets(page, `${nom} questions`);
   await capturer(`Questions${suffixe}`, `${nom} questions`);
 
-  // Avec 16 réponses « Pas du tout », l'écran de relances s'ouvre sur Q1 et Q2.
+  // Avec 16 réponses « Pas encore », chaque affirmation ouvre sa relance.
   await page.locator('[data-continuer]').click();
   await page.waitForSelector('[data-ecran="relances"]:not([hidden])');
   if (new URL(page.url()).pathname !== '/questions.html') {

@@ -100,6 +100,8 @@ function importerPapier() {
 
     ecrireReponse({
       source: 'papier',
+      // Les réponses papier ont été recueillies avec l'échelle d'accord.
+      echelle: ECHELLE_PAPIER,
       version: VERSIONS[0],
       role: role,
       profil: profil,

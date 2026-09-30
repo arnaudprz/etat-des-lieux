@@ -2,7 +2,12 @@
 
 Version lisible des questions. La source utilisée par le site est `contenu.json` : si tu modifies une phrase ici, demande à Claude Code de la reporter dans `contenu.json`.
 
-Réponses possibles pour chaque affirmation : Pas du tout · Plutôt pas · Plutôt · Tout à fait.
+Réponses possibles pour chaque affirmation : Pas encore · Un peu · En bonne partie · Pleinement.
+
+« Pas encore » dit qu'on n'y est pas, sans fermer la porte : tout peut évoluer.
+
+Une réponse « Pas encore » ou « Un peu » ouvre, juste sous l'affirmation, une question
+« J'aimerais… » qui demande ce qui aiderait. Deux choix au plus, facultatifs.
 
 ## Ce qu'on vise ensemble
 

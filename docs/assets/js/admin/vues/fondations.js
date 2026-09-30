@@ -1,5 +1,5 @@
 /**
- * Les 4 conditions des Fondations : part d'accord sur leurs affirmations.
+ * Les 4 conditions des Fondations : part qui les vit déjà.
  */
 
 import { el, vider } from '../../parcours/commun.js';

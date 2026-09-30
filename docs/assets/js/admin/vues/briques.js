@@ -6,6 +6,7 @@
 
 import { el } from '../../parcours/commun.js';
 import { TROP_PETIT } from '../analyse.js';
+import { melangeDesEchelles, MENTION_ECHELLES } from '../agregats.js';
 
 /** Un nombre à la française, avec espaces insécables. */
 export function nombre(n) {
@@ -34,6 +35,15 @@ export function section(titre, sousTitre, options = {}) {
   }, [haut, corps]);
 
   return { noeud, corps };
+}
+
+/**
+ * La mention des échelles, quand papier et en ligne se côtoient dans un même
+ * chiffre. Les mots de l'échelle ont changé, pas les valeurs.
+ */
+export function mentionEchelles(reponses) {
+  if (!melangeDesEchelles(reponses)) return null;
+  return el('p', { classe: 'mention-echelles', texte: MENTION_ECHELLES });
 }
 
 /** Le message affiché à la place d'un chiffre calculé sur trop peu de monde. */

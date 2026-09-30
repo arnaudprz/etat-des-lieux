@@ -84,6 +84,11 @@ describe('enregistrement d’une réponse', () => {
   test('refuse une action inconnue', () => {
     assert.equal(w.__post({ action: 'tout_effacer' }).ok, false);
   });
+
+  test('une réponse en ligne porte l’échelle d’évolution', () => {
+    w.__post(reponseValide());
+    assert.equal(w.__lignes('reponses')[0].echelle, 'v2-evolution');
+  });
 });
 
 // ------------------------------------------------------------------ relances
@@ -280,6 +285,14 @@ describe('import des réponses papier', () => {
     assert.equal(w.__lignes('reponses').length, 1);
   });
 
+  test('les lignes papier gardent l’échelle d’accord', () => {
+    ajouterLignePapier(w, 'P1');
+    w.importerPapier();
+    // Les 255 réponses papier ont été données avec les anciens mots, mais les
+    // mêmes valeurs de 0 à 3.
+    assert.equal(w.__lignes('reponses')[0].echelle, 'v1-accord');
+  });
+
   test('le profil est facultatif sur papier', () => {
     ajouterLignePapier(w, 'P1');
     w.importerPapier();
@@ -353,6 +366,12 @@ describe('accès au tableau de bord', () => {
     assert.ok(!brut.includes('Camille'), 'aucun nom ne doit apparaître');
     assert.ok(!brut.includes('c@a.fr'), 'aucune adresse ne doit apparaître');
     assert.equal(d.nombre_contacts, 1, 'seul le nombre est renvoyé');
+  });
+
+  test('le tableau de bord reçoit l’échelle de chaque ligne', () => {
+    w.__post(reponseValide());
+    const d = w.__get({ action: 'donnees', cle: CLE });
+    assert.equal(d.reponses[0].echelle, 'v2-evolution');
   });
 
   test('les réponses sortent sous forme de tableau de 16 valeurs', () => {

@@ -18,7 +18,7 @@ var ONGLETS = {
 
 /** Colonnes de l'onglet reponses, dans l'ordre. */
 function colonnesReponses() {
-  var c = ['id', 'date', 'source', 'version', 'role', 'genre',
+  var c = ['id', 'date', 'source', 'echelle', 'version', 'role', 'genre',
            'taille_entreprise', 'secteur', 'taille_equipe'];
   for (var i = 1; i <= NB_AFFIRMATIONS; i++) c.push('q' + i);
   for (var j = 1; j <= NB_AFFIRMATIONS; j++) c.push('relance_q' + j);

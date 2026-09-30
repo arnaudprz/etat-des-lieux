@@ -173,9 +173,13 @@ export function reponsesFictives(contenu, nombre = 412, graine = 20260930) {
       .toISOString()
       .slice(0, 10);
 
+    const source = aleatoire() < PART_PAPIER ? 'papier' : 'en_ligne';
+
     lignes.push({
       date,
-      source: aleatoire() < PART_PAPIER ? 'papier' : 'en_ligne',
+      source,
+      // Le papier a été recueilli avec l'ancienne échelle d'accord.
+      echelle: source === 'papier' ? 'v1-accord' : 'v2-evolution',
       version: 'v1',
       role,
       genre: selonPoids(aleatoire, p.genre.choix.concat(['']), [48, 43, 1, 4, 8]),

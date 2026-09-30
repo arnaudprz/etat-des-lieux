@@ -47,7 +47,7 @@ function monterSections(hote) {
 
   s.fondations = section(
     'Les 4 conditions des Fondations',
-    'Part des réponses « Plutôt » ou « Tout à fait » sur les affirmations qui correspondent à chaque condition.'
+    'Part des réponses « En bonne partie » ou « Pleinement » sur les affirmations qui correspondent à chaque condition.'
   );
 
   s.repondants = section('Qui a répondu', '');
@@ -80,14 +80,14 @@ function monterSections(hote) {
   });
   s.affirmations = section(
     'Toutes les réponses, affirmation par affirmation',
-    "Pour chaque affirmation, la part des répondants d'accord, le détail des 4 réponses, "
-      + "et ce que souhaitent le plus ceux qui ne sont pas d'accord.",
+    'Pour chaque affirmation, la part des répondants qui le vivent déjà, le détail '
+      + 'des 4 réponses, et ce que souhaitent le plus ceux qui répondent Pas encore ou Un peu.',
     { action: basculeRole }
   );
 
   s.comparaison = section(
     'Managers et membres',
-    'Part des réponses « Plutôt » ou « Tout à fait », de 0 à 100 %. À droite, l’écart en points.'
+    'Part des réponses « En bonne partie » ou « Pleinement », de 0 à 100 %. À droite, l’écart en points.'
   );
 
   s.resultats = section(

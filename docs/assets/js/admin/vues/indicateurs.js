@@ -8,7 +8,7 @@
 
 import { el, vider } from '../../parcours/commun.js';
 import { indicateurs } from '../agregats.js';
-import { nombre, part } from './briques.js';
+import { nombre, part, mentionEchelles } from './briques.js';
 
 function tuile(intitule, valeur, precisions) {
   return el('div', { classe: 'carte tuile' }, [
@@ -52,6 +52,10 @@ export function afficherIndicateurs(hote, reponses, entonnoir, contenu, filtres 
     nombre(i.secteurs),
     `sur ${nombre(i.secteursPossibles)} dans la liste`
   ));
+
+  // Quand les deux échelles se côtoient, on le dit sous les chiffres.
+  const mention = mentionEchelles(reponses);
+  if (mention) hote.appendChild(mention);
 
   if (!papierSeul) {
     hote.appendChild(tuile(

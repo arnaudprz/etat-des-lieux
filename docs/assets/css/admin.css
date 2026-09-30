@@ -192,6 +192,18 @@
    écart de section entre chacune. */
 .section-admin__corps > .rangee--compacte + .rangee--compacte { margin-top: -2px; }
 
+/* Rappel discret quand papier et en ligne, aux mots différents, se côtoient. */
+.mention-echelles {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--voile-leger);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--taupe);
+  grid-column: 1 / -1;
+}
+
 .trop-petit {
   margin: 0;
   font-size: 14px;

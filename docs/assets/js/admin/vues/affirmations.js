@@ -2,20 +2,20 @@
  * Toutes les réponses, affirmation par affirmation, avec la bascule
  * Membres / Managers.
  *
- * Ordre de lecture voulu : d'abord le constat (la part d'accord en grand), puis
- * le détail des 4 réponses, puis l'affirmation, puis ce que souhaitent ceux qui
- * ne sont pas d'accord.
+ * Ordre de lecture voulu : d'abord le constat (la part qui le vit déjà, en
+ * grand), puis le détail des 4 réponses, puis l'affirmation, puis ce que
+ * souhaitent ceux qui ont répondu Pas encore ou Un peu.
  */
 
 import { el, vider } from '../../parcours/commun.js';
 import { detailAffirmation, souhaitLePlusChoisi } from '../agregats.js';
-import { nombre, part, tropPetit } from './briques.js';
+import { nombre, part, tropPetit, mentionEchelles } from './briques.js';
 
-/** L'encadré sable : ce que souhaitent ceux qui ne sont pas d'accord. */
+/** L'encadré sable : ce que souhaitent ceux qui ont répondu Pas encore ou Un peu. */
 function encadreSouhait(souhait) {
   return el('div', { classe: 'souhait' }, [
     el('span', { classe: 'souhait__question' }, [
-      'Ceux qui ne sont pas d’accord ont complété : ',
+      'Ceux qui répondent Pas encore ou Un peu ont complété : ',
       el('strong', { texte: `« ${souhait.debut} »` }),
     ]),
     el('span', { classe: 'souhait__ligne' }, [
@@ -38,20 +38,20 @@ function encadreSouhait(souhait) {
 function ligneAffirmation(affirmation, detail, souhait, role) {
   const gauche = el('div', { classe: 'affirmation-admin__constat' }, [
     el('span', { classe: 'affirmation-admin__part serif', texte: part(detail.accord) }),
-    el('span', { classe: 'affirmation-admin__accord', texte: 'd’accord' }),
+    el('span', { classe: 'affirmation-admin__accord', texte: 'le vivent déjà' }),
     el('div', {
       classe: 'affirmation-admin__piste',
-      attrs: { title: `${part(detail.accord)} d’accord, soit ${nombre(detail.effectifAccord)} sur ${nombre(detail.effectif)}` },
+      attrs: { title: `${part(detail.accord)} le vivent déjà, soit ${nombre(detail.effectifAccord)} sur ${nombre(detail.effectif)}` },
     }, [
       el('div', { classe: 'affirmation-admin__jauge', style: { width: `${detail.accord}%` } }),
     ]),
     el('span', {
       classe: 'affirmation-admin__detail',
-      texte: `Tout à fait ${part(detail.parts[3])} · Plutôt ${part(detail.parts[2])}`,
+      texte: `Pleinement ${part(detail.parts[3])} · En bonne partie ${part(detail.parts[2])}`,
     }),
     el('span', {
       classe: 'affirmation-admin__detail',
-      texte: `Plutôt pas ${part(detail.parts[1])} · Pas du tout ${part(detail.parts[0])}`,
+      texte: `Un peu ${part(detail.parts[1])} · Pas encore ${part(detail.parts[0])}`,
     }),
     el('span', {
       classe: 'affirmation-admin__detail',
@@ -78,6 +78,9 @@ export function afficherAffirmations(hote, reponses, contenu, role) {
   vider(hote);
 
   const duRole = reponses.filter((r) => r.role === role);
+  const mention = mentionEchelles(duRole);
+  if (mention) hote.appendChild(mention);
+
   let groupeCourant = null;
   let quelqueChose = false;
 

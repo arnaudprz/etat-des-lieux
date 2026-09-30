@@ -52,6 +52,19 @@ var ROLES = ['membre', 'manager'];
 /** Sources acceptées pour une ligne de réponses. */
 var SOURCES = ['en_ligne', 'papier'];
 
+/**
+ * Les échelles de réponse.
+ *
+ * Les 255 réponses papier ont été données avec une échelle d'accord, de
+ * « Pas du tout » à « Tout à fait ». Le questionnaire en ligne utilise depuis
+ * une échelle d'évolution, de « Pas encore » à « Pleinement ». Les valeurs de
+ * 0 à 3 sont les mêmes, mais les mots changent : on garde la trace de
+ * l'échelle pour pouvoir le dire quand on compare les deux sources.
+ */
+var ECHELLE_PAPIER = 'v1-accord';
+var ECHELLE_EN_LIGNE = 'v2-evolution';
+var ECHELLES = [ECHELLE_PAPIER, ECHELLE_EN_LIGNE];
+
 /** Règles des relances. */
 var RELANCE_MAX_CHOIX = ${contenu.relance.max_choix};
 var RELANCE_MAX_AFFIRMATIONS = ${contenu.relance.max_affirmations};

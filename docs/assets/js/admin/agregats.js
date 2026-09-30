@@ -14,8 +14,37 @@ import { niveauDimension, DERNIERE_AFFIRMATION_RESULTAT, cartePourMoyenne } from
 /** En dessous de ce nombre de personnes, on n'affiche aucun chiffre. */
 export const K_MINI = 3;
 
-/** Les valeurs de réponse considérées comme un accord. */
+/**
+ * Les valeurs de réponse qui disent « je le vis déjà » :
+ * En bonne partie et Pleinement.
+ */
 const ACCORD = [2, 3];
+
+/** Les deux échelles de réponse. */
+export const ECHELLE_PAPIER = 'v1-accord';
+export const ECHELLE_EN_LIGNE = 'v2-evolution';
+
+/**
+ * Vrai si le jeu mélange les deux échelles.
+ *
+ * Les réponses papier ont été données avec une échelle d'accord, de « Pas du
+ * tout » à « Tout à fait ». Les valeurs sont les mêmes, mais les mots changent :
+ * quand les deux se côtoient dans un même chiffre, il faut le dire.
+ */
+export function melangeDesEchelles(reponses) {
+  let papier = false;
+  let enLigne = false;
+  reponses.forEach((r) => {
+    if ((r.echelle || ECHELLE_EN_LIGNE) === ECHELLE_PAPIER) papier = true;
+    else enLigne = true;
+  });
+  return papier && enLigne;
+}
+
+/** La mention à afficher quand les deux échelles se côtoient. */
+export const MENTION_ECHELLES =
+  "Les réponses papier ont été données avec une échelle d'accord "
+  + '(de Pas du tout à Tout à fait).';
 
 /** Vrai si le groupe est assez grand pour qu'on en publie un chiffre. */
 export function assezDeMonde(effectif) {
@@ -98,7 +127,7 @@ export function detailAffirmation(reponses, n) {
   };
 }
 
-/** La part d'accord sur un ensemble d'affirmations, toutes réponses confondues. */
+/** La part qui vit déjà un ensemble d'affirmations, toutes réponses confondues. */
 export function partAccord(reponses, numeros) {
   let total = 0;
   let accord = 0;
@@ -115,8 +144,8 @@ export function partAccord(reponses, numeros) {
 }
 
 /**
- * Le souhait le plus choisi parmi ceux qui ne sont pas d'accord avec une
- * affirmation, et la part que ce souhait représente parmi eux.
+ * Le souhait le plus choisi parmi ceux qui ont répondu Pas encore ou Un peu à
+ * une affirmation, et la part que ce souhait représente parmi eux.
  */
 export function souhaitLePlusChoisi(reponses, n, role, contenu) {
   const affirmation = contenu.affirmations.find((a) => a.n === n);
@@ -207,7 +236,7 @@ export function cartesRecues(reponses, contenu) {
   });
 }
 
-/** Les 4 conditions des Fondations : part d'accord sur leurs affirmations. */
+/** Les 4 conditions des Fondations : part qui les vit déjà. */
 export function fondations(reponses, contenu) {
   const noms = {
     confiance: 'La confiance',

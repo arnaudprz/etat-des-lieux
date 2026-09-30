@@ -24,7 +24,7 @@ export const NB_AFFIRMATIONS = 16;
  */
 export const DERNIERE_AFFIRMATION_RESULTAT = 15;
 
-/** Valeur de réponse la plus haute (Tout à fait). */
+/** Valeur de réponse la plus haute (Pleinement). */
 export const VALEUR_MAX = 3;
 
 // ---------------------------------------------------------------- utilitaires

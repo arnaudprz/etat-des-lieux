@@ -13,6 +13,15 @@ Les choix faits avec Arnaud pendant la conception des maquettes (septembre 2026)
 | Q14, Q15 sur le sens et Q16 sur les résultats | Tester l'idée Greatly : la performance n'est pas un objectif, elle en est la conséquence. Q16 n'est jamais montré au répondant, il sert à la modélisation. |
 | Une version membre et une version manager des affirmations | Le manager ne se juge pas lui-même avec les mêmes mots. On compare ensuite les deux regards dans le dashboard. |
 
+## L'échelle de réponse (septembre 2026)
+
+| Décision | Pourquoi |
+| --- | --- |
+| Pas encore · Un peu · En bonne partie · Pleinement, au lieu de Pas du tout · Plutôt pas · Plutôt · Tout à fait | « Pas encore » dit qu'on n'y est pas, sans fermer la porte. C'est l'idée qu'on garde partout : tout peut évoluer. Une échelle d'accord jugeait un état, celle-ci décrit un chemin. |
+| Les valeurs de 0 à 3, le calcul et les couleurs ne changent pas | Seuls les mots changent. Les résultats restent comparables. |
+| Le tableau de bord dit « le vivent déjà » plutôt que « d'accord » | Même raison : on décrit ce qui est vécu, on ne mesure pas une adhésion. |
+| Les 255 réponses papier gardent leurs valeurs, avec une colonne `echelle` qui dit laquelle | Elles ont été recueillies avec l'échelle d'accord. Quand les deux se côtoient dans un même chiffre, le tableau de bord le mentionne. |
+
 ## Le résultat
 
 | Décision | Pourquoi |

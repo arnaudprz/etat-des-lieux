@@ -113,6 +113,7 @@ function enregistrerReponse(corps) {
 
   ecrireReponse({
     source: 'en_ligne',
+    echelle: ECHELLE_EN_LIGNE,
     version: corps.version,
     role: corps.role,
     profil: profil,
@@ -139,6 +140,7 @@ function ecrireReponse(donnees) {
   ligne.id = identifiant();
   ligne.date = donnees.date || aujourdhui();
   ligne.source = donnees.source;
+  ligne.echelle = donnees.echelle || ECHELLE_EN_LIGNE;
   ligne.version = donnees.version;
   ligne.role = donnees.role;
   ligne.genre = donnees.profil.genre || '';

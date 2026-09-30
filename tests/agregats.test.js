@@ -174,7 +174,7 @@ describe('détail d’une affirmation', () => {
     const d = detailAffirmation(jeu, 1);
     assert.equal(d.effectif, 10);
     assert.deepEqual(d.compte, [2, 3, 3, 2]);
-    assert.equal(d.accord, 50);            // 3 « Plutôt » + 2 « Tout à fait »
+    assert.equal(d.accord, 50);            // 3 « En bonne partie » + 2 « Pleinement »
     assert.equal(d.effectifAccord, 5);
     assert.equal(d.effectifDesaccord, 5);
   });

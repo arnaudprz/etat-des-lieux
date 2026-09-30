@@ -26,7 +26,7 @@ function etPuis(noms) {
   return noms.map(minusculeInitiale).join(' et ');
 }
 
-/** La part d'accord de chaque dimension, classée. */
+/** La part de chaque dimension vécue En bonne partie ou Pleinement, classée. */
 function dimensionsClassees(reponses, contenu) {
   return contenu.dimensions
     .map((d) => ({ nom: d.nom, cle: d.cle, mesure: partAccord(reponses, d.affirmations) }))
@@ -50,7 +50,7 @@ function souhaitDominant(reponses, n, contenu) {
   return candidats[0] || null;
 }
 
-/** L'affirmation avec la plus faible part d'accord. */
+/** L'affirmation que le moins de personnes vivent déjà. */
 function affirmationLaMoinsInstallee(reponses, contenu) {
   const mesurees = contenu.affirmations
     .map((a) => ({ n: a.n, detail: detailAffirmation(reponses, a.n) }))
@@ -71,7 +71,7 @@ export function ceQuiPorte(reponses, contenu) {
     niveau: 'enracine',
     // La liste ouvre la phrase : sa première lettre reprend une majuscule.
     texte: `${majusculeInitiale(etPuis(tete.map((d) => d.nom)))} sont les plus installés : `
-      + `${tete[0].mesure.part} % des répondants y répondent Plutôt ou Tout à fait. `
+      + `${tete[0].mesure.part} % des répondants y répondent En bonne partie ou Pleinement. `
       + `C'est la base sur laquelle les équipes peuvent s'appuyer.`,
   };
 }
@@ -83,13 +83,13 @@ export function ceQuiPeutGrandir(reponses, contenu) {
   const queue = classees.slice(-2).reverse(); // la moins installée d'abord
 
   let texte = `${majusculeInitiale(etPuis(queue.map((d) => d.nom)))} sont les moins installés `
-    + `(${queue[0].mesure.part} % et ${queue[1].mesure.part} % d'accord).`;
+    + `(${queue[0].mesure.part} % et ${queue[1].mesure.part} % le vivent déjà).`;
 
   const moins = affirmationLaMoinsInstallee(reponses, contenu);
   if (moins) {
     const souhait = souhaitDominant(reponses, moins.n, contenu);
     if (souhait) {
-      texte += ` Chez ceux qui ne sont pas d'accord, le souhait le plus exprimé est `
+      texte += ` Chez ceux qui répondent Pas encore ou Un peu, le souhait le plus exprimé est `
         + `« ${souhait.libelle} » (${souhait.part} %, soit ${souhait.nombre} personnes).`;
     }
   }

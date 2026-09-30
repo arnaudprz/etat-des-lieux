@@ -3,7 +3,7 @@
  *
  * Les relances ne s'affichent plus sous les affirmations pendant qu'on répond.
  * Elles se recalculaient à chaque réponse : un encadré déjà rempli pouvait
- * disparaître plus haut sans prévenir, et une réponse « Pas du tout » donnée en
+ * disparaître plus haut sans prévenir, et une réponse « Pas encore » donnée en
  * bas de page faisait apparaître un encadré tout en haut, hors de l'écran.
  * Voir DECISIONS.md.
  *

@@ -30,6 +30,7 @@ function reponsesAnonymes() {
     return {
       date: formaterJour(r.date),
       source: r.source,
+      echelle: r.echelle || ECHELLE_EN_LIGNE,
       version: r.version,
       role: r.role,
       genre: r.genre || '',
