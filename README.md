@@ -134,4 +134,4 @@ chacune, et régénère `docs/assets/js/illustrations.js`.
 | 30/09/2026 | `6198f05` | Passe 5, section 4 : le lien personnel v2 porte les idées. |
 | 30/09/2026 | `ef6cb41` | Passe 5, sections 1 à 3 : les idées de la personne dans son résultat. |
 | 30/09/2026 | `c3c1e39` | Passe 6, sections 1 à 5 : donner envie de répondre jusqu'au bout. |
-| 30/09/2026 | `à venir` | Passe 6, section 6 : faire connaître l'état des lieux. |
+| 30/09/2026 | `8d7f7da` | Passe 6, section 6 : faire connaître l'état des lieux. |
