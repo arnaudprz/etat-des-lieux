@@ -942,6 +942,77 @@
     "retour": "Retour",
     "recapitulatif_complet": "Vous avez répondu aux 16 affirmations"
   },
+  "engagement": {
+    "pourquoi_prefixe": "Pourquoi on s'y intéresse",
+    "pourquoi": {
+      "Ce qu'on vise ensemble": "On se demande si les équipes partagent vraiment le même cap, ou si chaque métier avance surtout avec le sien. C'est souvent là que tout commence.",
+      "Ce qu'on sait les uns des autres": "On veut comprendre à quel point on connaît le travail de ses collègues. Les recherches de Jody Hoffer Gittell montrent que c'est ce qui permet d'anticiper plutôt que de subir.",
+      "La place de chacun": "On cherche à savoir si chaque métier se sent reconnu et écouté, ou si certaines voix comptent plus que d'autres.",
+      "Comment l'info circule": "On s'interroge sur ce qui fait qu'une info arrive au bon moment, ou trop tard. C'est l'un des sujets qui revient le plus quand on parle de travail ensemble.",
+      "Quand ça accroche": "On veut savoir ce qui se passe quand quelque chose coince : cherche-t-on une solution ensemble, ou chacun de son côté ?",
+      "Le soutien du manager": "On se demande quel rôle joue le manager pour aider les métiers à travailler ensemble, au-delà du suivi des objectifs.",
+      "La confiance et le soutien": "On cherche à comprendre si l'on peut parler franchement et compter sur les autres. La confiance est au cœur de l'accompagnement Greatly.",
+      "Le sens et les résultats": "On veut vérifier une idée qui nous tient à cœur : les équipes qui voient le sens de leur travail atteignent-elles plus facilement leurs résultats ?"
+    },
+    "cadre": {
+      "surtitre": "Ce qu'on cherche à comprendre",
+      "lignes": [
+        {
+          "debut": "Ce qu'on étudie :",
+          "suite": " comment les équipes travaillent ensemble, au quotidien."
+        },
+        {
+          "debut": "Pourquoi :",
+          "suite": " préparer des accompagnements au plus près de ce que vivent les équipes."
+        },
+        {
+          "debut": "Ce que vous y gagnez :",
+          "suite": " votre état des lieux, en couleurs, dans 2 minutes."
+        }
+      ]
+    },
+    "mi_parcours": {
+      "apres_groupe": "Comment l'info circule",
+      "texte": "Vous êtes à mi-chemin. Merci pour vos réponses, elles comptent."
+    },
+    "avant_resultat": {
+      "promesse": "Dans un instant : votre état des lieux en couleurs, et vos idées pour faire évoluer.",
+      "mention": "Vos réponses rejoignent l'étude, de façon anonyme. Elles aident nos intervenants à préparer des ateliers au plus près de ce que vivent les équipes."
+    },
+    "progression": {
+      "etiquette": "Votre avancée dans le questionnaire",
+      "paliers": [
+        {
+          "jusqua": 3,
+          "niveau": "semer",
+          "avancee": "tout juste commencé"
+        },
+        {
+          "jusqua": 8,
+          "niveau": "germe",
+          "avancee": "environ un quart"
+        },
+        {
+          "jusqua": 13,
+          "niveau": "croissance",
+          "avancee": "environ la moitié"
+        },
+        {
+          "jusqua": 16,
+          "niveau": "enracine",
+          "avancee": "presque terminé"
+        }
+      ],
+      "but": "enracine"
+    },
+    "partage": {
+      "texte": "L'état des lieux vous a plu ? Vous pouvez le faire connaître. Seule la page d'accueil est partagée, jamais votre résultat.",
+      "bouton": "Faire connaître l'état des lieux",
+      "titre_partage": "État des lieux d'équipe Greatly",
+      "phrase_partage": "Un état des lieux d'équipe en 2 minutes, anonyme et sans compte à créer.",
+      "copie": "Lien de l'accueil copié"
+    }
+  },
   "profil": {
     "titre": "Quelques mots sur votre équipe",
     "texte": "Pour comparer votre résultat à des équipes qui vous ressemblent. Rien ne permet de vous identifier.",

@@ -28,7 +28,7 @@
       "title": "Mobile · 1. Accueil",
       "w": 390,
       "x": 1440,
-      "y": 5800
+      "y": 6700
     },
     "Main.dc.html": {
       "h": 2500,
@@ -43,7 +43,7 @@
       "title": "Mobile · 2. Profil",
       "w": 390,
       "x": 1910,
-      "y": 5800
+      "y": 6700
     },
     "Profil.dc.html": {
       "h": 1420,
@@ -54,30 +54,30 @@
       "y": 0
     },
     "Questions-mobile.dc.html": {
-      "h": 7240,
+      "h": 8000,
       "is_interactive": true,
       "title": "Mobile · 3. Vos réponses",
       "w": 390,
       "x": 2380,
-      "y": 5800
+      "y": 6700
     },
     "Questions.dc.html": {
-      "h": 5440,
+      "h": 6360,
       "is_interactive": true,
-      "title": "3. Les 10 affirmations",
+      "title": "3. Les 16 affirmations",
       "w": 1280,
       "x": 2720,
       "y": 0
     },
     "Resultat-mobile.dc.html": {
-      "h": 4920,
+      "h": 5420,
       "title": "Mobile · 4. Résultat",
       "w": 390,
       "x": 2850,
-      "y": 5800
+      "y": 6700
     },
     "Resultat.dc.html": {
-      "h": 3300,
+      "h": 3560,
       "title": "4. Résultat",
       "w": 1280,
       "x": 4080,
@@ -123,7 +123,7 @@
       "text": "La version mobile",
       "w": 240,
       "x": 1440,
-      "y": 5500
+      "y": 6400
     }
   },
   "order": [

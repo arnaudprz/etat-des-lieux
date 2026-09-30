@@ -16,6 +16,7 @@
 import { chargerContenu, texteAffirmation, relance as relancePour } from '../contenu.js';
 import { NB_AFFIRMATIONS, ouvreUneRelance, relancesAEnvoyer } from '../calcul.js';
 import { lienResultat } from '../lien.js';
+import { icone, chemin } from '../illustration-niveau.js';
 import { lire, ecrire } from '../session.js';
 import { envoyerReponse } from '../api.js';
 import {
@@ -226,11 +227,51 @@ function repondues() {
   return etat.reponses.filter((v) => Number.isInteger(v)).length;
 }
 
-/** La jauge, et le récapitulatif du bas. Aucun chiffre de réponse. */
+/** Le stade atteint, selon le nombre de réponses données. */
+function palier(n) {
+  const paliers = contenu.engagement.progression.paliers;
+  return paliers.find((p) => n <= p.jusqua) || paliers[paliers.length - 1];
+}
+
+/**
+ * La progression, et le récapitulatif du bas. Aucun chiffre de réponse.
+ *
+ * La pousse de gauche grandit avec l'avancée, l'arbre de droite est le but.
+ * Ce n'est pas un score : la jauge garde sa couleur sauge et ne reprend jamais
+ * les couleurs du résultat. Les lecteurs d'écran reçoivent l'avancée en toutes
+ * lettres.
+ */
 function majProgression() {
   const n = repondues();
   const jauge = $('[data-jauge]');
   if (jauge) jauge.style.width = `${(n / NB_AFFIRMATIONS) * 100}%`;
+
+  const stade = palier(n);
+  const pousse = $('[data-pousse]');
+  if (pousse) {
+    const source = chemin(icone(stade.niveau));
+    const premierAffichage = !pousse.getAttribute('src');
+    if (pousse.getAttribute('src') !== source) {
+      // Au premier affichage il n'y a rien à fondre : on pose l'image.
+      if (premierAffichage || animationsReduites()) {
+        pousse.src = source;
+      } else {
+        // Fondu court au changement de stade.
+        pousse.classList.add('progression__pousse--change');
+        window.setTimeout(() => {
+          pousse.src = source;
+          pousse.classList.remove('progression__pousse--change');
+        }, 200);
+      }
+    }
+  }
+
+  const barre = $('[data-barre]');
+  if (barre) {
+    barre.setAttribute('aria-valuenow', String(n));
+    barre.setAttribute('aria-label', contenu.engagement.progression.etiquette);
+    barre.setAttribute('aria-valuetext', `Avancée : ${stade.avancee}`);
+  }
 
   const recap = $('[data-recapitulatif]');
   if (!recap) return;
@@ -265,13 +306,66 @@ function montrerLesManques() {
   if (premierChoix) premierChoix.focus({ preventScroll: true });
 }
 
+/** L'encadré « Ce qu'on cherche à comprendre », avant la première affirmation. */
+function afficherCadre() {
+  const hote = $('[data-cadre]');
+  const cadre = contenu.engagement.cadre;
+  vider(hote);
+  hote.appendChild(el('span', { classe: 'surtitre', texte: cadre.surtitre }));
+  hote.appendChild(
+    el('ul', { classe: 'cadre-etude__lignes' }, cadre.lignes.map((l) =>
+      el('li', {}, [el('strong', { texte: l.debut }), l.suite])))
+  );
+}
+
+/** Ce qui attend la personne, juste avant le bouton final. */
+function afficherAnnonce() {
+  const hote = $('[data-avant-resultat]');
+  const a = contenu.engagement.avant_resultat;
+  vider(hote);
+  hote.appendChild(el('p', { classe: 'avant-resultat__promesse serif', texte: a.promesse }));
+  hote.appendChild(el('p', { classe: 'avant-resultat__mention', texte: a.mention }));
+}
+
+/** La ligne « Pourquoi on s'y intéresse » d'un groupe. */
+function pourquoi(groupe) {
+  const texteGroupe = contenu.engagement.pourquoi[groupe];
+  if (!texteGroupe) return null;
+  return el('p', { classe: 'pourquoi' }, [
+    el('span', {
+      classe: 'pourquoi__prefixe',
+      texte: `${contenu.engagement.pourquoi_prefixe} · `,
+    }),
+    texteGroupe,
+  ]);
+}
+
+/** Le bandeau de mi-parcours, après le groupe qui le précède. */
+function miParcours() {
+  const mi = contenu.engagement.mi_parcours;
+  return el('div', { classe: 'mi-parcours' }, [
+    el('img', {
+      classe: 'mi-parcours__pousse',
+      attrs: { src: chemin(icone('croissance')), alt: '', 'aria-hidden': 'true' },
+    }),
+    el('p', { texte: mi.texte }),
+  ]);
+}
+
 function construire(formulaire) {
   let groupeCourant = null;
 
   contenu.affirmations.forEach((a) => {
     if (a.groupe !== groupeCourant) {
+      // Le bandeau de mi-parcours se glisse avant le groupe qui suit celui
+      // désigné par contenu.json.
+      if (groupeCourant === contenu.engagement.mi_parcours.apres_groupe) {
+        formulaire.appendChild(miParcours());
+      }
       groupeCourant = a.groupe;
       formulaire.appendChild(el('h2', { classe: 'groupe', texte: a.groupe }));
+      const ligne = pourquoi(a.groupe);
+      if (ligne) formulaire.appendChild(ligne);
     }
 
     const carte = el('div', { classe: 'carte affirmation', attrs: { 'data-affirmation': a.n } });
@@ -383,6 +477,12 @@ async function demarrer() {
 
   texte($('[data-titre]'), contenu.questions.titre);
   texte($('[data-intro]'), contenu.questions.intro);
+
+  const but = $('[data-but]');
+  if (but) but.src = chemin(icone(contenu.engagement.progression.but));
+
+  afficherCadre();
+  afficherAnnonce();
 
   const formulaire = $('[data-formulaire]');
   const voir = $('[data-voir]');

@@ -656,6 +656,88 @@
   margin: 24px 0 16px;
 }
 
+/* « Ce qu'on cherche à comprendre », avant la première affirmation. */
+.cadre-etude {
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.cadre-etude__lignes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--texte-doux);
+}
+
+.cadre-etude__lignes strong { font-weight: 600; }
+
+/* Pourquoi on s'intéresse à ce groupe d'affirmations. */
+.pourquoi {
+  margin: -6px 0 4px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--taupe);
+}
+
+.pourquoi__prefixe {
+  font-weight: 600;
+  color: var(--sauge-fonce);
+}
+
+/* Le petit encouragement de mi-parcours. */
+.mi-parcours {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 0;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--vert-pale);
+}
+
+.mi-parcours__pousse {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.mi-parcours p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--foret);
+}
+
+/* Ce qui attend la personne, juste avant le bouton final. */
+.avant-resultat {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.avant-resultat__promesse {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.35;
+  color: var(--encre);
+}
+
+.avant-resultat__mention {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--taupe);
+}
+
 /* Le récapitulatif du bas. Aucun chiffre de réponse, seulement ce qui reste. */
 .recapitulatif {
   margin: 20px 0 0;
@@ -740,15 +822,45 @@
 
 /* ========================================================== 3. AFFIRMATIONS */
 
-/* Collante en haut de l'écran : la progression reste visible tout du long.
+/* Collante en haut de l'écran : l'avancée reste visible tout du long.
+   La pousse de gauche grandit, l'arbre de droite est le but. Aucun chiffre.
    Sa hauteur sert de repère au défilement automatique. */
-:root { --hauteur-progression: 4px; }
+:root { --hauteur-progression: 44px; }
 
 .progression {
   position: sticky;
   top: 0;
   z-index: 4;
-  height: var(--hauteur-progression);
+  min-height: var(--hauteur-progression);
+  /* 36px de pousse + 6px de marge + 1px de filet : 43px au total, sous la
+     limite de 44px fixée pour le mobile. */
+  padding: 3px 16px;
+  box-sizing: border-box;
+  background: var(--creme);
+  border-bottom: 1px solid var(--bordure);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.progression__pousse,
+.progression__but {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  transition: opacity .2s ease;
+}
+
+.progression__pousse--change { opacity: 0; }
+
+/* Le but reste discret : c'est un horizon, pas un objectif à atteindre. */
+.progression__but { opacity: .45; }
+
+.progression__piste {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 6px;
+  border-radius: 999px;
   background: var(--voile);
   overflow: hidden;
 }
@@ -758,6 +870,8 @@
   scroll-margin-top: calc(var(--hauteur-progression) + 16px);
 }
 
+/* Toujours sauge : ce n'est pas un score, la jauge ne reprend jamais les
+   couleurs du résultat. */
 .progression__jauge {
   height: 100%;
   width: 0;
@@ -963,6 +1077,9 @@
 
 @media (min-width: 900px) {
   .groupe { font-size: 26px; margin-top: 20px; }
+  .pourquoi { font-size: 15px; }
+  .cadre-etude { padding: 22px 26px; }
+  .avant-resultat__promesse { font-size: 22px; }
   .titre-bloc { margin: 32px 0 16px; }
   .navigation__fin { flex-direction: row; align-items: center; gap: 20px; }
   .affirmation { padding: 28px 32px; }

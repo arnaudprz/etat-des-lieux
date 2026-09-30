@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
-<link rel="stylesheet" href="assets/css/base.css?v=5">
-<link rel="stylesheet" href="assets/css/parcours.css?v=5">
+<link rel="stylesheet" href="assets/css/base.css?v=6">
+<link rel="stylesheet" href="assets/css/parcours.css?v=6">
 </head>
 <body>
 
@@ -32,9 +32,16 @@
   </div>
 </header>
 
-<!-- La jauge est collante : elle reste visible pendant tout le défilement. -->
-<div class="progression" role="presentation">
-  <div class="progression__jauge" data-jauge></div>
+<!-- L'avancée reste visible pendant tout le défilement : la pousse de gauche
+     grandit, l'arbre de droite est le but. Aucun chiffre n'est affiché ; les
+     lecteurs d'écran reçoivent l'avancée en toutes lettres. -->
+<div class="progression">
+  <img class="progression__pousse" alt="" aria-hidden="true" data-pousse>
+  <div class="progression__piste"
+       role="progressbar" aria-valuemin="0" aria-valuemax="16" data-barre>
+    <div class="progression__jauge" data-jauge></div>
+  </div>
+  <img class="progression__but" alt="" aria-hidden="true" data-but>
 </div>
 
 <main class="centre">
@@ -43,9 +50,14 @@
     <p class="intro" data-intro></p>
   </div>
 
+  <!-- Sur la même page que les affirmations : on n'ajoute pas de clic. -->
+  <section class="carte cadre-etude" data-cadre></section>
+
   <form class="questionnaire" id="questionnaire" novalidate data-formulaire>
     <!-- Les 16 affirmations et leurs relances sont construites par questions.js. -->
   </form>
+
+  <div class="avant-resultat" data-avant-resultat></div>
 
   <p class="recapitulatif" data-recapitulatif></p>
   <p class="message" id="message" role="alert" hidden></p>
@@ -61,6 +73,6 @@
   <p>Vos réponses sont anonymes. <a href="confidentialite.html">Politique de confidentialité</a></p>
 </footer>
 
-<script type="module" src="assets/js/parcours/questions.js?v=5"></script>
+<script type="module" src="assets/js/parcours/questions.js?v=6"></script>
 </body>
 </html>

@@ -507,6 +507,76 @@ async function passerLaCible(cible) {
     if (l.deborde) soucis.push(`[${nom}] échelle : « ${l.texte} » déborde de son bouton`);
   });
 
+  // Chaque groupe dit pourquoi on s'y intéresse.
+  const engagement = await page.evaluate(() => ({
+    groupes: document.querySelectorAll('.groupe').length,
+    pourquoi: document.querySelectorAll('.pourquoi').length,
+    prefixes: Array.from(document.querySelectorAll('.pourquoi__prefixe'))
+      .every((p) => p.textContent.startsWith('Pourquoi on s')),
+    cadre: document.querySelectorAll('[data-cadre] li').length,
+    cadreSurLaPage: !!document.querySelector('[data-cadre]')
+      && document.querySelector('[data-cadre]').offsetParent !== null,
+    miParcours: document.querySelectorAll('.mi-parcours').length,
+    // Le bandeau doit se glisser juste après le groupe désigné.
+    miParcoursApres: (() => {
+      const bandeau = document.querySelector('.mi-parcours');
+      if (!bandeau) return null;
+      const avant = Array.from(document.querySelectorAll('.groupe')).filter((t) =>
+        t.compareDocumentPosition(bandeau) & Node.DOCUMENT_POSITION_FOLLOWING);
+      return avant.length ? avant[avant.length - 1].textContent.trim() : null;
+    })(),
+    promesse: document.querySelector('.avant-resultat__promesse')?.textContent || '',
+    mention: document.querySelector('.avant-resultat__mention')?.textContent || '',
+  }));
+  if (engagement.pourquoi !== engagement.groupes) {
+    soucis.push(`[${nom}] questions : ${engagement.pourquoi} lignes « pourquoi » pour ${engagement.groupes} groupes`);
+  }
+  if (!engagement.prefixes) soucis.push(`[${nom}] questions : un préfixe « Pourquoi on s'y intéresse » manque`);
+  if (engagement.cadre !== 3) soucis.push(`[${nom}] questions : ${engagement.cadre} lignes dans l'encadré au lieu de 3`);
+  if (!engagement.cadreSurLaPage) soucis.push(`[${nom}] questions : l'encadré n'est pas sur la page des affirmations`);
+  if (engagement.miParcours !== 1) soucis.push(`[${nom}] questions : ${engagement.miParcours} bandeau de mi-parcours`);
+  if (engagement.miParcoursApres !== "Comment l'info circule") {
+    soucis.push(`[${nom}] questions : mi-parcours après « ${engagement.miParcoursApres} »`);
+  }
+  if (!engagement.promesse.startsWith('Dans un instant')) {
+    soucis.push(`[${nom}] questions : promesse inattendue « ${engagement.promesse} »`);
+  }
+  if (!engagement.mention.includes('intervenants')) {
+    soucis.push(`[${nom}] questions : la mention ne parle pas des intervenants`);
+  }
+
+  // Le questionnaire vierge, avec son contexte : c'est l'écran d'accueil des
+  // affirmations, celui qu'on compare à la maquette.
+  await verifierTirets(page, `${nom} questions`);
+  await capturer(`Questions${suffixe}`, `${nom} questions`);
+
+  // La pousse de progression grandit sans jamais montrer de chiffre.
+  const avancee = async () => page.evaluate(() => {
+    const barre = document.querySelector('[data-barre]');
+    const p = document.querySelector('[data-pousse]');
+    return {
+      pousse: p?.getAttribute('src') || null,
+      but: document.querySelector('[data-but]')?.getAttribute('src') || null,
+      valeur: barre?.getAttribute('aria-valuenow'),
+      texte: barre?.getAttribute('aria-valuetext') || '',
+      couleurJauge: getComputedStyle(document.querySelector('.progression__jauge')).backgroundColor,
+    };
+  });
+
+  const depart = await avancee();
+  if (depart.pousse !== 'assets/img/icone-semer.svg') {
+    soucis.push(`[${nom}] progression : la pousse de départ est ${depart.pousse}`);
+  }
+  if (depart.but !== 'assets/img/icone-enracine.svg') {
+    soucis.push(`[${nom}] progression : le but est ${depart.but}`);
+  }
+  if (!depart.texte.startsWith('Avancée :')) {
+    soucis.push(`[${nom}] progression : aria-valuetext « ${depart.texte} »`);
+  }
+  if (/[0-9]/.test(depart.texte)) {
+    soucis.push(`[${nom}] progression : l'avancée annonce un chiffre « ${depart.texte} »`);
+  }
+
   // La réponse choisie porte une coche, pas seulement une couleur.
   await page.locator('.affirmation').first().locator('.echelle__choix').nth(3).click();
   await page.waitForTimeout(250);
@@ -532,7 +602,7 @@ async function passerLaCible(cible) {
     };
   });
   if (jauge.position !== 'sticky') soucis.push(`[${nom}] progression : ${jauge.position} au lieu de sticky`);
-  if (jauge.hauteur !== 4) soucis.push(`[${nom}] progression : ${jauge.hauteur}px de haut au lieu de 4`);
+  if (jauge.hauteur > 44) soucis.push(`[${nom}] progression : ${jauge.hauteur}px de haut, plus de 44`);
   if (jauge.texte !== '') soucis.push(`[${nom}] progression : elle affiche « ${jauge.texte} »`);
 
   // « Continuer » reste cliquable et amène à la première affirmation oubliée.
@@ -607,6 +677,19 @@ async function passerLaCible(cible) {
   // On répond « Pas encore » partout pour la suite.
   for (let i = 0; i < 16; i += 1) {
     await page.locator('.affirmation').nth(i).locator('.echelle__choix').nth(0).click();
+  }
+
+  // Avec les 16 réponses, la pousse a atteint l'arbre.
+  const arrivee = await avancee();
+  if (arrivee.pousse !== 'assets/img/icone-enracine.svg') {
+    soucis.push(`[${nom}] progression : après 16 réponses, la pousse est ${arrivee.pousse}`);
+  }
+  if (arrivee.valeur !== '16') {
+    soucis.push(`[${nom}] progression : aria-valuenow vaut ${arrivee.valeur} au lieu de 16`);
+  }
+  // La jauge garde sa couleur sauge : ce n'est pas un score.
+  if (arrivee.couleurJauge !== 'rgb(138, 155, 122)') {
+    soucis.push(`[${nom}] progression : la jauge est en ${arrivee.couleurJauge}, pas en sauge`);
   }
 
   // ----------------------------------------------- les relances, passe 4
@@ -957,6 +1040,9 @@ async function passerLaCible(cible) {
 
   // ----------------------------------------- 5. lien illisible, confidentialité
   // Un lien v1 doit rester lisible : il affiche le résultat, sans les idées.
+  // On repasse par une autre page : un changement de hash seul déclenche un
+  // rechargement, qui entrerait en course avec la navigation du test.
+  await page.goto('about:blank');
   await page.goto(`${BASE}/resultat.html#v1-m2211220023222221`, { waitUntil: 'networkidle' });
   await page.waitForSelector('[data-resultat]:not([hidden])');
   const titreV1 = await page.locator('[data-carte-titre]').innerText();
@@ -964,6 +1050,7 @@ async function passerLaCible(cible) {
     soucis.push(`[${nom}] resultat : un lien v1 donne « ${titreV1} »`);
   }
 
+  await page.goto('about:blank');
   await page.goto(`${BASE}/resultat.html#nawak`, { waitUntil: 'networkidle' });
   await page.waitForSelector('[data-sans-resultat]:not([hidden])');
   if (!(await page.locator('[data-resultat]').isHidden())) {
