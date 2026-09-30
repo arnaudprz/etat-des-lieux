@@ -935,11 +935,26 @@
   gap: 24px;
 }
 
+/* Sur mobile le médaillon passe au-dessus de l'étiquette, centré. */
+.ensemble__principal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.ensemble__medaillon {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+}
+
 .ensemble__haut {
   display: flex;
   flex-direction: column;
   gap: 12px;
   max-width: 820px;
+  align-self: stretch;
 }
 
 .ensemble__etiquette {
@@ -998,6 +1013,16 @@
   padding: 14px 18px;
   font-size: 15px;
   font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.colonne__pousse {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
 }
 
 .colonne__corps {
@@ -1175,6 +1200,10 @@
 @media (min-width: 900px) {
   .resultat__titre { font-size: 48px; }
   .ensemble { padding: 36px 40px; gap: 28px; }
+  /* Sur ordinateur, le médaillon se place à droite du texte. */
+  .ensemble__principal { flex-direction: row; gap: 36px; }
+  .ensemble__medaillon { width: 180px; height: 180px; order: 2; }
+  .ensemble__haut { flex: 1; }
   .ensemble__etiquette { padding: 6px 14px; font-size: 14px; }
   .ensemble__titre { font-size: 34px; }
   .ensemble p { font-size: 17px; }

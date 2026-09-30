@@ -11,10 +11,35 @@ Arnaud a testé l'écran « Encore un mot ». Il n'en veut pas.
 
 On change donc la règle elle-même, pas seulement l'affichage.
 
+## 0. La nouvelle échelle de réponse (à faire en premier)
+
+Les 4 réponses changent de libellé. Les valeurs, le calcul et les couleurs ne changent pas.
+
+| Valeur | Ancien libellé | Nouveau libellé |
+| --- | --- | --- |
+| 0 | Pas du tout | **Pas encore** |
+| 1 | Plutôt pas | **Un peu** |
+| 2 | Plutôt | **En bonne partie** |
+| 3 | Tout à fait | **Pleinement** |
+
+Pourquoi : « Pas encore » dit qu'on n'y est pas, sans fermer la porte. C'est l'idée qu'on garde partout, tout peut évoluer.
+
+- `contenu.json > echelle` : remplace les libellés. Mets `QUESTIONS.md` et `DECISIONS.md` à jour.
+- Écran des affirmations : les boutons prennent ces libellés. Sur mobile, « En bonne partie » peut passer sur 2 lignes dans le bouton, mais pas davantage. Nouveau texte d'intro : « Pour chaque affirmation, choisissez la réponse qui vous ressemble le plus. Il n'y a pas de bonne réponse. Quand vous répondez Pas encore ou Un peu, une petite question s'ouvre juste en dessous pour savoir ce qui vous aiderait. » Ce texte remplace celui proposé au point 2.
+- Relances : elles s'ouvrent sur « Pas encore » et « Un peu » (valeurs 0 et 1). La règle du point 1 ne change pas.
+- Dashboard, voir `maquette/Dashboard.dc.html` et `maquette/captures/Dashboard.png` :
+  - « % d'accord » devient **« le vivent déjà »**, soit la part de En bonne partie + Pleinement ;
+  - le détail s'écrit « Pleinement X % · En bonne partie Y % » puis « Un peu X % · Pas encore Y % » ;
+  - l'encadré de relance dit « Ceux qui répondent Pas encore ou Un peu ont complété : « J'aimerais… » » ;
+  - dans « L'essentiel » et les 4 conditions des Fondations, remplace « Plutôt ou Tout à fait » par « En bonne partie ou Pleinement ».
+- Réponses papier : les 255 réponses ont été données avec l'ancienne échelle. On les importe avec les mêmes valeurs de 0 à 3. Ajoute une colonne `echelle` (`v1-accord` pour le papier, `v2-evolution` en ligne). Quand le filtre Source compare papier et en ligne, affiche sous les chiffres la mention « Les réponses papier ont été données avec une échelle d'accord (de Pas du tout à Tout à fait) ».
+- Tests : mets à jour tous les tests et scripts de vérification qui cherchent les anciens libellés.
+- Cherche dans tout le repo (`grep -rn "Pas du tout\|Plutôt pas\|Tout à fait"`). Il ne doit plus rester d'ancien libellé côté répondant, sauf la mention papier ci-dessus.
+
 ## 1. La nouvelle règle
 
-- **Toute** réponse « Pas du tout » ou « Plutôt pas » ouvre immédiatement, sous l'affirmation, sa question « J'aimerais… » avec ses choix. Cela vaut pour les 16 affirmations, sans limite de nombre.
-- « Plutôt » ou « Tout à fait » ne l'ouvrent pas. Si la personne passe d'une réponse réservée à « Plutôt » ou « Tout à fait », l'encadré se referme.
+- **Toute** réponse « Pas encore » ou « Un peu » ouvre immédiatement, sous l'affirmation, sa question « J'aimerais… » avec ses choix. Cela vaut pour les 16 affirmations, sans limite de nombre.
+- « En bonne partie » ou « Pleinement » ne l'ouvrent pas. Si la personne passe d'une réponse réservée à « En bonne partie » ou « Pleinement », l'encadré se referme.
 - L'ouverture d'un encadré ne dépend **que** de la réponse à cette affirmation. Aucune réponse ailleurs ne peut ouvrir, fermer ou vider un autre encadré. C'est ce qui supprime les sauts de page et les choix perdus de la première version.
 - Les choix restent facultatifs, avec 2 au plus, plus « Autre ».
 - Si un encadré se referme, garde ses choix en mémoire pendant la session. S'il se rouvre, les cases cochées réapparaissent. À l'envoi, **n'envoie que** les relances des affirmations dont la réponse finale vaut 0 ou 1.
@@ -28,7 +53,7 @@ On change donc la règle elle-même, pas seulement l'affichage.
 
 - L'encadré s'ouvre **sous** les boutons de réponse, dans la même carte, avec une courte animation de hauteur (200 ms). Pas d'animation si `prefers-reduced-motion` est activé.
 - Rien ne bouge au-dessus de la carte : la page ne doit jamais sauter.
-- Le défilement automatique vers l'affirmation suivante (point 4 de la passe 2) ne se déclenche **que** pour « Plutôt » et « Tout à fait ». Après une réponse réservée :
+- Le défilement automatique vers l'affirmation suivante (point 4 de la passe 2) ne se déclenche **que** pour « En bonne partie » et « Pleinement ». Après une réponse réservée :
   - on reste sur la carte ;
   - si l'encadré dépasse du bas de l'écran, on défile juste assez pour le montrer en entier ;
   - un petit lien « Question suivante » en bas de l'encadré permet de continuer.
@@ -53,7 +78,7 @@ On change donc la règle elle-même, pas seulement l'affichage.
   - validation côté backend.
 - Mets `DECISIONS.md` à jour. Remplace la ligne sur les 2 relances : « Chaque réponse réservée ouvre sa question « J'aimerais… » juste en dessous, sans limite. Plus simple à comprendre, aucune réponse n'en fait disparaître une autre, et plus de données pour le dashboard. » Mets aussi `QUESTIONS.md` à jour.
 
-## 6. Autres corrections UX et UI
+## 5. Autres corrections UX et UI
 
 J'ai repris la version locale écran par écran, à 1280 et à 390. Si la passe 3 est encore en cours, termine-la d'abord, puis vérifie ces points.
 
@@ -90,12 +115,12 @@ J'ai repris la version locale écran par écran, à 1280 et à 390. Si la passe 
 13. Hauteur tactile minimale de 44px sur tous les liens et boutons secondaires (« Retour », « Modifier », « Question suivante »).
 14. Le bandeau « Mode démo » ne doit apparaître qu'en mode démo explicite (`?demo=1`). En local sans API, affiche-le en petit en bas de page, pas en haut.
 
-## 7. Vérification
+## 6. Vérification
 
 - Un test Playwright, dans Chromium **et** WebKit, en 1280 et en iPhone émulé :
-  - répondre « Pas du tout » aux 16 affirmations : les 16 encadrés s'ouvrent ;
-  - répondre « Plutôt pas » à la 3e puis « Pas du tout » à la 10e : les deux encadrés sont ouverts, rien n'a sauté ;
-  - cocher 2 choix sur la 3e, passer la 3e à « Plutôt », puis revenir à « Plutôt pas » : les 2 choix sont revenus ;
+  - répondre « Pas encore » aux 16 affirmations : les 16 encadrés s'ouvrent ;
+  - répondre « Un peu » à la 3e puis « Pas encore » à la 10e : les deux encadrés sont ouverts, rien n'a sauté ;
+  - cocher 2 choix sur la 3e, passer la 3e à « En bonne partie », puis revenir à « Un peu » : les 2 choix sont revenus ;
   - envoyer : seules les relances des réponses 0 ou 1 partent.
 - Captures avant et après de chaque écran touché, à 1280 et à 390, dans Chromium et WebKit.
 - Teste aussi depuis un téléphone sur le réseau local (`http://<ip-du-mac>:8080`). Le serveur local doit écouter sur toutes les interfaces et servir sans cache.

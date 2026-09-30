@@ -142,6 +142,26 @@ if (conditions !== 4) soucis.push(`${conditions} conditions au lieu de 4`);
 const cartesRecues = await page.locator('.carte-recue').count();
 if (cartesRecues !== 4) soucis.push(`${cartesRecues} cartes d'ensemble au lieu de 4`);
 
+// Chaque carte d'ensemble porte le médaillon de son niveau.
+const medaillons = await page.evaluate(() =>
+  Array.from(document.querySelectorAll('.carte-recue')).map((c) => ({
+    niveau: c.querySelector('.carte-recue__entete span').textContent.trim(),
+    source: c.querySelector('.carte-recue__pousse')?.getAttribute('src') || null,
+    charge: (() => { const i = c.querySelector('.carte-recue__pousse'); return i && i.complete && i.naturalWidth > 0; })(),
+  })));
+const attenduCartes = {
+  'Bien enraciné': '../assets/img/scene-enracine.svg',
+  'En croissance': '../assets/img/scene-croissance.svg',
+  'En germe': '../assets/img/scene-germe.svg',
+  'À semer': '../assets/img/scene-semer.svg',
+};
+medaillons.forEach((m) => {
+  if (m.source !== attenduCartes[m.niveau]) {
+    soucis.push(`carte « ${m.niveau} » porte ${m.source}`);
+  }
+  if (!m.charge) soucis.push(`le médaillon de « ${m.niveau} » ne se charge pas`);
+});
+
 // Les 16 affirmations, et la bascule
 const affirmations = await page.locator('.affirmation-admin').count();
 if (affirmations !== 16) soucis.push(`${affirmations} affirmations au lieu de 16`);

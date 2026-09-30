@@ -38,7 +38,7 @@ a{color:#5A6B4D}a:hover{color:#2D3626}
 .opt:has(input:checked){border-color:#5A6B4D;background:#EEF1EA}
 </style>
 </helmet>
-<div style="width: 390px; height: 5960px; box-sizing: border-box; background: #F7F4EF; display: flex; flex-direction: column">
+<div style="width: 390px; height: 7240px; box-sizing: border-box; background: #F7F4EF; display: flex; flex-direction: column">
 <div data-bandeau style="height: 40px; flex-shrink: 0; box-sizing: border-box; background: #2D3626; color: #E6E1D8; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 16px; font-size: 13px; white-space: nowrap; overflow: hidden">
 <span style="overflow: hidden; text-overflow: ellipsis">Proposé par Greatly, près de Lille</span>
 <a href="https://greatly.club" style="color: #F7F4EF; font-weight: 600; text-decoration: underline; text-underline-offset: 3px">En savoir plus</a>
@@ -56,7 +56,7 @@ a{color:#5A6B4D}a:hover{color:#2D3626}
 <main style="margin: 8px 20px 40px; display: flex; flex-direction: column; gap: 16px">
 <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px">
 <h1 class="serif" style="margin: 0; font-size: 30px; line-height: 1.2">Comment vivez-vous le travail ensemble ?</h1>
-<p style="margin: 0; font-size: 17px; line-height: 1.6; color: #6B6460">Pour chaque affirmation, choisissez la réponse qui vous ressemble le plus. Il n'y a pas de bonne réponse. Pour vos deux réponses les plus réservées, une question en plus vous demande pourquoi.</p>
+<p style="margin: 0; font-size: 17px; line-height: 1.6; color: #6B6460">Pour chaque affirmation, choisissez la réponse qui vous ressemble le plus. Il n'y a pas de bonne réponse. Quand vous répondez Pas encore ou Un peu, une petite question s'ouvre juste en dessous pour savoir ce qui vous aiderait.</p>
 </div>
 
 <div class="card" style="padding: 16px; display: flex; flex-direction: column; align-items: stretch; gap: 12px; background: #EEF1EA; border-color: rgba(107,125,92,.25)">
@@ -523,12 +523,12 @@ a{color:#5A6B4D}a:hover{color:#2D3626}
 </main>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":5960}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":7240}}'>
 class Component extends DCLogic {
 renderVals() {
 const base = [2, 2, 1, 1, 2, 2, 0, 0, 2, 3, 2, 3, 2, 2, 1, 2];
 const a = (this.state && this.state.a) ? this.state.a : base;
-const LABELS = ['Pas du tout', 'Plutôt pas', 'Plutôt', 'Tout à fait'];
+const LABELS = ['Pas encore', 'Un peu', 'En bonne partie', 'Pleinement'];
 const mk = (qi) => LABELS.map((lab, n) => {
 const on = a[qi] === n;
 return {
@@ -540,7 +540,7 @@ bd: on ? '#5A6B4D' : 'rgba(138,155,122,.4)',
 pick: () => { const b = a.slice(); b[qi] = n; this.setState({ a: b }); }
 };
 });
-const two = a.map((v, i) => ({ v: v, i: i })).filter((o) => o.v <= 1).sort((x, y) => (x.v - y.v) || (x.i - y.i)).slice(0, 2).map((o) => o.i);
+const two = a.map((v, i) => ({ v: v, i: i })).filter((o) => o.v <= 1).map((o) => o.i);
 const low = {};
 for (let i = 0; i < 16; i++) { low['q' + (i + 1)] = two.indexOf(i) >= 0; }
 const mgr = !!(this.state && this.state.mgr);

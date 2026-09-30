@@ -46,6 +46,26 @@ Les choix faits avec Arnaud pendant la conception des maquettes (septembre 2026)
 | Les choix en lignes pleine largeur, pas en pilules | En pilules, les choix longs passaient sur 2 lignes sur mobile et devenaient illisibles. |
 | Un lien « Passer » à côté de « Voir mon résultat » | Les relances restent facultatives, et on le dit plutôt que de le laisser deviner. |
 
+## Les illustrations (septembre 2026)
+
+| Décision | Pourquoi |
+| --- | --- |
+| Quatre pousses sur le même sol en haut de l'accueil : une graine, une pousse, un jeune plant, un arbre avec ses racines | Les 4 niveaux se comprennent d'un coup d'œil, avant même de lire. La métaphore végétale est déjà celle des noms de niveau. |
+| L'illustration remplace la photo de la Greatly House en haut de page | La photo parlait de Greatly, l'illustration parle de ce que la personne va recevoir. Le bloc Greatly reste sur le résultat. |
+| Insérée en SVG dans la page, jamais en image | Elle reste nette à toutes les tailles et n'ajoute aucune requête. |
+| Sur mobile, les étiquettes internes du SVG laissent la place à des pastilles HTML | À 390px, le texte du SVG deviendrait minuscule. Le viewBox se raccourcit d'autant, sinon il resterait une bande vide. |
+| Un médaillon rond sur la carte d'ensemble, et une petite pousse dans chaque en-tête de colonne | Le résultat se lit plus vite, et la couleur gagne un second repère. |
+| Les illustrations sont décoratives, `aria-hidden` | Le niveau est toujours écrit en toutes lettres à côté : jamais d'information portée par la seule image. |
+| Chargées en image sur le résultat, pas insérées | Chaque fichier porte ses propres identifiants de découpe, qui entreraient en conflit si plusieurs vivaient dans le même document. |
+
+## Le titre de l'accueil (septembre 2026)
+
+| Décision | Pourquoi |
+| --- | --- |
+| « Ce qui vous aide à bien travailler ensemble », et non plus « Faites le point sur votre façon de travailler ensemble » | Le titre ne dit plus « votre équipe » : il parle aussi bien à un membre qu'à un manager, qui ne se reconnaissaient pas dans la même formule. |
+| Deux cartes « Pour vous » et « Pour Greatly et ses intervenants » sous le haut de page | Dire franchement ce que la personne y gagne, et ce que Greatly en fait. On parle d'intervenants, jamais d'experts. |
+| « Ce que vous recevez en 2 minutes », en 4 points numérotés | L'ancienne section en 3 boîtes ne disait pas ce qu'on obtient concrètement. |
+
 ## Le public et la marque
 
 | Décision | Pourquoi |

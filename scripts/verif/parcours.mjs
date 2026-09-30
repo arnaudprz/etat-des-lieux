@@ -624,6 +624,60 @@ async function passerLaCible(cible) {
     soucis.push(`[${nom}] resultat : le Q16 apparaît dans le résultat`);
   }
 
+  // Le médaillon suit le niveau, et reste décoratif.
+  const medaillon = await page.evaluate(() => {
+    const img = document.querySelector('[data-medaillon]');
+    if (!img) return null;
+    const etiquette = document.querySelector('.ensemble__etiquette');
+    return {
+      source: img.getAttribute('src'),
+      decoratif: img.getAttribute('aria-hidden') === 'true' && img.getAttribute('alt') === '',
+      taille: Math.round(img.getBoundingClientRect().width),
+      charge: img.complete && img.naturalWidth > 0,
+      // Sur mobile, le médaillon passe au-dessus de l'étiquette.
+      auDessus: img.getBoundingClientRect().bottom <= etiquette.getBoundingClientRect().top + 1,
+    };
+  });
+  if (!medaillon) {
+    soucis.push(`[${nom}] resultat : pas de médaillon`);
+  } else {
+    // Le jeu de réponses donne la carte « en germe ».
+    if (medaillon.source !== 'assets/img/scene-germe.svg') {
+      soucis.push(`[${nom}] resultat : médaillon ${medaillon.source} au lieu de scene-germe.svg`);
+    }
+    if (!medaillon.decoratif) soucis.push(`[${nom}] resultat : le médaillon n'est pas décoratif`);
+    if (!medaillon.charge) soucis.push(`[${nom}] resultat : le médaillon ne se charge pas`);
+    const tailleAttendue = largeur >= 900 ? 180 : 120;
+    if (medaillon.taille !== tailleAttendue) {
+      soucis.push(`[${nom}] resultat : médaillon de ${medaillon.taille}px au lieu de ${tailleAttendue}`);
+    }
+    if (largeur < 900 && !medaillon.auDessus) {
+      soucis.push(`[${nom}] resultat : sur mobile le médaillon n'est pas au-dessus de l'étiquette`);
+    }
+  }
+
+  // Chaque en-tête de colonne porte la pousse de son niveau.
+  const pousses = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('.colonne')).map((c) => ({
+      niveau: c.querySelector('.colonne__entete span').textContent.trim(),
+      source: c.querySelector('.colonne__pousse')?.getAttribute('src') || null,
+      taille: Math.round(c.querySelector('.colonne__pousse')?.getBoundingClientRect().width || 0),
+      charge: (() => { const i = c.querySelector('.colonne__pousse'); return i && i.complete && i.naturalWidth > 0; })(),
+    })));
+  const attendu = {
+    'Bien enraciné': 'assets/img/icone-enracine.svg',
+    'En croissance': 'assets/img/icone-croissance.svg',
+    'En germe': 'assets/img/icone-germe.svg',
+    'À semer': 'assets/img/icone-semer.svg',
+  };
+  pousses.forEach((p) => {
+    if (p.source !== attendu[p.niveau]) {
+      soucis.push(`[${nom}] resultat : colonne « ${p.niveau} » porte ${p.source}`);
+    }
+    if (p.taille !== 34) soucis.push(`[${nom}] resultat : pousse de ${p.taille}px au lieu de 34`);
+    if (!p.charge) soucis.push(`[${nom}] resultat : la pousse de « ${p.niveau} » ne se charge pas`);
+  });
+
   const etiquette = await page.evaluate(() => {
     const e = document.querySelector('.ensemble__etiquette');
     const style = getComputedStyle(e);

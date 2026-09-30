@@ -9,6 +9,7 @@
 import { chargerContenu } from '../contenu.js';
 import { calculer } from '../calcul.js';
 import { decoder } from '../lien.js';
+import { medaillon, icone, chemin } from '../illustration-niveau.js';
 import { envoyerContact } from '../api.js';
 import {
   $, el, texte, vider, signalerModeDemo, typographierPage,
@@ -16,6 +17,10 @@ import {
 } from './commun.js';
 
 function afficherEnsemble(resultat) {
+  // Le médaillon suit le niveau de la carte calculée par calcul.js.
+  const image = $('[data-medaillon]');
+  if (image) image.src = chemin(medaillon(resultat.carte.niveau));
+
   const etiquette = $('[data-etiquette]');
   etiquette.style.background = resultat.carte.niveauHex;
   etiquette.style.color = resultat.carte.niveauTexte;
@@ -60,16 +65,19 @@ function afficherColonnes(resultat) {
         ])
       );
     });
-    hote.appendChild(
-      el('div', { classe: 'colonne' }, [
-        el('div', {
-          classe: 'colonne__entete',
-          texte: c.niveau.nom,
-          style: { background: c.niveau.hex, color: c.niveau.texte },
-        }),
-        corps,
-      ])
-    );
+    const entete = el('div', {
+      classe: 'colonne__entete',
+      style: { background: c.niveau.hex, color: c.niveau.texte },
+    }, [
+      el('span', { texte: c.niveau.nom }),
+      // Décorative : le nom du niveau est juste à côté.
+      el('img', {
+        classe: 'colonne__pousse',
+        attrs: { src: chemin(icone(c.niveau.cle)), alt: '', 'aria-hidden': 'true' },
+      }),
+    ]);
+
+    hote.appendChild(el('div', { classe: 'colonne' }, [entete, corps]));
   });
 }
 

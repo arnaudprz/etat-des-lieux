@@ -278,7 +278,21 @@
   background: var(--creme);
 }
 
-.carte-recue__entete { padding: 10px 16px; font-size: 14px; font-weight: 600; }
+.carte-recue__entete {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.carte-recue__pousse {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
 
 .carte-recue__corps {
   padding: 14px 16px;

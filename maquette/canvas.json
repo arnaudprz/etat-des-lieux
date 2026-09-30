@@ -10,7 +10,7 @@
       "y": 0
     },
     "Dashboard.dc.html": {
-      "h": 8000,
+      "h": 8820,
       "title": "Mon tableau de bord",
       "w": 1280,
       "x": 0,
@@ -28,7 +28,7 @@
       "title": "Mobile · 1. Accueil",
       "w": 390,
       "x": 1440,
-      "y": 5100
+      "y": 5800
     },
     "Main.dc.html": {
       "h": 2500,
@@ -43,7 +43,7 @@
       "title": "Mobile · 2. Profil",
       "w": 390,
       "x": 1910,
-      "y": 5100
+      "y": 5800
     },
     "Profil.dc.html": {
       "h": 1420,
@@ -54,15 +54,15 @@
       "y": 0
     },
     "Questions-mobile.dc.html": {
-      "h": 5960,
+      "h": 7240,
       "is_interactive": true,
       "title": "Mobile · 3. Vos réponses",
       "w": 390,
       "x": 2380,
-      "y": 5100
+      "y": 5800
     },
     "Questions.dc.html": {
-      "h": 4740,
+      "h": 5440,
       "is_interactive": true,
       "title": "3. Les 10 affirmations",
       "w": 1280,
@@ -74,7 +74,7 @@
       "title": "Mobile · 4. Résultat",
       "w": 390,
       "x": 2850,
-      "y": 5100
+      "y": 5800
     },
     "Resultat.dc.html": {
       "h": 2860,
@@ -123,7 +123,7 @@
       "text": "La version mobile",
       "w": 240,
       "x": 1440,
-      "y": 4800
+      "y": 5500
     }
   },
   "order": [
