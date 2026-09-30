@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Comment vivez-vous le travail ensemble ? · État des lieux Greatly</title>
 <meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
@@ -36,46 +37,22 @@
 </div>
 
 <main class="centre">
+  <div class="titre-bloc">
+    <h1 class="titre-page" data-titre></h1>
+    <p class="intro" data-intro></p>
+  </div>
 
-  <!-- Écran 1 : les 16 affirmations. -->
-  <section data-ecran="affirmations">
-    <div class="titre-bloc">
-      <h1 class="titre-page">Comment vivez-vous le travail ensemble ?</h1>
-      <p class="intro">Pour chaque affirmation, choisissez la réponse qui vous ressemble le plus. Il n'y a pas de bonne réponse.</p>
-    </div>
+  <form class="questionnaire" id="questionnaire" novalidate data-formulaire>
+    <!-- Les 16 affirmations et leurs relances sont construites par questions.js. -->
+  </form>
 
-    <form class="questionnaire" id="questionnaire" novalidate data-formulaire>
-      <!-- Les 16 affirmations sont construites par questions.js. -->
-    </form>
+  <p class="recapitulatif" data-recapitulatif></p>
+  <p class="message" id="message" role="alert" hidden></p>
 
-    <p class="message" id="message" role="alert" hidden></p>
-
-    <div class="navigation">
-      <a class="navigation__retour" href="profil.html">Retour</a>
-      <button class="btn" type="submit" form="questionnaire" data-continuer>Continuer</button>
-    </div>
-  </section>
-
-  <!-- Écran 2 : les relances, seulement si des réponses sont réservées. -->
-  <section data-ecran="relances" hidden>
-    <div class="titre-bloc">
-      <h1 class="titre-page">Encore un mot</h1>
-      <p class="intro">Vous avez été plus réservé sur ces deux affirmations. Qu'est-ce qui vous aiderait ?</p>
-    </div>
-
-    <form class="questionnaire" id="relances" novalidate data-formulaire-relances>
-      <!-- Les relances retenues sont construites par questions.js. -->
-    </form>
-
-    <div class="navigation">
-      <a class="navigation__retour" href="#" data-retour-affirmations>Retour</a>
-      <div class="navigation__fin">
-        <button class="lien-discret" type="button" data-passer>Passer</button>
-        <button class="btn" type="submit" form="relances" data-voir>Voir mon résultat</button>
-      </div>
-    </div>
-  </section>
-
+  <div class="navigation">
+    <a class="navigation__retour" href="profil.html">Retour</a>
+    <button class="btn" type="submit" form="questionnaire" data-voir>Voir mon résultat</button>
+  </div>
 </main>
 
 <footer class="pied">

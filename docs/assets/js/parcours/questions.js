@@ -1,37 +1,62 @@
 /**
- * Les 16 affirmations, puis un court écran de relances.
+ * Les 16 affirmations, chacune avec sa question « J'aimerais… ».
  *
- * Les relances ne s'affichent plus sous les affirmations pendant qu'on répond.
- * Elles se recalculaient à chaque réponse : un encadré déjà rempli pouvait
- * disparaître plus haut sans prévenir, et une réponse « Pas encore » donnée en
- * bas de page faisait apparaître un encadré tout en haut, hors de l'écran.
+ * Règle : toute réponse « Pas encore » ou « Un peu » ouvre immédiatement, sous
+ * les boutons de la même carte, sa question et ses choix. Sans limite de nombre.
+ * « En bonne partie » ou « Pleinement » la referment.
+ *
+ * L'ouverture d'un encadré ne dépend que de la réponse à son affirmation :
+ * aucune réponse ailleurs ne peut en ouvrir, fermer ou vider un autre. C'est ce
+ * qui supprime les sauts de page et les choix perdus des versions précédentes.
  * Voir DECISIONS.md.
  *
- * La version affichée, membre ou manager, suit le rôle choisi au profil.
  * Aucun chiffre n'est affiché : ni valeur de réponse, ni numéro, ni pourcentage.
  */
 
 import { chargerContenu, texteAffirmation, relance as relancePour } from '../contenu.js';
-import { NB_AFFIRMATIONS, affirmationsRelancees } from '../calcul.js';
+import { NB_AFFIRMATIONS, ouvreUneRelance, relancesAEnvoyer } from '../calcul.js';
 import { lienResultat } from '../lien.js';
 import { lire, ecrire } from '../session.js';
 import { envoyerReponse } from '../api.js';
 import {
-  $, $$, el, vider, signalerModeDemo, typographierPage,
-  messageErreur, evenement,
+  $, $$, el, texte, vider, signalerModeDemo, typographierPage,
+  messageErreur, annoncer, evenement,
 } from './commun.js';
 
 /** Clé de la valeur « Autre » dans une relance, telle qu'enregistrée. */
 const AUTRE = 'autre';
 
-/** Le défilement doit être instantané pour qui demande moins d'animation. */
-function douceur() {
+/** Durée de l'ouverture d'un encadré. */
+const OUVERTURE_MS = 200;
+
+const etat = {
+  role: 'membre',
+  reponses: new Array(NB_AFFIRMATIONS).fill(null),
+  /**
+   * Les choix cochés, gardés même quand l'encadré se referme : s'il se rouvre,
+   * les cases réapparaissent. Seules les relances des réponses finales 0 ou 1
+   * sont envoyées.
+   */
+  relances: {},
+  commence: false,
+};
+
+let contenu = null;
+
+/** Les blocs de relance, indexés par numéro d'affirmation. */
+const blocs = new Map();
+
+// ---------------------------------------------------------------- outillage
+
+function animationsReduites() {
   try {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   } catch (e) {
-    return 'auto';
+    return false;
   }
 }
+
+const douceur = () => (animationsReduites() ? 'auto' : 'smooth');
 
 /** Amène une affirmation à l'écran, juste sous l'en-tête. */
 function amenerAEcran(n) {
@@ -51,30 +76,6 @@ function premiereSansReponse(reponses, depuis = 1) {
   return null;
 }
 
-const etat = {
-  role: 'membre',
-  reponses: new Array(NB_AFFIRMATIONS).fill(null),
-  relances: {},      // { "3": [0, 2, "autre"] }
-  commence: false,
-};
-
-let contenu = null;
-
-// ------------------------------------------------------------------- écrans
-
-/** Bascule entre les deux écrans, sans changer d'URL. */
-function montrerEcran(nom) {
-  $$('[data-ecran]').forEach((section) => {
-    section.hidden = section.dataset.ecran !== nom;
-  });
-  const titre = $(`[data-ecran="${nom}"] .titre-page`);
-  if (titre) {
-    titre.setAttribute('tabindex', '-1');
-    titre.focus({ preventScroll: true });
-  }
-  window.scrollTo({ top: 0, behavior: 'auto' });
-}
-
 // ----------------------------------------------------------------- échelle
 
 function echelle(n, surChoix) {
@@ -85,9 +86,12 @@ function echelle(n, surChoix) {
   contenu.echelle.forEach((cran) => {
     const bouton = el('button', {
       classe: 'echelle__choix',
-      texte: cran.libelle,
       attrs: { type: 'button', 'aria-pressed': 'false', 'data-valeur': cran.valeur },
-    });
+    }, [
+      // Une coche discrète : la couleur ne doit pas être le seul repère.
+      el('span', { classe: 'echelle__coche', attrs: { 'aria-hidden': 'true' } }),
+      el('span', { classe: 'echelle__libelle', texte: cran.libelle }),
+    ]);
     bouton.addEventListener('click', () => {
       Array.from(groupe.children).forEach((b) => b.setAttribute('aria-pressed', 'false'));
       bouton.setAttribute('aria-pressed', 'true');
@@ -100,12 +104,18 @@ function echelle(n, surChoix) {
 
 // ---------------------------------------------------------------- relances
 
+/** Désactive les choix non cochés dès que le maximum est atteint. */
+function limiterChoix(cases) {
+  const atteint = cases.filter((c) => c.checked).length >= contenu.relance.max_choix;
+  cases.forEach((c) => { c.disabled = atteint && !c.checked; });
+}
+
 /**
- * Un encadré de relance, pour l'écran de fin.
- * Les choix sont des lignes pleine largeur : en pilules, ils passaient sur
- * 2 lignes sur mobile et devenaient illisibles.
+ * L'encadré d'une affirmation. Construit une fois, montré ou caché ensuite.
+ * Pas de <fieldset> ni de <legend> : un role="group" avec aria-labelledby
+ * donne la même accessibilité sans les bizarreries de mise en page.
  */
-function blocRelance(n) {
+function construireRelance(n, surChoixSuivant) {
   const def = relancePour(contenu, n, etat.role);
   if (!def) return null;
 
@@ -137,56 +147,73 @@ function blocRelance(n) {
     choix.appendChild(el('label', { classe: 'choix choix--ligne' }, [entree, libelle]));
   });
 
-  const cadre = el('div', {
-    classe: 'carte relance',
+  const suivant = el('button', {
+    classe: 'lien-discret relance__suivant',
+    texte: 'Question suivante',
+    attrs: { type: 'button' },
+  });
+  suivant.addEventListener('click', () => surChoixSuivant(n));
+
+  const corps = el('div', {
+    classe: 'relance',
     attrs: { role: 'group', 'aria-labelledby': idIntitule },
   }, [
-    // On rappelle l'affirmation : sans elle, le souhait ne veut rien dire.
-    el('p', { classe: 'relance__affirmation', texte: texteAffirmation(contenu, n, etat.role) }),
     el('p', { classe: 'relance__question', attrs: { id: idIntitule } }, [
-      def.debut,
+      el('strong', { texte: def.debut }),
       el('span', { classe: 'relance__sous-titre', texte: contenu.relance.sous_titre }),
     ]),
     choix,
+    suivant,
   ]);
 
-  return { cadre, cases, n };
+  // L'enveloppe porte l'animation de hauteur : rien ne bouge au-dessus.
+  const enveloppe = el('div', { classe: 'relance-enveloppe' }, [corps]);
+  enveloppe.hidden = true;
+
+  return { enveloppe, corps, cases, n };
 }
 
-/** Désactive les choix non cochés dès que le maximum est atteint. */
-function limiterChoix(cases) {
-  const atteint = cases.filter((c) => c.checked).length >= contenu.relance.max_choix;
-  cases.forEach((c) => { c.disabled = atteint && !c.checked; });
-}
+/** Ouvre ou ferme l'encadré d'une affirmation, avec une courte animation. */
+function basculerRelance(n, ouvert) {
+  const bloc = blocs.get(n);
+  if (!bloc) return;
+  const { enveloppe, corps } = bloc;
 
-/**
- * Construit l'écran de relances à partir des réponses en cours.
- * @returns {boolean} faux si aucune affirmation n'est assez réservée.
- */
-function construireRelances() {
-  const retenues = affirmationsRelancees(etat.reponses, contenu);
-  const hote = $('[data-formulaire-relances]');
-  vider(hote);
+  if (ouvert === !enveloppe.hidden) return; // déjà dans le bon état
 
-  // Les choix d'une affirmation qui n'est plus retenue n'ont plus lieu d'être.
-  Object.keys(etat.relances).forEach((n) => {
-    if (!retenues.includes(Number(n))) delete etat.relances[n];
-  });
-
-  if (retenues.length === 0) return false;
-
-  // Affichées dans l'ordre des affirmations, plus naturel à lire.
-  retenues.slice().sort((a, b) => a - b).forEach((n) => {
-    const bloc = blocRelance(n);
-    if (!bloc) return;
+  if (ouvert) {
+    enveloppe.hidden = false;
+    // On rétablit les choix gardés en mémoire.
     const dejaChoisis = (etat.relances[n] || []).map(String);
     bloc.cases.forEach((c) => { c.checked = dejaChoisis.includes(c.dataset.valeur); });
     limiterChoix(bloc.cases);
-    hote.appendChild(bloc.cadre);
-  });
 
-  typographierPage(hote);
-  return true;
+    if (animationsReduites()) {
+      enveloppe.style.height = 'auto';
+    } else {
+      const hauteur = corps.getBoundingClientRect().height;
+      enveloppe.style.height = '0px';
+      enveloppe.style.transition = `height ${OUVERTURE_MS}ms ease`;
+      requestAnimationFrame(() => { enveloppe.style.height = `${hauteur}px`; });
+      window.setTimeout(() => { enveloppe.style.height = 'auto'; }, OUVERTURE_MS + 30);
+    }
+    annoncer('Une question en plus s’est ouverte');
+  } else {
+    // Les choix restent en mémoire : seul l'affichage se referme.
+    enveloppe.hidden = true;
+    enveloppe.style.height = '';
+  }
+}
+
+/** Montre l'encadré en entier s'il dépasse du bas de l'écran. */
+function rendreVisible(n) {
+  const bloc = blocs.get(n);
+  if (!bloc || bloc.enveloppe.hidden) return;
+  window.setTimeout(() => {
+    const bas = bloc.corps.getBoundingClientRect().bottom;
+    const debord = bas - window.innerHeight + 16;
+    if (debord > 0) window.scrollBy({ top: debord, behavior: douceur() });
+  }, OUVERTURE_MS + 50);
 }
 
 // ------------------------------------------------------------------ l'écran
@@ -199,15 +226,43 @@ function repondues() {
   return etat.reponses.filter((v) => Number.isInteger(v)).length;
 }
 
-/**
- * La jauge de progression. Aucun chiffre n'est affiché.
- *
- * « Continuer » reste cliquable même incomplet : au clic, il amène à la
- * première affirmation sans réponse plutôt que de rester inerte sans rien dire.
- */
+/** La jauge, et le récapitulatif du bas. Aucun chiffre de réponse. */
 function majProgression() {
+  const n = repondues();
   const jauge = $('[data-jauge]');
-  if (jauge) jauge.style.width = `${(repondues() / NB_AFFIRMATIONS) * 100}%`;
+  if (jauge) jauge.style.width = `${(n / NB_AFFIRMATIONS) * 100}%`;
+
+  const recap = $('[data-recapitulatif]');
+  if (!recap) return;
+  const reste = NB_AFFIRMATIONS - n;
+  vider(recap);
+  if (reste === 0) {
+    texte(recap, contenu.questions.recapitulatif_complet);
+    recap.classList.remove('recapitulatif--reste');
+    return;
+  }
+  recap.classList.add('recapitulatif--reste');
+  const lien = el('button', {
+    classe: 'lien-discret',
+    texte: 'Aller à la première',
+    attrs: { type: 'button' },
+  });
+  lien.addEventListener('click', () => montrerLesManques());
+  recap.appendChild(document.createTextNode(
+    reste === 1 ? 'Il reste 1 affirmation' : `Il reste ${reste} affirmations`
+  ));
+  recap.appendChild(lien);
+}
+
+/** Amène à la première affirmation sans réponse et la met en évidence. */
+function montrerLesManques() {
+  const premiere = premiereSansReponse(etat.reponses);
+  if (!premiere) return;
+  const carte = amenerAEcran(premiere);
+  if (!carte) return;
+  carte.classList.add('affirmation--manquante');
+  const premierChoix = carte.querySelector('.echelle__choix');
+  if (premierChoix) premierChoix.focus({ preventScroll: true });
 }
 
 function construire(formulaire) {
@@ -230,19 +285,35 @@ function construire(formulaire) {
         etat.commence = true;
         evenement('commence');
       }
-      // Une réponse déjà donnée qu'on change ne doit pas faire sauter la page.
       const premiereFois = !Number.isInteger(etat.reponses[a.n - 1]);
       etat.reponses[a.n - 1] = valeur;
+      carte.classList.remove('affirmation--manquante');
       majProgression();
       sauver();
       messageErreur($('#message'), '');
-      carte.classList.remove('affirmation--manquante');
 
+      const reserve = ouvreUneRelance(valeur, contenu);
+      basculerRelance(a.n, reserve);
+
+      if (reserve) {
+        // On reste sur la carte : la question qui vient de s'ouvrir se lit ici.
+        rendreVisible(a.n);
+        return;
+      }
       if (premiereFois) {
         const suivante = premiereSansReponse(etat.reponses, a.n + 1);
         if (suivante) window.setTimeout(() => amenerAEcran(suivante), 120);
       }
     }));
+
+    const bloc = construireRelance(a.n, (n) => {
+      const suivante = premiereSansReponse(etat.reponses, n + 1) || Math.min(n + 1, NB_AFFIRMATIONS);
+      amenerAEcran(suivante);
+    });
+    if (bloc) {
+      blocs.set(a.n, bloc);
+      carte.appendChild(bloc.enveloppe);
+    }
 
     formulaire.appendChild(carte);
   });
@@ -251,6 +322,8 @@ function construire(formulaire) {
 /** Rétablit un questionnaire déjà commencé. */
 function retablir(formulaire) {
   const memoire = lire();
+  etat.relances = { ...(memoire.relances || {}) };
+
   if (Array.isArray(memoire.reponses) && memoire.reponses.length === NB_AFFIRMATIONS) {
     etat.reponses = memoire.reponses.slice();
     etat.commence = etat.reponses.some((v) => Number.isInteger(v));
@@ -262,20 +335,32 @@ function retablir(formulaire) {
       });
     });
   }
-  etat.relances = { ...(memoire.relances || {}) };
+
+  // Chaque encadré suit la réponse de son affirmation, et rien d'autre.
+  blocs.forEach((bloc, n) => {
+    const ouvert = ouvreUneRelance(etat.reponses[n - 1], contenu);
+    bloc.enveloppe.hidden = !ouvert;
+    if (!ouvert) return;
+    const dejaChoisis = (etat.relances[n] || []).map(String);
+    bloc.cases.forEach((c) => { c.checked = dejaChoisis.includes(c.dataset.valeur); });
+    limiterChoix(bloc.cases);
+  });
 }
 
 // ------------------------------------------------------------------- l'envoi
 
 async function allerAuResultat() {
   const memoire = lire();
+  // Seules les relances des réponses qui les ouvrent encore partent.
+  const relances = relancesAEnvoyer(etat.reponses, etat.relances, contenu);
+
   // Le hash du lien personnel n'est jamais envoyé : seules les réponses partent.
   await envoyerReponse({
     version: 'v1',
     role: etat.role,
     profil: memoire.profil || {},
     reponses: etat.reponses,
-    relances: etat.relances,
+    relances,
   });
   evenement('termine');
   location.href = lienResultat(etat.role, etat.reponses);
@@ -295,15 +380,19 @@ async function demarrer() {
   }
   etat.role = memoire.role;
 
+  texte($('[data-titre]'), contenu.questions.titre);
+  texte($('[data-intro]'), contenu.questions.intro);
+
   const formulaire = $('[data-formulaire]');
-  const continuer = $('[data-continuer]');
+  const voir = $('[data-voir]');
+  texte(voir, contenu.questions.bouton);
+
   vider(formulaire);
   construire(formulaire);
   retablir(formulaire);
   majProgression();
-  typographierPage($('[data-ecran="affirmations"]'));
+  typographierPage(document.querySelector('main'));
 
-  // Des 16 affirmations vers les relances, ou directement vers le résultat.
   formulaire.addEventListener('submit', async (e) => {
     e.preventDefault();
     const reste = NB_AFFIRMATIONS - repondues();
@@ -311,42 +400,11 @@ async function demarrer() {
       messageErreur($('#message'), reste === 1
         ? 'Il reste une affirmation sans réponse.'
         : `Il en reste ${reste} sans réponse.`);
-      const premiere = premiereSansReponse(etat.reponses);
-      const carte = amenerAEcran(premiere);
-      if (carte) {
-        carte.classList.add('affirmation--manquante');
-        const premierChoix = carte.querySelector('.echelle__choix');
-        if (premierChoix) premierChoix.focus({ preventScroll: true });
-      }
+      montrerLesManques();
       return;
     }
-    if (construireRelances()) {
-      montrerEcran('relances');
-      return;
-    }
-    continuer.disabled = true;
+    voir.disabled = true;
     await allerAuResultat();
-  });
-
-  // Des relances vers le résultat.
-  $('[data-formulaire-relances]').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    $('[data-voir]').disabled = true;
-    await allerAuResultat();
-  });
-
-  // « Passer » : on part au résultat sans envoyer de souhait.
-  $('[data-passer]').addEventListener('click', async () => {
-    etat.relances = {};
-    sauver();
-    $('[data-passer]').disabled = true;
-    await allerAuResultat();
-  });
-
-  // « Retour » : on revient aux affirmations sans rien perdre.
-  $('[data-retour-affirmations]').addEventListener('click', (e) => {
-    e.preventDefault();
-    montrerEcran('affirmations');
   });
 }
 

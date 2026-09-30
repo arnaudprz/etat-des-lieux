@@ -65,9 +65,8 @@ var ECHELLE_PAPIER = 'v1-accord';
 var ECHELLE_EN_LIGNE = 'v2-evolution';
 var ECHELLES = [ECHELLE_PAPIER, ECHELLE_EN_LIGNE];
 
-/** Règles des relances. */
+/** Règles des relances. Toute réponse au seuil ou en dessous ouvre la sienne. */
 var RELANCE_MAX_CHOIX = ${contenu.relance.max_choix};
-var RELANCE_MAX_AFFIRMATIONS = ${contenu.relance.max_affirmations};
 var RELANCE_SEUIL_VALEUR_MAX = ${contenu.relance.seuil_valeur_max};
 var RELANCE_AUTRE = ${JSON.stringify('autre')};
 

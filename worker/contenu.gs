@@ -35,9 +35,8 @@ var ECHELLE_PAPIER = 'v1-accord';
 var ECHELLE_EN_LIGNE = 'v2-evolution';
 var ECHELLES = [ECHELLE_PAPIER, ECHELLE_EN_LIGNE];
 
-/** Règles des relances. */
+/** Règles des relances. Toute réponse au seuil ou en dessous ouvre la sienne. */
 var RELANCE_MAX_CHOIX = 2;
-var RELANCE_MAX_AFFIRMATIONS = 2;
 var RELANCE_SEUIL_VALEUR_MAX = 1;
 var RELANCE_AUTRE = "autre";
 

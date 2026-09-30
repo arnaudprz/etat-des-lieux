@@ -47,11 +47,12 @@ Les choix faits avec Arnaud pendant la conception des maquettes (septembre 2026)
 
 | Décision | Pourquoi |
 | --- | --- |
-| Seulement sur les 2 réponses les plus réservées (valeur 0 ou 1) | Garder le questionnaire à 2 minutes. |
+| **Chaque réponse réservée ouvre sa question « J'aimerais… » juste en dessous, sans limite** (septembre 2026) | Plus simple à comprendre, aucune réponse n'en fait disparaître une autre, et plus de données pour le tableau de bord. |
 | Toutes commencent par « J'aimerais… » | Tourner les réponses vers l'envie et l'évolution, pas vers le manque ou la faute. |
 | 2 choix au maximum, plus « Autre » | Obliger à prioriser, et rester lisible dans le dashboard. |
-| **Sur un écran à part, après les 16 affirmations** (septembre 2026) | Elles s'affichaient d'abord sous les affirmations, et se recalculaient à chaque réponse. Deux effets, tous deux constatés au test : une relance déjà remplie disparaissait plus haut sans prévenir, ses cases effacées et la page sautant de plus de 100px ; et un « Pas du tout » donné en bas faisait apparaître un encadré tout en haut, hors de l'écran, si deux réponses réservées existaient déjà plus haut. On croyait alors que « Pas du tout » ne fonctionnait pas. |
-| Chaque relance rappelle son affirmation | Sur un écran séparé, le souhait seul ne voudrait plus rien dire. |
+| L'ouverture d'un encadré ne dépend que de la réponse à son affirmation | C'est ce qui supprime les deux défauts des versions précédentes : un encadré déjà rempli qui disparaissait plus haut sans prévenir en emportant ses cases, et un « Pas encore » donné en bas qui faisait apparaître un encadré hors de l'écran. On croyait alors que « Pas encore » ne fonctionnait pas. |
+| Deux détours abandonnés : les 2 plus réservées seulement, puis un écran « Encore un mot » après les 16 | Le premier faisait disparaître des encadrés. Le second éloignait la question du moment où l'envie vient, et coupait le fil de la lecture. |
+| Les choix d'un encadré refermé restent en mémoire pendant la session | Changer d'avis puis revenir ne doit rien coûter. Seules les relances des réponses finales 0 ou 1 sont envoyées. |
 | Les choix en lignes pleine largeur, pas en pilules | En pilules, les choix longs passaient sur 2 lignes sur mobile et devenaient illisibles. |
 | Un lien « Passer » à côté de « Voir mon résultat » | Les relances restent facultatives, et on le dit plutôt que de le laisser deviner. |
 

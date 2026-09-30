@@ -28,9 +28,10 @@ function reponsesValides(brut) {
 /**
  * Valide les relances.
  *
- * Règles : au plus RELANCE_MAX_AFFIRMATIONS affirmations relancées, au plus
- * RELANCE_MAX_CHOIX choix chacune, et seules les affirmations dont la réponse ne
- * dépasse pas le seuil peuvent en porter une. Les indices doivent exister.
+ * Toute affirmation dont la réponse ne dépasse pas le seuil peut porter une
+ * relance : il y en a donc jusqu'à NB_AFFIRMATIONS. Restent vérifiés : au plus
+ * RELANCE_MAX_CHOIX choix chacune, une relance seulement sur une réponse au
+ * seuil ou en dessous, et des indices qui existent pour le rôle concerné.
  *
  * @return {Object|null} objet { numero: [choix] }, ou null si invalide.
  */
@@ -39,7 +40,7 @@ function relancesValides(brut, reponses, role) {
   if (typeof brut !== 'object' || Array.isArray(brut)) return null;
 
   var numeros = Object.keys(brut);
-  if (numeros.length > RELANCE_MAX_AFFIRMATIONS) return null;
+  if (numeros.length > NB_AFFIRMATIONS) return null;
 
   var sortie = {};
   for (var i = 0; i < numeros.length; i++) {

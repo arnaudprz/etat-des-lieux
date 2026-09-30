@@ -103,8 +103,21 @@ describe('validation des relances', () => {
     assert.equal(l.relance_q8, '1|autre');
   });
 
-  test('refuse plus de 2 affirmations relancées', () => {
-    const r = reponseValide({ relances: { 7: [0], 8: [0], 3: [0] } });
+  test('accepte autant de relances qu’il y a de réponses réservées', () => {
+    // Les 16 à « Pas encore » : les 16 relances doivent passer.
+    const relances = {};
+    for (let n = 1; n <= 16; n += 1) relances[n] = [0];
+    const r = reponseValide({ reponses: new Array(16).fill(0), relances });
+    assert.equal(w.__post(r).ok, true);
+    const l = w.__lignes('reponses')[0];
+    for (let n = 1; n <= 16; n += 1) assert.equal(l['relance_q' + n], '0');
+  });
+
+  test('refuse plus de 16 relances', () => {
+    const relances = {};
+    for (let n = 1; n <= 16; n += 1) relances[n] = [0];
+    relances[17] = [0];
+    const r = reponseValide({ reponses: new Array(16).fill(0), relances });
     assert.equal(w.__post(r).ok, false);
   });
 

@@ -159,25 +159,52 @@ export function colonnes(dimensions, contenu) {
 // ---------------------------------------------------------------- relances
 
 /**
- * Les affirmations qui reçoivent une relance : les plus réservées parmi celles
- * dont la valeur ne dépasse pas le seuil, la plus basse d'abord, à égalité
- * l'ordre des affirmations. Au plus `max_affirmations`.
+ * Le seuil en dessous duquel une affirmation ouvre sa question « J'aimerais… ».
+ * Pas encore (0) et Un peu (1) l'ouvrent ; En bonne partie et Pleinement, non.
+ */
+export function seuilRelance(contenu) {
+  const regles = (contenu && contenu.relance) || {};
+  return regles.seuil_valeur_max != null ? regles.seuil_valeur_max : 1;
+}
+
+/** Vrai si cette réponse ouvre sa question « J'aimerais… ». */
+export function ouvreUneRelance(valeur, contenu) {
+  return Number.isInteger(valeur) && valeur <= seuilRelance(contenu);
+}
+
+/**
+ * Les affirmations qui reçoivent une relance : toutes celles dont la réponse
+ * est « Pas encore » ou « Un peu », sans limite de nombre.
  *
- * Renvoyé dans l'ordre de sévérité. Les réponses manquantes sont ignorées, ce
- * qui permet d'appeler cette fonction pendant que le questionnaire se remplit.
+ * L'ancienne règle n'en retenait que les 2 plus réservées, ce qui faisait
+ * disparaître un encadré déjà rempli quand on répondait plus bas. Voir
+ * DECISIONS.md.
+ *
+ * Renvoyé dans l'ordre des affirmations. Les réponses manquantes sont ignorées,
+ * ce qui permet d'appeler cette fonction pendant que le questionnaire se remplit.
  *
  * @returns {number[]} numéros d'affirmation, à partir de 1
  */
 export function affirmationsRelancees(reponses, contenu) {
-  const regles = (contenu && contenu.relance) || {};
-  const seuil = regles.seuil_valeur_max != null ? regles.seuil_valeur_max : 1;
-  const max = regles.max_affirmations != null ? regles.max_affirmations : 2;
   return reponses
     .map((valeur, i) => ({ n: i + 1, valeur }))
-    .filter((a) => Number.isInteger(a.valeur) && a.valeur <= seuil)
-    .sort((a, b) => a.valeur - b.valeur || a.n - b.n)
-    .slice(0, max)
+    .filter((a) => ouvreUneRelance(a.valeur, contenu))
     .map((a) => a.n);
+}
+
+/**
+ * Ne garde que les relances des affirmations dont la réponse finale les ouvre.
+ * Les choix d'un encadré refermé restent en mémoire pendant la session, mais
+ * ne partent pas.
+ */
+export function relancesAEnvoyer(reponses, relances, contenu) {
+  const retenues = affirmationsRelancees(reponses, contenu);
+  const sortie = {};
+  retenues.forEach((n) => {
+    const choix = relances[n];
+    if (Array.isArray(choix) && choix.length > 0) sortie[n] = choix;
+  });
+  return sortie;
 }
 
 // ------------------------------------------------------------------ résultat

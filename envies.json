@@ -1,0 +1,243 @@
+{
+  "debut": "Vous aimeriez",
+  "autre": "d'autres choses encore",
+  "autre_seul": "Vous aimeriez que les choses évoluent sur ce point.",
+  "resultats_titre": "Pour avancer vers vos objectifs",
+  "fragments": {
+    "1": {
+      "membre": [
+        "un cap commun, partagé par tous",
+        "une vision plus claire de ce que vise l'entreprise",
+        "des priorités dont on parle plus souvent",
+        "une idée plus nette de ce que chaque métier y apporte",
+        "des réussites davantage célébrées"
+      ]
+    },
+    "2": {
+      "membre": [
+        "des réussites communes plus souvent évoquées",
+        "une contribution de chacun plus souvent nommée",
+        "un « nous » plus présent",
+        "des moments pour fêter vos résultats"
+      ]
+    },
+    "3": {
+      "membre": [
+        "une journée au poste d'un collègue",
+        "une présentation du quotidien de chaque métier",
+        "plus de rencontres entre métiers",
+        "des outils plus partagés",
+        "plus de moments informels ensemble"
+      ]
+    },
+    "4": {
+      "membre": [
+        "vos contraintes de temps mieux connues de vos collègues",
+        "vos outils mieux connus de vos collègues",
+        "votre charge de travail mieux comprise",
+        "vos besoins mieux compris par vos collègues",
+        "l'effet de leur travail sur le vôtre mieux perçu"
+      ],
+      "manager": [
+        "des priorités plus claires pour votre équipe",
+        "vos attentes mieux comprises par chacun",
+        "le sens de certaines décisions mieux compris",
+        "des marges de manœuvre mieux connues",
+        "votre regard sur le travail mieux partagé"
+      ]
+    },
+    "5": {
+      "membre": [
+        "des mercis plus fréquents et plus précis",
+        "l'avis de chacun plus souvent demandé",
+        "chaque métier davantage associé aux décisions",
+        "le travail de chacun plus mis en avant"
+      ]
+    },
+    "6": {
+      "membre": [
+        "un tour de parole en réunion",
+        "un ordre du jour partagé à l'avance",
+        "un manager qui laisse parler l'équipe d'abord",
+        "des réunions plus courtes, où chacun s'exprime",
+        "des sujets plus concrets en réunion"
+      ],
+      "manager": [
+        "un tour de parole en réunion",
+        "un ordre du jour partagé à l'avance",
+        "l'habitude de laisser parler l'équipe d'abord",
+        "des réunions plus courtes, où chacun s'exprime",
+        "des sujets plus concrets en réunion"
+      ]
+    },
+    "7": {
+      "membre": [
+        "plus d'échanges en direct",
+        "un point d'équipe régulier",
+        "une messagerie mieux organisée",
+        "plus de paroles et moins d'écrits",
+        "un outil ou un planning commun"
+      ]
+    },
+    "8": {
+      "membre": [
+        "des infos plus complètes",
+        "des infos qui arrivent plus tôt",
+        "des infos dans un format partagé par tous",
+        "des infos plus cohérentes entre elles",
+        "des infos fiables, sans avoir à vérifier"
+      ]
+    },
+    "9": {
+      "membre": [
+        "des échanges plus rapides entre personnes concernées",
+        "un moment pour faire le point après coup",
+        "la solution cherchée avant le responsable",
+        "plus de choses réglées ensemble",
+        "des leçons tirées ensemble"
+      ]
+    },
+    "10": {
+      "membre": [
+        "un manager plus disponible",
+        "plus de retours de votre manager",
+        "un manager qui fait davantage le lien avec les autres métiers",
+        "plus d'aide pour dépasser les désaccords",
+        "plus d'autonomie"
+      ],
+      "manager": [
+        "plus de temps avec votre équipe",
+        "d'autres façons d'animer vos réunions",
+        "un regard extérieur",
+        "une meilleure connaissance de chaque métier",
+        "des repères pour dépasser les désaccords"
+      ]
+    },
+    "11": {
+      "membre": [
+        "la liberté de tout dire sans crainte",
+        "plus de temps pour en parler",
+        "une parole qui compte davantage",
+        "plus de proximité avec la hiérarchie",
+        "des relations plus apaisées"
+      ]
+    },
+    "12": {
+      "membre": [
+        "plus de temps en tête à tête avec votre manager",
+        "un manager qui partage aussi ses doutes et ses erreurs",
+        "plus de visibilité sur ce que votre manager fait de ce que vous lui dites",
+        "un cadre clair sur ce qui reste entre vous",
+        "un manager plus disponible"
+      ],
+      "manager": [
+        "plus de temps en tête à tête",
+        "l'élan de partager vos doutes et vos erreurs",
+        "une façon plus visible de montrer ce que vous faites de leurs retours",
+        "un cadre clair sur ce qui reste entre vous",
+        "plus de disponibilité de votre part"
+      ]
+    },
+    "13": {
+      "membre": [
+        "un peu plus de temps",
+        "des interlocuteurs plus faciles à identifier",
+        "plus de liberté pour demander de l'aide",
+        "une charge mieux répartie",
+        "des moments pour vous entraider"
+      ]
+    },
+    "14": {
+      "membre": [
+        "une vision plus claire de l'utilité de votre travail",
+        "plus de retours de vos clients",
+        "des efforts dont on voit davantage les fruits",
+        "des décisions mieux comprises",
+        "plus de place pour ce qui compte vraiment"
+      ]
+    },
+    "15": {
+      "membre": [
+        "des échanges sur votre façon de travailler ensemble",
+        "des échanges sur ce qui vous aide au quotidien",
+        "des échanges sur ce qui pourrait vous faciliter la vie",
+        "des échanges sur vos réussites collectives",
+        "des échanges sur ce que vous apprenez ensemble"
+      ]
+    },
+    "16": {
+      "membre": [
+        "une charge plus soutenable",
+        "plus d'infos pour avancer",
+        "des priorités plus stables",
+        "plus de moyens",
+        "des métiers qui se coordonnent mieux"
+      ]
+    }
+  },
+  "empathie": {
+    "vise": {
+      "membre": "Cette envie dit que vous tenez à avancer dans la même direction que les autres. Un cap partagé, c'est souvent ce qui rend les choix du quotidien plus simples."
+    },
+    "sait": {
+      "membre": "Être mieux compris, et mieux comprendre : quand chaque métier voit ce que vivent les autres, beaucoup de petites tensions s'apaisent d'elles-mêmes.",
+      "manager": "Une équipe qui voit le travail avec clarté : c'est une attention à ce que chacun comprend, pas seulement à ce qu'il fait."
+    },
+    "place": {
+      "membre": "Cette envie parle de reconnaissance. Se sentir vu et entendu, c'est ce qui donne envie de s'engager pour le collectif."
+    },
+    "info": {
+      "membre": "Ces envies sont très concrètes. Elles disent combien la façon dont l'info circule pèse sur le quotidien, bien au-delà des outils."
+    },
+    "accroche": {
+      "membre": "Chercher ensemble plutôt que chacun de son côté : c'est souvent quand une difficulté se partage qu'elle devient plus légère."
+    },
+    "manager": {
+      "membre": "Ce que vous attendez de votre manager dit ce qui vous aiderait à bien travailler avec les autres. C'est une information précieuse, et légitime.",
+      "manager": "Ces envies montrent l'attention que vous portez à votre rôle. Accompagner une équipe, cela s'apprend aussi, avec le temps et avec d'autres."
+    },
+    "confiance": {
+      "membre": "Ces envies parlent de confiance. Pouvoir parler franchement et compter sur les autres, c'est ce qui permet à chacun d'être pleinement lui-même au travail."
+    },
+    "sens": {
+      "membre": "Donner plus de place au sens, à côté des chiffres : c'est souvent lui qui donne de l'énergie dans la durée."
+    },
+    "resultats": {
+      "membre": "Ces envies disent ce qui vous aiderait à atteindre vos objectifs sereinement. Elles parlent des conditions du travail, pas de l'effort de chacun."
+    }
+  },
+  "encouragement": {
+    "vise": {
+      "membre": "C'est une bonne idée. Elle mérite d'être partagée avec votre équipe : un cap devient commun quand on en parle ensemble.",
+      "manager": "Faites-vous confiance : en parler avec votre équipe, c'est déjà commencer à rendre ce cap commun."
+    },
+    "sait": {
+      "membre": "Votre idée est bonne, faites-vous confiance. En parler avec vos collègues, c'est déjà leur ouvrir une porte sur votre travail.",
+      "manager": "Faites-vous confiance : en parler avec votre équipe, c'est déjà rendre les choses plus claires pour chacun."
+    },
+    "place": {
+      "membre": "Ce besoin est légitime, faites-vous confiance. Il mérite d'être dit, en équipe ou à votre manager.",
+      "manager": "Faites-vous confiance : dire à votre équipe que chaque voix compte, c'est déjà lui faire de la place."
+    },
+    "info": {
+      "membre": "Ce sont de bonnes idées, et simples à proposer. Un point d'équipe est souvent le bon moment pour en parler."
+    },
+    "accroche": {
+      "membre": "Proposer de chercher ensemble, c'est une bonne idée. Faites-vous confiance : la prochaine fois que ça coince, dites-le."
+    },
+    "manager": {
+      "membre": "Votre manager ne peut pas tout deviner. Lui dire simplement ce qui vous aiderait, c'est une bonne idée.",
+      "manager": "Ce sont de bonnes pistes, faites-vous confiance. En parler avec d'autres managers, ou avec votre équipe, peut vous aider à avancer."
+    },
+    "confiance": {
+      "membre": "Ce que vous ressentez compte, faites-vous confiance. En parler d'abord à une personne de confiance, c'est souvent un bon début.",
+      "manager": "Faites-vous confiance : en parler avec votre équipe, c'est déjà montrer qu'on peut parler franchement."
+    },
+    "sens": {
+      "membre": "C'est une bonne idée. Elle mérite une place en équipe, à côté des chiffres : osez la proposer."
+    },
+    "resultats": {
+      "membre": "Ces idées peuvent aider tout le monde, faites-vous confiance. Elles méritent d'être partagées avec votre équipe ou votre manager."
+    }
+  }
+}

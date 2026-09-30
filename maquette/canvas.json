@@ -10,7 +10,7 @@
       "y": 0
     },
     "Dashboard.dc.html": {
-      "h": 8820,
+      "h": 8000,
       "title": "Mon tableau de bord",
       "w": 1280,
       "x": 0,
@@ -70,14 +70,14 @@
       "y": 0
     },
     "Resultat-mobile.dc.html": {
-      "h": 5240,
+      "h": 5530,
       "title": "Mobile · 4. Résultat",
       "w": 390,
       "x": 2850,
       "y": 5800
     },
     "Resultat.dc.html": {
-      "h": 3440,
+      "h": 3600,
       "title": "4. Résultat",
       "w": 1280,
       "x": 4080,

@@ -616,7 +616,6 @@
     "sous_titre": "Deux réponses au plus",
     "autre": "Autre",
     "max_choix": 2,
-    "max_affirmations": 2,
     "seuil_valeur_max": 1
   },
   "cartes_ensemble": [

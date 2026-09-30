@@ -24,6 +24,8 @@ import {
   phraseAppui,
   colonnes,
   affirmationsRelancees,
+  ouvreUneRelance,
+  relancesAEnvoyer,
   calculer,
   NB_AFFIRMATIONS,
 } from '../docs/assets/js/calcul.js';
@@ -244,27 +246,39 @@ describe('colonnes de couleur', () => {
 describe('relances', () => {
   const vide = () => new Array(NB_AFFIRMATIONS).fill(null);
 
-  test('les 2 affirmations les plus réservées, la plus basse d’abord', () => {
+  test('toute réponse Pas encore ou Un peu ouvre sa relance', () => {
     const r = new Array(NB_AFFIRMATIONS).fill(3);
     r[4] = 1; r[9] = 0; r[2] = 1;
-    assert.deepEqual(affirmationsRelancees(r, contenu), [10, 3]);
+    assert.deepEqual(affirmationsRelancees(r, contenu), [3, 5, 10]);
   });
 
-  test('à égalité, l’ordre des affirmations tranche', () => {
+  test('sans limite de nombre : 16 réponses réservées donnent 16 relances', () => {
+    const toutes = affirmationsRelancees(new Array(NB_AFFIRMATIONS).fill(0), contenu);
+    assert.equal(toutes.length, 16);
+    assert.deepEqual(toutes, Array.from({ length: 16 }, (_, i) => i + 1));
+  });
+
+  test('renvoyées dans l’ordre des affirmations', () => {
     const r = new Array(NB_AFFIRMATIONS).fill(3);
-    r[7] = 1; r[1] = 1; r[12] = 1;
-    assert.deepEqual(affirmationsRelancees(r, contenu), [2, 8]);
+    r[12] = 0; r[1] = 1; r[7] = 0;
+    assert.deepEqual(affirmationsRelancees(r, contenu), [2, 8, 13]);
   });
 
-  test('jamais plus de 2 relances', () => {
-    assert.equal(affirmationsRelancees(new Array(NB_AFFIRMATIONS).fill(0), contenu).length, 2);
-  });
-
-  test('seules les valeurs 0 et 1 déclenchent une relance', () => {
+  test('seules les valeurs 0 et 1 en ouvrent une', () => {
     const r = new Array(NB_AFFIRMATIONS).fill(2);
     assert.deepEqual(affirmationsRelancees(r, contenu), []);
     r[5] = 1;
     assert.deepEqual(affirmationsRelancees(r, contenu), [6]);
+    r[5] = 3;
+    assert.deepEqual(affirmationsRelancees(r, contenu), []);
+  });
+
+  test('ouvreUneRelance dit la même chose, réponse par réponse', () => {
+    assert.equal(ouvreUneRelance(0, contenu), true);
+    assert.equal(ouvreUneRelance(1, contenu), true);
+    assert.equal(ouvreUneRelance(2, contenu), false);
+    assert.equal(ouvreUneRelance(3, contenu), false);
+    assert.equal(ouvreUneRelance(null, contenu), false);
   });
 
   test('les affirmations sans réponse sont ignorées', () => {
@@ -277,6 +291,35 @@ describe('relances', () => {
     const r = new Array(NB_AFFIRMATIONS).fill(3);
     r[15] = 0;
     assert.deepEqual(affirmationsRelancees(r, contenu), [16]);
+  });
+});
+
+describe('les relances envoyées', () => {
+  test('seules celles des réponses encore réservées partent', () => {
+    const r = new Array(NB_AFFIRMATIONS).fill(3);
+    r[2] = 1;   // Q3 réservée
+    r[6] = 0;   // Q7 réservée
+    // Q10 a été réservée un moment, puis passée à Pleinement : ses choix
+    // restent en mémoire mais ne doivent pas partir.
+    const memoire = { 3: [0, 1], 7: ['autre'], 10: [2] };
+    assert.deepEqual(relancesAEnvoyer(r, memoire, contenu), { 3: [0, 1], 7: ['autre'] });
+  });
+
+  test('une relance vide ne part pas', () => {
+    const r = new Array(NB_AFFIRMATIONS).fill(0);
+    assert.deepEqual(relancesAEnvoyer(r, { 1: [], 2: [0] }, contenu), { 2: [0] });
+  });
+
+  test('aucune réponse réservée ne donne aucune relance', () => {
+    const r = new Array(NB_AFFIRMATIONS).fill(2);
+    assert.deepEqual(relancesAEnvoyer(r, { 1: [0], 5: [1] }, contenu), {});
+  });
+
+  test('les 16 peuvent partir ensemble', () => {
+    const r = new Array(NB_AFFIRMATIONS).fill(0);
+    const memoire = {};
+    for (let n = 1; n <= NB_AFFIRMATIONS; n += 1) memoire[n] = [0];
+    assert.equal(Object.keys(relancesAEnvoyer(r, memoire, contenu)).length, 16);
   });
 });
 

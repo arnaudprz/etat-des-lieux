@@ -656,6 +656,19 @@
   margin: 24px 0 16px;
 }
 
+/* Le récapitulatif du bas. Aucun chiffre de réponse, seulement ce qui reste. */
+.recapitulatif {
+  margin: 20px 0 0;
+  font-size: 15px;
+  color: var(--taupe);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+
+.recapitulatif--reste { color: #8A5A2B; }
+
 .navigation {
   display: flex;
   flex-direction: column-reverse;
@@ -673,10 +686,14 @@
 }
 
 /* « Passer » : les relances restent facultatives, sans peser visuellement. */
+/* Tous les liens et boutons secondaires gardent 44px de haut au doigt. */
 .lien-discret {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   border: 0;
   background: none;
-  padding: 12px;
+  padding: 0 4px;
   font-family: inherit;
   font-size: 15px;
   color: var(--sauge-fonce);
@@ -688,6 +705,10 @@
 .lien-discret:hover { color: var(--foret); }
 
 .navigation__retour {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
   font-size: 15px;
   align-self: center;
 }
@@ -781,26 +802,56 @@
 .echelle {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 6px;
+  gap: 5px;
 }
 
 .echelle__choix {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   min-height: var(--hauteur-bouton);
-  padding: 4px 6px;
+  padding: 4px 3px;
   border-radius: var(--rayon-champ);
   border: 1px solid var(--bordure-forte);
   background: var(--blanc);
   color: var(--encre);
   font-family: inherit;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 1.2;
   cursor: pointer;
   overflow-wrap: break-word;
+}
+
+/* Une coche discrète : la couleur ne doit jamais être le seul repère.
+   Elle est posée dans le coin, hors du flux, pour ne pas voler de la largeur
+   au libellé, déjà à l'étroit sur mobile. */
+.echelle__coche {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+
+.echelle__choix[aria-pressed='true'] .echelle__coche { opacity: 1; }
+
+.echelle__coche::before {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 8px;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Contour plus épais au clavier, pour qui navigue sans souris. */
+.echelle__choix:focus-visible {
+  outline: 3px solid var(--sauge-fonce);
+  outline-offset: 2px;
 }
 
 .echelle__choix[aria-pressed='true'] {
@@ -809,28 +860,37 @@
   color: var(--blanc);
 }
 
-/* Les relances vivent maintenant sur un écran à part, après les 16 affirmations.
+/* La question « J'aimerais… » s'ouvre sous les boutons de réponse, dans la même
+   carte. L'enveloppe porte l'animation de hauteur : rien ne bouge au-dessus.
    Plus de <fieldset> ni de <legend> : un role="group" et un intitulé ordinaire
    donnent la même accessibilité sans les bizarreries de mise en page. */
+.relance-enveloppe {
+  overflow: hidden;
+  margin-top: 4px;
+}
+
 .relance {
-  padding: 20px 18px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--sable-clair);
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.relance__affirmation {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.45;
-  color: var(--taupe);
-}
-
 .relance__question {
   margin: 0;
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--foret);
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--encre);
+}
+
+.relance__question strong { font-weight: 600; }
+
+.relance__suivant {
+  align-self: flex-start;
+  padding: 10px 0;
+  min-height: 44px;
 }
 
 .relance__sous-titre {
@@ -838,6 +898,7 @@
   font-size: 14px;
   color: var(--taupe);
   margin-left: 8px;
+  white-space: nowrap;
 }
 
 .relance__choix {
@@ -896,7 +957,8 @@
 
 @media (min-width: 560px) {
   .echelle { gap: 10px; }
-  .echelle__choix { padding: 0 10px; }
+  .echelle__choix { padding: 4px 10px; font-size: 14px; }
+  .echelle__coche { top: 8px; left: 10px; }
 }
 
 @media (min-width: 900px) {
