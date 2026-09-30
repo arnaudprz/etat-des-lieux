@@ -108,9 +108,15 @@ export function ligneBarre(libelle, largeur, valeur, options = {}) {
   ]);
 }
 
-/** Une ligne de tableau de bord en grille : intitulé à gauche, contenu à droite. */
-export function rangee(libelle, contenu) {
-  return el('div', { classe: 'rangee' }, [
+/**
+ * Une ligne de tableau de bord en grille : intitulé à gauche, contenu à droite.
+ *
+ * La variante compacte sert aux longues listes de barres, où la bordure et la
+ * marge verticale de la ligne standard rendraient la section interminable.
+ */
+export function rangee(libelle, contenu, options = {}) {
+  const classe = options.compacte ? 'rangee rangee--compacte' : 'rangee';
+  return el('div', { classe }, [
     el('span', { classe: 'rangee__nom', texte: libelle }),
     el('div', { classe: 'rangee__corps' }, contenu),
   ]);

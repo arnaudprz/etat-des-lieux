@@ -156,6 +156,31 @@ if (enonceMembre === enonceManager) {
 await page.locator('.bascule__bouton', { hasText: 'Membres' }).click();
 await page.waitForTimeout(250);
 
+// C : les lignes de dimension sont compactes et tiennent sur une seule ligne.
+const lignesDimension = await page.evaluate(() => {
+  const lignes = Array.from(document.querySelectorAll('.rangee--compacte'));
+  return lignes.map((l) => {
+    const nom = l.querySelector('.rangee__nom');
+    const style = getComputedStyle(nom);
+    const hauteurLigne = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.3;
+    return {
+      hauteur: Math.round(l.getBoundingClientRect().height),
+      lignesDeTexte: Math.round(nom.getBoundingClientRect().height / hauteurLigne),
+      graisse: style.fontWeight,
+      deborde: nom.scrollWidth > nom.clientWidth + 1,
+    };
+  });
+});
+if (lignesDimension.length !== 8) {
+  soucis.push(`${lignesDimension.length} lignes de dimension au lieu de 8`);
+}
+lignesDimension.forEach((l, i) => {
+  if (l.hauteur > 36) soucis.push(`ligne de dimension ${i + 1} haute de ${l.hauteur}px, visée 32`);
+  if (l.lignesDeTexte > 1) soucis.push(`le nom de la dimension ${i + 1} tient sur ${l.lignesDeTexte} lignes`);
+  if (Number(l.graisse) >= 600) soucis.push(`le nom de la dimension ${i + 1} est en gras`);
+  if (l.deborde) soucis.push(`le nom de la dimension ${i + 1} est coupé par la colonne`);
+});
+
 // Chaque graphique doit donner son effectif au survol.
 const sansTitre = await page.evaluate(() =>
   document.querySelectorAll('.barre-empilee__tranche:not([title]), .ligne-barre__jauge:not([title])').length

@@ -37,6 +37,6 @@ export function afficherDimensions(hote, reponses, contenu) {
       couleur: n.niveau.hex,
       texte: n.niveau.texte,
     }));
-    hote.appendChild(rangee(d.nom, [barreEmpilee(tranches, d.nom)]));
+    hote.appendChild(rangee(d.nom, [barreEmpilee(tranches, d.nom)], { compacte: true }));
   });
 }
