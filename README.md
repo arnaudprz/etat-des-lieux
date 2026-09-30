@@ -99,3 +99,4 @@ node scripts/generer-contenu-gs.mjs
 | 30/09/2026 | `e7f1d03` | Tableau de bord privé : 10 sections, filtres et anonymat k >= 3. |
 | 30/09/2026 | `418c301` | Documentation et vérification du cahier des charges. |
 | 30/09/2026 | `d90beaa` | Corrections passe 1, groupe A : données du tableau de bord. |
+| 30/09/2026 | `à venir` | Corrections passe 1, groupe B : parcours public et maquettes. |

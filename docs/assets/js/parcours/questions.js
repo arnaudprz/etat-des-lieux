@@ -15,7 +15,7 @@ import { lire, ecrire } from '../session.js';
 import { envoyerReponse } from '../api.js';
 import {
   $, el, vider, signalerModeDemo, typographierPage,
-  messageErreur, annoncer, evenement,
+  messageErreur, evenement,
 } from './commun.js';
 
 /** Clé de la valeur « Autre » dans une relance, telle qu'enregistrée. */
@@ -256,9 +256,8 @@ async function demarrer() {
   formulaire.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (repondues() < NB_AFFIRMATIONS) {
-      const m = 'Il reste des affirmations sans réponse.';
-      messageErreur($('#message'), m);
-      annoncer(m);
+      // Le message visible porte role="alert" : inutile de l'annoncer deux fois.
+      messageErreur($('#message'), 'Il reste des affirmations sans réponse.');
       return;
     }
     bouton.disabled = true;

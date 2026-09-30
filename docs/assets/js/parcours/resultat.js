@@ -93,6 +93,12 @@ function brancherCopie() {
   });
 }
 
+/** « a, b et c » : une énumération qui se lit à voix haute. */
+function enumerer(elements) {
+  if (elements.length <= 1) return elements.join('');
+  return `${elements.slice(0, -1).join(', ')} et ${elements[elements.length - 1]}`;
+}
+
 function brancherEtude() {
   const formulaire = $('[data-etude]');
   const message = $('[data-message-etude]');
@@ -116,16 +122,16 @@ function brancherEtude() {
     };
 
     const manque = [];
-    if (!contact.prenom) manque.push('le prénom');
-    if (!contact.nom) manque.push('le nom');
-    if (!contact.entreprise) manque.push("l'entreprise");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) manque.push("l'e-mail professionnel");
+    if (!contact.prenom) manque.push('votre prénom');
+    if (!contact.nom) manque.push('votre nom');
+    if (!contact.entreprise) manque.push('votre entreprise');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) manque.push('votre e-mail professionnel');
     if (!contact.consentement) manque.push('votre accord');
 
     if (manque.length > 0) {
-      const m = `Il manque ${manque.join(', ')}.`;
-      messageErreur(message, m);
-      annoncer(m);
+      // Le message visible porte role="alert" : il est déjà annoncé aux lecteurs
+      // d'écran. Une seconde zone aria-live le ferait lire deux fois.
+      messageErreur(message, `Il nous manque encore : ${enumerer(manque)}.`);
       return;
     }
 

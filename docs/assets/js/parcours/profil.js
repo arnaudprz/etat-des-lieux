@@ -10,7 +10,7 @@ import { chargerContenu } from '../contenu.js';
 import { lire, ecrire } from '../session.js';
 import {
   $, el, texte, vider, signalerModeDemo, typographierPage,
-  messageErreur, normaliser, annoncer,
+  messageErreur, normaliser,
 } from './commun.js';
 
 /** Les champs obligatoires, dans l'ordre d'affichage. */
@@ -228,8 +228,9 @@ async function demarrer() {
       const m = reste.length === 1
         ? `Il reste une question à renseigner : ${liste}.`
         : `Il reste des questions à renseigner : ${liste}.`;
+      // Le message visible porte role="alert" : il est déjà annoncé. Une
+      // seconde zone aria-live le ferait lire deux fois.
       messageErreur(message, m);
-      annoncer(m);
       return;
     }
     ecrire({
