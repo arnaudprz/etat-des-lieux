@@ -38,7 +38,8 @@ const CIBLES = [
 
 /** Le préréglage « Exemple de la maquette » du simulateur. */
 const REPONSES = [2, 2, 1, 1, 2, 2, 0, 0, 2, 3, 2, 2, 2, 2, 2, 1];
-const HASH_ATTENDU = '#v1-m2211220023222221';
+/** La partie « réponses » du lien. Les idées cochées s'y ajoutent ensuite. */
+const HASH_BASE = '#v2-m2211220023222221';
 
 const soucis = [];
 let capturesPrises = 0;
@@ -732,7 +733,9 @@ async function passerLaCible(cible) {
   // ------------------------------------------------------------ 4. résultat
   await page.waitForSelector('[data-resultat]:not([hidden])');
   const hash = new URL(page.url()).hash;
-  if (hash !== HASH_ATTENDU) soucis.push(`[${nom}] resultat : hash ${hash} au lieu de ${HASH_ATTENDU}`);
+  if (!hash.startsWith(HASH_BASE)) {
+    soucis.push(`[${nom}] resultat : hash ${hash} ne commence pas par ${HASH_BASE}`);
+  }
 
   const titreCarte = await page.locator('[data-carte-titre]').innerText();
   if (titreCarte !== 'Une équipe en germe') {
@@ -878,7 +881,7 @@ async function passerLaCible(cible) {
   });
   if (lien.replie !== true) soucis.push(`[${nom}] resultat : l'URL brute n'est pas repliée`);
   if (lien.champVisible) soucis.push(`[${nom}] resultat : l'URL brute s'affiche d'emblée`);
-  if (!lien.valeur.includes('#v1-')) soucis.push(`[${nom}] resultat : le lien ne porte pas le résultat`);
+  if (!lien.valeur.includes('#v2-')) soucis.push(`[${nom}] resultat : le lien ne porte pas le résultat`);
   if (lien.partageDisponible && !lien.partageVisible) {
     soucis.push(`[${nom}] resultat : le partage existe mais le bouton est caché`);
   }
@@ -949,6 +952,14 @@ async function passerLaCible(cible) {
   await capturer(`Resultat${suffixe}`, `${nom} resultat`);
 
   // ----------------------------------------- 5. lien illisible, confidentialité
+  // Un lien v1 doit rester lisible : il affiche le résultat, sans les idées.
+  await page.goto(`${BASE}/resultat.html#v1-m2211220023222221`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('[data-resultat]:not([hidden])');
+  const titreV1 = await page.locator('[data-carte-titre]').innerText();
+  if (titreV1 !== 'Une équipe en germe') {
+    soucis.push(`[${nom}] resultat : un lien v1 donne « ${titreV1} »`);
+  }
+
   await page.goto(`${BASE}/resultat.html#nawak`, { waitUntil: 'networkidle' });
   await page.waitForSelector('[data-sans-resultat]:not([hidden])');
   if (!(await page.locator('[data-resultat]').isHidden())) {

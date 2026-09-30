@@ -401,48 +401,132 @@ describe('le lien personnel', () => {
   const r = [2, 2, 1, 1, 2, 2, 0, 0, 2, 3, 2, 1, 2, 2, 1, 2];
 
   test('encode le rôle et les 16 réponses', () => {
-    assert.equal(encoder('membre', r), 'v1-m2211220023212212');
-    assert.equal(encoder('manager', r), 'v1-g2211220023212212');
+    assert.equal(encoder('membre', r), 'v2-m2211220023212212');
+    assert.equal(encoder('manager', r), 'v2-g2211220023212212');
   });
 
-  test('l’exemple du cahier des charges se décode', () => {
-    const d = decoder('#v1-m2211220023212212');
-    assert.equal(d.role, 'membre');
-    assert.deepEqual(d.reponses, r);
+  test('encode les idées cochées, dans l’ordre des affirmations', () => {
+    const jeton = encoder('membre', r, { 8: [1], 3: [1, 4], 15: ['autre'] });
+    assert.equal(jeton, 'v2-m2211220023212212-3.14-8.1-15.a');
   });
 
-  test('aller et retour pour les deux rôles', () => {
+  test('une relance vide n’est pas encodée', () => {
+    assert.equal(encoder('membre', r, { 3: [] }), 'v2-m2211220023212212');
+  });
+
+  test('aller et retour, avec et sans idées', () => {
     for (const role of ['membre', 'manager']) {
-      const d = decoder('#' + encoder(role, r));
-      assert.equal(d.role, role);
-      assert.equal(d.version, VERSION);
-      assert.deepEqual(d.reponses, r);
+      for (const relances of [{}, { 3: [0] }, { 3: [1, 4], 7: [0, 'autre'] }]) {
+        const lu = decoder('#' + encoder(role, r, relances), contenu);
+        assert.equal(lu.role, role);
+        assert.equal(lu.version, 'v2');
+        assert.deepEqual(lu.reponses, r);
+        assert.deepEqual(lu.relances, relances);
+      }
     }
   });
 
+  test('aller et retour sur des cas tirés au hasard', () => {
+    // Un tirage reproductible : la même graine donne toujours les mêmes cas.
+    let etat = 20260930;
+    const suivant = () => { etat = (etat * 1664525 + 1013904223) >>> 0; return etat / 4294967296; };
+
+    for (let essai = 0; essai < 200; essai += 1) {
+      const role = suivant() < 0.5 ? 'membre' : 'manager';
+      const reponses = Array.from({ length: NB_AFFIRMATIONS }, () => Math.floor(suivant() * 4));
+      const relances = {};
+      reponses.forEach((valeur, i) => {
+        if (valeur > 1) return;              // seule une réponse réservée en porte
+        if (suivant() < 0.35) return;        // les idées restent facultatives
+        const n = i + 1;
+        const dispo = contenu.affirmations.find((a) => a.n === n).relance[role].choix.length;
+        const combien = suivant() < 0.5 ? 1 : 2;
+        const choisis = new Set();
+        while (choisis.size < combien) {
+          choisis.add(suivant() < 0.12 ? 'autre' : Math.floor(suivant() * dispo));
+        }
+        relances[n] = Array.from(choisis);
+      });
+
+      const lu = decoder('#' + encoder(role, reponses, relances), contenu);
+      assert.equal(lu.role, role, `essai ${essai}`);
+      assert.deepEqual(lu.reponses, reponses, `essai ${essai}`);
+      assert.deepEqual(lu.relances, relances, `essai ${essai}`);
+    }
+  });
+
+  test('les 16 relances ouvertes tiennent dans le lien', () => {
+    const toutes = new Array(NB_AFFIRMATIONS).fill(0);
+    const relances = {};
+    for (let n = 1; n <= NB_AFFIRMATIONS; n += 1) relances[n] = [0, 1];
+    const lu = decoder('#' + encoder('membre', toutes, relances), contenu);
+    assert.equal(Object.keys(lu.relances).length, 16);
+    assert.deepEqual(lu.relances, relances);
+  });
+
+  test('un lien v1 reste lisible, sans les idées', () => {
+    const lu = decoder('#v1-m2211220023212212', contenu);
+    assert.equal(lu.version, 'v1');
+    assert.equal(lu.role, 'membre');
+    assert.deepEqual(lu.reponses, r);
+    assert.deepEqual(lu.relances, {});
+  });
+
   test('le hash ne contient que la version, le rôle et les réponses', () => {
-    assert.equal(encoder('membre', r).length, 'v1-'.length + 1 + NB_AFFIRMATIONS);
+    assert.equal(encoder('membre', r).length, 'v2-'.length + 1 + NB_AFFIRMATIONS);
   });
 
   test('refuse un hash mal formé', () => {
     assert.equal(decoder(''), null);
     assert.equal(decoder('#'), null);
-    assert.equal(decoder('#v1-x2211220023212212'), null);   // rôle inconnu
-    assert.equal(decoder('#v1-m221122002321221'), null);     // 15 chiffres
-    assert.equal(decoder('#v1-m22112200232122123'), null);   // 17 chiffres
-    assert.equal(decoder('#v1-m2211220023212214'), null);    // un 4
-    assert.equal(decoder('#v1-m221122002321221a'), null);    // une lettre
+    assert.equal(decoder('#v2-x2211220023212212'), null);   // rôle inconnu
+    assert.equal(decoder('#v2-m221122002321221'), null);     // 15 chiffres
+    assert.equal(decoder('#v2-m22112200232122123'), null);   // 17 chiffres
+    assert.equal(decoder('#v2-m2211220023212214'), null);    // un 4
     assert.equal(decoder('#v9-m2211220023212212'), null);    // version inconnue
+    assert.equal(decoder('#v1-m2211220023212212-3.1'), null); // un v1 ne porte pas d'idées
     assert.equal(decoder(null), null);
   });
 
+  /**
+   * Une partie « idées » mal formée ne doit pas emporter tout le lien : on
+   * affiche le résultat sans les idées, plutôt qu'un message d'erreur.
+   */
+  test('un lien aux idées mal formées garde le résultat', () => {
+    const cas = [
+      ['#v2-m2211220023212212-3.147', 'plus de 2 choix'],
+      ['#v2-m2211220023212212-1.0', 'relance sur une réponse En bonne partie'],
+      ['#v2-m2211220023212212-3.9', 'indice inexistant'],
+      ['#v2-m2211220023212212-99.1', 'affirmation inexistante'],
+      ['#v2-m2211220023212212-3.1-3.2', 'deux fois la même affirmation'],
+      ['#v2-m2211220023212212-3.11', 'deux fois le même choix'],
+      ['#v2-m2211220023212212-nawak', 'segment illisible'],
+    ];
+    cas.forEach(([jeton, pourquoi]) => {
+      const lu = decoder(jeton, contenu);
+      assert.notEqual(lu, null, pourquoi);
+      assert.deepEqual(lu.reponses, r, pourquoi);
+      assert.deepEqual(lu.relances, {}, pourquoi);
+    });
+  });
+
+  test('sans contenu, les indices ne sont pas vérifiés mais la forme l’est', () => {
+    const lu = decoder('#v2-m2211220023212212-3.9');
+    assert.deepEqual(lu.relances, { 3: [9] });
+    assert.deepEqual(decoder('#v2-m2211220023212212-1.0').relances, {});
+  });
+
   test('tolère l’absence de dièse et les espaces', () => {
-    assert.ok(decoder('v1-m2211220023212212'));
-    assert.ok(decoder('  #v1-m2211220023212212  '));
+    assert.ok(decoder('v2-m2211220023212212'));
+    assert.ok(decoder('  #v2-m2211220023212212  '));
   });
 
   test('l’URL du résultat pointe vers resultat.html', () => {
-    assert.equal(lienResultat('membre', r), 'resultat.html#v1-m2211220023212212');
+    assert.equal(lienResultat('membre', r), 'resultat.html#v2-m2211220023212212');
+    assert.equal(
+      lienResultat('membre', r, { 3: [1] }),
+      'resultat.html#v2-m2211220023212212-3.1'
+    );
   });
 
   test('refuse d’encoder un rôle inconnu ou des réponses invalides', () => {

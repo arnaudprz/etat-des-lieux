@@ -41,6 +41,9 @@ Les choix faits avec Arnaud pendant la conception des maquettes (septembre 2026)
 | --- | --- |
 | Pas d'e-mail, pas de PDF | Envoyer des mails est polluant et demande des données personnelles. |
 | Un lien personnel qui contient les réponses dans le hash | La personne le garde en favoris. Rien n'est stocké côté serveur pour le relire, et le lien ne permet pas de retrouver la ligne dans le Sheet. |
+| **Le lien contient aussi les envies cochées** (septembre 2026) | Pour que le résultat les montre à chaque visite. Toujours aucune donnée personnelle : rien que des chiffres de réponse et des indices de choix. |
+| Les liens v1 restent lisibles, sans les idées | Un lien déjà partagé ne doit jamais cesser de fonctionner. |
+| Un lien dont la partie « idées » est abîmée affiche quand même le résultat | Mieux vaut un résultat sans les idées qu'un message d'erreur. |
 | L'étude complète en échange de prénom, nom, entreprise, e-mail | C'est la seule donnée personnelle collectée. Elle est volontaire et stockée à part. |
 
 ## Les relances « J'aimerais… »

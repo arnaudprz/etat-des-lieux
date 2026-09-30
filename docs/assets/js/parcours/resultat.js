@@ -203,7 +203,8 @@ async function demarrer() {
   signalerModeDemo();
   const contenu = await chargerContenu();
 
-  const lu = decoder(location.hash);
+  // contenu permet de vérifier que les indices de choix existent vraiment.
+  const lu = decoder(location.hash, contenu);
   if (!lu) {
     $('[data-sans-resultat]').hidden = false;
     typographierPage();

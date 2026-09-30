@@ -363,7 +363,8 @@ async function allerAuResultat() {
     relances,
   });
   evenement('termine');
-  location.href = lienResultat(etat.role, etat.reponses);
+  // Le lien porte aussi les idées, pour que le résultat les montre à chaque visite.
+  location.href = lienResultat(etat.role, etat.reponses, relances);
 }
 
 // ---------------------------------------------------------------- démarrage
