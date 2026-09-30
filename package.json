@@ -7,5 +7,8 @@
   "scripts": {
     "test": "node --test tests/",
     "local": "python3 -m http.server 8080 --directory docs"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
   }
 }

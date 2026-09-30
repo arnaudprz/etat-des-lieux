@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quelques mots sur votre équipe · État des lieux Greatly</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
+<link rel="stylesheet" href="assets/css/base.css?v=1">
+<link rel="stylesheet" href="assets/css/parcours.css?v=1">
+</head>
+<body>
+
+<div class="bandeau">
+  <span class="bandeau__texte">
+    <span class="bandeau__long">Un état des lieux proposé par Greatly, qui accompagne dirigeants, managers et équipes à la Greatly House, près de Lille</span>
+    <span class="bandeau__court">Proposé par Greatly, près de Lille</span>
+  </span>
+  <a href="https://greatly.club"><span class="bandeau__long">Qui sommes-nous</span><span class="bandeau__court">En savoir plus</span></a>
+</div>
+
+<header class="entete">
+  <a class="entete__marque" href="index.html">Greatly</a>
+  <div class="etapes">
+    <span class="etape etape--active"><span class="etape__point" aria-hidden="true"></span><span class="etape__nom">Profil</span></span>
+    <span class="etape"><span class="etape__point" aria-hidden="true"></span><span class="etape__nom">Vos réponses</span></span>
+    <span class="etape"><span class="etape__point" aria-hidden="true"></span><span class="etape__nom">Votre état des lieux</span></span>
+  </div>
+</header>
+
+<main class="centre centre--etroit" style="margin-top: 32px">
+  <div style="display: flex; flex-direction: column; gap: 12px">
+    <h1 class="titre-page" data-titre>Quelques mots sur votre équipe</h1>
+    <p class="intro" data-intro></p>
+  </div>
+
+  <form class="carte formulaire" id="profil" novalidate style="margin-top: 32px" data-formulaire>
+    <!-- Les champs sont construits depuis contenu.json par profil.js. -->
+  </form>
+
+  <p class="message" id="message" role="alert" hidden></p>
+
+  <div class="navigation">
+    <a class="navigation__retour" href="index.html">Retour</a>
+    <button class="btn" type="submit" form="profil" data-continuer>Continuer</button>
+  </div>
+</main>
+
+<footer class="pied">
+  <span class="pied__marque">Greatly</span>
+  <p>Vos réponses sont anonymes. <a href="confidentialite.html">Politique de confidentialité</a></p>
+</footer>
+
+<script type="module" src="assets/js/parcours/profil.js?v=1"></script>
+</body>
+</html>

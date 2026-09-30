@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>État des lieux d'équipe · Greatly</title>
+<meta name="description" content="Faites le point sur votre façon de travailler ensemble. Anonyme, 2 minutes, résultat immédiat. Un état des lieux proposé par Greatly.">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Faites le point sur votre façon de travailler ensemble">
+<meta property="og:description" content="Un état des lieux d'équipe en 2 minutes. Anonyme, aucun compte à créer, résultat immédiat.">
+<meta property="og:image" content="assets/img/greatly-house.jpg">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
+<link rel="stylesheet" href="assets/css/base.css?v=1">
+<link rel="stylesheet" href="assets/css/parcours.css?v=1">
+</head>
+<body>
+
+<div class="bandeau">
+  <span class="bandeau__texte">
+    <span class="bandeau__long">Un état des lieux proposé par Greatly, qui accompagne dirigeants, managers et équipes à la Greatly House, près de Lille</span>
+    <span class="bandeau__court">Proposé par Greatly, près de Lille</span>
+  </span>
+  <a href="https://greatly.club"><span class="bandeau__long">Qui sommes-nous</span><span class="bandeau__court">En savoir plus</span></a>
+</div>
+
+<header class="entete">
+  <span class="entete__marque">Greatly</span>
+  <nav class="entete__nav" aria-label="Sections de la page">
+    <a href="#dimensions">Les dimensions</a>
+  </nav>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="hero__texte">
+      <span class="badge">État des lieux d'équipe · 2 minutes</span>
+      <h1 class="hero__titre">Faites le point sur votre façon de travailler ensemble</h1>
+      <p class="hero__intro">Le travail ensemble, on le vit tous les jours, sans toujours prendre le temps d'y penser. Prenez ce moment pour vous. Répondez avec ce que vous vivez, simplement. Vous repartez avec un regard plus clair sur ce qui vous porte déjà, et sur ce qui peut encore grandir.</p>
+      <div class="hero__actions">
+        <a class="btn" href="profil.html">Faire mon état des lieux</a>
+        <span class="compteur">
+          <span class="compteur__point" aria-hidden="true"></span>
+          <span><strong data-compteur>255</strong> personnes ont déjà participé</span>
+        </span>
+      </div>
+      <p class="hero__mentions">Anonyme · Aucun compte à créer · Résultat immédiat</p>
+    </div>
+
+    <div class="carte apercu">
+      <div class="apercu__entete">
+        <span class="apercu__titre">Aperçu du résultat</span>
+        <span class="apercu__mention">Exemple</span>
+      </div>
+      <div data-apercu></div>
+      <div class="apercu__pied">Pas de note ni de classement : une photo de votre équipe aujourd'hui.</div>
+    </div>
+  </section>
+
+  <section class="section section--blanche">
+    <h2 class="section__titre">À la fin, vous recevez</h2>
+    <div class="trio">
+      <div class="carte carte--creme">
+        <h3>Votre état des lieux</h3>
+        <p>En quelques lignes, votre regard d'ensemble sur la façon dont votre équipe travaille ensemble.</p>
+      </div>
+      <div class="carte carte--creme">
+        <h3>Vos dimensions en couleurs</h3>
+        <p>Chacune prend l'une de ces couleurs. Pas de note, pas de classement.</p>
+        <div class="nuancier" data-nuancier></div>
+      </div>
+      <div class="carte carte--creme">
+        <h3>Une phrase pour chacune</h3>
+        <p>Ce qui est déjà là, et ce qui peut encore grandir, décrit simplement et sans jugement.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="dimensions">
+    <div class="sources">
+      <div class="sources__texte">
+        <h2 class="section__titre">Sur quoi repose l'état des lieux</h2>
+        <p>Sur les travaux de Jody Hoffer Gittell, à l'université Brandeis : des objectifs partagés, des connaissances partagées et le respect mutuel aident une équipe à mieux travailler ensemble.</p>
+        <ul class="sources__liste">
+          <li><a href="https://dspace.mit.edu/handle/1721.1/11074">Gittell, thèse de doctorat, MIT, 1995</a></li>
+          <li><a href="https://journals.sagepub.com/doi/10.1177/0021886321991597">Bolton, Logan et Gittell, revue systématique, 2021</a></li>
+          <li><a href="https://heller.brandeis.edu/relational-coordination/index.html">Relational Coordination Collaborative, Brandeis</a></li>
+        </ul>
+        <p class="mention">Formulations Greatly, inspirées de ces travaux.</p>
+      </div>
+      <div class="dimensions" data-dimensions></div>
+    </div>
+  </section>
+
+  <section class="appel">
+    <a class="btn" href="profil.html">Faire mon état des lieux</a>
+  </section>
+
+</main>
+
+<footer class="pied">
+  <span class="pied__marque">Greatly</span>
+  <p>Vos réponses sont anonymes. Elles servent à calculer votre résultat et, regroupées, à publier un baromètre. <a href="confidentialite.html">Politique de confidentialité</a></p>
+</footer>
+
+<script type="module" src="assets/js/parcours/accueil.js?v=1"></script>
+</body>
+</html>
