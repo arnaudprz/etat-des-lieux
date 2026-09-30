@@ -101,4 +101,4 @@ node scripts/generer-contenu-gs.mjs
 | 30/09/2026 | `d90beaa` | Corrections passe 1, groupe A : données du tableau de bord. |
 | 30/09/2026 | `dfbea85` | Corrections passe 1, groupe B : parcours public et maquettes. |
 | 30/09/2026 | `33e7a74` | Corrections passe 1, groupe C : barres de dimension compactées. |
-| 30/09/2026 | `à venir` | Corrections passe 1, groupe D : npm test portable. |
+| 30/09/2026 | `2c1e597` | Corrections passe 1, groupe D : npm test portable. |
