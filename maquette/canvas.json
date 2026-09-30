@@ -2,26 +2,48 @@
   "v": 3,
   "attachments": {},
   "boards": {
+    "Complementaires.dc.html": {
+      "h": 6560,
+      "title": "Outil interne : les questions complémentaires",
+      "w": 1280,
+      "x": 8160,
+      "y": 0
+    },
     "Dashboard.dc.html": {
-      "h": 8640,
+      "h": 8000,
       "title": "Mon tableau de bord",
       "w": 1280,
       "x": 0,
       "y": 5100
     },
     "Global.dc.html": {
-      "h": 980,
+      "h": 1140,
       "title": "Outil interne : les 4 cartes d'ensemble",
       "w": 1280,
       "x": 6800,
       "y": 0
     },
+    "Main-mobile.dc.html": {
+      "h": 4150,
+      "title": "Mobile · 1. Accueil",
+      "w": 390,
+      "x": 1440,
+      "y": 5100
+    },
     "Main.dc.html": {
-      "h": 2140,
+      "h": 2500,
       "title": "1. Accueil",
       "w": 1280,
       "x": 0,
       "y": 0
+    },
+    "Profil-mobile.dc.html": {
+      "h": 1580,
+      "is_interactive": true,
+      "title": "Mobile · 2. Profil",
+      "w": 390,
+      "x": 1910,
+      "y": 5100
     },
     "Profil.dc.html": {
       "h": 1420,
@@ -31,6 +53,14 @@
       "x": 1360,
       "y": 0
     },
+    "Questions-mobile.dc.html": {
+      "h": 5960,
+      "is_interactive": true,
+      "title": "Mobile · 3. Vos réponses",
+      "w": 390,
+      "x": 2380,
+      "y": 5100
+    },
     "Questions.dc.html": {
       "h": 4740,
       "is_interactive": true,
@@ -38,6 +68,13 @@
       "w": 1280,
       "x": 2720,
       "y": 0
+    },
+    "Resultat-mobile.dc.html": {
+      "h": 4340,
+      "title": "Mobile · 4. Résultat",
+      "w": 390,
+      "x": 2850,
+      "y": 5100
     },
     "Resultat.dc.html": {
       "h": 2860,
@@ -53,43 +90,6 @@
       "w": 1280,
       "x": 5440,
       "y": 0
-    },
-    "Main-mobile.dc.html": {
-      "x": 1440,
-      "y": 5100,
-      "w": 390,
-      "h": 3100,
-      "title": "Mobile · 1. Accueil"
-    },
-    "Profil-mobile.dc.html": {
-      "x": 1910,
-      "y": 5100,
-      "w": 390,
-      "h": 1580,
-      "title": "Mobile · 2. Profil",
-      "is_interactive": true
-    },
-    "Questions-mobile.dc.html": {
-      "x": 2380,
-      "y": 5100,
-      "w": 390,
-      "h": 5960,
-      "title": "Mobile · 3. Vos réponses",
-      "is_interactive": true
-    },
-    "Resultat-mobile.dc.html": {
-      "x": 2850,
-      "y": 5100,
-      "w": 390,
-      "h": 4200,
-      "title": "Mobile · 4. Résultat"
-    },
-    "Complementaires.dc.html": {
-      "x": 8160,
-      "y": 0,
-      "w": 1280,
-      "h": 6560,
-      "title": "Outil interne : les questions complémentaires"
     }
   },
   "createdOnFiles": {
@@ -118,11 +118,12 @@
       "y": 4800
     },
     "titre3": {
-      "x": 1440,
-      "y": 4800,
-      "text": "La version mobile",
       "kind": "title1",
-      "maxW": 1800
+      "maxW": 1800,
+      "text": "La version mobile",
+      "w": 240,
+      "x": 1440,
+      "y": 4800
     }
   },
   "order": [

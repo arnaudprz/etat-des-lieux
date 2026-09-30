@@ -274,6 +274,9 @@ a:hover { color: var(--foret); }
 .pastille--germe { background: var(--germe); color: var(--germe-texte); }
 .pastille--semer { background: var(--semer); color: var(--semer-texte); }
 
+/* Un nom de niveau ne doit jamais se casser en deux. */
+.pastille { white-space: nowrap; }
+
 .temoin {
   width: 14px;
   height: 14px;

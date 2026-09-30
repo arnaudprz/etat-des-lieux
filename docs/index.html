@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>État des lieux d'équipe · Greatly</title>
-<meta name="description" content="Faites le point sur votre façon de travailler ensemble. Anonyme, 2 minutes, résultat immédiat. Un état des lieux proposé par Greatly.">
+<title>Ce qui vous aide à bien travailler ensemble · Greatly</title>
+<meta name="description" content="En 2 minutes, voyez ce qui fonctionne déjà entre vous et ce qui peut encore évoluer. Anonyme, aucun compte à créer, résultat immédiat.">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Faites le point sur votre façon de travailler ensemble">
+<meta property="og:title" content="Ce qui vous aide à bien travailler ensemble">
 <meta property="og:description" content="Un état des lieux d'équipe en 2 minutes. Anonyme, aucun compte à créer, résultat immédiat.">
-<meta property="og:image" content="assets/img/greatly-house.jpg">
+<meta property="og:image" content="assets/img/pousses.svg">
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
-<link rel="stylesheet" href="assets/css/base.css?v=2">
-<link rel="stylesheet" href="assets/css/parcours.css?v=2">
+<link rel="stylesheet" href="assets/css/base.css?v=3">
+<link rel="stylesheet" href="assets/css/parcours.css?v=3">
 </head>
 <body>
 
@@ -38,77 +38,91 @@
 
 <main>
 
+  <!-- 1. Le haut de page. -->
   <section class="hero">
     <div class="hero__texte">
-      <span class="badge">État des lieux d'équipe · 2 minutes</span>
-      <h1 class="hero__titre">Faites le point sur votre façon de travailler ensemble</h1>
-      <p class="hero__intro">Le travail ensemble, on le vit tous les jours, sans toujours prendre le temps d'y penser. Prenez ce moment pour vous. Répondez avec ce que vous vivez, simplement. Vous repartez avec un regard plus clair sur ce qui vous porte déjà, et sur ce qui peut encore grandir.</p>
+      <span class="badge" data-badge></span>
+      <h1 class="hero__titre" data-titre></h1>
+      <p class="hero__intro" data-texte></p>
       <div class="hero__actions">
-        <a class="btn" href="profil.html">Faire mon état des lieux</a>
+        <a class="btn" href="profil.html" data-bouton></a>
         <span class="compteur">
           <span class="compteur__point" aria-hidden="true"></span>
-          <span><strong data-compteur>255</strong> personnes ont déjà participé</span>
+          <span><strong data-compteur>255</strong> <span data-compteur-texte></span></span>
         </span>
       </div>
-      <p class="hero__mentions">Anonyme · Aucun compte à créer · Résultat immédiat</p>
+      <p class="hero__mentions" data-mentions></p>
     </div>
 
-    <div class="carte apercu">
-      <div class="apercu__entete">
-        <span class="apercu__titre">Aperçu du résultat</span>
-        <span class="apercu__mention">Exemple</span>
-      </div>
-      <div class="apercu__lignes" data-apercu></div>
-      <div class="apercu__pied">Pas de note ni de classement : une photo de votre équipe aujourd'hui.</div>
+    <!-- L'illustration est insérée en SVG par accueil.js : elle reste nette et
+         n'ajoute aucune requête. Sur mobile, ses étiquettes internes laissent
+         la place aux pastilles ci-dessous. -->
+    <figure class="hero__illustration">
+      <div data-pousses></div>
+      <figcaption class="nuancier nuancier--mobile" data-nuancier></figcaption>
+    </figure>
+  </section>
+
+  <!-- 2. Les deux « pourquoi ». -->
+  <section class="pourquoi">
+    <div class="carte pourquoi__carte">
+      <span class="surtitre" data-pour-vous-surtitre></span>
+      <h2 class="pourquoi__titre" data-pour-vous-titre></h2>
+      <ul class="pourquoi__liste" data-pour-vous-lignes></ul>
+    </div>
+
+    <div class="carte pourquoi__carte pourquoi__carte--foret">
+      <span class="surtitre surtitre--clair" data-pour-greatly-surtitre></span>
+      <h2 class="pourquoi__titre" data-pour-greatly-titre></h2>
+      <p class="pourquoi__texte" data-pour-greatly-texte></p>
+      <p class="pourquoi__source" data-pour-greatly-source></p>
     </div>
   </section>
 
+  <!-- 3. Ce que vous recevez. -->
   <section class="section section--blanche">
-    <h2 class="section__titre">À la fin, vous recevez</h2>
-    <div class="trio">
-      <div class="carte carte--creme">
-        <h3>Votre état des lieux</h3>
-        <p>En quelques lignes, votre regard d'ensemble sur la façon dont votre équipe travaille ensemble.</p>
+    <div class="recevez">
+      <div class="recevez__texte">
+        <span class="surtitre" data-resultat-surtitre></span>
+        <h2 class="section__titre" data-resultat-titre></h2>
+        <div class="recevez__points" data-points></div>
       </div>
-      <div class="carte carte--creme">
-        <h3>Vos dimensions en couleurs</h3>
-        <p>Chacune prend l'une de ces couleurs. Pas de note, pas de classement.</p>
-        <div class="nuancier" data-nuancier></div>
-      </div>
-      <div class="carte carte--creme">
-        <h3>Une phrase pour chacune</h3>
-        <p>Ce qui est déjà là, et ce qui peut encore grandir, décrit simplement et sans jugement.</p>
+
+      <div class="carte apercu">
+        <div class="apercu__entete">
+          <span class="apercu__titre" data-apercu-titre></span>
+          <span class="apercu__mention" data-apercu-mention></span>
+        </div>
+        <div class="apercu__lignes" data-apercu></div>
+        <div class="apercu__pied" data-apercu-pied></div>
       </div>
     </div>
   </section>
 
+  <!-- Sur quoi repose l'état des lieux. -->
   <section class="section" id="dimensions">
     <div class="sources">
       <div class="sources__texte">
-        <h2 class="section__titre">Sur quoi repose l'état des lieux</h2>
-        <p>Sur les travaux de Jody Hoffer Gittell, à l'université Brandeis : des objectifs partagés, des connaissances partagées et le respect mutuel aident une équipe à mieux travailler ensemble.</p>
-        <ul class="sources__liste">
-          <li><a href="https://dspace.mit.edu/handle/1721.1/11074">Gittell, thèse de doctorat, MIT, 1995</a></li>
-          <li><a href="https://journals.sagepub.com/doi/10.1177/0021886321991597">Bolton, Logan et Gittell, revue systématique, 2021</a></li>
-          <li><a href="https://heller.brandeis.edu/relational-coordination/index.html">Relational Coordination Collaborative, Brandeis</a></li>
-        </ul>
-        <p class="mention">Formulations Greatly, inspirées de ces travaux.</p>
+        <h2 class="section__titre" data-sources-titre></h2>
+        <p data-sources-texte></p>
+        <ul class="sources__liste" data-sources-liens></ul>
+        <p class="mention" data-sources-mention></p>
       </div>
       <div class="dimensions" data-dimensions></div>
     </div>
   </section>
 
   <section class="appel">
-    <a class="btn" href="profil.html">Faire mon état des lieux</a>
+    <a class="btn" href="profil.html" data-bouton></a>
   </section>
 
 </main>
 
 <footer class="pied">
   <span class="pied__marque">Greatly</span>
-  <p>Vos réponses sont anonymes. Elles servent à calculer votre résultat et, regroupées, à publier un baromètre. <a href="confidentialite.html">Politique de confidentialité</a></p>
+  <p><span data-pied></span> <a href="confidentialite.html">Politique de confidentialité</a></p>
 </footer>
 
-<script type="module" src="assets/js/parcours/accueil.js?v=2"></script>
+<script type="module" src="assets/js/parcours/accueil.js?v=3"></script>
 </body>
 </html>

@@ -120,6 +120,98 @@ async function passerLaCible(cible) {
   const compteur = (await page.locator('[data-compteur]').innerText()).trim();
   if (compteur !== '255') soucis.push(`[${nom}] accueil : compteur à « ${compteur} » au lieu de 255`);
 
+  // L'illustration est en SVG dans la page, pas en image.
+  const illustration = await page.evaluate(() => {
+    const svg = document.querySelector('.hero__illustration svg');
+    if (!svg) return null;
+    const etiquettes = svg.querySelector('.pousses__etiquettes');
+    return {
+      etiquette: svg.getAttribute('aria-label') || '',
+      viewBox: svg.getAttribute('viewBox'),
+      etiquettesMasquees: etiquettes ? getComputedStyle(etiquettes).display === 'none' : null,
+      images: document.querySelectorAll('.hero img').length,
+    };
+  });
+  if (!illustration) {
+    soucis.push(`[${nom}] accueil : pas d'illustration en SVG`);
+  } else {
+    if (!illustration.etiquette.startsWith('Quatre pousses')) {
+      soucis.push(`[${nom}] accueil : l'illustration n'a pas son aria-label`);
+    }
+    if (illustration.images > 0) {
+      soucis.push(`[${nom}] accueil : ${illustration.images} image(s) dans le haut de page`);
+    }
+    const etroit = largeur < 900;
+    const hauteurAttendue = etroit ? 360 : 420;
+    if (illustration.viewBox !== `0 0 520 ${hauteurAttendue}`) {
+      soucis.push(`[${nom}] accueil : viewBox ${illustration.viewBox}, attendu 0 0 520 ${hauteurAttendue}`);
+    }
+    if (illustration.etiquettesMasquees !== etroit) {
+      soucis.push(`[${nom}] accueil : étiquettes du SVG ${illustration.etiquettesMasquees ? 'masquées' : 'visibles'} à ${largeur}px`);
+    }
+  }
+
+  // Les 4 pastilles de niveau tiennent sur une ligne sur mobile.
+  if (largeur < 900) {
+    const pastilles = await page.evaluate(() => {
+      const ps = Array.from(document.querySelectorAll('.nuancier .pastille'));
+      return { nombre: ps.length, lignes: new Set(ps.map((x) => Math.round(x.getBoundingClientRect().top))).size };
+    });
+    if (pastilles.nombre !== 4) soucis.push(`[${nom}] accueil : ${pastilles.nombre} pastilles au lieu de 4`);
+    if (pastilles.lignes !== 1) soucis.push(`[${nom}] accueil : les pastilles tiennent sur ${pastilles.lignes} lignes`);
+  }
+
+  // L'ordre de la page, et sur ordinateur le premier écran complet.
+  const structure = await page.evaluate(() => {
+    const ordre = Array.from(document.querySelectorAll(
+      '.hero__texte .badge, .hero__titre, .hero__intro, .hero__actions, .hero__mentions, .hero__illustration'
+    )).map((x) => x.className.split(' ')[0] || x.tagName.toLowerCase());
+    const dansEcran = (sel) => {
+      const n = document.querySelector(sel);
+      return n ? n.getBoundingClientRect().bottom <= window.innerHeight : false;
+    };
+    return {
+      ordre,
+      cartesPourquoi: document.querySelectorAll('.pourquoi__carte').length,
+      points: document.querySelectorAll('.point').length,
+      titreDansEcran: dansEcran('.hero__titre'),
+      texteDansEcran: dansEcran('.hero__intro'),
+      boutonDansEcran: dansEcran('.hero__actions'),
+      illustrationDansEcran: dansEcran('.hero__illustration svg'),
+    };
+  });
+  if (structure.cartesPourquoi !== 2) {
+    soucis.push(`[${nom}] accueil : ${structure.cartesPourquoi} cartes « pourquoi » au lieu de 2`);
+  }
+  if (structure.points !== 4) {
+    soucis.push(`[${nom}] accueil : ${structure.points} points numérotés au lieu de 4`);
+  }
+  const ordreAttendu = ['badge', 'hero__titre', 'hero__intro', 'hero__actions', 'hero__mentions', 'hero__illustration'];
+  if (JSON.stringify(structure.ordre) !== JSON.stringify(ordreAttendu)) {
+    soucis.push(`[${nom}] accueil : ordre ${structure.ordre.join(' > ')}`);
+  }
+  if (largeur >= 900) {
+    const manque = Object.entries({
+      titre: structure.titreDansEcran,
+      texte: structure.texteDansEcran,
+      bouton: structure.boutonDansEcran,
+      illustration: structure.illustrationDansEcran,
+    }).filter(([, ok]) => !ok).map(([quoi]) => quoi);
+    if (manque.length > 0) {
+      soucis.push(`[${nom}] accueil : hors du premier écran en ${largeur}x800 : ${manque.join(', ')}`);
+    }
+  } else if (!structure.boutonDansEcran) {
+    soucis.push(`[${nom}] accueil : le bouton n'est pas visible sans défiler`);
+  }
+
+  // Aucun texte de l'accueil ne s'adresse au visiteur en disant « votre équipe ».
+  const votreEquipe = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('main .hero, main .pourquoi, main .recevez'))
+      .map((s) => s.innerText)
+      .join(' ')
+      .includes('votre équipe'));
+  if (votreEquipe) soucis.push(`[${nom}] accueil : un texte dit « votre équipe »`);
+
   const ecartApercu = await page.evaluate(() => {
     const l = document.querySelectorAll('.apercu__ligne');
     return Math.round(l[1].getBoundingClientRect().top - l[0].getBoundingClientRect().bottom);

@@ -654,6 +654,109 @@
     "homogene": "Votre regard est homogène : toutes les dimensions sont au même niveau.",
     "appui": "Ce qui vous porte le plus : {dimensions}."
   },
+  "accueil": {
+    "badge": "État des lieux d'équipe · 2 minutes",
+    "titre": "Ce qui vous aide à bien travailler ensemble",
+    "texte": "En 2 minutes, voyez ce qui fonctionne déjà entre vous et ce qui peut encore évoluer. De quoi mettre des mots justes sur ce que vous vivez.",
+    "bouton": "Faire mon état des lieux",
+    "compteur": "personnes ont déjà participé",
+    "mentions": "Anonyme · Aucun compte à créer · Résultat immédiat",
+    "illustration": "Quatre pousses, de la graine semée à l'arbre bien enraciné : les quatre couleurs de l'état des lieux",
+    "pour_vous": {
+      "surtitre": "Pour vous",
+      "titre": "Un regard clair sur votre façon de travailler ensemble",
+      "lignes": [
+        {
+          "niveau": "enracine",
+          "texte": "Ce qui vous porte déjà"
+        },
+        {
+          "niveau": "croissance",
+          "texte": "Ce qui peut encore évoluer"
+        },
+        {
+          "niveau": "germe",
+          "texte": "Des mots pour en parler, avec vos collègues ou votre manager"
+        }
+      ]
+    },
+    "pour_greatly": {
+      "surtitre": "Pour Greatly et ses intervenants",
+      "titre": "Une étude pour mieux accompagner les équipes",
+      "texte": "Vos réponses, anonymes et regroupées, aident nos intervenants et nos coachs à préparer des ateliers ancrés dans le vécu des équipes, et nos programmes à évoluer. L'étude complète est partagée avec ceux qui le souhaitent.",
+      "source": {
+        "avant": "Une démarche inspirée des ",
+        "lien": "travaux de Jody Hoffer Gittell",
+        "ancre": "#dimensions",
+        "apres": " sur les équipes qui réussissent ensemble."
+      }
+    },
+    "resultat": {
+      "surtitre": "Votre résultat",
+      "titre": "Ce que vous recevez en 2 minutes",
+      "points": [
+        {
+          "numero": "01",
+          "titre": "Une lecture d'ensemble",
+          "texte": "En quelques lignes, la façon dont vous travaillez ensemble, vue depuis votre place."
+        },
+        {
+          "numero": "02",
+          "titre": "Huit repères, quatre couleurs",
+          "texte": "Le cap commun, l'info, la confiance, le soutien… Chaque repère prend l'une des quatre couleurs, de À semer à Bien enraciné. Jamais de note."
+        },
+        {
+          "numero": "03",
+          "titre": "Une phrase pour chaque repère",
+          "texte": "Ce qui est déjà là, et ce qui peut encore évoluer, dit simplement et sans jugement."
+        },
+        {
+          "numero": "04",
+          "titre": "Un lien rien qu'à vous",
+          "texte": "Gardez votre résultat en favoris et retrouvez-le quand vous voulez. Sans compte, sans e-mail."
+        }
+      ]
+    },
+    "apercu": {
+      "titre": "Aperçu du résultat",
+      "mention": "Exemple",
+      "exemples": [
+        {
+          "dimension": "vise",
+          "niveau": "croissance"
+        },
+        {
+          "dimension": "sait",
+          "niveau": "germe"
+        },
+        {
+          "dimension": "manager",
+          "niveau": "enracine"
+        }
+      ],
+      "pied": "Pas de note ni de classement : une photo de ce que vous vivez aujourd'hui."
+    },
+    "sources": {
+      "titre": "Sur quoi repose l'état des lieux",
+      "texte": "Sur les travaux de Jody Hoffer Gittell, à l'université Brandeis : des objectifs partagés, des connaissances partagées et le respect mutuel aident une équipe à mieux travailler ensemble.",
+      "liens": [
+        {
+          "libelle": "Gittell, thèse de doctorat, MIT, 1995",
+          "url": "https://dspace.mit.edu/handle/1721.1/11074"
+        },
+        {
+          "libelle": "Bolton, Logan et Gittell, revue systématique, 2021",
+          "url": "https://journals.sagepub.com/doi/10.1177/0021886321991597"
+        },
+        {
+          "libelle": "Relational Coordination Collaborative, Brandeis",
+          "url": "https://heller.brandeis.edu/relational-coordination/index.html"
+        }
+      ],
+      "mention": "Formulations Greatly, inspirées de ces travaux."
+    },
+    "pied": "Vos réponses sont anonymes. Elles servent à calculer votre résultat et, regroupées, à publier un baromètre."
+  },
   "profil": {
     "titre": "Quelques mots sur votre équipe",
     "texte": "Pour comparer votre résultat à des équipes qui vous ressemblent. Rien ne permet de vous identifier.",

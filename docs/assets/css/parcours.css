@@ -5,19 +5,20 @@
 
 /* =============================================================== 1. ACCUEIL */
 
+/* Ordre imposé sur mobile : badge, titre, texte, bouton, mention, illustration.
+   Le bouton doit rester visible sans défiler sur un écran de 390 x 800. */
 .hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 32px;
-  padding: 16px 20px 40px;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px 20px 32px;
 }
 
 .hero__texte {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;   /* le badge ne doit pas s'étirer sur la colonne */
-  gap: 24px;
+  align-items: flex-start;
+  gap: 18px;
 }
 
 .hero__texte > p,
@@ -27,8 +28,9 @@
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 400;
   margin: 0;
-  font-size: 36px;
-  line-height: 1.12;
+  font-size: 34px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 
 .hero__intro {
@@ -36,6 +38,7 @@
   font-size: 17px;
   line-height: 1.6;
   color: var(--taupe);
+  max-width: 560px;
 }
 
 .hero__actions {
@@ -43,8 +46,8 @@
   flex-direction: column;
   gap: 14px;
   align-items: stretch;
-  align-self: stretch;       /* le bouton prend toute la largeur sur mobile */
-  margin-top: 8px;
+  align-self: stretch;
+  margin-top: 6px;
 }
 
 .compteur {
@@ -72,6 +75,194 @@
   color: var(--taupe);
 }
 
+/* L'illustration des quatre pousses. */
+.hero__illustration {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hero__illustration svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+}
+
+/* Sous 900px, les étiquettes internes du SVG laissent la place à des pastilles
+   HTML : à cette taille, le texte du SVG deviendrait minuscule. */
+@media (max-width: 899px) {
+  .pousses__etiquettes { display: none; }
+}
+
+/* Les 4 niveaux doivent tenir sur une seule ligne à 390px : d'où le petit
+   rembourrage et la répartition sur toute la largeur, comme la maquette. */
+.nuancier {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.nuancier .pastille { font-size: 12px; padding: 4px 9px; }
+
+@media (min-width: 900px) {
+  .nuancier--mobile { display: none; }
+}
+
+/* ------------------------------------------------- les deux « pourquoi » */
+
+.pourquoi {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  padding: 0 20px 40px;
+}
+
+.pourquoi__carte {
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pourquoi__carte--foret {
+  background: var(--foret);
+  border-color: var(--foret);
+  color: var(--creme);
+}
+
+.surtitre {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--sauge);
+}
+
+.surtitre--clair { color: #B9C6AB; }
+
+.pourquoi__titre {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.pourquoi__carte--foret .pourquoi__titre { color: var(--creme); }
+
+.pourquoi__liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pourquoi__liste li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.pourquoi__puce {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.pourquoi__texte {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--creme-foret);
+}
+
+.pourquoi__source {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #B9C6AB;
+}
+
+.pourquoi__source a { color: var(--creme); }
+
+/* ----------------------------------------- ce que vous recevez en 2 minutes */
+
+.section {
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section--blanche { background: var(--blanc); }
+
+.section__titre {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  margin: 0;
+  font-size: 28px;
+}
+
+.recevez {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+  align-items: center;
+}
+
+.recevez__texte {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recevez__points {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0 48px;
+  margin-top: 16px;
+}
+
+.point {
+  border-top: 1px solid rgba(138, 155, 122, .25);
+  padding: 20px 0 8px;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 16px;
+  align-items: baseline;
+}
+
+.point__numero {
+  font-size: 26px;
+  color: var(--sauge-clair);
+  line-height: 1;
+}
+
+.point__corps { display: flex; flex-direction: column; gap: 6px; }
+
+.point__titre {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.point__texte {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--taupe);
+}
+
+/* La carte d'aperçu du résultat. */
 .apercu {
   padding: 22px;
   display: flex;
@@ -93,8 +284,6 @@
 
 .apercu__mention { font-size: 13px; color: var(--taupe); }
 
- /* Les 3 lignes vivent dans leur propre conteneur : sans écart déclaré ici,
-    elles se touchent, le gap de la carte ne s'appliquant qu'à ses enfants. */
 .apercu__lignes {
   display: flex;
   flex-direction: column;
@@ -117,45 +306,7 @@
   color: var(--taupe);
 }
 
-.section {
-  padding: 40px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.section--blanche { background: var(--blanc); }
-
-.section__titre {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 400;
-  margin: 0;
-  font-size: 28px;
-}
-
-.trio {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 24px;
-}
-
-.trio .carte {
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.trio h3 { margin: 0; font-size: 20px; font-weight: 600; }
-.trio p { margin: 0; font-size: 16px; line-height: 1.6; color: var(--taupe); }
-
-.nuancier {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.nuancier .pastille { font-size: 12px; padding: 4px 10px; }
+/* ------------------------------------------ sur quoi repose l'état des lieux */
 
 .sources {
   display: grid;
@@ -203,19 +354,42 @@
 
 @media (min-width: 900px) {
   .hero {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 64px;
-    padding: 56px 80px 80px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 56px;
+    padding: 40px 80px 64px;
+    align-items: center;
   }
-  .hero__titre { font-size: 60px; line-height: 1.08; }
+  .hero__texte { gap: 22px; }
+  .hero__titre { font-size: 54px; line-height: 1.08; }
   .hero__intro { font-size: 19px; }
   .hero__actions { flex-direction: row; align-items: center; gap: 20px; }
-  .apercu { padding: 32px; gap: 20px; }
-  .apercu__lignes { gap: 20px; }
+
+  .pourquoi {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    padding: 0 80px 72px;
+  }
+  .pourquoi__carte { padding: 32px; }
+  .pourquoi__titre { font-size: 28px; }
+  .pourquoi__liste li { font-size: 17px; }
+  .pourquoi__texte { font-size: 17px; }
+
   .section { padding: 72px 80px; gap: 40px; }
   .section__titre { font-size: 40px; }
-  .trio { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .trio .carte { padding: 28px; }
+
+  .recevez {
+    grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+    gap: 72px;
+  }
+  .recevez__points { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 48px; }
+  .point { padding: 24px 0 8px; grid-template-columns: 56px minmax(0, 1fr); }
+  .point__numero { font-size: 28px; }
+  .point__titre { font-size: 22px; }
+
+  .apercu { padding: 32px; gap: 20px; }
+  .apercu__lignes { gap: 20px; }
+
   .sources { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 64px; }
   .dimensions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .appel { padding: 0 80px 72px; align-items: center; }
