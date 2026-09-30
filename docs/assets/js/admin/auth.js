@@ -67,9 +67,30 @@ export async function chargerContacts(cle) {
   }
 }
 
-/** L'adresse de téléchargement du CSV, pour le bouton d'export. */
-export function lienExport(cle) {
-  return modeDemo() ? '' : urlContactsCsv(cle);
+/**
+ * L'adresse de téléchargement du CSV, pour le bouton d'export.
+ *
+ * En mode démo, l'API n'existe pas : on fabrique le fichier dans le navigateur
+ * à partir des contacts fictifs, pour que le bouton fasse vraiment quelque chose.
+ */
+export function lienExport(cle, contacts = []) {
+  if (!modeDemo()) return urlContactsCsv(cle);
+  const fichier = new Blob([ecrireCsv(contacts)], { type: 'text/csv;charset=utf-8' });
+  return URL.createObjectURL(fichier);
+}
+
+/** Les colonnes du CSV, dans le même ordre que la feuille du Sheet. */
+const COLONNES_CSV = ['date', 'prenom', 'nom', 'entreprise', 'email', 'consentement'];
+
+/** Écrit un CSV, en échappant guillemets et virgules. */
+export function ecrireCsv(contacts) {
+  const champ = (v) => {
+    const t = v == null ? '' : String(v);
+    return /[",\r\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+  };
+  return [COLONNES_CSV.join(',')]
+    .concat(contacts.map((c) => COLONNES_CSV.map((k) => champ(c[k])).join(',')))
+    .join('\r\n');
 }
 
 /** Lit un CSV simple, en respectant les guillemets. */

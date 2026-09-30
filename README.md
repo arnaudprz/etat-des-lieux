@@ -49,6 +49,7 @@ npm test                                    # 133 tests, sans dépendance
 node scripts/verif/cahier-des-charges.mjs   # les 17 points de la section 10.5
 node scripts/verif/parcours.mjs             # rejoue tout le parcours dans un navigateur
 node scripts/verif/tableau.mjs              # vérifie le tableau de bord
+node scripts/verif/calibrer-demo.mjs        # mesure les données fictives
 ```
 
 Le premier et le deuxième ne demandent rien d'autre que Node.
@@ -97,3 +98,4 @@ node scripts/generer-contenu-gs.mjs
 | 30/09/2026 | `736e5ae` | Backend Apps Script : réponses, événements, contacts, admin, import. |
 | 30/09/2026 | `e7f1d03` | Tableau de bord privé : 10 sections, filtres et anonymat k >= 3. |
 | 30/09/2026 | `418c301` | Documentation et vérification du cahier des charges. |
+| 30/09/2026 | `bafd202` | Corrections passe 1, groupe A : données du tableau de bord. |

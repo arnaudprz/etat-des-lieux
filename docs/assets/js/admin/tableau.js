@@ -54,7 +54,8 @@ function monterSections(hote) {
 
   s.entonnoir = section(
     "Du premier clic à l'état des lieux",
-    "Où les personnes s'arrêtent dans le parcours."
+    "Où les personnes s'arrêtent dans le parcours. Les événements de visite ne "
+      + 'portent aucun profil : seule la période s’applique ici, pas les autres filtres.'
   );
 
   const boutonExport = el('a', {
@@ -125,18 +126,34 @@ function rendre() {
   const contenu = etat.contenu;
   const s = etat.sections;
 
-  afficherIndicateurs($('[data-indicateurs]'), reponses, etat.donnees.entonnoir, contenu);
+  // Une réponse papier n'a ni parcours en ligne ni lien personnel : quand on ne
+  // regarde que le papier, l'entonnoir et les demandes d'étude n'ont plus d'objet.
+  const papierSeul = etat.filtres.source === 'papier';
+  const enLigne = reponses.filter((r) => r.source === 'en_ligne').length;
+
+  afficherIndicateurs($('[data-indicateurs]'), reponses, etat.donnees.entonnoir, contenu, etat.filtres);
   afficherEssentiel(s.essentiel.corps, reponses, contenu);
   afficherFondations(s.fondations.corps, reponses, contenu);
   afficherRepondants(s.repondants.corps, reponses, contenu);
-  afficherEntonnoir(s.entonnoir.corps, etat.donnees.entonnoir, etat.contacts.length || etat.donnees.nombre_contacts);
 
-  afficherContacts(
-    s.contacts.corps,
-    etat.contacts,
-    reponses.length,
-    s.contacts.noeud.querySelector('.section-admin__soustitre')
-  );
+  s.entonnoir.noeud.hidden = papierSeul;
+  if (!papierSeul) {
+    afficherEntonnoir(
+      s.entonnoir.corps,
+      etat.donnees.entonnoir,
+      etat.contacts.length || etat.donnees.nombre_contacts
+    );
+  }
+
+  s.contacts.noeud.hidden = papierSeul;
+  if (!papierSeul) {
+    afficherContacts(
+      s.contacts.corps,
+      etat.contacts,
+      enLigne,
+      s.contacts.noeud.querySelector('.section-admin__soustitre')
+    );
+  }
 
   retitrer(s.dimensions, titreDimensions(reponses, contenu));
   afficherDimensions(s.dimensions.corps, reponses, contenu);
@@ -196,10 +213,12 @@ async function ouvrir(cle) {
   etat.donnees = resultat.donnees;
   etat.contacts = await chargerContacts(cle);
 
-  const lien = lienExport(cle);
+  const lien = lienExport(cle, etat.contacts);
   const bouton = etat.sections.contacts.bouton;
   if (lien) {
     bouton.href = lien;
+    bouton.setAttribute('download', 'contacts-etat-des-lieux.csv');
+    bouton.removeAttribute('aria-disabled');
   } else {
     bouton.removeAttribute('href');
     bouton.setAttribute('aria-disabled', 'true');

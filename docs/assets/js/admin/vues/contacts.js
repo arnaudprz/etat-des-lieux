@@ -9,8 +9,8 @@ import { el, vider } from '../../parcours/commun.js';
 import { pourcent } from '../agregats.js';
 import { nombre, part } from './briques.js';
 
-/** Nombre de demandes affichées. L'export contient toujours la totalité. */
-const MAX_LIGNES = 15;
+/** Nombre de demandes visibles avant de déplier. L'export contient tout. */
+const APERCU = 5;
 
 /** « 29 sept. » */
 function jourCourt(iso) {
@@ -20,12 +20,27 @@ function jourCourt(iso) {
   return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
 }
 
-export function afficherContacts(hote, contacts, nombreRepondants, sousTitre) {
+function rangee(c) {
+  return el('tr', {}, [
+    el('td', { texte: `${c.prenom || ''} ${c.nom || ''}`.trim() }),
+    el('td', { texte: c.entreprise || '' }),
+    el('td', { texte: c.email || '' }),
+    el('td', { texte: jourCourt(c.date) }),
+  ]);
+}
+
+/**
+ * @param {number} nombreEnLigne les réponses en ligne, et non le total : une
+ *   réponse papier ne peut pas avoir donné lieu à une demande d'étude.
+ */
+export function afficherContacts(hote, contacts, nombreEnLigne, sousTitre) {
   vider(hote);
 
   const total = contacts.length;
   if (sousTitre) {
-    const p = nombreRepondants ? `, soit ${part(pourcent(total, nombreRepondants))} des répondants` : '';
+    const p = nombreEnLigne
+      ? `, soit ${part(pourcent(total, nombreEnLigne))} des réponses en ligne`
+      : '';
     sousTitre.textContent = `${nombre(total)} personnes${p}. `
       + 'Ces coordonnées ne sont jamais reliées aux réponses.';
   }
@@ -36,16 +51,7 @@ export function afficherContacts(hote, contacts, nombreRepondants, sousTitre) {
   }
 
   const corps = el('tbody');
-  contacts.slice(0, MAX_LIGNES).forEach((c) => {
-    corps.appendChild(
-      el('tr', {}, [
-        el('td', { texte: `${c.prenom || ''} ${c.nom || ''}`.trim() }),
-        el('td', { texte: c.entreprise || '' }),
-        el('td', { texte: c.email || '' }),
-        el('td', { texte: jourCourt(c.date) }),
-      ])
-    );
-  });
+  contacts.slice(0, APERCU).forEach((c) => corps.appendChild(rangee(c)));
 
   const tableau = el('table', { classe: 'tableau' }, [
     el('thead', {}, [
@@ -61,13 +67,24 @@ export function afficherContacts(hote, contacts, nombreRepondants, sousTitre) {
 
   hote.appendChild(el('div', { classe: 'tableau-defilant' }, [tableau]));
 
-  if (total > MAX_LIGNES) {
-    hote.appendChild(
-      el('p', {
-        classe: 'section-admin__soustitre',
-        texte: `Les ${MAX_LIGNES} demandes les plus récentes sont affichées. `
-          + `L'export contient les ${nombre(total)}.`,
-      })
-    );
-  }
+  if (total <= APERCU) return;
+
+  let deplie = false;
+  const bouton = el('button', {
+    classe: 'bouton-secondaire',
+    texte: `Voir les ${nombre(total)} demandes`,
+    attrs: { type: 'button', 'aria-expanded': 'false' },
+  });
+
+  bouton.addEventListener('click', () => {
+    deplie = !deplie;
+    vider(corps);
+    (deplie ? contacts : contacts.slice(0, APERCU)).forEach((c) => corps.appendChild(rangee(c)));
+    bouton.textContent = deplie
+      ? 'Réduire la liste'
+      : `Voir les ${nombre(total)} demandes`;
+    bouton.setAttribute('aria-expanded', String(deplie));
+  });
+
+  hote.appendChild(el('div', { classe: 'deplier' }, [bouton]));
 }

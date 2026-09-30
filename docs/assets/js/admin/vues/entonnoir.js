@@ -1,5 +1,10 @@
 /**
  * L'entonnoir : du premier clic à l'état des lieux.
+ *
+ * Il repose sur les événements de visite, qui ne portent aucun profil : ni rôle,
+ * ni secteur, ni taille. Seule la période peut donc s'y appliquer. La section le
+ * dit sous son titre, et disparaît quand on ne regarde que le papier, qui n'a
+ * jamais eu de parcours en ligne.
  */
 
 import { el, vider } from '../../parcours/commun.js';

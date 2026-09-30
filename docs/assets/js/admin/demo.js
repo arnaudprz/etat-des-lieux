@@ -5,11 +5,45 @@
  * reproductible : la même graine donne toujours les mêmes chiffres, pour qu'une
  * démonstration ne change pas d'une fois sur l'autre.
  *
+ * Les ordres de grandeur sont calés sur ceux de la maquette, pour qu'on puisse
+ * juger la mise en page et les textes de « L'essentiel » sur des chiffres
+ * plausibles. Mesurer avec : node scripts/verif/calibrer-demo.mjs
+ *
  * Ces données ne sortent jamais du navigateur et ne ressemblent à aucune
  * personne réelle.
  */
 
-import { NB_AFFIRMATIONS } from '../calcul.js';
+import { NB_AFFIRMATIONS, DERNIERE_AFFIRMATION_RESULTAT } from '../calcul.js';
+
+/** Part des réponses saisies sur papier. */
+const PART_PAPIER = 0.14;
+
+/** Part de managers parmi les répondants. */
+const PART_MANAGERS = 0.23;
+
+/**
+ * Répartition visée des cartes d'ensemble, par rôle, dans l'ordre
+ * Bien enraciné, En croissance, En germe, À semer.
+ *
+ * Pondérée par PART_MANAGERS, elle donne l'ensemble visé : 12, 41, 34 et 13 %.
+ * Les managers voient leur équipe plus installée que les membres, ce qui nourrit
+ * le constat « Deux regards différents ».
+ */
+const CIBLE_CARTES = {
+  manager: [0.28, 0.50, 0.19, 0.03],
+  membre: [0.072, 0.383, 0.385, 0.160],
+};
+
+/** Les bornes de moyenne de chaque carte, de la plus installée à la moins. */
+const BORNES = [
+  { min: 2.5, max: 3 },
+  { min: 1.75, max: 2.5 },
+  { min: 1, max: 1.75 },
+  { min: 0, max: 1 },
+];
+
+/** Les affirmations qui ressortent moins, pour que deux dimensions se détachent. */
+const MOINS_INSTALLEES = [3, 4, 7, 8];
 
 /** Générateur pseudo-aléatoire simple, pour un tirage reproductible. */
 function tirage(graine) {
@@ -20,26 +54,69 @@ function tirage(graine) {
   };
 }
 
-/** Choisit une valeur selon des poids. */
-function selonPoids(aleatoire, valeurs, poids) {
+/** Choisit un indice selon des poids. */
+function indiceSelonPoids(aleatoire, poids) {
   const total = poids.reduce((a, b) => a + b, 0);
   let seuil = aleatoire() * total;
-  for (let i = 0; i < valeurs.length; i += 1) {
+  for (let i = 0; i < poids.length; i += 1) {
     seuil -= poids[i];
-    if (seuil <= 0) return valeurs[i];
+    if (seuil <= 0) return i;
   }
-  return valeurs[valeurs.length - 1];
+  return poids.length - 1;
 }
 
-/** Une réponse de 0 à 3, tirée autour d'un penchant. */
-function reponse(aleatoire, penchant) {
-  const poids = [
-    Math.max(0.05, 1.6 - penchant),
-    Math.max(0.1, 1.3 - penchant * 0.5),
-    0.6 + penchant * 0.7,
-    0.2 + penchant * 0.8,
-  ];
+/** Choisit une valeur selon des poids. */
+function selonPoids(aleatoire, valeurs, poids) {
+  return valeurs[indiceSelonPoids(aleatoire, poids)];
+}
+
+/**
+ * Une réponse de 0 à 3, tirée en cloche autour d'une cible.
+ * L'écart type garde de la variété dans le détail des 4 réponses.
+ */
+function reponseAutourDe(aleatoire, cible) {
+  const ecart = 0.9;
+  const poids = [0, 1, 2, 3].map((v) => Math.exp(-((v - cible) ** 2) / (2 * ecart * ecart)));
   return selonPoids(aleatoire, [0, 1, 2, 3], poids);
+}
+
+/** La moyenne des affirmations qui entrent dans la carte d'ensemble. */
+function moyenneCarte(reponses) {
+  let somme = 0;
+  for (let i = 0; i < DERNIERE_AFFIRMATION_RESULTAT; i += 1) somme += reponses[i];
+  return somme / DERNIERE_AFFIRMATION_RESULTAT;
+}
+
+/** L'indice de carte que produit un jeu de réponses. */
+function carteDe(reponses) {
+  const m = moyenneCarte(reponses);
+  return BORNES.findIndex((b) => m >= b.min);
+}
+
+/**
+ * Un jeu de 16 réponses dont la carte d'ensemble tombe dans `carteVisee`.
+ *
+ * On tire autour d'une cible, puis on retire si la carte n'est pas la bonne.
+ * Quelques essais suffisent ; au-delà on garde le dernier tirage, pour que la
+ * fonction se termine toujours.
+ */
+function reponsesPourCarte(aleatoire, carteVisee) {
+  const borne = BORNES[carteVisee];
+  let reponses = null;
+
+  for (let essai = 0; essai < 40; essai += 1) {
+    // Une cible à l'intérieur de la tranche, un peu resserrée pour viser juste.
+    const marge = (borne.max - borne.min) * 0.15;
+    const cible = borne.min + marge + aleatoire() * (borne.max - borne.min - 2 * marge);
+
+    reponses = [];
+    for (let n = 1; n <= NB_AFFIRMATIONS; n += 1) {
+      const malus = MOINS_INSTALLEES.includes(n) ? 0.5 : 0;
+      reponses.push(reponseAutourDe(aleatoire, Math.max(0, Math.min(3, cible - malus))));
+    }
+    if (carteDe(reponses) === carteVisee) return reponses;
+  }
+  return reponses;
 }
 
 /** Les 2 affirmations les plus réservées, comme dans le parcours. */
@@ -52,6 +129,26 @@ function plusReservees(reponses) {
     .map((a) => a.n);
 }
 
+/**
+ * Les choix de relance d'une affirmation.
+ *
+ * Tirage uniforme, et une seule réponse dans 6 cas sur 10 : c'est ce qui place
+ * le souhait le plus choisi dans la fourchette de la maquette, autour de 30 à
+ * 45 %. Un souhait écrasant ne dirait rien d'intéressant.
+ */
+function choixRelance(aleatoire, nbChoix) {
+  const combien = aleatoire() < 0.6 ? 1 : 2;
+  const choisis = new Set();
+  let garde = 0;
+  while (choisis.size < combien && garde < 20) {
+    garde += 1;
+    // « Autre » reste marginal, comme dans la réalité.
+    if (aleatoire() < 0.07) choisis.add('autre');
+    else choisis.add(Math.floor(aleatoire() * nbChoix));
+  }
+  return Array.from(choisis);
+}
+
 /** Construit un jeu de réponses fictives. */
 export function reponsesFictives(contenu, nombre = 412, graine = 20260930) {
   const aleatoire = tirage(graine);
@@ -59,32 +156,16 @@ export function reponsesFictives(contenu, nombre = 412, graine = 20260930) {
   const lignes = [];
 
   for (let i = 0; i < nombre; i += 1) {
-    const estManager = aleatoire() < 0.23;
-    const role = estManager ? 'manager' : 'membre';
-
-    // Les managers voient leur équipe un peu plus installée que les membres.
-    const penchantGeneral = aleatoire() * 1.1 + (estManager ? 0.55 : 0);
-
-    const reponses = [];
-    for (let n = 1; n <= NB_AFFIRMATIONS; n += 1) {
-      // La circulation de l'info et la connaissance des autres ressortent moins.
-      const malus = (n >= 3 && n <= 4) || (n >= 7 && n <= 8) ? 0.45 : 0;
-      reponses.push(reponse(aleatoire, Math.max(0, penchantGeneral - malus)));
-    }
+    const role = aleatoire() < PART_MANAGERS ? 'manager' : 'membre';
+    const carteVisee = indiceSelonPoids(aleatoire, CIBLE_CARTES[role]);
+    const reponses = reponsesPourCarte(aleatoire, carteVisee);
 
     const relances = {};
     plusReservees(reponses).forEach((n) => {
       const affirmation = contenu.affirmations.find((a) => a.n === n);
       const def = affirmation && affirmation.relance ? affirmation.relance[role] : null;
       if (!def) return;
-      const combien = aleatoire() < 0.35 ? 1 : 2;
-      const choisis = new Set();
-      while (choisis.size < combien) {
-        // Le premier choix sort plus souvent, pour qu'un souhait se détache.
-        const idx = aleatoire() < 0.4 ? 0 : Math.floor(aleatoire() * def.choix.length);
-        choisis.add(idx);
-      }
-      relances[n] = Array.from(choisis);
+      relances[n] = choixRelance(aleatoire, def.choix.length);
     });
 
     const jours = Math.floor(aleatoire() * 45);
@@ -94,7 +175,7 @@ export function reponsesFictives(contenu, nombre = 412, graine = 20260930) {
 
     lignes.push({
       date,
-      source: aleatoire() < 0.12 ? 'papier' : 'en_ligne',
+      source: aleatoire() < PART_PAPIER ? 'papier' : 'en_ligne',
       version: 'v1',
       role,
       genre: selonPoids(aleatoire, p.genre.choix.concat(['']), [48, 43, 1, 4, 8]),
@@ -138,22 +219,28 @@ export function contactsFictifs(nombre = 87, graine = 7) {
   return sortie.sort((a, b) => b.date.localeCompare(a.date));
 }
 
-/** Tout ce que l'API renverrait, en fictif. */
+/**
+ * Tout ce que l'API renverrait, en fictif.
+ *
+ * L'entonnoir ne compte que le parcours en ligne : le nombre de questionnaires
+ * terminés vaut exactement le nombre de réponses en ligne, jamais le total.
+ */
 export function donneesFictives(contenu) {
   const reponses = reponsesFictives(contenu);
-  const termine = reponses.length;
+  const enLigne = reponses.filter((r) => r.source === 'en_ligne').length;
+
   return {
     ok: true,
     demo: true,
     genere_le: '2026-09-30',
     reponses,
     entonnoir: {
-      visite: 1240,
-      commence: 580,
-      termine,
-      lien_copie: Math.round(termine * 0.56),
+      visite: Math.round(enLigne * 3.5),
+      commence: Math.round(enLigne * 1.64),
+      termine: enLigne,
+      lien_copie: Math.round(enLigne * 0.56),
     },
     nombre_contacts: 87,
-    compteur: termine + 255,
+    compteur: enLigne + 255,
   };
 }

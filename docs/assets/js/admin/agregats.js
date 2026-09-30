@@ -330,10 +330,19 @@ export function lienResultats(reponses, contenu) {
 
 // ------------------------------------------------------------------ résumés
 
-/** Les indicateurs du haut de page. */
+/**
+ * Les indicateurs du haut de page.
+ *
+ * Deux d'entre eux ne concernent que le parcours en ligne : une réponse papier
+ * n'a ni lien personnel ni questionnaire commencé. On les rapporte donc aux
+ * réponses en ligne, jamais au total.
+ */
 export function indicateurs(reponses, entonnoir, contenu) {
   const managers = reponses.filter((r) => r.role === 'manager').length;
   const membres = reponses.filter((r) => r.role === 'membre').length;
+  const enLigne = reponses.filter((r) => r.source === 'en_ligne').length;
+  const papier = reponses.filter((r) => r.source === 'papier').length;
+
   const complete = entonnoir && entonnoir.commence
     ? pourcent(entonnoir.termine, entonnoir.commence)
     : null;
@@ -342,14 +351,17 @@ export function indicateurs(reponses, entonnoir, contenu) {
     repondants: reponses.length,
     managers,
     membres,
+    enLigne,
+    papier,
     completion: complete,
     termines: entonnoir ? entonnoir.termine : 0,
     commences: entonnoir ? entonnoir.commence : 0,
     secteurs: nombreSecteurs(reponses),
     secteursPossibles: contenu.profil.secteur.choix.length,
     liensCopies: entonnoir ? entonnoir.lien_copie : 0,
-    partLiensCopies: entonnoir && reponses.length
-      ? pourcent(entonnoir.lien_copie, reponses.length)
+    // Rapporté aux réponses en ligne : une réponse papier n'a pas de lien.
+    partLiensCopies: entonnoir && enLigne
+      ? pourcent(entonnoir.lien_copie, enLigne)
       : null,
   };
 }

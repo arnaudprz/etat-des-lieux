@@ -41,6 +41,72 @@ attendus.forEach((t, i) => {
 const tuiles = await page.locator('.tuile').count();
 if (tuiles !== 4) soucis.push(`${tuiles} indicateurs au lieu de 4`);
 
+// A3 : la répartition en ligne et papier est annoncée sous Répondants.
+const texteRepondants = await page.locator('.tuile').first().innerText();
+if (!/en ligne et .* papier/.test(texteRepondants)) {
+  soucis.push('la tuile Répondants ne dit pas la répartition en ligne et papier');
+}
+
+// A1 : les liens copiés se rapportent aux réponses en ligne, pas au total.
+const texteLiens = await page.locator('.tuile', { hasText: 'Liens personnels copiés' }).innerText();
+if (!texteLiens.includes('des réponses en ligne')) {
+  soucis.push(`la part des liens copiés ne se rapporte pas aux réponses en ligne : ${texteLiens.replace(/\n/g, ' | ')}`);
+}
+
+// A2 : le taux de complétion dit qu'il ne concerne que l'en ligne.
+const texteCompletion = await page.locator('.tuile', { hasText: 'Taux de complétion' }).innerText();
+if (!texteCompletion.includes('parcours en ligne seulement')) {
+  soucis.push('le taux de complétion ne précise pas qu’il ne concerne que l’en ligne');
+}
+
+// A4 : l'entonnoir dit qu'il ne suit que la période.
+const sousTitreEntonnoir = await page
+  .locator('.section-admin', { hasText: "Du premier clic à l'état des lieux" })
+  .locator('.section-admin__soustitre').innerText();
+if (!/seule la période/i.test(sousTitreEntonnoir)) {
+  soucis.push('l’entonnoir ne précise pas qu’il ne suit que la période');
+}
+
+// A5 : les données fictives sont cohérentes entre elles.
+const termines = Number((texteCompletion.match(/([\d\s ]+) terminés/) || [])[1]?.replace(/\D/g, '') || 0);
+const enLigne = Number((texteRepondants.match(/([\d\s ]+) en ligne/) || [])[1]?.replace(/\D/g, '') || 0);
+if (termines !== enLigne) {
+  soucis.push(`l'entonnoir annonce ${termines} terminés pour ${enLigne} réponses en ligne`);
+}
+
+// A5 : la répartition des cartes reste dans des ordres de grandeur plausibles.
+const partsCartes = (await page.locator('.carte-recue__valeur').allInnerTexts())
+  .map((t) => Number(t.replace(/\D/g, '')));
+if (partsCartes.some((x) => x === 0)) {
+  soucis.push(`une carte d'ensemble tombe à 0 % : ${partsCartes.join(' / ')}`);
+}
+
+// A6 : 5 demandes visibles, et un bouton pour déplier.
+const lignesContacts = await page.locator('.section-admin', { hasText: 'Demandes de l’étude complète' })
+  .locator('tbody tr').count();
+if (lignesContacts !== 5) soucis.push(`${lignesContacts} demandes affichées au lieu de 5`);
+
+const deplier = page.locator('.deplier button');
+if ((await deplier.count()) !== 1) soucis.push('pas de bouton pour déplier les demandes');
+else {
+  await deplier.click();
+  await page.waitForTimeout(200);
+  const apres = await page.locator('.section-admin', { hasText: 'Demandes de l’étude complète' })
+    .locator('tbody tr').count();
+  if (apres <= 5) soucis.push(`déplier n'affiche que ${apres} demandes`);
+  await deplier.click();
+  await page.waitForTimeout(200);
+}
+
+// A6 : le bouton d'export est réellement actif.
+const exporter = page.locator('.bouton-secondaire', { hasText: 'Exporter' });
+if (await exporter.getAttribute('aria-disabled')) {
+  soucis.push('le bouton d’export est marqué désactivé');
+}
+if (!(await exporter.getAttribute('href'))) {
+  soucis.push('le bouton d’export n’a pas d’adresse de téléchargement');
+}
+
 // L'essentiel : 4 constats
 const constats = await page.locator('.constat').count();
 if (constats !== 4) soucis.push(`${constats} constats au lieu de 4`);
@@ -97,6 +163,24 @@ const sansTitre = await page.evaluate(() =>
 if (sansTitre > 0) soucis.push(`${sansTitre} barres sans effectif au survol`);
 
 await page.screenshot({ path: `${SORTIE}/Dashboard.png`, fullPage: true });
+
+// A2 et A4 : sur Source = Papier, ce qui ne concerne que l'en ligne disparaît.
+await page.selectOption('#filtre-source', 'papier');
+await page.waitForTimeout(300);
+if (await page.locator('.section-admin', { hasText: "Du premier clic à l'état des lieux" }).isVisible()) {
+  soucis.push('l’entonnoir reste affiché alors que le filtre Source est sur Papier');
+}
+if (await page.locator('.tuile', { hasText: 'Taux de complétion' }).count()) {
+  soucis.push('le taux de complétion reste affiché sur Source = Papier');
+}
+if (await page.locator('.tuile', { hasText: 'Liens personnels copiés' }).count()) {
+  soucis.push('les liens copiés restent affichés sur Source = Papier');
+}
+const tuilesPapier = await page.locator('.tuile').count();
+if (tuilesPapier !== 2) soucis.push(`${tuilesPapier} indicateurs sur Source = Papier au lieu de 2`);
+await page.screenshot({ path: `${SORTIE}/Dashboard-papier.png`, fullPage: true });
+await page.selectOption('#filtre-source', 'toutes');
+await page.waitForTimeout(300);
 
 // ------------------------------------------- le seuil d'anonymat k >= 3
 // On filtre jusqu'à isoler un groupe minuscule : aucun chiffre ne doit sortir.

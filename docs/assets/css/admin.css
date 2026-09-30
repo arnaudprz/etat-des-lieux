@@ -53,7 +53,15 @@
 }
 
 .bouton-secondaire:hover { background: var(--vert-pale); color: var(--encre); }
-.bouton-secondaire[aria-disabled='true'] { opacity: .5; cursor: not-allowed; }
+
+/* Sans adresse d'export, le bouton reste lisible mais clairement inactif. */
+.bouton-secondaire[aria-disabled='true'] {
+  border-style: dashed;
+  color: var(--taupe);
+  cursor: not-allowed;
+}
+
+.deplier { display: flex; justify-content: flex-start; }
 
 /* ----------------------------------------------------------------- accès */
 
