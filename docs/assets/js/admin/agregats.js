@@ -146,13 +146,20 @@ export function partAccord(reponses, numeros) {
 /**
  * Le souhait le plus choisi parmi ceux qui ont répondu Pas encore ou Un peu à
  * une affirmation, et la part que ce souhait représente parmi eux.
+ *
+ * La part se calcule sur les personnes qui ont répondu 0 ou 1 **et** coché au
+ * moins un choix : ce sont les seules à avoir pu exprimer un souhait.
  */
 export function souhaitLePlusChoisi(reponses, n, role, contenu) {
   const affirmation = contenu.affirmations.find((a) => a.n === n);
   const relance = affirmation && affirmation.relance ? affirmation.relance[role] : null;
   if (!relance) return null;
 
-  const concernes = reponses.filter((r) => r.relances && r.relances[n]);
+  const concernes = reponses.filter((r) => {
+    const valeur = r.reponses[n - 1];
+    const aRepondufaible = Number.isInteger(valeur) && valeur <= 1;
+    return aRepondufaible && r.relances && Array.isArray(r.relances[n]) && r.relances[n].length > 0;
+  });
   if (!assezDeMonde(concernes.length)) return null;
 
   const compte = new Map();

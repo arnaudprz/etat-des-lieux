@@ -192,6 +192,30 @@ describe('détail d’une affirmation', () => {
     assert.equal(s.debut, 'J’aimerais…'.replace('’', "'"));
   });
 
+  test('le souhait ne compte que ceux qui ont répondu Pas encore ou Un peu', () => {
+    const jeu = [
+      // 3 personnes réservées qui ont coché.
+      ...groupe(3, { reponses: new Array(16).fill(0), relances: { 1: [2] } }),
+      // 5 personnes qui vivent déjà l'affirmation : leurs choix, s'ils
+      // traînaient, ne doivent pas entrer dans le compte.
+      ...groupe(5, { reponses: new Array(16).fill(3), relances: { 1: [0] } }),
+    ];
+    const s = souhaitLePlusChoisi(jeu, 1, 'membre', contenu);
+    assert.equal(s.effectif, 3);
+    assert.equal(s.nombre, 3);
+    assert.equal(s.part, 100);
+    assert.equal(s.libelle, contenu.affirmations[0].relance.membre.choix[2]);
+  });
+
+  test('une relance vide ne compte pas', () => {
+    const jeu = [
+      ...groupe(4, { reponses: new Array(16).fill(0), relances: { 1: [] } }),
+      ...groupe(3, { reponses: new Array(16).fill(1), relances: { 1: [1] } }),
+    ];
+    const s = souhaitLePlusChoisi(jeu, 1, 'membre', contenu);
+    assert.equal(s.effectif, 3);
+  });
+
   test('« Autre » est nommé correctement', () => {
     const jeu = groupe(4, { reponses: new Array(16).fill(0), relances: { 1: ['autre'] } });
     const s = souhaitLePlusChoisi(jeu, 1, 'membre', contenu);

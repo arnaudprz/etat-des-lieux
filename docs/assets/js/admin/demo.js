@@ -119,13 +119,14 @@ function reponsesPourCarte(aleatoire, carteVisee) {
   return reponses;
 }
 
-/** Les 2 affirmations les plus réservées, comme dans le parcours. */
-function plusReservees(reponses) {
+/**
+ * Les affirmations qui ouvrent leur question, comme dans le parcours : toutes
+ * celles dont la réponse est Pas encore ou Un peu, sans limite.
+ */
+function reservees(reponses) {
   return reponses
     .map((valeur, i) => ({ n: i + 1, valeur }))
     .filter((a) => a.valeur <= 1)
-    .sort((a, b) => a.valeur - b.valeur || a.n - b.n)
-    .slice(0, 2)
     .map((a) => a.n);
 }
 
@@ -161,10 +162,12 @@ export function reponsesFictives(contenu, nombre = 412, graine = 20260930) {
     const reponses = reponsesPourCarte(aleatoire, carteVisee);
 
     const relances = {};
-    plusReservees(reponses).forEach((n) => {
+    reservees(reponses).forEach((n) => {
       const affirmation = contenu.affirmations.find((a) => a.n === n);
       const def = affirmation && affirmation.relance ? affirmation.relance[role] : null;
       if (!def) return;
+      // Les choix restent facultatifs : tout le monde ne remplit pas.
+      if (aleatoire() < 0.28) return;
       relances[n] = choixRelance(aleatoire, def.choix.length);
     });
 
