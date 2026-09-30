@@ -38,9 +38,13 @@ Les choix faits avec Arnaud pendant la conception des maquettes (septembre 2026)
 
 | Décision | Pourquoi |
 | --- | --- |
-| Seulement sous les 2 réponses les plus réservées (valeur 0 ou 1) | Garder le questionnaire à 2 minutes. |
+| Seulement sur les 2 réponses les plus réservées (valeur 0 ou 1) | Garder le questionnaire à 2 minutes. |
 | Toutes commencent par « J'aimerais… » | Tourner les réponses vers l'envie et l'évolution, pas vers le manque ou la faute. |
 | 2 choix au maximum, plus « Autre » | Obliger à prioriser, et rester lisible dans le dashboard. |
+| **Sur un écran à part, après les 16 affirmations** (septembre 2026) | Elles s'affichaient d'abord sous les affirmations, et se recalculaient à chaque réponse. Deux effets, tous deux constatés au test : une relance déjà remplie disparaissait plus haut sans prévenir, ses cases effacées et la page sautant de plus de 100px ; et un « Pas du tout » donné en bas faisait apparaître un encadré tout en haut, hors de l'écran, si deux réponses réservées existaient déjà plus haut. On croyait alors que « Pas du tout » ne fonctionnait pas. |
+| Chaque relance rappelle son affirmation | Sur un écran séparé, le souhait seul ne voudrait plus rien dire. |
+| Les choix en lignes pleine largeur, pas en pilules | En pilules, les choix longs passaient sur 2 lignes sur mobile et devenaient illisibles. |
+| Un lien « Passer » à côté de « Voir mon résultat » | Les relances restent facultatives, et on le dit plutôt que de le laisser deviner. |
 
 ## Le public et la marque
 

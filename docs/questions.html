@@ -30,26 +30,52 @@
   </div>
 </header>
 
-<main class="centre" style="margin-top: 24px">
-  <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px">
-    <h1 class="titre-page">Comment vivez-vous le travail ensemble ?</h1>
-    <p class="intro">Pour chaque affirmation, choisissez la réponse qui vous ressemble le plus. Il n'y a pas de bonne réponse. Pour vos deux réponses les plus réservées, une question en plus vous demande pourquoi.</p>
-  </div>
+<!-- La jauge est collante : elle reste visible pendant tout le défilement. -->
+<div class="progression" role="presentation">
+  <div class="progression__jauge" data-jauge></div>
+</div>
 
-  <div class="progression" role="presentation">
-    <div class="progression__jauge" data-jauge></div>
-  </div>
+<main class="centre">
 
-  <form class="questionnaire" id="questionnaire" novalidate data-formulaire>
-    <!-- Les 16 affirmations et leurs relances sont construites par questions.js. -->
-  </form>
+  <!-- Écran 1 : les 16 affirmations. -->
+  <section data-ecran="affirmations">
+    <div class="titre-bloc">
+      <h1 class="titre-page">Comment vivez-vous le travail ensemble ?</h1>
+      <p class="intro">Pour chaque affirmation, choisissez la réponse qui vous ressemble le plus. Il n'y a pas de bonne réponse.</p>
+    </div>
 
-  <p class="message" id="message" role="alert" hidden></p>
+    <form class="questionnaire" id="questionnaire" novalidate data-formulaire>
+      <!-- Les 16 affirmations sont construites par questions.js. -->
+    </form>
 
-  <div class="navigation" style="margin-top: 24px">
-    <a class="navigation__retour" href="profil.html">Retour</a>
-    <button class="btn" type="submit" form="questionnaire" data-voir>Voir mon résultat</button>
-  </div>
+    <p class="message" id="message" role="alert" hidden></p>
+
+    <div class="navigation">
+      <a class="navigation__retour" href="profil.html">Retour</a>
+      <button class="btn" type="submit" form="questionnaire" data-continuer>Continuer</button>
+    </div>
+  </section>
+
+  <!-- Écran 2 : les relances, seulement si des réponses sont réservées. -->
+  <section data-ecran="relances" hidden>
+    <div class="titre-bloc">
+      <h1 class="titre-page">Encore un mot</h1>
+      <p class="intro">Vous avez été plus réservé sur ces deux affirmations. Qu'est-ce qui vous aiderait ?</p>
+    </div>
+
+    <form class="questionnaire" id="relances" novalidate data-formulaire-relances>
+      <!-- Les relances retenues sont construites par questions.js. -->
+    </form>
+
+    <div class="navigation">
+      <a class="navigation__retour" href="#" data-retour-affirmations>Retour</a>
+      <div class="navigation__fin">
+        <button class="lien-discret" type="button" data-passer>Passer</button>
+        <button class="btn" type="submit" form="relances" data-voir>Voir mon résultat</button>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="pied">

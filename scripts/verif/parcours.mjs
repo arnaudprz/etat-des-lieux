@@ -199,13 +199,78 @@ async function passerLaCible(cible) {
     soucis.push(`[${nom}] questions : « Pas du tout » n'enregistre pas 0 partout (${JSON.stringify(toutABas)})`);
   }
 
-  // Le préréglage de la maquette, pour la suite.
-  for (let i = 0; i < REPONSES.length; i += 1) {
-    await cartes.nth(i).locator('.echelle__choix').nth(REPONSES[i]).click();
+  // Aucune relance ne doit apparaître pendant qu'on répond.
+  if (await page.locator('.relance').count()) {
+    soucis.push(`[${nom}] questions : une relance s'affiche parmi les affirmations`);
   }
 
   await verifierTirets(page, `${nom} questions`);
   await capturer(`Questions${suffixe}`, `${nom} questions`);
+
+  // Avec 16 réponses « Pas du tout », l'écran de relances s'ouvre sur Q1 et Q2.
+  await page.locator('[data-continuer]').click();
+  await page.waitForSelector('[data-ecran="relances"]:not([hidden])');
+  if (new URL(page.url()).pathname !== '/questions.html') {
+    soucis.push(`[${nom}] relances : l'écran change d'URL`);
+  }
+  const nbRelances = await page.locator('.relance').count();
+  if (nbRelances !== 2) soucis.push(`[${nom}] relances : ${nbRelances} encadrés au lieu de 2`);
+  if ((await page.locator('[data-ecran="affirmations"]').isVisible())) {
+    soucis.push(`[${nom}] relances : les affirmations restent visibles`);
+  }
+  const etapeActive = await page.locator('.etape--active .etape__nom').innerText();
+  if (etapeActive !== 'Vos réponses') {
+    soucis.push(`[${nom}] relances : le fil d'étapes est sur « ${etapeActive} »`);
+  }
+
+  // Les choix sont des lignes pleine largeur, pas des pilules.
+  const formeChoix = await page.evaluate(() => {
+    const c = document.querySelector('.relance .choix');
+    const style = getComputedStyle(c);
+    const largeurBloc = c.parentElement.getBoundingClientRect().width;
+    return {
+      rayon: parseFloat(style.borderRadius),
+      pleineLargeur: Math.abs(c.getBoundingClientRect().width - largeurBloc) < 2,
+    };
+  });
+  if (formeChoix.rayon !== 12) soucis.push(`[${nom}] relances : coins à ${formeChoix.rayon}px au lieu de 12`);
+  if (!formeChoix.pleineLargeur) soucis.push(`[${nom}] relances : les choix ne prennent pas toute la largeur`);
+
+  // 2 choix au plus.
+  const casesQ1 = page.locator('.relance').first().locator('input[type="checkbox"]');
+  await casesQ1.nth(0).check();
+  await casesQ1.nth(1).check();
+  if (!(await casesQ1.nth(2).isDisabled())) {
+    soucis.push(`[${nom}] relances : un 3e choix reste cochable`);
+  }
+
+  await capturer(`Relances${suffixe}`, `${nom} relances`);
+
+  // « Retour » ne doit rien perdre.
+  await page.locator('[data-retour-affirmations]').click();
+  await page.waitForSelector('[data-ecran="affirmations"]:not([hidden])');
+  const encoreABas = await page.evaluate(() => {
+    try {
+      return JSON.parse(sessionStorage.getItem('greatly_edl_parcours')).reponses;
+    } catch (e) { return null; }
+  });
+  if (JSON.stringify(encoreABas) !== JSON.stringify(new Array(16).fill(0))) {
+    soucis.push(`[${nom}] relances : « Retour » perd les réponses`);
+  }
+
+  // Le préréglage de la maquette, pour la suite.
+  for (let i = 0; i < REPONSES.length; i += 1) {
+    await cartes.nth(i).locator('.echelle__choix').nth(REPONSES[i]).click();
+  }
+  await page.locator('[data-continuer]').click();
+  await page.waitForSelector('[data-ecran="relances"]:not([hidden])');
+
+  // Q7 et Q8 valent 0 : ce sont elles qui doivent être rappelées.
+  const rappelees = await page.locator('.relance__affirmation').allInnerTexts();
+  if (rappelees.length !== 2) soucis.push(`[${nom}] relances : ${rappelees.length} affirmations rappelées`);
+  if (!rappelees[0].startsWith("L'info des autres métiers")) {
+    soucis.push(`[${nom}] relances : première affirmation rappelée inattendue « ${rappelees[0]} »`);
+  }
 
   await page.locator('[data-voir]').click();
 

@@ -1,11 +1,14 @@
 /**
- * Les 16 affirmations et leurs relances.
+ * Les 16 affirmations, puis un court écran de relances.
  *
- * La version affichée (membre ou manager) suit le rôle choisi au profil : il n'y
- * a pas de bascule ici, contrairement à la maquette qui sert d'aperçu.
+ * Les relances ne s'affichent plus sous les affirmations pendant qu'on répond.
+ * Elles se recalculaient à chaque réponse : un encadré déjà rempli pouvait
+ * disparaître plus haut sans prévenir, et une réponse « Pas du tout » donnée en
+ * bas de page faisait apparaître un encadré tout en haut, hors de l'écran.
+ * Voir DECISIONS.md.
  *
- * Aucun chiffre n'est affiché : ni valeur de réponse, ni numéro d'affirmation,
- * ni pourcentage de progression.
+ * La version affichée, membre ou manager, suit le rôle choisi au profil.
+ * Aucun chiffre n'est affiché : ni valeur de réponse, ni numéro, ni pourcentage.
  */
 
 import { chargerContenu, texteAffirmation, relance as relancePour } from '../contenu.js';
@@ -14,7 +17,7 @@ import { lienResultat } from '../lien.js';
 import { lire, ecrire } from '../session.js';
 import { envoyerReponse } from '../api.js';
 import {
-  $, el, vider, signalerModeDemo, typographierPage,
+  $, $$, el, vider, signalerModeDemo, typographierPage,
   messageErreur, evenement,
 } from './commun.js';
 
@@ -29,10 +32,23 @@ const etat = {
 };
 
 let contenu = null;
-/** Les blocs de relance, indexés par numéro d'affirmation. */
-const blocsRelance = new Map();
 
-// ----------------------------------------------------------------- une échelle
+// ------------------------------------------------------------------- écrans
+
+/** Bascule entre les deux écrans, sans changer d'URL. */
+function montrerEcran(nom) {
+  $$('[data-ecran]').forEach((section) => {
+    section.hidden = section.dataset.ecran !== nom;
+  });
+  const titre = $(`[data-ecran="${nom}"] .titre-page`);
+  if (titre) {
+    titre.setAttribute('tabindex', '-1');
+    titre.focus({ preventScroll: true });
+  }
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+// ----------------------------------------------------------------- échelle
 
 function echelle(n, surChoix) {
   const groupe = el('div', {
@@ -55,29 +71,21 @@ function echelle(n, surChoix) {
   return groupe;
 }
 
-// ----------------------------------------------------------------- une relance
+// ---------------------------------------------------------------- relances
 
 /**
- * Construit l'encadré de relance d'une affirmation. Caché par défaut : il
- * n'apparaît que si l'affirmation fait partie des 2 plus réservées.
+ * Un encadré de relance, pour l'écran de fin.
+ * Les choix sont des lignes pleine largeur : en pilules, ils passaient sur
+ * 2 lignes sur mobile et devenaient illisibles.
  */
 function blocRelance(n) {
   const def = relancePour(contenu, n, etat.role);
   if (!def) return null;
 
-  const cadre = el('fieldset', { classe: 'relance' });
-  cadre.hidden = true;
-
-  const legende = el('legend', { classe: 'relance__question' });
-  legende.appendChild(document.createTextNode(def.debut));
-  legende.appendChild(el('span', {
-    classe: 'relance__sous-titre',
-    texte: contenu.relance.sous_titre,
-  }));
-  cadre.appendChild(legende);
+  const idIntitule = `relance-${n}-intitule`;
+  const cases = [];
 
   const choix = el('div', { classe: 'relance__choix' });
-  const cases = [];
   const valeurs = def.choix.map((_, i) => i).concat([AUTRE]);
   const libelles = def.choix.concat([contenu.relance.autre]);
 
@@ -86,6 +94,7 @@ function blocRelance(n) {
     const entree = el('input', {
       attrs: { type: 'checkbox', name: `relance_q${n}`, value: String(valeur) },
     });
+    entree.dataset.valeur = String(valeur);
     entree.addEventListener('change', () => {
       const cochees = cases.filter((c) => c.checked).map((c) => c.dataset.valeur);
       if (cochees.length > contenu.relance.max_choix) {
@@ -97,13 +106,24 @@ function blocRelance(n) {
       limiterChoix(cases);
       sauver();
     });
-    entree.dataset.valeur = String(valeur);
     cases.push(entree);
-    choix.appendChild(el('label', { classe: 'choix' }, [entree, libelle]));
+    choix.appendChild(el('label', { classe: 'choix choix--ligne' }, [entree, libelle]));
   });
 
-  cadre.appendChild(choix);
-  return { cadre, cases };
+  const cadre = el('div', {
+    classe: 'carte relance',
+    attrs: { role: 'group', 'aria-labelledby': idIntitule },
+  }, [
+    // On rappelle l'affirmation : sans elle, le souhait ne veut rien dire.
+    el('p', { classe: 'relance__affirmation', texte: texteAffirmation(contenu, n, etat.role) }),
+    el('p', { classe: 'relance__question', attrs: { id: idIntitule } }, [
+      def.debut,
+      el('span', { classe: 'relance__sous-titre', texte: contenu.relance.sous_titre }),
+    ]),
+    choix,
+  ]);
+
+  return { cadre, cases, n };
 }
 
 /** Désactive les choix non cochés dès que le maximum est atteint. */
@@ -112,28 +132,37 @@ function limiterChoix(cases) {
   cases.forEach((c) => { c.disabled = atteint && !c.checked; });
 }
 
-/** Décoche et oublie les choix d'une relance qui disparaît. */
-function viderRelance(n) {
-  const bloc = blocsRelance.get(n);
-  if (!bloc) return;
-  bloc.cases.forEach((c) => { c.checked = false; c.disabled = false; });
-  delete etat.relances[n];
-}
-
 /**
- * Recalcule les 2 affirmations les plus réservées et met les encadrés à jour.
- * Les relances qui sortent de la sélection sont effacées.
+ * Construit l'écran de relances à partir des réponses en cours.
+ * @returns {boolean} faux si aucune affirmation n'est assez réservée.
  */
-function majRelances() {
+function construireRelances() {
   const retenues = affirmationsRelancees(etat.reponses, contenu);
-  blocsRelance.forEach((bloc, n) => {
-    const visible = retenues.includes(n);
-    if (!visible && !bloc.cadre.hidden) viderRelance(n);
-    bloc.cadre.hidden = !visible;
+  const hote = $('[data-formulaire-relances]');
+  vider(hote);
+
+  // Les choix d'une affirmation qui n'est plus retenue n'ont plus lieu d'être.
+  Object.keys(etat.relances).forEach((n) => {
+    if (!retenues.includes(Number(n))) delete etat.relances[n];
   });
+
+  if (retenues.length === 0) return false;
+
+  // Affichées dans l'ordre des affirmations, plus naturel à lire.
+  retenues.slice().sort((a, b) => a - b).forEach((n) => {
+    const bloc = blocRelance(n);
+    if (!bloc) return;
+    const dejaChoisis = (etat.relances[n] || []).map(String);
+    bloc.cases.forEach((c) => { c.checked = dejaChoisis.includes(c.dataset.valeur); });
+    limiterChoix(bloc.cases);
+    hote.appendChild(bloc.cadre);
+  });
+
+  typographierPage(hote);
+  return true;
 }
 
-// ------------------------------------------------------------------- l'écran
+// ------------------------------------------------------------------ l'écran
 
 function sauver() {
   ecrire({ reponses: etat.reponses, relances: etat.relances });
@@ -161,7 +190,7 @@ function construire(formulaire, bouton) {
       formulaire.appendChild(el('h2', { classe: 'groupe', texte: a.groupe }));
     }
 
-    const carte = el('div', { classe: 'carte affirmation' });
+    const carte = el('div', { classe: 'carte affirmation', attrs: { 'data-affirmation': a.n } });
     carte.appendChild(el('p', {
       classe: 'affirmation__texte',
       texte: texteAffirmation(contenu, a.n, etat.role),
@@ -173,17 +202,10 @@ function construire(formulaire, bouton) {
         evenement('commence');
       }
       etat.reponses[a.n - 1] = valeur;
-      majRelances();
       majProgression(bouton);
       sauver();
       messageErreur($('#message'), '');
     }));
-
-    const bloc = blocRelance(a.n);
-    if (bloc) {
-      blocsRelance.set(a.n, bloc);
-      carte.appendChild(bloc.cadre);
-    }
 
     formulaire.appendChild(carte);
   });
@@ -195,8 +217,7 @@ function retablir(formulaire) {
   if (Array.isArray(memoire.reponses) && memoire.reponses.length === NB_AFFIRMATIONS) {
     etat.reponses = memoire.reponses.slice();
     etat.commence = etat.reponses.some((v) => Number.isInteger(v));
-    const echelles = Array.from(formulaire.querySelectorAll('.echelle'));
-    echelles.forEach((groupe, i) => {
+    $$('.echelle', formulaire).forEach((groupe, i) => {
       const valeur = etat.reponses[i];
       if (!Number.isInteger(valeur)) return;
       Array.from(groupe.children).forEach((b) => {
@@ -204,34 +225,26 @@ function retablir(formulaire) {
       });
     });
   }
-
   etat.relances = { ...(memoire.relances || {}) };
-  majRelances();
-  Object.entries(etat.relances).forEach(([n, choix]) => {
-    const bloc = blocsRelance.get(Number(n));
-    if (!bloc || bloc.cadre.hidden) { delete etat.relances[n]; return; }
-    bloc.cases.forEach((c) => {
-      c.checked = choix.map(String).includes(c.dataset.valeur);
-    });
-    limiterChoix(bloc.cases);
-  });
 }
 
 // ------------------------------------------------------------------- l'envoi
 
-async function envoyer() {
+async function allerAuResultat() {
   const memoire = lire();
   // Le hash du lien personnel n'est jamais envoyé : seules les réponses partent.
-  const charge = {
+  await envoyerReponse({
     version: 'v1',
     role: etat.role,
     profil: memoire.profil || {},
     reponses: etat.reponses,
     relances: etat.relances,
-  };
-  await envoyerReponse(charge);
+  });
   evenement('termine');
+  location.href = lienResultat(etat.role, etat.reponses);
 }
+
+// ---------------------------------------------------------------- démarrage
 
 async function demarrer() {
   signalerModeDemo();
@@ -246,23 +259,47 @@ async function demarrer() {
   etat.role = memoire.role;
 
   const formulaire = $('[data-formulaire]');
-  const bouton = $('[data-voir]');
+  const continuer = $('[data-continuer]');
   vider(formulaire);
-  construire(formulaire, bouton);
+  construire(formulaire, continuer);
   retablir(formulaire);
-  majProgression(bouton);
-  typographierPage();
+  majProgression(continuer);
+  typographierPage($('[data-ecran="affirmations"]'));
 
+  // Des 16 affirmations vers les relances, ou directement vers le résultat.
   formulaire.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (repondues() < NB_AFFIRMATIONS) {
-      // Le message visible porte role="alert" : inutile de l'annoncer deux fois.
       messageErreur($('#message'), 'Il reste des affirmations sans réponse.');
       return;
     }
-    bouton.disabled = true;
-    await envoyer();
-    location.href = lienResultat(etat.role, etat.reponses);
+    if (construireRelances()) {
+      montrerEcran('relances');
+      return;
+    }
+    continuer.disabled = true;
+    await allerAuResultat();
+  });
+
+  // Des relances vers le résultat.
+  $('[data-formulaire-relances]').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    $('[data-voir]').disabled = true;
+    await allerAuResultat();
+  });
+
+  // « Passer » : on part au résultat sans envoyer de souhait.
+  $('[data-passer]').addEventListener('click', async () => {
+    etat.relances = {};
+    sauver();
+    $('[data-passer]').disabled = true;
+    await allerAuResultat();
+  });
+
+  // « Retour » : on revient aux affirmations sans rien perdre.
+  $('[data-retour-affirmations]').addEventListener('click', (e) => {
+    e.preventDefault();
+    montrerEcran('affirmations');
   });
 }
 
