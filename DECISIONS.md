@@ -35,6 +35,16 @@ Les choix faits avec Arnaud pendant la conception des maquettes (septembre 2026)
 | Pas de recommandations ni de « pistes » | Le résultat décrit. Il ne dit pas quoi faire. |
 | Pas d'invitation à faire répondre son équipe | Trop de pression sur le manager. |
 
+## Les idées dans le résultat (septembre 2026)
+
+| Décision | Pourquoi |
+| --- | --- |
+| Les idées cochées sont reformulées et placées sous la dimension concernée, sans commentaire | Ce sont des idées, pas des problèmes : on ne console pas, on ne conseille pas. Elles apparaissent là où elles se rapportent, pas dans un bloc à part. |
+| Une seule ligne sobre invite à en parler | Elle suffit. Un encouragement de plus supposerait que quelque chose ne va pas. |
+| Les fragments sont des groupes nominaux, dans contenu.json | Ils s'enchaînent dans une phrase : « Plus d'échanges en direct, une messagerie mieux organisée et des infos qui arrivent plus tôt. » Rien n'est écrit en dur dans le code. |
+| « Autre » n'a pas de texte : il vient en dernier, et seul il donne « Une idée à préciser. » | On ne peut pas deviner ce qu'elle a en tête, et on ne l'invente pas. |
+| L'affirmation 16 a son encadré à part | Elle n'appartient à aucune dimension et n'apparaît dans aucune bande. |
+
 ## Garder son résultat
 
 | Décision | Pourquoi |

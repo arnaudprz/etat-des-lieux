@@ -1105,6 +1105,45 @@
   color: var(--texte-doux-2);
 }
 
+/* Les idées de la personne, là où elles se rapportent.
+   Rien d'autre que le surtitre et la phrase : ce sont des idées, pas des
+   problèmes, et on n'y ajoute ni empathie ni conseil. */
+.idees {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #F7F1E3;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.idees__titre {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #7A5424;
+}
+
+.idees__phrase {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--encre);
+}
+
+/* L'encadré de l'affirmation 16 vit sous la dernière bande, seul. */
+[data-idees-resultats] .idees { margin-top: 0; }
+
+/* Une seule ligne sobre, sans encadré. */
+.ligne-idees {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--texte-doux);
+}
+
 .bientot { margin: 0; font-size: 14px; color: var(--taupe); }
 
 .bloc {
@@ -1304,6 +1343,7 @@
     gap: 32px;
     align-items: baseline;
   }
+  .idees__phrase { font-size: 19px; }
   .ensemble__haut { flex: 1; }
   .ensemble__etiquette { padding: 6px 14px; font-size: 14px; }
   .ensemble__titre { font-size: 34px; }

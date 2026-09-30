@@ -54,7 +54,11 @@ function surveiller(page, etiquette) {
   page.on('requestfailed', (r) => {
     // Les polices Google peuvent échouer hors ligne : ce n'est pas bloquant.
     if (r.url().includes('fonts.g')) return;
-    soucis.push(`[${etiquette}] requête échouée : ${r.url()}`);
+    // Le rechargement déclenché par un changement de hash peut être annulé par
+    // la navigation suivante du test : c'est un artefact du test, pas un défaut.
+    const raison = r.failure() ? r.failure().errorText : '';
+    if (r.resourceType() === 'document' && /aborted|cancel|interrupted/i.test(raison)) return;
+    soucis.push(`[${etiquette}] requête échouée : ${r.url()} (${raison})`);
   });
 }
 

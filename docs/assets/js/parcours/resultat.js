@@ -10,6 +10,7 @@ import { chargerContenu } from '../contenu.js';
 import { calculer } from '../calcul.js';
 import { decoder } from '../lien.js';
 import { medaillon, icone, chemin } from '../illustration-niveau.js';
+import { parDimension, pourLesResultats, auMoinsUneIdee } from '../envies.js';
 import { envoyerContact } from '../api.js';
 import {
   $, el, texte, vider, signalerModeDemo, typographierPage,
@@ -35,13 +36,29 @@ function afficherEnsemble(resultat) {
 }
 
 /**
- * Les bandes de couleur, empilés sur toute la largeur.
+ * L'encadré des idées de la personne.
+ *
+ * Rien d'autre que le surtitre et la phrase : ce sont des idées, pas des
+ * problèmes. On ne console pas, on ne conseille pas, on ne suppose rien.
+ */
+function encadreIdees(phrase, titre) {
+  return el('div', { classe: 'idees' }, [
+    el('span', { classe: 'idees__titre', texte: titre }),
+    el('p', { classe: 'idees__phrase serif', texte: phrase }),
+  ]);
+}
+
+/**
+ * Les bandes de couleur, empilées sur toute la largeur.
  *
  * En 4 colonnes côte à côte, le texte était serré et les hauteurs très
  * inégales. Une bande par niveau présent : les niveaux vides n'apparaissent
  * pas. Chaque bande porte son nom, ce qui rend la légende inutile.
+ *
+ * Les idées de la personne apparaissent là où elles se rapportent : sous la
+ * phrase de la dimension concernée, dans sa bande.
  */
-function afficherBandeaux(resultat) {
+function afficherBandes(resultat, contenu, idees) {
   const hote = $('[data-bandes]');
   vider(hote);
 
@@ -54,6 +71,7 @@ function afficherBandeaux(resultat) {
           el('span', { classe: 'bande__nom', texte: d.nom }),
           el('div', { classe: 'bande__droite' }, [
             el('span', { classe: 'bande__phrase', texte: d.phrase }),
+            idees[d.cle] ? encadreIdees(idees[d.cle], contenu.envies.titre) : null,
           ]),
         ])
       );
@@ -222,9 +240,27 @@ async function demarrer() {
     },
   };
 
+  // Les idées viennent du lien : elles suivent la personne à chaque visite.
+  const idees = parDimension(contenu, lu.relances, lu.role);
+  const ideesResultats = pourLesResultats(contenu, lu.relances, lu.role);
+
   $('[data-resultat]').hidden = false;
   afficherEnsemble(resultat);
-  afficherBandeaux(resultat);
+  afficherBandes(resultat, contenu, idees);
+
+  // L'affirmation 16 n'a pas de dimension : ses idées vont sous la dernière bande.
+  const hoteResultats = $('[data-idees-resultats]');
+  vider(hoteResultats);
+  if (ideesResultats) {
+    hoteResultats.appendChild(encadreIdees(ideesResultats, contenu.envies.resultats_titre));
+  }
+
+  // Une seule ligne sobre, et seulement s'il y a des idées à montrer.
+  const ligne = $('[data-ligne-idees]');
+  if (auMoinsUneIdee(lu.relances) && (Object.keys(idees).length > 0 || ideesResultats)) {
+    texte(ligne, contenu.envies.phrase_finale);
+    ligne.hidden = false;
+  }
   brancherRaccourciLien();
   brancherCopie();
   brancherEtude();

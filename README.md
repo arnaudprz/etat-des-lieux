@@ -47,7 +47,7 @@ les polices de repli, tout reste lisible.
 ## Vérifier
 
 ```sh
-npm test                                    # 155 tests, sans dépendance
+npm test                                    # 179 tests, sans dépendance
 node scripts/verif/cahier-des-charges.mjs   # les 17 points de la section 10.5
 node scripts/verif/parcours.mjs             # rejoue le parcours dans Chromium et WebKit
 node scripts/verif/parcours.mjs '' '' webkit  # une seule famille de navigateurs
@@ -132,3 +132,4 @@ chacune, et régénère `docs/assets/js/illustrations.js`.
 | 30/09/2026 | `1773103` | Passe 4, point 5 : corrections UX et UI. |
 | 30/09/2026 | `ad3ed74` | Passe 5, section 0 : le résultat en bandes pleine largeur. |
 | 30/09/2026 | `6198f05` | Passe 5, section 4 : le lien personnel v2 porte les idées. |
+| 30/09/2026 | `à venir` | Passe 5, sections 1 à 3 : les idées de la personne dans son résultat. |

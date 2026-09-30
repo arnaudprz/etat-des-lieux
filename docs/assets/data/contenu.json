@@ -618,6 +618,185 @@
     "max_choix": 2,
     "seuil_valeur_max": 1
   },
+  "envies": {
+    "titre": "Vos idées pour faire évoluer",
+    "autre": "d'autres idées encore",
+    "autre_seul": "Une idée à préciser.",
+    "resultats_titre": "Pour avancer vers vos objectifs",
+    "phrase_finale": "Ces idées sont les vôtres. Elles peuvent nourrir une prochaine discussion, avec vos collègues ou votre manager.",
+    "fragments": {
+      "1": {
+        "membre": [
+          "un cap commun, partagé par tous",
+          "une vision plus claire de ce que vise l'entreprise",
+          "des priorités dont on parle plus souvent",
+          "une idée plus nette de ce que chaque métier y apporte",
+          "des réussites davantage célébrées"
+        ]
+      },
+      "2": {
+        "membre": [
+          "des réussites communes plus souvent évoquées",
+          "une contribution de chacun plus souvent nommée",
+          "un « nous » plus présent",
+          "des moments pour fêter vos résultats"
+        ]
+      },
+      "3": {
+        "membre": [
+          "une journée au poste d'un collègue",
+          "une présentation du quotidien de chaque métier",
+          "plus de rencontres entre métiers",
+          "des outils plus partagés",
+          "plus de moments informels ensemble"
+        ]
+      },
+      "4": {
+        "membre": [
+          "vos contraintes de temps mieux connues de vos collègues",
+          "vos outils mieux connus de vos collègues",
+          "votre charge de travail mieux comprise",
+          "vos besoins mieux compris par vos collègues",
+          "l'effet de leur travail sur le vôtre mieux perçu"
+        ],
+        "manager": [
+          "des priorités plus claires pour votre équipe",
+          "vos attentes mieux comprises par chacun",
+          "le sens de certaines décisions mieux compris",
+          "des marges de manœuvre mieux connues",
+          "votre regard sur le travail mieux partagé"
+        ]
+      },
+      "5": {
+        "membre": [
+          "des mercis plus fréquents et plus précis",
+          "l'avis de chacun plus souvent demandé",
+          "chaque métier davantage associé aux décisions",
+          "le travail de chacun plus mis en avant"
+        ]
+      },
+      "6": {
+        "membre": [
+          "un tour de parole en réunion",
+          "un ordre du jour partagé à l'avance",
+          "un manager qui laisse parler l'équipe d'abord",
+          "des réunions plus courtes, où chacun s'exprime",
+          "des sujets plus concrets en réunion"
+        ],
+        "manager": [
+          "un tour de parole en réunion",
+          "un ordre du jour partagé à l'avance",
+          "l'habitude de laisser parler l'équipe d'abord",
+          "des réunions plus courtes, où chacun s'exprime",
+          "des sujets plus concrets en réunion"
+        ]
+      },
+      "7": {
+        "membre": [
+          "plus d'échanges en direct",
+          "un point d'équipe régulier",
+          "une messagerie mieux organisée",
+          "plus de paroles et moins d'écrits",
+          "un outil ou un planning commun"
+        ]
+      },
+      "8": {
+        "membre": [
+          "des infos plus complètes",
+          "des infos qui arrivent plus tôt",
+          "des infos dans un format partagé par tous",
+          "des infos plus cohérentes entre elles",
+          "des infos fiables, sans avoir à vérifier"
+        ]
+      },
+      "9": {
+        "membre": [
+          "des échanges plus rapides entre personnes concernées",
+          "un moment pour faire le point après coup",
+          "la solution cherchée avant le responsable",
+          "plus de choses réglées ensemble",
+          "des leçons tirées ensemble"
+        ]
+      },
+      "10": {
+        "membre": [
+          "un manager plus disponible",
+          "plus de retours de votre manager",
+          "un manager qui fait davantage le lien avec les autres métiers",
+          "plus d'aide pour dépasser les désaccords",
+          "plus d'autonomie"
+        ],
+        "manager": [
+          "plus de temps avec votre équipe",
+          "d'autres façons d'animer vos réunions",
+          "un regard extérieur",
+          "une meilleure connaissance de chaque métier",
+          "des repères pour dépasser les désaccords"
+        ]
+      },
+      "11": {
+        "membre": [
+          "la liberté de tout dire sans crainte",
+          "plus de temps pour en parler",
+          "une parole qui compte davantage",
+          "plus de proximité avec la hiérarchie",
+          "des relations plus apaisées"
+        ]
+      },
+      "12": {
+        "membre": [
+          "plus de temps en tête à tête avec votre manager",
+          "un manager qui partage aussi ses doutes et ses erreurs",
+          "plus de visibilité sur ce que votre manager fait de ce que vous lui dites",
+          "un cadre clair sur ce qui reste entre vous",
+          "un manager plus disponible"
+        ],
+        "manager": [
+          "plus de temps en tête à tête",
+          "l'élan de partager vos doutes et vos erreurs",
+          "une façon plus visible de montrer ce que vous faites de leurs retours",
+          "un cadre clair sur ce qui reste entre vous",
+          "plus de disponibilité de votre part"
+        ]
+      },
+      "13": {
+        "membre": [
+          "un peu plus de temps",
+          "des interlocuteurs plus faciles à identifier",
+          "plus de liberté pour demander de l'aide",
+          "une charge mieux répartie",
+          "des moments pour vous entraider"
+        ]
+      },
+      "14": {
+        "membre": [
+          "une vision plus claire de l'utilité de votre travail",
+          "plus de retours de vos clients",
+          "des efforts dont on voit davantage les fruits",
+          "des décisions mieux comprises",
+          "plus de place pour ce qui compte vraiment"
+        ]
+      },
+      "15": {
+        "membre": [
+          "des échanges sur votre façon de travailler ensemble",
+          "des échanges sur ce qui vous aide au quotidien",
+          "des échanges sur ce qui pourrait vous faciliter la vie",
+          "des échanges sur vos réussites collectives",
+          "des échanges sur ce que vous apprenez ensemble"
+        ]
+      },
+      "16": {
+        "membre": [
+          "une charge plus soutenable",
+          "plus d'infos pour avancer",
+          "des priorités plus stables",
+          "plus de moyens",
+          "des métiers qui se coordonnent mieux"
+        ]
+      }
+    }
+  },
   "cartes_ensemble": [
     {
       "niveau": "enracine",
