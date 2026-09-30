@@ -544,6 +544,29 @@ async function passerLaCible(cible) {
     soucis.push(`[${nom}] resultat : étiquette sur ${etiquette.lignes} lignes dans une pilule`);
   }
 
+  // « Garder mon résultat » amène au lien personnel, qui arrive très bas.
+  const garder = page.locator('[data-garder]');
+  if ((await garder.count()) !== 1) {
+    soucis.push(`[${nom}] resultat : pas de bouton « Garder mon résultat »`);
+  } else {
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(200);
+    const lienLoin = await page.evaluate(() => {
+      const bloc = document.querySelector('#lien-personnel');
+      return bloc.getBoundingClientRect().top > window.innerHeight;
+    });
+    if (!lienLoin) {
+      soucis.push(`[${nom}] resultat : le lien personnel est déjà à l'écran, le raccourci ne sert à rien`);
+    }
+    await garder.click();
+    await page.waitForTimeout(800);
+    const lienAEcran = await page.evaluate(() => {
+      const r = document.querySelector('#lien-personnel').getBoundingClientRect();
+      return r.top >= -4 && r.top < window.innerHeight;
+    });
+    if (!lienAEcran) soucis.push(`[${nom}] resultat : « Garder mon résultat » n'amène pas au lien`);
+  }
+
   const couleurIntro = await page.evaluate(() =>
     getComputedStyle(document.querySelector('.etude > p')).color);
   if (couleurIntro !== 'rgb(107, 100, 96)') {

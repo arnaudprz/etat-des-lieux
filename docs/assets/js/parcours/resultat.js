@@ -73,6 +73,25 @@ function afficherColonnes(resultat) {
   });
 }
 
+/**
+ * « Garder mon résultat » : sur mobile, le lien personnel arrive très bas,
+ * après les colonnes de couleur et le bloc Greatly. Ce raccourci l'amène
+ * directement à l'écran.
+ */
+function brancherRaccourciLien() {
+  const bouton = $('[data-garder]');
+  const cible = $('#lien-personnel');
+  if (!bouton || !cible) return;
+
+  bouton.addEventListener('click', () => {
+    const douceur = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? 'auto' : 'smooth';
+    cible.scrollIntoView({ behavior: douceur, block: 'start' });
+    const champ = $('[data-lien]');
+    if (champ) champ.focus({ preventScroll: true });
+  });
+}
+
 function brancherCopie() {
   const champ = $('[data-lien]');
   const bouton = $('[data-copier]');
@@ -185,6 +204,7 @@ async function demarrer() {
   afficherEnsemble(resultat);
   afficherLegende(contenu);
   afficherColonnes(resultat);
+  brancherRaccourciLien();
   brancherCopie();
   brancherEtude();
   typographierPage();
