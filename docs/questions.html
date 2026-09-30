@@ -36,12 +36,15 @@
      grandit, l'arbre de droite est le but. Aucun chiffre n'est affiché ; les
      lecteurs d'écran reçoivent l'avancée en toutes lettres. -->
 <div class="progression">
-  <img class="progression__pousse" alt="" aria-hidden="true" data-pousse>
-  <div class="progression__piste"
-       role="progressbar" aria-valuemin="0" aria-valuemax="16" data-barre>
-    <div class="progression__jauge" data-jauge></div>
+  <!-- Le fond traverse l'écran, son contenu suit la colonne de lecture. -->
+  <div class="progression__interieur">
+    <img class="progression__pousse" alt="" aria-hidden="true" data-pousse>
+    <div class="progression__piste"
+         role="progressbar" aria-valuemin="0" aria-valuemax="16" data-barre>
+      <div class="progression__jauge" data-jauge></div>
+    </div>
+    <img class="progression__but" alt="" aria-hidden="true" data-but>
   </div>
-  <img class="progression__but" alt="" aria-hidden="true" data-but>
 </div>
 
 <main class="centre">

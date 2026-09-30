@@ -679,15 +679,17 @@
 
 .cadre-etude__lignes strong { font-weight: 600; }
 
-/* Pourquoi on s'intéresse à ce groupe d'affirmations. */
-.pourquoi {
+/* Pourquoi on s'intéresse à ce groupe d'affirmations.
+   Nom distinct de .pourquoi, qui désigne déjà les deux cartes de l'accueil :
+   celles-ci sont en grille, et la ligne y perdait sa continuité. */
+.contexte-groupe {
   margin: -6px 0 4px;
   font-size: 14px;
   line-height: 1.55;
   color: var(--taupe);
 }
 
-.pourquoi__prefixe {
+.contexte-groupe__prefixe {
   font-weight: 600;
   color: var(--sauge-fonce);
 }
@@ -838,6 +840,13 @@
   box-sizing: border-box;
   background: var(--creme);
   border-bottom: 1px solid var(--bordure);
+}
+
+/* Le fond traverse l'écran, mais la graine et l'arbre suivent la colonne de
+   lecture : sinon ils se retrouvent aux deux bords, loin du texte. */
+.progression__interieur {
+  max-width: 820px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1077,7 +1086,7 @@
 
 @media (min-width: 900px) {
   .groupe { font-size: 26px; margin-top: 20px; }
-  .pourquoi { font-size: 15px; }
+  .contexte-groupe { font-size: 15px; }
   .cadre-etude { padding: 22px 26px; }
   .avant-resultat__promesse { font-size: 22px; }
   .titre-bloc { margin: 32px 0 16px; }

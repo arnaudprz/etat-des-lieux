@@ -510,8 +510,8 @@ async function passerLaCible(cible) {
   // Chaque groupe dit pourquoi on s'y intéresse.
   const engagement = await page.evaluate(() => ({
     groupes: document.querySelectorAll('.groupe').length,
-    pourquoi: document.querySelectorAll('.pourquoi').length,
-    prefixes: Array.from(document.querySelectorAll('.pourquoi__prefixe'))
+    pourquoi: document.querySelectorAll('.contexte-groupe').length,
+    prefixes: Array.from(document.querySelectorAll('.contexte-groupe__prefixe'))
       .every((p) => p.textContent.startsWith('Pourquoi on s')),
     cadre: document.querySelectorAll('[data-cadre] li').length,
     cadreSurLaPage: !!document.querySelector('[data-cadre]')
@@ -532,6 +532,50 @@ async function passerLaCible(cible) {
     soucis.push(`[${nom}] questions : ${engagement.pourquoi} lignes « pourquoi » pour ${engagement.groupes} groupes`);
   }
   if (!engagement.prefixes) soucis.push(`[${nom}] questions : un préfixe « Pourquoi on s'y intéresse » manque`);
+
+  // La ligne doit se lire d'un trait : ni grille, ni colonnes.
+  const ligneContexte = await page.evaluate(() => {
+    const el = document.querySelector('.contexte-groupe');
+    if (!el) return null;
+    const prefixe = el.querySelector('.contexte-groupe__prefixe');
+    return {
+      display: getComputedStyle(el).display,
+      prefixeDisplay: getComputedStyle(prefixe).display,
+      // Avec une grille, le texte repartirait dans une seconde colonne, loin
+      // de la fin du préfixe.
+      ecartApresPrefixe: Math.round(
+        el.getBoundingClientRect().right - prefixe.getBoundingClientRect().right
+      ),
+      largeur: Math.round(el.getBoundingClientRect().width),
+    };
+  });
+  if (!ligneContexte) {
+    soucis.push(`[${nom}] questions : pas de ligne de contexte`);
+  } else {
+    if (['grid', 'flex', 'inline-grid', 'inline-flex'].includes(ligneContexte.display)) {
+      soucis.push(`[${nom}] questions : la ligne de contexte est en ${ligneContexte.display}`);
+    }
+    if (ligneContexte.prefixeDisplay !== 'inline') {
+      soucis.push(`[${nom}] questions : le préfixe est en ${ligneContexte.prefixeDisplay} au lieu d'inline`);
+    }
+  }
+
+  // La graine et l'arbre encadrent la colonne de lecture, pas les bords de l'écran.
+  const barreAlignee = await page.evaluate(() => {
+    const pousse = document.querySelector('[data-pousse]').getBoundingClientRect();
+    const arbre = document.querySelector('[data-but]').getBoundingClientRect();
+    const texte = document.querySelector('.titre-page').getBoundingClientRect();
+    return {
+      ecartGauche: Math.round(texte.left - pousse.left),
+      ecartDroite: Math.round(arbre.right - texte.right),
+    };
+  });
+  if (Math.abs(barreAlignee.ecartGauche) > 40 || Math.abs(barreAlignee.ecartDroite) > 40) {
+    soucis.push(
+      `[${nom}] progression : la barre ne suit pas la colonne de lecture `
+      + `(${barreAlignee.ecartGauche}px à gauche, ${barreAlignee.ecartDroite}px à droite)`
+    );
+  }
   if (engagement.cadre !== 3) soucis.push(`[${nom}] questions : ${engagement.cadre} lignes dans l'encadré au lieu de 3`);
   if (!engagement.cadreSurLaPage) soucis.push(`[${nom}] questions : l'encadré n'est pas sur la page des affirmations`);
   if (engagement.miParcours !== 1) soucis.push(`[${nom}] questions : ${engagement.miParcours} bandeau de mi-parcours`);

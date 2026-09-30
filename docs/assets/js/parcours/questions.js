@@ -331,9 +331,9 @@ function afficherAnnonce() {
 function pourquoi(groupe) {
   const texteGroupe = contenu.engagement.pourquoi[groupe];
   if (!texteGroupe) return null;
-  return el('p', { classe: 'pourquoi' }, [
+  return el('p', { classe: 'contexte-groupe' }, [
     el('span', {
-      classe: 'pourquoi__prefixe',
+      classe: 'contexte-groupe__prefixe',
       texte: `${contenu.engagement.pourquoi_prefixe} · `,
     }),
     texteGroupe,
