@@ -248,6 +248,11 @@
   margin: -12px;
 }
 
+/* Une affirmation qu'on a oubliée. */
+.affirmation--manquante {
+  box-shadow: 0 0 0 2px var(--sauge);
+}
+
 .champ__intitule {
   margin: 0;
   font-size: 17px;
@@ -540,14 +545,22 @@
 
 /* ========================================================== 3. AFFIRMATIONS */
 
-/* Collante en haut de l'écran : la progression reste visible tout du long. */
+/* Collante en haut de l'écran : la progression reste visible tout du long.
+   Sa hauteur sert de repère au défilement automatique. */
+:root { --hauteur-progression: 4px; }
+
 .progression {
   position: sticky;
   top: 0;
   z-index: 4;
-  height: 4px;
+  height: var(--hauteur-progression);
   background: var(--voile);
   overflow: hidden;
+}
+
+/* L'affirmation visée par le défilement se place juste sous la jauge. */
+.affirmation {
+  scroll-margin-top: calc(var(--hauteur-progression) + 16px);
 }
 
 .progression__jauge {
@@ -588,24 +601,32 @@
   font-weight: 500;
 }
 
+/* Les 4 réponses sur une seule ligne, même sur mobile : en 2 x 2, on lisait
+   « Pas du tout, Plutôt pas » puis « Plutôt, Tout à fait », et la progression
+   d'une réponse à l'autre se perdait. */
 .echelle {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
 }
 
 .echelle__choix {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   min-height: var(--hauteur-bouton);
-  padding: 0 10px;
+  padding: 4px 6px;
   border-radius: var(--rayon-champ);
   border: 1px solid var(--bordure-forte);
   background: var(--blanc);
   color: var(--encre);
   font-family: inherit;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
-  line-height: 1.25;
+  line-height: 1.2;
   cursor: pointer;
+  overflow-wrap: break-word;
 }
 
 .echelle__choix[aria-pressed='true'] {
@@ -700,7 +721,8 @@
 }
 
 @media (min-width: 560px) {
-  .echelle { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .echelle { gap: 10px; }
+  .echelle__choix { padding: 0 10px; }
 }
 
 @media (min-width: 900px) {

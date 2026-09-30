@@ -321,6 +321,64 @@ async function passerLaCible(cible) {
   const nbGroupes = await page.locator('.groupe').count();
   if (nbGroupes !== 8) soucis.push(`[${nom}] questions : ${nbGroupes} groupes au lieu de 8`);
 
+  // L'échelle tient sur une seule ligne de 4, même sur mobile.
+  const echelle = await page.evaluate(() => {
+    const boutons = Array.from(document.querySelector('.echelle').children);
+    const hauts = new Set(boutons.map((b) => Math.round(b.getBoundingClientRect().top)));
+    const largeurs = boutons.map((b) => Math.round(b.getBoundingClientRect().width));
+    return {
+      lignes: hauts.size,
+      nombre: boutons.length,
+      hauteur: Math.round(boutons[0].getBoundingClientRect().height),
+      largeurEgale: Math.max(...largeurs) - Math.min(...largeurs) <= 1,
+      premier: boutons[0].textContent.trim(),
+      dernier: boutons[3].textContent.trim(),
+    };
+  });
+  if (echelle.nombre !== 4) soucis.push(`[${nom}] échelle : ${echelle.nombre} réponses au lieu de 4`);
+  if (echelle.lignes !== 1) soucis.push(`[${nom}] échelle : ${echelle.lignes} lignes au lieu d'une`);
+  if (!echelle.largeurEgale) soucis.push(`[${nom}] échelle : les 4 réponses n'ont pas la même largeur`);
+  if (echelle.hauteur < 52) soucis.push(`[${nom}] échelle : hauteur de ${echelle.hauteur}px au lieu de 52`);
+  if (echelle.premier !== 'Pas du tout' || echelle.dernier !== 'Tout à fait') {
+    soucis.push(`[${nom}] échelle : ordre inattendu, de « ${echelle.premier} » à « ${echelle.dernier} »`);
+  }
+
+  // La jauge est collante et ne montre aucun chiffre.
+  const jauge = await page.evaluate(() => {
+    const p = document.querySelector('.progression');
+    const style = getComputedStyle(p);
+    return {
+      position: style.position,
+      hauteur: Math.round(p.getBoundingClientRect().height),
+      texte: p.textContent.trim(),
+    };
+  });
+  if (jauge.position !== 'sticky') soucis.push(`[${nom}] progression : ${jauge.position} au lieu de sticky`);
+  if (jauge.hauteur !== 4) soucis.push(`[${nom}] progression : ${jauge.hauteur}px de haut au lieu de 4`);
+  if (jauge.texte !== '') soucis.push(`[${nom}] progression : elle affiche « ${jauge.texte} »`);
+
+  // « Continuer » reste cliquable et amène à la première affirmation oubliée.
+  const continuerQ = page.locator('[data-continuer]');
+  if (await continuerQ.isDisabled()) {
+    soucis.push(`[${nom}] questions : « Continuer » est inactif au lieu de guider`);
+  } else {
+    await page.locator('.affirmation').nth(2).locator('.echelle__choix').nth(1).click();
+    await page.waitForTimeout(400);
+    await continuerQ.click();
+    await page.waitForTimeout(500);
+    const avertissement = (await page.locator('#message').innerText()).trim();
+    if (!/Il en reste \d+ sans réponse\.|Il reste une affirmation sans réponse\./.test(avertissement)) {
+      soucis.push(`[${nom}] questions : message inattendu « ${avertissement} »`);
+    }
+    const oubliee = await page.locator('.affirmation--manquante').count();
+    if (oubliee !== 1) soucis.push(`[${nom}] questions : ${oubliee} affirmation mise en évidence au lieu d'une`);
+    const premiereVisible = await page.locator('[data-affirmation="1"]').isVisible();
+    if (!premiereVisible) soucis.push(`[${nom}] questions : la première affirmation oubliée n'est pas à l'écran`);
+    if (await page.locator('[data-ecran="relances"]').isVisible()) {
+      soucis.push(`[${nom}] questions : « Continuer » avance malgré les manques`);
+    }
+  }
+
   // « Pas du tout » sur chacune des 16 : l'état visuel et la valeur enregistrée.
   const cartes = page.locator('.affirmation');
   for (let i = 0; i < 16; i += 1) {
@@ -338,6 +396,39 @@ async function passerLaCible(cible) {
   });
   if (JSON.stringify(toutABas) !== JSON.stringify(new Array(16).fill(0))) {
     soucis.push(`[${nom}] questions : « Pas du tout » n'enregistre pas 0 partout (${JSON.stringify(toutABas)})`);
+  }
+
+  // Répondre pour la première fois amène l'affirmation suivante à l'écran.
+  // On repart d'un questionnaire vierge : sans cela, aucune réponse ne serait
+  // « la première fois » et le défilement ne se déclencherait pas.
+  await page.evaluate(() => { try { sessionStorage.removeItem('greatly_edl_parcours'); } catch (e) {} });
+  await page.goto(`${BASE}/profil.html`, { waitUntil: 'networkidle' });
+  await remplirProfil(page);
+  await page.locator('[data-continuer]').click();
+  await page.waitForSelector('.affirmation');
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(200);
+  const avant = await page.evaluate(() => window.scrollY);
+  await page.locator('.affirmation').first().locator('.echelle__choix').nth(2).click();
+  await page.waitForTimeout(800);
+  const apres = await page.evaluate(() => window.scrollY);
+  if (apres <= avant) {
+    soucis.push(`[${nom}] questions : répondre n'amène pas l'affirmation suivante à l'écran`);
+  }
+  // Modifier une réponse déjà donnée ne doit rien déplacer.
+  await page.evaluate(() => document.querySelector('[data-affirmation="1"]').scrollIntoView());
+  await page.waitForTimeout(300);
+  const avantModif = await page.evaluate(() => window.scrollY);
+  await page.locator('.affirmation').first().locator('.echelle__choix').nth(3).click();
+  await page.waitForTimeout(600);
+  const apresModif = await page.evaluate(() => window.scrollY);
+  if (Math.abs(apresModif - avantModif) > 4) {
+    soucis.push(`[${nom}] questions : modifier une réponse fait sauter la page de ${Math.abs(apresModif - avantModif)}px`);
+  }
+
+  // On répond « Pas du tout » partout pour la suite.
+  for (let i = 0; i < 16; i += 1) {
+    await page.locator('.affirmation').nth(i).locator('.echelle__choix').nth(0).click();
   }
 
   // Aucune relance ne doit apparaître pendant qu'on répond.

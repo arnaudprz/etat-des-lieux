@@ -113,3 +113,4 @@ node scripts/generer-contenu-gs.mjs
 | 30/09/2026 | `ca359c1` | Passe 2, point 1 : les relances passent sur un écran à part. |
 | 30/09/2026 | `730330e` | Passe 2, point 2 : profil réparé dans WebKit. |
 | 30/09/2026 | `c718f62` | Passe 2, point 3 : la liste des secteurs passe dans le flux. |
+| 30/09/2026 | `à venir` | Passe 2, point 4 : les affirmations sur mobile. |

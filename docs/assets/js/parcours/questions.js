@@ -24,6 +24,33 @@ import {
 /** Clé de la valeur « Autre » dans une relance, telle qu'enregistrée. */
 const AUTRE = 'autre';
 
+/** Le défilement doit être instantané pour qui demande moins d'animation. */
+function douceur() {
+  try {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  } catch (e) {
+    return 'auto';
+  }
+}
+
+/** Amène une affirmation à l'écran, juste sous l'en-tête. */
+function amenerAEcran(n) {
+  const carte = $(`[data-affirmation="${n}"]`);
+  if (carte) carte.scrollIntoView({ behavior: douceur(), block: 'start' });
+  return carte;
+}
+
+/** Le numéro de la première affirmation encore sans réponse. */
+function premiereSansReponse(reponses, depuis = 1) {
+  for (let n = depuis; n <= NB_AFFIRMATIONS; n += 1) {
+    if (!Number.isInteger(reponses[n - 1])) return n;
+  }
+  for (let n = 1; n < depuis; n += 1) {
+    if (!Number.isInteger(reponses[n - 1])) return n;
+  }
+  return null;
+}
+
 const etat = {
   role: 'membre',
   reponses: new Array(NB_AFFIRMATIONS).fill(null),
@@ -172,16 +199,18 @@ function repondues() {
   return etat.reponses.filter((v) => Number.isInteger(v)).length;
 }
 
-function majProgression(bouton) {
-  const n = repondues();
+/**
+ * La jauge de progression. Aucun chiffre n'est affiché.
+ *
+ * « Continuer » reste cliquable même incomplet : au clic, il amène à la
+ * première affirmation sans réponse plutôt que de rester inerte sans rien dire.
+ */
+function majProgression() {
   const jauge = $('[data-jauge]');
-  if (jauge) jauge.style.width = `${(n / NB_AFFIRMATIONS) * 100}%`;
-  const complet = n === NB_AFFIRMATIONS;
-  bouton.disabled = !complet;
-  bouton.setAttribute('aria-disabled', String(!complet));
+  if (jauge) jauge.style.width = `${(repondues() / NB_AFFIRMATIONS) * 100}%`;
 }
 
-function construire(formulaire, bouton) {
+function construire(formulaire) {
   let groupeCourant = null;
 
   contenu.affirmations.forEach((a) => {
@@ -201,10 +230,18 @@ function construire(formulaire, bouton) {
         etat.commence = true;
         evenement('commence');
       }
+      // Une réponse déjà donnée qu'on change ne doit pas faire sauter la page.
+      const premiereFois = !Number.isInteger(etat.reponses[a.n - 1]);
       etat.reponses[a.n - 1] = valeur;
-      majProgression(bouton);
+      majProgression();
       sauver();
       messageErreur($('#message'), '');
+      carte.classList.remove('affirmation--manquante');
+
+      if (premiereFois) {
+        const suivante = premiereSansReponse(etat.reponses, a.n + 1);
+        if (suivante) window.setTimeout(() => amenerAEcran(suivante), 120);
+      }
     }));
 
     formulaire.appendChild(carte);
@@ -261,16 +298,26 @@ async function demarrer() {
   const formulaire = $('[data-formulaire]');
   const continuer = $('[data-continuer]');
   vider(formulaire);
-  construire(formulaire, continuer);
+  construire(formulaire);
   retablir(formulaire);
-  majProgression(continuer);
+  majProgression();
   typographierPage($('[data-ecran="affirmations"]'));
 
   // Des 16 affirmations vers les relances, ou directement vers le résultat.
   formulaire.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (repondues() < NB_AFFIRMATIONS) {
-      messageErreur($('#message'), 'Il reste des affirmations sans réponse.');
+    const reste = NB_AFFIRMATIONS - repondues();
+    if (reste > 0) {
+      messageErreur($('#message'), reste === 1
+        ? 'Il reste une affirmation sans réponse.'
+        : `Il en reste ${reste} sans réponse.`);
+      const premiere = premiereSansReponse(etat.reponses);
+      const carte = amenerAEcran(premiere);
+      if (carte) {
+        carte.classList.add('affirmation--manquante');
+        const premierChoix = carte.querySelector('.echelle__choix');
+        if (premierChoix) premierChoix.focus({ preventScroll: true });
+      }
       return;
     }
     if (construireRelances()) {
