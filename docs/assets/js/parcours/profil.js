@@ -74,93 +74,166 @@ function groupePilules(cle, definition, surChoix, deuxColonnes = false) {
   return el('div', { classe: 'champ', attrs: { 'data-champ': cle } }, [intitule, pilules]);
 }
 
-// --------------------------------------------------------- combobox du secteur
+// --------------------------------------------------------- liste des secteurs
+
+/** Nombre de lignes visibles avant que la liste ne défile sur elle-même. */
+const LIGNES_VISIBLES = 6;
 
 /**
- * Champ de recherche des secteurs : combobox accessible, recherche insensible
- * aux accents et à la casse. « Autre » reste toujours proposé.
+ * Le choix du secteur.
+ *
+ * La liste vit dans le flux, sous le champ de recherche, et non en
+ * surimpression : elle recouvrait la suite du formulaire et le bouton
+ * « Continuer ». Une fois le secteur choisi, la liste se referme et laisse une
+ * pastille avec un lien « Modifier ».
  */
 function champSecteur(definition, surChoix) {
   const bloc = el('div', { classe: 'champ', attrs: { 'data-champ': 'secteur' } });
-  bloc.appendChild(
-    el('label', {
-      classe: 'champ__intitule',
-      texte: definition.question,
-      attrs: { for: 'secteur' },
-    })
-  );
+  const idIntitule = 'intitule-secteur';
 
-  const enveloppe = el('div', { classe: 'recherche' });
-  enveloppe.innerHTML =
-    '<svg class="recherche__loupe" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" ' +
-    'fill="none" stroke="#6B6460" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-    '<circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>';
+  bloc.appendChild(el('p', {
+    classe: 'champ__intitule',
+    texte: definition.question,
+    attrs: { id: idIntitule },
+  }));
+
+  // Ce qui est montré quand un secteur est déjà choisi.
+  const choisi = el('div', { classe: 'secteur-choisi' });
+  const pastilleChoisi = el('span', { classe: 'secteur-choisi__valeur' });
+  const modifier = el('button', {
+    classe: 'lien-discret',
+    texte: 'Modifier',
+    attrs: { type: 'button' },
+  });
+  choisi.appendChild(pastilleChoisi);
+  choisi.appendChild(modifier);
+  choisi.hidden = true;
+
+  // La recherche et la liste.
+  const recherche = el('div', { classe: 'recherche' });
+  recherche.innerHTML =
+    '<svg class="recherche__loupe" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" '
+    + 'fill="none" stroke="#6B6460" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+    + '<circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>';
 
   const champ = el('input', {
     classe: 'champ-texte',
     attrs: {
       id: 'secteur', type: 'text', role: 'combobox', autocomplete: 'off',
-      'aria-autocomplete': 'list', 'aria-controls': 'secteurs', 'aria-expanded': 'false',
-      placeholder: definition.placeholder,
+      'aria-autocomplete': 'list', 'aria-controls': 'secteurs', 'aria-expanded': 'true',
+      'aria-labelledby': idIntitule,
+      placeholder: 'Rechercher, par exemple santé',
     },
   });
+  recherche.appendChild(champ);
 
   const liste = el('ul', {
-    classe: 'recherche__liste',
-    attrs: { id: 'secteurs', role: 'listbox', 'aria-label': 'Secteurs' },
+    classe: 'secteurs',
+    attrs: { id: 'secteurs', role: 'listbox', 'aria-labelledby': idIntitule },
   });
-  liste.hidden = true;
 
-  // « Autre » est toujours proposé, quelle que soit la recherche.
-  const tous = definition.choix.filter((s) => s !== 'Autre');
+  // Le nombre de résultats est annoncé, jamais affiché.
+  const annonce = el('p', {
+    classe: 'lecteur-ecran',
+    attrs: { role: 'status', 'aria-live': 'polite' },
+  });
+
+  const zone = el('div', { classe: 'secteur-recherche' }, [recherche, liste, annonce]);
+
+  const tous = definition.choix.filter((x) => x !== 'Autre');
   const autre = definition.choix.includes('Autre') ? 'Autre' : null;
 
-  let ouverte = false;
   let survol = -1;
   let visibles = [];
+  let valeur = null;
 
-  function ouvrir(etatOuvert) {
-    ouverte = etatOuvert;
-    liste.hidden = !etatOuvert;
-    champ.setAttribute('aria-expanded', String(etatOuvert));
-    if (!etatOuvert) survol = -1;
+  /** Met en gras les lettres trouvées. */
+  function surligner(texte, requete) {
+    if (!requete) return [texte];
+    const sans = normaliser(texte);
+    const debut = sans.indexOf(requete);
+    if (debut < 0) return [texte];
+    return [
+      texte.slice(0, debut),
+      el('strong', { texte: texte.slice(debut, debut + requete.length) }),
+      texte.slice(debut + requete.length),
+    ];
   }
 
-  function choisir(valeur) {
-    champ.value = valeur;
-    surChoix(valeur);
-    ouvrir(false);
-    champ.removeAttribute('aria-activedescendant');
+  function fermer(secteur) {
+    valeur = secteur;
+    texte(pastilleChoisi, secteur);
+    choisi.hidden = false;
+    zone.hidden = true;
+    champ.setAttribute('aria-expanded', 'false');
+    surChoix(secteur);
+    modifier.focus({ preventScroll: true });
+  }
+
+  function rouvrir() {
+    choisi.hidden = true;
+    zone.hidden = false;
+    champ.setAttribute('aria-expanded', 'true');
+    champ.value = '';
+    survol = -1;
+    dessiner();
+    champ.focus({ preventScroll: true });
   }
 
   function dessiner() {
-    const q = normaliser(champ.value.trim());
-    visibles = tous.filter((s) => q === '' || normaliser(s).includes(q));
-    if (autre) visibles.push(autre);
+    const requete = normaliser(champ.value.trim());
+    const trouves = tous.filter((x) => requete === '' || normaliser(x).includes(requete));
+
+    // « Autre » accompagne la liste, mais ne la remplit pas : sans cela, une
+    // recherche sans résultat n'aurait jamais l'air vide.
+    visibles = trouves.length > 0 && autre ? trouves.concat([autre]) : trouves;
 
     vider(liste);
+
     if (visibles.length === 0) {
-      liste.appendChild(el('li', { classe: 'recherche__vide', texte: 'Aucun secteur ne correspond.' }));
+      liste.appendChild(el('li', { classe: 'secteurs__vide' }, [
+        el('span', { texte: 'Aucun secteur ne correspond.' }),
+        (() => {
+          const b = el('button', {
+            classe: 'bouton-doux',
+            texte: 'Choisir Autre',
+            attrs: { type: 'button' },
+          });
+          b.addEventListener('click', () => fermer(autre || 'Autre'));
+          return b;
+        })(),
+      ]));
+      annonce.textContent = 'Aucun secteur ne correspond.';
       return;
     }
-    visibles.forEach((s, i) => {
+
+    visibles.forEach((secteur, i) => {
       const bouton = el('button', {
-        classe: 'recherche__option',
-        texte: s,
-        attrs: { type: 'button', id: `secteur-${i}`, tabindex: '-1' },
-      });
-      bouton.addEventListener('click', () => choisir(s));
-      const ligne = el('li', {
-        attrs: { role: 'option', 'aria-selected': String(i === survol) },
-      }, [bouton]);
-      liste.appendChild(ligne);
+        classe: 'secteurs__choix',
+        attrs: {
+          type: 'button', id: `secteur-${i}`, tabindex: '-1',
+          'data-secteur': secteur,
+        },
+      }, [
+        el('span', { classe: 'secteurs__rond', attrs: { 'aria-hidden': 'true' } }),
+        el('span', { classe: 'secteurs__nom' }, surligner(secteur, requete)),
+      ]);
+      bouton.addEventListener('click', () => fermer(secteur));
+
+      liste.appendChild(el('li', {
+        classe: 'secteurs__ligne' + (i === survol ? ' secteurs__ligne--survol' : ''),
+        attrs: { role: 'option', 'aria-selected': String(secteur === valeur) },
+      }, [bouton]));
     });
+
+    annonce.textContent = visibles.length === 1
+      ? '1 secteur proposé.'
+      : `${visibles.length} secteurs proposés.`;
   }
 
-  function surligner(delta) {
-    if (!ouverte) { ouvrir(true); dessiner(); }
+  function deplacer(pas) {
     if (visibles.length === 0) return;
-    survol = (survol + delta + visibles.length) % visibles.length;
+    survol = (survol + pas + visibles.length) % visibles.length;
     dessiner();
     champ.setAttribute('aria-activedescendant', `secteur-${survol}`);
     const actif = liste.children[survol];
@@ -168,28 +241,39 @@ function champSecteur(definition, surChoix) {
   }
 
   champ.addEventListener('input', () => {
-    surChoix(null);
     survol = -1;
-    ouvrir(true);
     dessiner();
   });
-  champ.addEventListener('focus', () => { ouvrir(true); dessiner(); });
+
   champ.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowDown') { e.preventDefault(); surligner(1); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); surligner(-1); }
+    if (e.key === 'ArrowDown') { e.preventDefault(); deplacer(1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); deplacer(-1); }
     else if (e.key === 'Enter') {
-      if (ouverte && survol >= 0) { e.preventDefault(); choisir(visibles[survol]); }
-    } else if (e.key === 'Escape') { ouvrir(false); }
+      e.preventDefault();
+      if (survol >= 0) fermer(visibles[survol]);
+      else if (visibles.length === 1) fermer(visibles[0]);
+    } else if (e.key === 'Escape') {
+      champ.value = '';
+      survol = -1;
+      dessiner();
+    }
   });
 
-  document.addEventListener('click', (e) => {
-    if (!enveloppe.contains(e.target)) ouvrir(false);
-  });
+  modifier.addEventListener('click', rouvrir);
 
-  enveloppe.appendChild(champ);
-  enveloppe.appendChild(liste);
-  bloc.appendChild(enveloppe);
-  return { bloc, champ, dessiner };
+  bloc.appendChild(choisi);
+  bloc.appendChild(zone);
+  liste.style.setProperty('--lignes-visibles', String(LIGNES_VISIBLES));
+  dessiner();
+
+  return {
+    bloc,
+    champ,
+    /** Rétablit un secteur déjà choisi, au retour en arrière. */
+    retablir(secteur) {
+      if (secteur) fermer(secteur);
+    },
+  };
 }
 
 // --------------------------------------------------------------------- écran
@@ -258,7 +342,7 @@ async function demarrer() {
   Object.entries(memoire).forEach(([cle, valeur]) => {
     if (!valeur) return;
     etat[cle] = valeur;
-    if (cle === 'secteur') { secteur.champ.value = valeur; return; }
+    if (cle === 'secteur') { secteur.retablir(valeur); return; }
     const entree = formulaire.querySelector(`input[name="${cle}"][value="${CSS.escape(valeur)}"]`);
     if (entree) entree.checked = true;
   });

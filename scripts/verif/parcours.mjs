@@ -90,7 +90,7 @@ async function remplirProfil(page) {
   await page.locator('input[name="taille_equipe"]').nth(1).check();
   await page.fill('#secteur', 'sante');
   await page.waitForSelector('#secteurs li');
-  await page.locator('#secteurs .recherche__option', { hasText: /^Santé$/ }).click();
+  await page.locator('#secteurs .secteurs__choix', { hasText: /^Santé$/ }).click();
 }
 
 async function passerLaCible(cible) {
@@ -204,16 +204,107 @@ async function passerLaCible(cible) {
     }
   }
 
-  const propositions = await (async () => {
-    await page.fill('#secteur', 'sante');
-    await page.waitForSelector('#secteurs li');
-    return page.locator('#secteurs .recherche__option').allInnerTexts();
-  })();
-  if (!propositions.includes('Santé')) {
-    soucis.push(`[${nom}] profil : « sante » ne propose pas « Santé » : ${propositions.join(', ')}`);
+  // La liste des secteurs vit dans le flux, jamais par-dessus la suite.
+  const listeVisibleAuDepart = await page.locator('#secteurs').isVisible();
+  if (!listeVisibleAuDepart) soucis.push(`[${nom}] secteurs : la liste n'est pas visible d'emblée`);
+
+  const enSurimpression = await page.evaluate(() => {
+    const l = document.querySelector('#secteurs');
+    const position = getComputedStyle(l).position;
+    const apres = document.querySelector('[data-champ="taille_equipe"]');
+    const recouvre = apres
+      && l.getBoundingClientRect().bottom > apres.getBoundingClientRect().top + 1;
+    return { position, recouvre };
+  });
+  if (enSurimpression.position === 'absolute' || enSurimpression.position === 'fixed') {
+    soucis.push(`[${nom}] secteurs : la liste est en ${enSurimpression.position}`);
   }
-  if (!propositions.includes('Autre')) {
-    soucis.push(`[${nom}] profil : « Autre » n'est pas proposé`);
+  if (enSurimpression.recouvre) {
+    soucis.push(`[${nom}] secteurs : la liste recouvre la question suivante`);
+  }
+
+  // Le nombre de colonnes suit la largeur.
+  const colonnesSecteurs = await page.evaluate(() => new Set(
+    Array.from(document.querySelectorAll('#secteurs .secteurs__ligne'))
+      .slice(0, 8)
+      .map((x) => Math.round(x.getBoundingClientRect().left))
+  ).size);
+  const colonnesAttendues = largeur >= 900 ? 2 : 1;
+  if (colonnesSecteurs !== colonnesAttendues) {
+    soucis.push(`[${nom}] secteurs : ${colonnesSecteurs} colonnes au lieu de ${colonnesAttendues}`);
+  }
+
+  // Hauteur bornée, avec défilement interne.
+  const hauteurListe = await page.evaluate(() => {
+    const l = document.querySelector('#secteurs');
+    return { visible: Math.round(l.clientHeight), total: Math.round(l.scrollHeight) };
+  });
+  if (hauteurListe.visible > 48 * 6 + 16) {
+    soucis.push(`[${nom}] secteurs : liste haute de ${hauteurListe.visible}px, plus de 6 lignes`);
+  }
+  if (hauteurListe.total <= hauteurListe.visible) {
+    soucis.push(`[${nom}] secteurs : les 20 secteurs tiennent sans défilement, la borne ne sert à rien`);
+  }
+
+  // Le placeholder ne doit pas être coupé.
+  const placeholderCoupe = await page.evaluate(() => {
+    const c = document.querySelector('#secteur');
+    const mesure = document.createElement('span');
+    const style = getComputedStyle(c);
+    mesure.style.cssText = `position:absolute;visibility:hidden;white-space:nowrap;font:${style.font}`;
+    mesure.textContent = c.placeholder;
+    document.body.appendChild(mesure);
+    const large = mesure.getBoundingClientRect().width;
+    mesure.remove();
+    const utile = c.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+    return large > utile;
+  });
+  if (placeholderCoupe) soucis.push(`[${nom}] secteurs : le texte d'aide est coupé`);
+
+  // La recherche ignore accents et majuscules, et met les lettres en gras.
+  await page.fill('#secteur', 'SANTE');
+  await page.waitForTimeout(150);
+  const propositions = await page.locator('#secteurs .secteurs__choix').allInnerTexts();
+  if (!propositions.some((t) => t.includes('Santé'))) {
+    soucis.push(`[${nom}] secteurs : « SANTE » ne propose pas « Santé » : ${propositions.join(', ')}`);
+  }
+  if (!propositions.some((t) => t.includes('Autre'))) {
+    soucis.push(`[${nom}] secteurs : « Autre » n'est pas proposé`);
+  }
+  // Une recherche partielle ne met en gras que les lettres trouvées.
+  await page.fill('#secteur', 'san');
+  await page.waitForTimeout(150);
+  const enGras = await page.locator('#secteurs strong').first().innerText();
+  if (enGras !== 'San') {
+    soucis.push(`[${nom}] secteurs : « san » met « ${enGras} » en gras au lieu de « San »`);
+  }
+
+  // Aucun résultat : le message et le raccourci vers « Autre ».
+  await page.fill('#secteur', 'zzzz');
+  await page.waitForTimeout(150);
+  const vide = await page.locator('.secteurs__vide').count();
+  if (vide !== 1) soucis.push(`[${nom}] secteurs : pas de message quand rien ne correspond`);
+  if (!(await page.locator('.secteurs__vide button', { hasText: 'Choisir Autre' }).count())) {
+    soucis.push(`[${nom}] secteurs : pas de bouton « Choisir Autre »`);
+  }
+
+  // Le clavier : flèche puis Entrée.
+  await page.fill('#secteur', 'sante');
+  await page.waitForTimeout(150);
+  await page.locator('#secteur').press('ArrowDown');
+  await page.locator('#secteur').press('Enter');
+  await page.waitForTimeout(200);
+  const retenu = await page.locator('.secteur-choisi__valeur').innerText();
+  if (retenu !== 'Santé') soucis.push(`[${nom}] secteurs : le clavier retient « ${retenu} » au lieu de « Santé »`);
+  if (await page.locator('#secteurs').isVisible()) {
+    soucis.push(`[${nom}] secteurs : la liste reste ouverte après un choix`);
+  }
+
+  // « Modifier » rouvre la liste.
+  await page.locator('.secteur-choisi button', { hasText: 'Modifier' }).click();
+  await page.waitForTimeout(200);
+  if (!(await page.locator('#secteurs').isVisible())) {
+    soucis.push(`[${nom}] secteurs : « Modifier » ne rouvre pas la liste`);
   }
 
   await verifierTirets(page, `${nom} profil`);
