@@ -227,29 +227,31 @@
   padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 32px;
 }
 
+/* Un bloc de choix. Ni fieldset ni legend : WebKit sortait l'intitulé du flux
+   et l'écart déclaré ici ne s'appliquait pas, l'intitulé se retrouvant collé à
+   ses choix. Un simple div avec role="radiogroup" se met en page normalement. */
 .champ {
-  border: 0;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
+  border-radius: var(--rayon-champ);
+  transition: box-shadow .2s ease;
 }
 
-/* Un <legend> est sorti du flux par le navigateur : il ne devient pas un
-   élément flex, et l'écart du fieldset ne s'applique pas sous lui. Un float
-   calculé le remet dans le flux normal, sans rien changer pour les lecteurs
-   d'écran. */
+/* Mis en évidence quand il manque une réponse. */
+.champ--manquant {
+  box-shadow: 0 0 0 2px var(--sauge);
+  padding: 12px;
+  margin: -12px;
+}
+
 .champ__intitule {
-  float: left;
-  width: 100%;
+  margin: 0;
   font-size: 17px;
   font-weight: 600;
-  padding: 0;
-  margin: 0;
 }
 
 .champ__facultatif {
@@ -261,7 +263,20 @@
 .pilules {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
+}
+
+/* Les tranches de taille, en 2 colonnes égales : une par ligne donnait une
+   liste interminable sur mobile. */
+.pilules--colonnes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pilules--colonnes .pilule {
+  justify-content: center;
+  text-align: center;
+  padding: 0 12px;
 }
 
 .pilule {
@@ -423,8 +438,11 @@
 .message[hidden] { display: none; }
 
 @media (min-width: 900px) {
-  .formulaire { padding: 40px; gap: 36px; }
+  .formulaire { padding: 40px; gap: 32px; }
   .champ__intitule { font-size: 18px; }
+  /* Assez de place en largeur : les tranches reprennent leur fil. */
+  .pilules--colonnes { display: flex; }
+  .pilules--colonnes .pilule { padding: 0 20px; }
   .navigation {
     flex-direction: row;
     justify-content: space-between;

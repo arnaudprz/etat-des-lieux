@@ -136,22 +136,72 @@ async function passerLaCible(cible) {
   await page.click('.hero__actions a.btn');
   await page.waitForSelector('.pilules');
 
-  const ecartIntitule = await page.evaluate(() => {
+  // Les trois écarts doivent être identiques dans Chromium et WebKit.
+  const ecarts = await page.evaluate(() => {
     const bloc = document.querySelectorAll('.champ')[2];
     const intitule = bloc.querySelector('.champ__intitule');
     const choix = bloc.querySelector('.pilules');
-    return Math.round(choix.getBoundingClientRect().top - intitule.getBoundingClientRect().bottom);
+    const pilules = choix.querySelectorAll('.pilule');
+    const blocs = document.querySelectorAll('#profil > *');
+
+    // Deux pastilles voisines sur la même ligne, pour mesurer l'écart.
+    let entrePilules = null;
+    for (let i = 1; i < pilules.length; i += 1) {
+      const a = pilules[i - 1].getBoundingClientRect();
+      const b = pilules[i].getBoundingClientRect();
+      if (Math.abs(a.top - b.top) < 2) { entrePilules = Math.round(b.left - a.right); break; }
+    }
+
+    return {
+      sousIntitule: Math.round(choix.getBoundingClientRect().top - intitule.getBoundingClientRect().bottom),
+      entreBlocs: Math.round(blocs[1].getBoundingClientRect().top - blocs[0].getBoundingClientRect().bottom),
+      entrePilules,
+      colonnesTaille: new Set(
+        Array.from(document.querySelectorAll('[data-champ="taille_entreprise"] .pilule'))
+          .map((x) => Math.round(x.getBoundingClientRect().left))
+      ).size,
+    };
   });
-  if (ecartIntitule < 10 || ecartIntitule > 16) {
-    soucis.push(`[${nom}] profil : ${ecartIntitule}px sous l'intitulé, attendu entre 10 et 16`);
+  if (ecarts.sousIntitule !== 12) {
+    soucis.push(`[${nom}] profil : ${ecarts.sousIntitule}px sous l'intitulé au lieu de 12`);
+  }
+  if (ecarts.entreBlocs !== 32) {
+    soucis.push(`[${nom}] profil : ${ecarts.entreBlocs}px entre deux blocs au lieu de 32`);
+  }
+  if (ecarts.entrePilules !== 8) {
+    soucis.push(`[${nom}] profil : ${ecarts.entrePilules}px entre deux pastilles au lieu de 8`);
+  }
+  if (largeur < 900 && ecarts.colonnesTaille !== 2) {
+    soucis.push(`[${nom}] profil : les tailles d'entreprise tiennent sur ${ecarts.colonnesTaille} colonnes au lieu de 2`);
   }
 
-  const ecartBlocs = await page.evaluate(() => {
-    const blocs = document.querySelectorAll('#profil > *');
-    return Math.round(blocs[1].getBoundingClientRect().top - blocs[0].getBoundingClientRect().bottom);
-  });
-  if (ecartBlocs < 24 || ecartBlocs > 40) {
-    soucis.push(`[${nom}] profil : ${ecartBlocs}px entre deux blocs, attendu entre 24 et 40`);
+  // Plus de <legend> : il sortait du flux et cassait la mise en page dans WebKit.
+  const restesDeLegend = await page.evaluate(() =>
+    document.querySelectorAll('#profil legend, #profil fieldset').length);
+  if (restesDeLegend > 0) {
+    soucis.push(`[${nom}] profil : ${restesDeLegend} fieldset ou legend subsistent`);
+  }
+
+  // « Continuer » reste cliquable et explique ce qui manque.
+  const continuer = page.locator('[data-continuer]');
+  if (await continuer.isDisabled()) {
+    soucis.push(`[${nom}] profil : « Continuer » est inactif au lieu d'expliquer`);
+  } else {
+    await continuer.click();
+    await page.waitForTimeout(400);
+    const avertissement = (await page.locator('#message').innerText()).trim();
+    if (!avertissement.startsWith('Il reste à choisir')) {
+      soucis.push(`[${nom}] profil : message inattendu « ${avertissement} »`);
+    }
+    const misEnEvidence = await page.locator('.champ--manquant').count();
+    if (misEnEvidence !== 4) {
+      soucis.push(`[${nom}] profil : ${misEnEvidence} champs mis en évidence au lieu de 4`);
+    }
+    const premierVisible = await page.locator('[data-champ="role"]').isVisible();
+    if (!premierVisible) soucis.push(`[${nom}] profil : le premier champ manquant n'est pas amené à l'écran`);
+    if (new URL(page.url()).pathname !== '/profil.html') {
+      soucis.push(`[${nom}] profil : « Continuer » avance malgré les manques`);
+    }
   }
 
   const propositions = await (async () => {

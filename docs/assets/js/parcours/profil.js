@@ -16,6 +16,20 @@ import {
 /** Les champs obligatoires, dans l'ordre d'affichage. */
 const OBLIGATOIRES = ['role', 'taille_entreprise', 'secteur', 'taille_equipe'];
 
+/** Ce qui manque, dit avec des mots simples. */
+const NOMMER = {
+  role: 'votre rôle',
+  taille_entreprise: 'la taille de votre entreprise',
+  secteur: "votre secteur d'activité",
+  taille_equipe: 'la taille de votre équipe',
+};
+
+/** « a, b et c » : une énumération qui se lit à voix haute. */
+function enumerer(elements) {
+  if (elements.length <= 1) return elements.join('');
+  return `${elements.slice(0, -1).join(', ')} et ${elements[elements.length - 1]}`;
+}
+
 /** Le rôle choisi, ramené à la clé utilisée partout ailleurs. */
 function roleDepuisChoix(contenu, valeur) {
   return valeur === contenu.profil.role.choix[0] ? 'manager' : 'membre';
@@ -25,24 +39,39 @@ const etat = { role: null, genre: null, taille_entreprise: null, secteur: null, 
 
 // ------------------------------------------------------------- champs à pilules
 
-function groupePilules(cle, definition, surChoix) {
-  const bloc = el('fieldset', { classe: 'champ' });
-  const intitule = el('legend', { classe: 'champ__intitule' });
+/**
+ * Un bloc de choix à pastilles.
+ *
+ * Ni <fieldset> ni <legend> : le navigateur les sort du flux, et WebKit ignorait
+ * l'écart déclaré sous l'intitulé, qui se retrouvait collé à ses choix.
+ * Un role="radiogroup" avec aria-labelledby donne la même accessibilité, et se
+ * met en page comme n'importe quel bloc.
+ *
+ * @param {string} cle nom du champ
+ * @param {object} definition la question et ses choix, issus de contenu.json
+ * @param {Function} surChoix appelée avec la valeur choisie
+ * @param {boolean} deuxColonnes range les pastilles sur 2 colonnes égales
+ */
+function groupePilules(cle, definition, surChoix, deuxColonnes = false) {
+  const idIntitule = `intitule-${cle}`;
+
+  const intitule = el('p', { classe: 'champ__intitule', attrs: { id: idIntitule } });
   intitule.appendChild(document.createTextNode(definition.question));
   if (definition.facultatif) {
     intitule.appendChild(el('span', { classe: 'champ__facultatif', texte: ' (facultatif)' }));
   }
-  bloc.appendChild(intitule);
 
-  const pilules = el('div', { classe: 'pilules' });
+  const pilules = el('div', {
+    classe: 'pilules' + (deuxColonnes ? ' pilules--colonnes' : ''),
+    attrs: { role: 'radiogroup', 'aria-labelledby': idIntitule },
+  });
   definition.choix.forEach((choix) => {
     const entree = el('input', { attrs: { type: 'radio', name: cle, value: choix } });
     entree.addEventListener('change', () => surChoix(choix));
-    const etiquette = el('label', { classe: 'pilule' }, [entree, choix]);
-    pilules.appendChild(etiquette);
+    pilules.appendChild(el('label', { classe: 'pilule' }, [entree, choix]));
   });
-  bloc.appendChild(pilules);
-  return bloc;
+
+  return el('div', { classe: 'champ', attrs: { 'data-champ': cle } }, [intitule, pilules]);
 }
 
 // --------------------------------------------------------- combobox du secteur
@@ -52,7 +81,7 @@ function groupePilules(cle, definition, surChoix) {
  * aux accents et à la casse. « Autre » reste toujours proposé.
  */
 function champSecteur(definition, surChoix) {
-  const bloc = el('div', { classe: 'champ' });
+  const bloc = el('div', { classe: 'champ', attrs: { 'data-champ': 'secteur' } });
   bloc.appendChild(
     el('label', {
       classe: 'champ__intitule',
@@ -169,11 +198,32 @@ function manquants() {
   return OBLIGATOIRES.filter((cle) => !etat[cle]);
 }
 
-function majBouton(bouton) {
-  const reste = manquants();
-  const pret = reste.length === 0;
-  bouton.disabled = !pret;
-  bouton.setAttribute('aria-disabled', String(!pret));
+/** Retire toutes les mises en évidence. */
+function oublierLesManques(formulaire) {
+  Array.from(formulaire.querySelectorAll('.champ--manquant'))
+    .forEach((c) => c.classList.remove('champ--manquant'));
+}
+
+/**
+ * Montre ce qui manque : les champs concernés passent en bordure sauge et le
+ * premier est amené à l'écran. Un bouton simplement inactif n'explique rien.
+ */
+function montrerLesManques(formulaire, reste) {
+  oublierLesManques(formulaire);
+  reste.forEach((cle) => {
+    const champ = formulaire.querySelector(`[data-champ="${cle}"]`);
+    if (champ) champ.classList.add('champ--manquant');
+  });
+
+  const premier = formulaire.querySelector(`[data-champ="${reste[0]}"]`);
+  if (!premier) return;
+
+  const douceur = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ? 'auto' : 'smooth';
+  premier.scrollIntoView({ behavior: douceur, block: 'center' });
+
+  const premierChoix = premier.querySelector('input, .champ-texte');
+  if (premierChoix) premierChoix.focus({ preventScroll: true });
 }
 
 async function demarrer() {
@@ -185,21 +235,23 @@ async function demarrer() {
   texte($('[data-intro]'), p.texte);
 
   const formulaire = $('[data-formulaire]');
-  const bouton = $('[data-continuer]');
   const message = $('#message');
 
   const suivi = (cle) => (valeur) => {
     etat[cle] = valeur;
-    majBouton(bouton);
-    messageErreur(message, '');
+    const champ = formulaire.querySelector(`[data-champ="${cle}"]`);
+    if (champ && valeur) champ.classList.remove('champ--manquant');
+    if (manquants().length === 0) messageErreur(message, '');
   };
 
   formulaire.appendChild(groupePilules('role', p.role, suivi('role')));
   formulaire.appendChild(groupePilules('genre', p.genre, suivi('genre')));
-  formulaire.appendChild(groupePilules('taille_entreprise', p.taille_entreprise, suivi('taille_entreprise')));
+  // Les tranches de taille sont courtes et nombreuses : sur mobile, une par
+  // ligne donnait une liste interminable.
+  formulaire.appendChild(groupePilules('taille_entreprise', p.taille_entreprise, suivi('taille_entreprise'), true));
   const secteur = champSecteur(p.secteur, suivi('secteur'));
   formulaire.appendChild(secteur.bloc);
-  formulaire.appendChild(groupePilules('taille_equipe', p.taille_equipe, suivi('taille_equipe')));
+  formulaire.appendChild(groupePilules('taille_equipe', p.taille_equipe, suivi('taille_equipe'), true));
 
   // Rétablit un profil déjà saisi, pour que le retour en arrière ne perde rien.
   const memoire = lire().profil || {};
@@ -211,28 +263,19 @@ async function demarrer() {
     if (entree) entree.checked = true;
   });
 
-  majBouton(bouton);
   typographierPage();
 
   formulaire.addEventListener('submit', (e) => {
     e.preventDefault();
     const reste = manquants();
     if (reste.length > 0) {
-      const intitules = {
-        role: p.role.question,
-        taille_entreprise: p.taille_entreprise.question,
-        secteur: p.secteur.question,
-        taille_equipe: p.taille_equipe.question,
-      };
-      const liste = reste.map((c) => intitules[c]).join(', ');
-      const m = reste.length === 1
-        ? `Il reste une question à renseigner : ${liste}.`
-        : `Il reste des questions à renseigner : ${liste}.`;
-      // Le message visible porte role="alert" : il est déjà annoncé. Une
-      // seconde zone aria-live le ferait lire deux fois.
-      messageErreur(message, m);
+      // Le message visible porte role="alert" : il est déjà annoncé aux lecteurs
+      // d'écran, inutile d'ajouter une seconde zone aria-live.
+      messageErreur(message, `Il reste à choisir : ${enumerer(reste.map((c) => NOMMER[c]))}.`);
+      montrerLesManques(formulaire, reste);
       return;
     }
+    oublierLesManques(formulaire);
     ecrire({
       role: roleDepuisChoix(contenu, etat.role),
       profil: { ...etat },
