@@ -82,6 +82,9 @@ var CHOIX_PROFIL = ${j({
   taille_equipe: contenu.profil.taille_equipe.choix,
 })};
 
+/** Les dimensions et leurs affirmations, pour les agrégats publics. */
+var DIMENSIONS = ${j(contenu.dimensions.map((d) => ({ cle: d.cle, affirmations: d.affirmations })))};
+
 /** Nombre de choix proposés par relance, par rôle puis par affirmation. */
 var NB_CHOIX_RELANCE = ${j(nbChoix)};
 `;

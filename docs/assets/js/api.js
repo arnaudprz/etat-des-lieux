@@ -73,6 +73,19 @@ export async function compteur() {
   return COMPTEUR_REPLI;
 }
 
+/**
+ * Les agrégats publics, pour la mise en perspective du résultat.
+ *
+ * Ne renvoie que des parts, jamais une réponse individuelle. S'ils ne sont pas
+ * disponibles, le résultat s'affiche sans les phrases de comparaison : cette
+ * fonction ne lève jamais.
+ */
+export async function agregatsPublics() {
+  const r = await lire({ action: 'agregats' });
+  if (!r || r.ok !== true) return null;
+  return r;
+}
+
 /** Les données du tableau de bord. Protégé par clé. */
 export function donneesAdmin(cle) {
   return lire({ action: 'donnees', cle });

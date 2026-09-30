@@ -424,6 +424,87 @@ describe('accès au tableau de bord', () => {
   });
 });
 
+// ------------------------------------------------------- agrégats publics
+
+describe('les agrégats publics', () => {
+  /** Envoie n réponses identiques, avec le profil donné. */
+  function envoyer(n, profil = {}, reponses = REPONSES) {
+    for (let i = 0; i < n; i += 1) {
+      w.__post(reponseValide({ profil: { ...PROFIL, ...profil }, reponses }));
+    }
+  }
+
+  test('rien n’est publié sous 100 réponses', () => {
+    envoyer(99);
+    const a = w.__get({ action: 'agregats' });
+    assert.equal(a.ok, true);
+    assert.equal(a.ensemble, null);
+  });
+
+  test('à 100 réponses, l’ensemble est publié', () => {
+    envoyer(100);
+    const a = w.__get({ action: 'agregats' });
+    assert.notEqual(a.ensemble, null);
+    assert.equal(a.ensemble.effectif, 100);
+    assert.equal(Object.keys(a.ensemble.dimensions).length, 8);
+  });
+
+  test('un segment sous 30 personnes n’est jamais publié', () => {
+    envoyer(29, { secteur: 'Immobilier' });
+    envoyer(100, { secteur: 'Santé' });
+    const a = w.__get({ action: 'agregats' });
+    const cles = Object.keys(a.segments);
+    assert.ok(!cles.some((c) => c.startsWith('Immobilier')), cles.join(' | '));
+    assert.ok(cles.some((c) => c.startsWith('Santé')), cles.join(' | '));
+  });
+
+  test('un segment de 30 personnes est publié', () => {
+    envoyer(30, { secteur: 'Immobilier' });
+    const a = w.__get({ action: 'agregats' });
+    const cle = Object.keys(a.segments).find((c) => c.startsWith('Immobilier'));
+    assert.ok(cle, Object.keys(a.segments).join(' | '));
+    assert.equal(a.segments[cle].effectif, 30);
+  });
+
+  test('aucune réponse individuelle ne sort', () => {
+    envoyer(100);
+    const brut = JSON.stringify(w.__get({ action: 'agregats' }));
+    assert.ok(!brut.includes('uuid'), 'un identifiant est sorti');
+    assert.ok(!/"q1"|"date"|"genre"/.test(brut), 'un champ de ligne est sorti');
+  });
+
+  test('les parts vont de 0 à 1, jamais des effectifs bruts par niveau', () => {
+    envoyer(100);
+    const dims = w.__get({ action: 'agregats' }).ensemble.dimensions;
+    Object.values(dims).forEach((parts) => {
+      const somme = [0, 1, 2, 3].reduce((n, v) => n + (parts[v] || 0), 0);
+      assert.ok(Math.abs(somme - 1) < 0.01, JSON.stringify(parts));
+      [0, 1, 2, 3].forEach((v) => {
+        assert.ok(parts[v] >= 0 && parts[v] <= 1, JSON.stringify(parts));
+      });
+    });
+  });
+
+  test('les réponses papier n’entrent pas dans la comparaison', () => {
+    // Elles ont été recueillies avec une autre échelle de mots.
+    w.preparerOngletPapier();
+    for (let i = 1; i <= 120; i += 1) {
+      const colonnes = w.colonnesPapier();
+      const ligne = { ref_papier: `P${i}`, date: '2026-09-01', role: 'membre' };
+      for (let n = 1; n <= 16; n += 1) ligne[`q${n}`] = REPONSES[n - 1];
+      w.__feuilles.get('papier').appendRow(colonnes.map((c) => (c in ligne ? ligne[c] : '')));
+    }
+    w.importerPapier();
+    const a = w.__get({ action: 'agregats' });
+    assert.equal(a.ensemble, null, '120 réponses papier ne doivent rien publier');
+  });
+
+  test('l’accès est public : aucune clé demandée', () => {
+    envoyer(100);
+    assert.equal(w.__get({ action: 'agregats' }).ok, true);
+  });
+});
+
 describe('export des contacts', () => {
   test('refuse sans la bonne clé', () => {
     const sortie = w.__get({ action: 'contacts_csv' });

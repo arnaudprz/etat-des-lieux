@@ -59,8 +59,9 @@ function doGet(e) {
   try {
     var p = (e && e.parameter) || {};
 
-    // Seule lecture publique.
+    // Lectures publiques. Elles ne renvoient que des totaux et des parts.
     if (p.action === 'compteur') return json(compteurPublic());
+    if (p.action === 'agregats') return json(agregatsPublics());
 
     // Lectures protégées par clé.
     if (p.action === 'donnees') {
@@ -144,7 +145,15 @@ function onglet(nom, entetes) {
   return s;
 }
 
-/** Toutes les lignes d'un onglet, en objets indexés par en-tête. */
+/**
+ * Toutes les lignes d'un onglet, en objets indexés par en-tête.
+ * `lignesDe` est le même service, sous un nom qui ne risque pas d'être masqué
+ * par une variable locale.
+ */
+function lignesDe(nom) {
+  return lignes(nom);
+}
+
 function lignes(nom) {
   var s = classeur().getSheetByName(nom);
   if (!s || s.getLastRow() < 2) return [];

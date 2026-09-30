@@ -1023,6 +1023,12 @@
       "raccourci_inconnu": "ou ⌘ D sur Mac, Ctrl D sur PC",
       "titre_partage": "Mon état des lieux d'équipe",
       "phrase_partage": "Mon état des lieux d'équipe, à garder."
+    },
+    "comparaison": {
+      "seuil_ensemble": 100,
+      "seuil_segment": 30,
+      "aussi_peu_installee": "C'est aussi l'une des dimensions les moins installées chez les autres répondants.",
+      "deja_la": "Chez beaucoup d'équipes, elle est encore en construction. Chez vous, elle est déjà là."
     }
   },
   "profil": {

@@ -47,7 +47,7 @@ les polices de repli, tout reste lisible.
 ## Vérifier
 
 ```sh
-npm test                                    # 182 tests, sans dépendance
+npm test                                    # 204 tests, sans dépendance
 node scripts/verif/cahier-des-charges.mjs   # les 17 points de la section 10.5
 node scripts/verif/parcours.mjs             # rejoue le parcours dans Chromium et WebKit
 node scripts/verif/parcours.mjs '' '' webkit  # une seule famille de navigateurs
@@ -136,3 +136,4 @@ chacune, et régénère `docs/assets/js/illustrations.js`.
 | 30/09/2026 | `c3c1e39` | Passe 6, sections 1 à 5 : donner envie de répondre jusqu'au bout. |
 | 30/09/2026 | `8d7f7da` | Passe 6, section 6 : faire connaître l'état des lieux. |
 | 30/09/2026 | `bcbbfac` | Passe 7, section 1 : le bandeau « Revenez bientôt sur votre lien ». |
+| 30/09/2026 | `à venir` | Passe 7, section 2 : préparer « Vous n'êtes pas seul ». |

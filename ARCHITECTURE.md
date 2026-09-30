@@ -124,6 +124,19 @@ Rien d'autre. Aucun lien avec `reponses`.
 
 Aucun identifiant de réponse ni de session.
 
+### Les agrégats publics
+
+L'action `agregats` ne renvoie que des parts, pour la mise en perspective du
+résultat : pour chaque dimension, la part des répondants par niveau, au global
+et par segment (même secteur, même taille d'équipe, même rôle).
+
+Deux seuils protègent l'anonymat et la justesse : rien n'est publié sous
+100 réponses en ligne, et aucun segment de moins de 30 personnes n'apparaît. Les
+réponses papier en sont exclues : elles ont été recueillies avec une autre
+échelle de mots. Mise en cache 6 heures.
+
+Aucune réponse individuelle, aucun identifiant, aucune date n'en sort.
+
 ### `papier`
 
 Zone de saisie des réponses papier. Mêmes colonnes que `reponses`, plus

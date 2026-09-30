@@ -92,6 +92,65 @@ var CHOIX_PROFIL = {
   ]
 };
 
+/** Les dimensions et leurs affirmations, pour les agrégats publics. */
+var DIMENSIONS = [
+  {
+    "cle": "vise",
+    "affirmations": [
+      1,
+      2
+    ]
+  },
+  {
+    "cle": "sait",
+    "affirmations": [
+      3,
+      4
+    ]
+  },
+  {
+    "cle": "place",
+    "affirmations": [
+      5,
+      6
+    ]
+  },
+  {
+    "cle": "info",
+    "affirmations": [
+      7,
+      8
+    ]
+  },
+  {
+    "cle": "accroche",
+    "affirmations": [
+      9
+    ]
+  },
+  {
+    "cle": "manager",
+    "affirmations": [
+      10
+    ]
+  },
+  {
+    "cle": "confiance",
+    "affirmations": [
+      11,
+      12,
+      13
+    ]
+  },
+  {
+    "cle": "sens",
+    "affirmations": [
+      14,
+      15
+    ]
+  }
+];
+
 /** Nombre de choix proposés par relance, par rôle puis par affirmation. */
 var NB_CHOIX_RELANCE = {
   "membre": {

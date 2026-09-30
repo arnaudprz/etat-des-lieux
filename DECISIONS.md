@@ -99,6 +99,16 @@ Les choix faits avec Arnaud pendant la conception des maquettes (septembre 2026)
 | Un mot à mi-parcours | Le milieu est l'endroit où l'on décroche. Un merci suffit. |
 | On partage l'accueil, jamais le résultat | Le résultat appartient à la personne, et son lien contient ses réponses. Faire connaître l'outil ne doit jamais exposer ce qu'elle a répondu. |
 
+## Revenir sur son résultat (septembre 2026)
+
+| Décision | Pourquoi |
+| --- | --- |
+| Un bandeau invite à garder la page et à revenir | La ligne « Bientôt… » annonçait quelque chose sans donner de raison d'y revenir. Le bandeau dit ce qui arrivera, et propose de garder le lien tout de suite. |
+| La comparaison avec les autres équipes n'arrive qu'au-delà de 100 réponses, et 30 par segment | En dessous, une comparaison ne dirait rien de juste et pourrait décourager à tort. Le code est prêt, l'affichage attend. |
+| Elle se dit en phrases, sans aucun chiffre | Comme le reste du résultat : pas de note, pas de classement, pas de pourcentage. |
+| L'endpoint public ne renvoie que des parts, et jamais un segment sous le seuil | Ce qui ne sort pas ne peut pas servir à remonter à quelqu'un. |
+| Le profil vient de la session, jamais du lien | Le lien ne porte que des réponses. En revenant plus tard, on compare à l'ensemble plutôt que d'inscrire le secteur et la taille d'équipe dans l'URL. |
+
 ## Le public et la marque
 
 | Décision | Pourquoi |

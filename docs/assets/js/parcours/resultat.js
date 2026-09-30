@@ -11,7 +11,9 @@ import { calculer } from '../calcul.js';
 import { decoder } from '../lien.js';
 import { medaillon, icone, chemin } from '../illustration-niveau.js';
 import { parDimension, pourLesResultats, auMoinsUneIdee } from '../envies.js';
-import { envoyerContact } from '../api.js';
+import { envoyerContact, agregatsPublics } from '../api.js';
+import { lire as lireSession } from '../session.js';
+import { phrases as phrasesComparaison, comparaisonActive } from '../comparaison.js';
 import {
   $, el, texte, vider, signalerModeDemo, typographierPage,
   messageErreur, annoncer, evenement,
@@ -41,6 +43,27 @@ function afficherEnsemble(resultat) {
  * Rien d'autre que le surtitre et la phrase : ce sont des idées, pas des
  * problèmes. On ne console pas, on ne conseille pas, on ne suppose rien.
  */
+/**
+ * Les phrases de mise en perspective, ajoutées sous les phrases de dimension.
+ *
+ * Elles n'arrivent qu'au-delà des seuils, et jamais avec un chiffre. Si les
+ * agrégats ne sont pas disponibles, il ne se passe simplement rien.
+ */
+function afficherComparaison(dimensions, agregats, profil, role, contenu) {
+  const textes = phrasesComparaison(dimensions, agregats, profil, role, contenu);
+
+  Object.entries(textes).forEach(([cle, texteDim]) => {
+    const ligne = document.querySelector(`[data-dimension="${cle}"] .bande__droite`);
+    if (!ligne) return;
+    ligne.appendChild(el('p', { classe: 'bande__perspective', texte: texteDim }));
+  });
+
+  // Le bandeau ne promet plus : il constate.
+  if (comparaisonActive(agregats, profil, role, contenu)) {
+    texte($('[data-retour-texte]'), contenu.engagement.retour.texte_actif);
+  }
+}
+
 function encadreIdees(phrase, titre) {
   return el('div', { classe: 'idees' }, [
     el('span', { classe: 'idees__titre', texte: titre }),
@@ -366,6 +389,21 @@ async function demarrer() {
     texte(ligne, contenu.envies.phrase_finale);
     ligne.hidden = false;
   }
+  /**
+   * La mise en perspective arrive après coup : la page ne l'attend pas.
+   *
+   * Le lien ne porte pas le profil, et ne doit pas le porter : c'est une donnée
+   * de la personne. On le lit dans la session tant qu'elle dure, ce qui permet
+   * la comparaison à un profil proche juste après avoir répondu. En revenant
+   * plus tard par le lien, la session a disparu et l'on compare à l'ensemble.
+   */
+  agregatsPublics()
+    .then((agregats) => {
+      const profil = lireSession().profil || {};
+      afficherComparaison(resultat.dimensions, agregats, profil, lu.role, contenu);
+    })
+    .catch(() => { /* sans agrégats, le résultat reste complet */ });
+
   brancherRaccourciLien();
   brancherCopie();
   brancherPartage(contenu);

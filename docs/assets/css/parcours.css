@@ -1222,6 +1222,16 @@
   color: var(--texte-doux-2);
 }
 
+/* La mise en perspective, quand assez de personnes ont répondu.
+   Jamais de chiffre : seulement ce que la personne partage avec les autres. */
+.bande__perspective {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--sauge-fonce);
+  font-style: italic;
+}
+
 /* Les idées de la personne, là où elles se rapportent.
    Rien d'autre que le surtitre et la phrase : ce sont des idées, pas des
    problèmes, et on n'y ajoute ni empathie ni conseil. */
