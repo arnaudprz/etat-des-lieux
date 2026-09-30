@@ -5,7 +5,7 @@
   "description": "État des lieux d'équipe Greatly. Site statique, aucune dépendance.",
   "type": "module",
   "scripts": {
-    "test": "node --test tests/",
+    "test": "node --test tests/*.test.js",
     "local": "python3 -m http.server 8080 --directory docs"
   },
   "devDependencies": {
