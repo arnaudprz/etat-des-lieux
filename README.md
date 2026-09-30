@@ -130,3 +130,4 @@ chacune, et régénère `docs/assets/js/illustrations.js`.
 | 30/09/2026 | `848b764` | Passe 4, points 1 à 3 : chaque réponse réservée ouvre sa relance. |
 | 30/09/2026 | `196d587` | Passe 4, point 4 : données, backend et tableau de bord. |
 | 30/09/2026 | `1773103` | Passe 4, point 5 : corrections UX et UI. |
+| 30/09/2026 | `à venir` | Passe 5, section 0 : le résultat en bandes pleine largeur. |

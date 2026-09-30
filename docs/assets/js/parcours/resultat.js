@@ -34,47 +34,44 @@ function afficherEnsemble(resultat) {
   texte($('[data-carte-texte]'), phrases.join(' '));
 }
 
-/** La légende des 4 couleurs : chaque couleur porte toujours son nom écrit. */
-function afficherLegende(contenu) {
-  const hote = $('[data-legende]');
+/**
+ * Les bandes de couleur, empilés sur toute la largeur.
+ *
+ * En 4 colonnes côte à côte, le texte était serré et les hauteurs très
+ * inégales. Une bande par niveau présent : les niveaux vides n'apparaissent
+ * pas. Chaque bande porte son nom, ce qui rend la légende inutile.
+ */
+function afficherBandeaux(resultat) {
+  const hote = $('[data-bandes]');
   vider(hote);
-  contenu.niveaux.forEach((n) => {
-    hote.appendChild(
-      el('span', {}, [
-        el('span', { classe: 'temoin', style: { background: n.hex }, attrs: { 'aria-hidden': 'true' } }),
-        n.nom,
-      ])
-    );
-  });
-}
 
-/** Les colonnes de couleur. Les colonnes vides ne sont pas affichées. */
-function afficherColonnes(resultat) {
-  const hote = $('[data-colonnes]');
-  vider(hote);
   resultat.colonnes.forEach((c) => {
-    const corps = el('div', { classe: 'colonne__corps' });
+    const corps = el('div', { classe: 'bande__corps' });
+
     c.dimensions.forEach((d) => {
       corps.appendChild(
-        el('div', { classe: 'colonne__item' }, [
-          el('span', { classe: 'colonne__nom', texte: d.nom }),
-          el('span', { classe: 'colonne__phrase', texte: d.phrase }),
+        el('div', { classe: 'bande__ligne', attrs: { 'data-dimension': d.cle } }, [
+          el('span', { classe: 'bande__nom', texte: d.nom }),
+          el('div', { classe: 'bande__droite' }, [
+            el('span', { classe: 'bande__phrase', texte: d.phrase }),
+          ]),
         ])
       );
     });
+
     const entete = el('div', {
-      classe: 'colonne__entete',
+      classe: 'bande__entete',
       style: { background: c.niveau.hex, color: c.niveau.texte },
     }, [
-      el('span', { texte: c.niveau.nom }),
       // Décorative : le nom du niveau est juste à côté.
       el('img', {
-        classe: 'colonne__pousse',
+        classe: 'bande__pousse',
         attrs: { src: chemin(icone(c.niveau.cle)), alt: '', 'aria-hidden': 'true' },
       }),
+      el('span', { classe: 'bande__niveau', texte: c.niveau.nom }),
     ]);
 
-    hote.appendChild(el('div', { classe: 'colonne' }, [entete, corps]));
+    hote.appendChild(el('div', { classe: 'bande' }, [entete, corps]));
   });
 }
 
@@ -226,8 +223,7 @@ async function demarrer() {
 
   $('[data-resultat]').hidden = false;
   afficherEnsemble(resultat);
-  afficherLegende(contenu);
-  afficherColonnes(resultat);
+  afficherBandeaux(resultat);
   brancherRaccourciLien();
   brancherCopie();
   brancherEtude();

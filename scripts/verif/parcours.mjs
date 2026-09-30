@@ -755,10 +755,40 @@ async function passerLaCible(cible) {
   if (!(await page.locator('[data-sans-resultat]').isHidden())) {
     soucis.push(`[${nom}] resultat : le bloc « ce lien ne porte pas de résultat » s'affiche aussi`);
   }
-  const nbColonnes = await page.locator('.colonne').count();
-  if (nbColonnes !== 4) soucis.push(`[${nom}] resultat : ${nbColonnes} colonnes au lieu de 4`);
-  const nbRangees = await page.locator('.colonne__item').count();
-  if (nbRangees !== 8) soucis.push(`[${nom}] resultat : ${nbRangees} dimensions rangées au lieu de 8`);
+  // Les bandes : un par niveau présent, pleine largeur, dans l'ordre.
+  const bandes = await page.evaluate(() => {
+    const conteneur = document.querySelector('.bandes');
+    return Array.from(document.querySelectorAll('.bande')).map((b) => ({
+      niveau: b.querySelector('.bande__niveau').textContent.trim(),
+      lignes: b.querySelectorAll('.bande__ligne').length,
+      pousse: b.querySelector('.bande__pousse')?.getAttribute('src') || null,
+      poussADroite: (() => {
+        const p = b.querySelector('.bande__pousse');
+        const n = b.querySelector('.bande__niveau');
+        return p && n && p.getBoundingClientRect().left > n.getBoundingClientRect().left;
+      })(),
+      // Chaque bande occupe toute la largeur de la pile.
+      pleineLargeur: Math.abs(b.getBoundingClientRect().width
+        - conteneur.getBoundingClientRect().width) < 1,
+    }));
+  });
+  if (bandes.length !== 4) soucis.push(`[${nom}] resultat : ${bandes.length} bandes au lieu de 4`);
+  const ordreNiveaux = ['Bien enraciné', 'En croissance', 'En germe', 'À semer'];
+  if (JSON.stringify(bandes.map((b) => b.niveau)) !== JSON.stringify(ordreNiveaux)) {
+    soucis.push(`[${nom}] resultat : bandes dans l'ordre ${bandes.map((b) => b.niveau).join(', ')}`);
+  }
+  const totalLignes = bandes.reduce((n, b) => n + b.lignes, 0);
+  if (totalLignes !== 8) soucis.push(`[${nom}] resultat : ${totalLignes} dimensions rangées au lieu de 8`);
+  bandes.forEach((b) => {
+    if (!b.pleineLargeur) soucis.push(`[${nom}] resultat : la bande « ${b.niveau} » n'est pas pleine largeur`);
+    if (b.poussADroite) soucis.push(`[${nom}] resultat : la pousse de « ${b.niveau} » est à droite du nom`);
+    if (!b.pousse) soucis.push(`[${nom}] resultat : la bande « ${b.niveau} » n'a pas de pousse`);
+  });
+
+  // La légende des 4 couleurs disparaît : chaque bandeau porte son nom.
+  if (await page.locator('.ensemble .legende').count()) {
+    soucis.push(`[${nom}] resultat : la légende des couleurs subsiste au-dessus des bandes`);
+  }
   if ((await page.locator('[data-resultat]').innerText()).includes('obtient les résultats')) {
     soucis.push(`[${nom}] resultat : le Q16 apparaît dans le résultat`);
   }
@@ -797,11 +827,11 @@ async function passerLaCible(cible) {
 
   // Chaque en-tête de colonne porte la pousse de son niveau.
   const pousses = await page.evaluate(() =>
-    Array.from(document.querySelectorAll('.colonne')).map((c) => ({
-      niveau: c.querySelector('.colonne__entete span').textContent.trim(),
-      source: c.querySelector('.colonne__pousse')?.getAttribute('src') || null,
-      taille: Math.round(c.querySelector('.colonne__pousse')?.getBoundingClientRect().width || 0),
-      charge: (() => { const i = c.querySelector('.colonne__pousse'); return i && i.complete && i.naturalWidth > 0; })(),
+    Array.from(document.querySelectorAll('.bande')).map((c) => ({
+      niveau: c.querySelector('.bande__niveau').textContent.trim(),
+      source: c.querySelector('.bande__pousse')?.getAttribute('src') || null,
+      taille: Math.round(c.querySelector('.bande__pousse')?.getBoundingClientRect().width || 0),
+      charge: (() => { const i = c.querySelector('.bande__pousse'); return i && i.complete && i.naturalWidth > 0; })(),
     })));
   const attendu = {
     'Bien enraciné': 'assets/img/icone-enracine.svg',
@@ -813,7 +843,7 @@ async function passerLaCible(cible) {
     if (p.source !== attendu[p.niveau]) {
       soucis.push(`[${nom}] resultat : colonne « ${p.niveau} » porte ${p.source}`);
     }
-    if (p.taille !== 34) soucis.push(`[${nom}] resultat : pousse de ${p.taille}px au lieu de 34`);
+    if (p.taille !== 30) soucis.push(`[${nom}] resultat : pousse de ${p.taille}px au lieu de 30`);
     if (!p.charge) soucis.push(`[${nom}] resultat : la pousse de « ${p.niveau} » ne se charge pas`);
   });
 

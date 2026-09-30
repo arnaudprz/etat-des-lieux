@@ -1042,28 +1042,15 @@
   color: var(--texte-doux);
 }
 
-.legende {
+/* Les bandes de couleur, empilés sur toute la largeur de la carte.
+   En colonnes, le texte était serré et les hauteurs très inégales. */
+.bandes {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  font-size: 14px;
-  color: var(--texte-doux-2);
-}
-
-.legende span {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.colonnes {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  flex-direction: column;
   gap: 14px;
-  align-items: start;
 }
 
-.colonne {
+.bande {
   background: var(--blanc);
   border-radius: var(--rayon-bloc);
   overflow: hidden;
@@ -1071,37 +1058,52 @@
   flex-direction: column;
 }
 
-.colonne__entete {
-  padding: 14px 18px;
-  font-size: 15px;
-  font-weight: 600;
+.bande__entete {
+  padding: 12px 18px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
-.colonne__pousse {
-  width: 34px;
-  height: 34px;
+.bande__pousse {
+  width: 30px;
+  height: 30px;
   flex-shrink: 0;
 }
 
-.colonne__corps {
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+.bande__niveau { font-size: 16px; font-weight: 600; }
 
-.colonne__item {
+.bande__corps { padding: 4px 18px 8px; }
+
+/* Une ligne par dimension, séparée par un filet fin. */
+.bande__ligne {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding: 16px 0;
 }
 
-.colonne__nom { font-size: 15px; font-weight: 600; }
-.colonne__phrase { font-size: 15px; line-height: 1.55; color: var(--texte-doux-2); }
+.bande__ligne + .bande__ligne {
+  border-top: 1px solid rgba(138, 155, 122, .2);
+}
+
+.bande__nom {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--encre);
+}
+
+.bande__droite {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.bande__phrase {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--texte-doux-2);
+}
 
 .bientot { margin: 0; font-size: 14px; color: var(--taupe); }
 
@@ -1292,12 +1294,21 @@
   /* Sur ordinateur, le médaillon se place à droite du texte. */
   .ensemble__principal { flex-direction: row; gap: 36px; }
   .ensemble__medaillon { width: 180px; height: 180px; order: 2; }
+
+  /* Assez de largeur : le nom de la dimension passe à gauche de sa phrase. */
+  .bande__entete { padding: 12px 24px; }
+  .bande__corps { padding: 4px 24px 8px; }
+  .bande__ligne {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 32px;
+    align-items: baseline;
+  }
   .ensemble__haut { flex: 1; }
   .ensemble__etiquette { padding: 6px 14px; font-size: 14px; }
   .ensemble__titre { font-size: 34px; }
   .ensemble p { font-size: 17px; }
-  .colonnes { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .legende { gap: 24px; }
+  
   .bloc { padding: 32px; }
   .bloc__titre { font-size: 28px; }
   .greatly { grid-template-columns: 300px minmax(0, 1fr); }
