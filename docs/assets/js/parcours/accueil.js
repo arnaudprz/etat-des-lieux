@@ -151,9 +151,11 @@ function remplirApercu(contenu) {
     const n = contenu.niveaux.find((x) => x.cle === niveau);
     if (!d || !n) return;
     hote.appendChild(
-      el('div', { classe: 'apercu__ligne' }, [
+      // Un mini bandeau, comme ceux du vrai résultat : la promesse ressemble
+      // à ce qu'on reçoit.
+      el('div', { classe: `apercu__ligne apercu__ligne--${n.cle}` }, [
         el('span', { texte: d.nom }),
-        el('span', { classe: `pastille pastille--${n.cle}`, texte: n.nom }),
+        el('span', { classe: 'apercu__niveau', texte: n.nom }),
       ])
     );
   });

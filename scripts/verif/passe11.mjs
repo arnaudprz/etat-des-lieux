@@ -434,6 +434,26 @@ critere(7, 'textes des deux cartes à 4,5:1 au moins', [1280, 390], async ({ pag
     .filter((c) => c.ratio < 4.5);
   return !faibles.length || faibles.map((c) => `« ${c.texte} » ${c.ratio.toFixed(2)}:1`).join(', ');
 });
+// Point 8 · l'aperçu du résultat sur l'accueil
+critere(8, 'chaque ligne de l’aperçu a la couleur de son niveau, sans pastille', [1280, 390], async ({ page }) => {
+  await aller(page, `${BASE}/index.html`);
+  await page.waitForSelector('.apercu__ligne');
+  const m = await page.evaluate((exemples) => {
+    const racine = getComputedStyle(document.documentElement);
+    const enRgb = (hex) => { const n = parseInt(hex.trim().slice(1), 16); return `rgb(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255})`; };
+    const lignes = Array.from(document.querySelectorAll('.apercu__ligne'));
+    return {
+      pastilles: document.querySelectorAll('.apercu .pastille').length,
+      ecarts: lignes.map((l, i) => {
+        const attendu = enRgb(racine.getPropertyValue(`--${exemples[i].niveau}`));
+        const lu = getComputedStyle(l).backgroundColor;
+        return lu === attendu ? null : `ligne ${i + 1} : ${lu} au lieu de ${attendu}`;
+      }).filter(Boolean),
+    };
+  }, contenu.accueil.apercu.exemples);
+  if (m.pastilles) return `${m.pastilles} pastille(s) dans l’aperçu`;
+  return !m.ecarts.length || m.ecarts.join(', ');
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures

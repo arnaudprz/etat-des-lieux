@@ -426,8 +426,17 @@
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+  padding: 10px 14px;
+  border-radius: 10px;
   font-size: 15px;
 }
+
+.apercu__niveau { font-weight: 600; white-space: nowrap; }
+
+.apercu__ligne--enracine { background: var(--enracine); color: var(--enracine-texte); }
+.apercu__ligne--croissance { background: var(--croissance); color: var(--croissance-texte); }
+.apercu__ligne--germe { background: var(--germe); color: var(--germe-texte); }
+.apercu__ligne--semer { background: var(--semer); color: var(--semer-texte); }
 
 .apercu__pied {
   border-top: 1px solid rgba(138, 155, 122, .25);
