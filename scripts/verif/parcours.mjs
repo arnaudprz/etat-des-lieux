@@ -541,6 +541,7 @@ async function passerLaCible(cible) {
     return {
       display: getComputedStyle(el).display,
       prefixeDisplay: getComputedStyle(prefixe).display,
+      filet: Math.round(parseFloat(getComputedStyle(el).borderLeftWidth)),
       // Avec une grille, le texte repartirait dans une seconde colonne, loin
       // de la fin du préfixe.
       ecartApresPrefixe: Math.round(
@@ -554,6 +555,9 @@ async function passerLaCible(cible) {
   } else {
     if (['grid', 'flex', 'inline-grid', 'inline-flex'].includes(ligneContexte.display)) {
       soucis.push(`[${nom}] questions : la ligne de contexte est en ${ligneContexte.display}`);
+    }
+    if (ligneContexte.filet !== 4) {
+      soucis.push(`[${nom}] questions : filet de ${ligneContexte.filet}px au lieu de 4`);
     }
     if (ligneContexte.prefixeDisplay !== 'inline') {
       soucis.push(`[${nom}] questions : le préfixe est en ${ligneContexte.prefixeDisplay} au lieu d'inline`);
@@ -1003,12 +1007,12 @@ async function passerLaCible(cible) {
     soucis.push(`[${nom}] resultat : étiquette sur ${etiquette.lignes} lignes dans une pilule`);
   }
 
-  // Le lien personnel : des boutons, et l'URL brute repliée.
+  // Le lien : des boutons, et l'URL brute repliée.
   const lien = await page.evaluate(() => {
     const details = document.querySelector('.lien-perso__details');
     const champ = document.querySelector('[data-lien]');
     const partager = document.querySelector('[data-partager]');
-    const astuce = document.querySelector('[data-astuce]');
+    const astuce = document.querySelector('[data-retour-raccourci]');
     return {
       replie: details ? !details.open : null,
       // Un <details> replié masque son contenu sans forcément annuler
@@ -1017,6 +1021,8 @@ async function passerLaCible(cible) {
       valeur: champ ? champ.value : '',
       partageVisible: partager ? !partager.hidden : null,
       astuceVisible: astuce ? !astuce.hidden : null,
+      // Le lien est désormais dans le bloc « Gardez votre résultat ».
+      boutonCopier: !!document.querySelector('[data-copier]'),
       partageDisponible: typeof navigator.share === 'function',
     };
   });
@@ -1085,10 +1091,10 @@ async function passerLaCible(cible) {
     }
   }
 
-  // Le bandeau qui invite à garder la page. Ici, c'est bien l'adresse du
-  // résultat qu'on garde, contrairement au partage de l'accueil juste au-dessus.
+  // Le bloc qui garde le résultat. Ici, c'est bien l'adresse du résultat,
+  // contrairement au partage de l'accueil juste en dessous.
   const retour = await page.evaluate(async () => {
-    const bouton = document.querySelector('[data-garder-page]');
+    const bouton = document.querySelector('[data-copier]');
     if (!bouton) return null;
 
     let partage = null;
@@ -1116,13 +1122,15 @@ async function passerLaCible(cible) {
       raccourci: raccourci && !raccourci.hidden ? raccourci.textContent : null,
       // L'ancienne ligne « Bientôt… » doit avoir disparu.
       ancienneLigne: document.querySelectorAll('.bientot').length,
+      // Un seul bloc pour garder son résultat, plus deux qui se répètent.
+      blocs: document.querySelectorAll('.garder').length,
     };
   });
 
   if (!retour) {
     soucis.push(`[${nom}] resultat : pas de bandeau « Revenez bientôt »`);
   } else {
-    if (retour.titre !== 'Revenez bientôt sur votre lien') {
+    if (retour.titre !== 'Gardez votre résultat') {
       soucis.push(`[${nom}] resultat : titre du bandeau « ${retour.titre} »`);
     }
     if (retour.pousse !== 'assets/img/icone-germe.svg') {
@@ -1144,6 +1152,9 @@ async function passerLaCible(cible) {
       }
     } else if (retour.raccourci) {
       soucis.push(`[${nom}] resultat : le raccourci clavier s'affiche là où le partage existe`);
+    }
+    if (retour.blocs !== 1) {
+      soucis.push(`[${nom}] resultat : ${retour.blocs} blocs pour garder son résultat au lieu d'un`);
     }
   }
 

@@ -134,54 +134,87 @@ function brancherRaccourciLien() {
     if (champ) champ.focus({ preventScroll: true });
   });
 }
-
-function brancherCopie() {
-  const champ = $('[data-lien]');
-  const bouton = $('[data-copier]');
-  champ.value = location.href;
-
-  // Le partage du téléphone, pour se l'envoyer par message. Absent sur
-  // ordinateur, où l'astuce des favoris le remplace.
-  const partager = $('[data-partager]');
-  if (partager && typeof navigator.share === 'function') {
-    partager.hidden = false;
-    partager.addEventListener('click', async () => {
-      try {
-        await navigator.share({
-          title: 'Mon état des lieux',
-          text: 'Mon état des lieux d’équipe',
-          url: location.href,
-        });
-      } catch (e) { /* partage refusé ou annulé : rien à faire */ }
-    });
-  } else {
-    const astuce = $('[data-astuce]');
-    if (astuce) astuce.hidden = false;
-  }
-
-  bouton.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(champ.value);
-    } catch (e) {
-      // Repli quand l'API Clipboard est refusée : on sélectionne pour un copier manuel.
-      champ.focus();
-      champ.select();
-    }
-    texte(bouton, 'Lien copié');
-    annoncer('Lien copié');
-    evenement('lien_copie');
-    window.setTimeout(() => texte(bouton, 'Copier le lien'), 2500);
-  });
-}
-
 /** « a, b et c » : une énumération qui se lit à voix haute. */
 function enumerer(elements) {
   if (elements.length <= 1) return elements.join('');
   return `${elements.slice(0, -1).join(', ')} et ${elements[elements.length - 1]}`;
 }
 
+/** Le raccourci de mise en favoris, selon la plateforme quand on la reconnaît. */
+function raccourciFavoris(contenu) {
+  const r = contenu.engagement.retour;
+  let plateforme = '';
+  try {
+    plateforme = (navigator.userAgentData && navigator.userAgentData.platform)
+      || navigator.platform || '';
+  } catch (e) { /* plateforme inconnue */ }
+
+  if (/mac/i.test(plateforme)) return r.favoris_mac;
+  if (/win|linux|cros/i.test(plateforme)) return r.favoris_pc;
+  return r.favoris_inconnu;
+}
+
 /**
- * Faire connaître l'état des lieux.
+ * Garder son résultat.
+ *
+ * Un seul bloc, une seule action principale : copier son lien. Là où le
+ * téléphone sait partager, un second bouton permet de se l'envoyer. L'URL
+ * brute reste disponible, repliée, et le raccourci de favoris n'apparaît que
+ * là où il y a un clavier.
+ */
+function brancherGarder(contenu) {
+  const r = contenu.engagement.retour;
+
+  const pousse = $('[data-retour-pousse]');
+  if (pousse) pousse.src = chemin(icone('germe'));
+  texte($('[data-retour-titre]'), r.titre);
+  texte($('[data-retour-texte]'), r.texte);
+  texte($('[data-voir-lien]'), r.voir);
+
+  const champ = $('[data-lien]');
+  if (champ) champ.value = location.href;
+
+  const copier = $('[data-copier]');
+  texte(copier, r.copier);
+  copier.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(location.href);
+    } catch (e) {
+      // Repli quand l'API Clipboard est refusée : on sélectionne pour un
+      // copier manuel, après avoir déplié le champ.
+      const details = $('.lien-perso__details');
+      if (details) details.open = true;
+      if (champ) { champ.focus(); champ.select(); }
+    }
+    texte(copier, r.copie);
+    annoncer(r.copie);
+    evenement('lien_copie');
+    window.setTimeout(() => texte(copier, r.copier), 2500);
+  });
+
+  const partageDispo = typeof navigator.share === 'function';
+  const envoyer = $('[data-partager]');
+  if (envoyer && partageDispo) {
+    texte(envoyer, r.envoyer);
+    envoyer.hidden = false;
+    envoyer.addEventListener('click', async () => {
+      evenement('garder_page');
+      try {
+        await navigator.share({ title: r.titre_partage, text: r.phrase_partage, url: location.href });
+      } catch (e) { /* partage refusé ou annulé : rien à faire */ }
+    });
+  }
+
+  // Le raccourci clavier n'a de sens que là où il y a un clavier.
+  const favoris = $('[data-retour-raccourci]');
+  if (favoris && !partageDispo) {
+    texte(favoris, raccourciFavoris(contenu));
+    favoris.hidden = false;
+  }
+}
+
+/**
+ * Faire découvrir l'état des lieux.
  *
  * Seule la page d'accueil est partagée : jamais l'URL du résultat, jamais le
  * hash, qui porte les réponses de la personne. Pas d'invitation d'équipe, pas
@@ -189,11 +222,11 @@ function enumerer(elements) {
  */
 function brancherPartage(contenu) {
   const bouton = $('[data-partager-accueil]');
-  const texteBloc = $('[data-partage-texte]');
   if (!bouton) return;
 
   const p = contenu.engagement.partage;
-  texte(texteBloc, p.texte);
+  texte($('[data-partage-question]'), p.question);
+  texte($('[data-partage-texte]'), p.texte);
   texte(bouton, p.bouton);
 
   // L'accueil, sans requête ni hash : on repart de l'adresse de cette page.
@@ -214,74 +247,10 @@ function brancherPartage(contenu) {
 
     try {
       await navigator.clipboard.writeText(adresse);
-    } catch (e) { /* presse-papiers refusé : le message reste juste, l'adresse est visible */ }
+    } catch (e) { /* presse-papiers refusé : le message reste juste */ }
     texte(bouton, p.copie);
     annoncer(p.copie);
     window.setTimeout(() => texte(bouton, p.bouton), 2500);
-  });
-}
-
-/** Le raccourci de mise en favoris, selon la plateforme quand on la reconnaît. */
-function raccourciFavoris(contenu) {
-  const r = contenu.engagement.retour;
-  let plateforme = '';
-  try {
-    plateforme = (navigator.userAgentData && navigator.userAgentData.platform)
-      || navigator.platform || '';
-  } catch (e) { /* plateforme inconnue */ }
-
-  if (/mac/i.test(plateforme)) return r.raccourci_mac;
-  if (/win|linux|cros/i.test(plateforme)) return r.raccourci_pc;
-  return r.raccourci_inconnu;
-}
-
-/**
- * Le bandeau « Revenez bientôt sur votre lien ».
- *
- * Le bouton garde la page : partage du téléphone là où il existe, copie du lien
- * ailleurs. Ici c'est bien l'adresse du résultat qu'on garde, contrairement au
- * partage de l'accueil juste au-dessus.
- */
-function brancherRetour(contenu) {
-  const bouton = $('[data-garder-page]');
-  if (!bouton) return;
-
-  const r = contenu.engagement.retour;
-  const pousse = $('[data-retour-pousse]');
-  if (pousse) pousse.src = chemin(icone('germe'));
-  texte($('[data-retour-titre]'), r.titre);
-  texte($('[data-retour-texte]'), r.texte);
-  texte(bouton, r.bouton);
-
-  const partageDispo = typeof navigator.share === 'function';
-  const raccourci = $('[data-retour-raccourci]');
-
-  // Le raccourci clavier n'a de sens que là où il y a un clavier.
-  if (raccourci && !partageDispo) {
-    texte(raccourci, raccourciFavoris(contenu));
-    raccourci.hidden = false;
-  }
-
-  bouton.addEventListener('click', async () => {
-    evenement('garder_page');
-
-    if (partageDispo) {
-      try {
-        await navigator.share({
-          title: r.titre_partage,
-          text: r.phrase_partage,
-          url: location.href,
-        });
-        return;
-      } catch (e) { /* partage refusé ou annulé : on retombe sur la copie */ }
-    }
-
-    try {
-      await navigator.clipboard.writeText(location.href);
-    } catch (e) { /* presse-papiers refusé : le lien reste visible plus haut */ }
-    texte(bouton, r.copie);
-    annoncer(r.copie);
-    window.setTimeout(() => texte(bouton, r.bouton), 3500);
   });
 }
 
@@ -405,9 +374,8 @@ async function demarrer() {
     .catch(() => { /* sans agrégats, le résultat reste complet */ });
 
   brancherRaccourciLien();
-  brancherCopie();
+  brancherGarder(contenu);
   brancherPartage(contenu);
-  brancherRetour(contenu);
   brancherEtude();
   typographierPage();
 }

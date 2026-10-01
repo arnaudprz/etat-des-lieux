@@ -73,10 +73,12 @@ export function signalerModeDemo() {
   const texteDemo = 'Mode démo : aucune réponse n’est enregistrée.';
 
   if (demoExplicite) {
-    document.body.insertBefore(
-      el('p', { classe: 'demo', texte: texteDemo, attrs: { role: 'status' } }),
-      document.body.firstChild
-    );
+    const bandeau = el('p', { classe: 'demo', texte: texteDemo, attrs: { role: 'status' } });
+    document.body.insertBefore(bandeau, document.body.firstChild);
+    // Le bandeau Greatly est fixé juste dessous : il doit savoir de combien
+    // descendre, et la page de combien se décaler.
+    const hauteur = Math.round(bandeau.getBoundingClientRect().height);
+    document.documentElement.style.setProperty('--hauteur-demo', `${hauteur}px`);
     return;
   }
 

@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
-<link rel="stylesheet" href="assets/css/base.css?v=7">
-<link rel="stylesheet" href="assets/css/parcours.css?v=7">
+<link rel="stylesheet" href="assets/css/base.css?v=8">
+<link rel="stylesheet" href="assets/css/parcours.css?v=8">
 <style>
   .texte { display: flex; flex-direction: column; gap: 28px; margin: 32px 0 48px; }
   .texte section { display: flex; flex-direction: column; gap: 12px; }
@@ -32,7 +32,7 @@
 </div>
 
 <header class="entete">
-  <a class="entete__marque" href="index.html">Greatly</a>
+  <a class="logo" href="index.html"><span class="logo__texte">Greatly</span><span class="logo__point" aria-hidden="true"></span></a>
   <nav class="entete__nav"><a href="index.html">Retour à l'accueil</a></nav>
 </header>
 
@@ -96,12 +96,12 @@
 </main>
 
 <footer class="pied">
-  <span class="pied__marque">Greatly</span>
+  <span class="logo logo--clair"><span class="logo__texte">Greatly</span><span class="logo__point" aria-hidden="true"></span></span>
   <p>Vos réponses sont anonymes. Elles servent à calculer votre résultat et, regroupées, à publier un baromètre.</p>
 </footer>
 
 <script type="module">
-  import { typographierPage } from './assets/js/parcours/commun.js?v=7';
+  import { typographierPage } from './assets/js/parcours/commun.js?v=8';
   typographierPage();
 </script>
 </body>

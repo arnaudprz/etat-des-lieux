@@ -684,6 +684,10 @@
    celles-ci sont en grille, et la ligne y perdait sa continuité. */
 .contexte-groupe {
   margin: -6px 0 4px;
+  /* Un filet sauge sur toute la hauteur du texte : l'œil repère d'un coup
+     ce qui est du contexte et ce qui est une affirmation. */
+  border-left: 4px solid var(--sauge-clair);
+  padding-left: 14px;
   font-size: 14px;
   line-height: 1.55;
   color: var(--taupe);
@@ -831,14 +835,17 @@
 
 .progression {
   position: sticky;
-  top: 0;
+  /* Juste sous le bandeau Greatly, qui est fixé. */
+  top: calc(var(--hauteur-demo, 0px) + var(--hauteur-bandeau));
   z-index: 4;
   min-height: var(--hauteur-progression);
   /* 36px de pousse + 6px de marge + 1px de filet : 43px au total, sous la
      limite de 44px fixée pour le mobile. */
   padding: 3px 16px;
   box-sizing: border-box;
-  background: var(--creme);
+  /* Blanc, et non crème : le disque des pousses est crème lui aussi, il
+     disparaîtrait sur un fond de la même couleur. */
+  background: var(--blanc);
   border-bottom: 1px solid var(--bordure);
 }
 
@@ -874,9 +881,11 @@
   overflow: hidden;
 }
 
-/* L'affirmation visée par le défilement se place juste sous la jauge. */
+/* L'affirmation visée par le défilement se place sous les bandeaux et la jauge. */
 .affirmation {
-  scroll-margin-top: calc(var(--hauteur-progression) + 16px);
+  scroll-margin-top: calc(
+    var(--hauteur-demo, 0px) + var(--hauteur-bandeau) + var(--hauteur-progression) + 16px
+  );
 }
 
 /* Toujours sauge : ce n'est pas un score, la jauge ne reprend jamais les
@@ -1107,7 +1116,9 @@
 }
 
 /* Le bloc visé par « Garder mon résultat » se place sous le haut de l'écran. */
-#lien-personnel { scroll-margin-top: 16px; }
+#lien-personnel {
+  scroll-margin-top: calc(var(--hauteur-demo, 0px) + var(--hauteur-bandeau) + 16px);
+}
 
 .resultat__titre {
   font-family: 'Playfair Display', Georgia, serif;
@@ -1280,125 +1291,61 @@
   color: var(--texte-doux);
 }
 
-/* Le bandeau qui invite à garder la page et à revenir. */
-.retour {
-  background: var(--vert-pale);
-  border-color: rgba(107, 125, 92, .3);
-  border-radius: var(--rayon-carte);
-  padding: 22px;
+/* Garder son résultat : un seul bloc, une seule action principale. */
+.garder {
+  padding: 24px 22px;
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
-  grid-template-areas:
-    'pousse titre'
-    'texte  texte'
-    'action action';
-  gap: 12px 14px;
-  align-items: center;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 14px 16px;
+  align-items: start;
 }
 
-.retour__pousse {
-  grid-area: pousse;
-  width: 40px;
-  height: 40px;
+.garder__pousse {
+  width: 48px;
+  height: 48px;
 }
 
-.retour__texte { display: contents; }
+.garder__corps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
 
-.retour__titre {
-  grid-area: titre;
+.garder__titre {
   margin: 0;
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 400;
-  font-size: 22px;
+  font-size: 24px;
   line-height: 1.2;
 }
 
-.retour__texte p {
-  grid-area: texte;
+.garder__texte {
   margin: 0;
   font-size: 16px;
   line-height: 1.6;
-  color: var(--texte-doux);
-}
-
-.retour__action {
-  grid-area: action;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: stretch;
-}
-
-/* Le message de confirmation est long : ce bouton peut aller à la ligne,
-   contrairement aux autres. */
-.retour__action .btn {
-  white-space: normal;
-  height: auto;
-  padding: 12px 24px;
-  line-height: 1.35;
-}
-
-.retour__raccourci {
-  margin: 0;
-  font-size: 13px;
   color: var(--taupe);
-  text-align: center;
 }
 
-.retour__raccourci[hidden] { display: none; }
-
-.bloc {
-  padding: 24px 22px;
+.garder__actions {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.bloc__titre {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 400;
-  margin: 0;
-  font-size: 24px;
-}
-
-.bloc p { margin: 0; font-size: 16px; line-height: 1.6; color: var(--taupe); }
-
-.lien-perso {
-  display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 10px;
-  max-width: 760px;
-}
-
-.lien-perso .btn { flex-shrink: 0; }
-
-/* L'URL brute reste disponible, repliée : elle est longue et peu lisible. */
-.lien-perso__details { max-width: 760px; }
-
-.lien-perso__details summary {
-  display: inline-flex;
   align-items: center;
-  min-height: 44px;
-  font-size: 15px;
-  color: var(--sauge-fonce);
-  cursor: pointer;
 }
 
-.lien-perso__details summary:hover { color: var(--foret); }
-
-/* Replié, le champ doit vraiment disparaître : les navigateurs ne masquent pas
-   tous le contenu d'un <details> fermé de la même façon. */
-.lien-perso__details:not([open]) .champ-texte { display: none; }
-
-.lien-perso__details[open] .champ-texte { margin-top: 8px; }
-
-.lien-perso__astuce {
+/* Le pied : voir le lien, et le raccourci de favoris. */
+.garder__pied {
   margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
   font-size: 14px;
   color: var(--taupe);
 }
 
-.lien-perso__astuce[hidden] { display: none; }
+.garder__favoris[hidden] { display: none; }
 
 /* Faire connaître l'état des lieux : une invitation discrète, en pointillé,
    pour qu'on la distingue des blocs de contenu. */
@@ -1547,8 +1494,154 @@
   align-items: flex-start;
 }
 
+/* L'URL brute reste disponible, repliée : elle est longue et peu lisible. */
+.lien-perso__details { min-width: 0; }
+
+.lien-perso__details summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 14px;
+  color: var(--sauge-fonce);
+  cursor: pointer;
+}
+
+.lien-perso__details summary:hover { color: var(--foret); }
+
+/* Replié, le champ doit vraiment disparaître : les navigateurs ne masquent pas
+   tous le contenu d'un <details> fermé de la même façon. */
+.lien-perso__details:not([open]) .champ-texte { display: none; }
+
+.lien-perso__details[open] .champ-texte { margin-top: 8px; width: 100%; }
+
 @media (min-width: 560px) {
-  .lien-perso { flex-direction: row; align-items: center; }
+  .etude__grille { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Bloc Greatly */
+.greatly {
+  background: var(--foret);
+  border-radius: 20px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  color: var(--creme);
+}
+
+.greatly__photo {
+  margin: 0;
+  position: relative;
+  min-height: 220px;
+}
+
+.greatly__photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: sepia(25%) saturate(70%) brightness(.95) hue-rotate(15deg);
+}
+
+.greatly__texte {
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+}
+
+.greatly__sur-titre {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #CBD6BF;
+}
+
+.greatly__titre {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  margin: 0;
+  font-size: 28px;
+}
+
+.greatly p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--creme-foret);
+}
+
+.greatly .btn { align-self: flex-start; margin-top: 8px; }
+
+/* Formulaire de l'étude complète */
+.etude {
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Texte secondaire, comme partout ailleurs. */
+.etude > p { color: var(--taupe); }
+
+.etude__grille {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+.etude__champ {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.etude__intitule { font-size: 15px; font-weight: 500; }
+
+.consentement {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--taupe);
+}
+
+.consentement input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--sauge-fonce);
+  flex-shrink: 0;
+}
+
+/* Champ piège anti-robots : invisible, et jamais annoncé aux lecteurs d'écran. */
+.piege {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.mention-finale {
+  margin: 0 0 48px;
+  font-size: 13px;
+  color: var(--taupe);
+  text-align: center;
+}
+
+.vide {
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+@media (min-width: 560px) {
   .etude__grille { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -1580,23 +1673,10 @@
   .greatly__photo { min-height: 360px; }
   .partage { padding: 24px 32px; flex-direction: row; align-items: center; justify-content: space-between; gap: 24px; }
 
-  /* La pousse à gauche, le texte au milieu, le bouton à droite. */
-  .retour {
-    padding: 28px 32px;
-    grid-template-columns: 64px minmax(0, 1fr) auto;
-    grid-template-areas: 'pousse texte action';
-    gap: 24px;
-  }
-  .retour__pousse { width: 64px; height: 64px; }
-  .retour__texte {
-    grid-area: texte;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .retour__titre { grid-area: auto; font-size: 24px; }
-  .retour__texte p { grid-area: auto; }
-  .retour__action { align-items: center; }
+  .garder { padding: 32px; grid-template-columns: 64px minmax(0, 1fr); gap: 16px 24px; }
+  .garder__pousse { width: 64px; height: 64px; }
+  .garder__titre { font-size: 28px; }
+
   .greatly__texte { padding: 40px 44px; }
   .greatly__titre { font-size: 30px; }
   .etude { padding: 36px 40px; }

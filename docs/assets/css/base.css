@@ -94,8 +94,18 @@ a:hover { color: var(--foret); }
 
 /* --------------------------------------------------------------- bandeau */
 
+/* Fixé en haut de toutes les pages : il dit qui propose l'état des lieux, et
+   doit rester lisible même en bas d'un long questionnaire.
+   --hauteur-demo vaut 0 sauf en mode démo explicite, où un bandeau le surmonte. */
+:root { --hauteur-bandeau: 40px; }
+
 .bandeau {
-  min-height: 40px;
+  position: fixed;
+  top: var(--hauteur-demo, 0px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  min-height: var(--hauteur-bandeau);
   background: var(--foret);
   color: var(--creme-foret);
   display: flex;
@@ -107,6 +117,9 @@ a:hover { color: var(--foret); }
   white-space: nowrap;
   overflow: hidden;
 }
+
+/* La place que le bandeau fixe ne prend plus dans le flux. */
+body { padding-top: calc(var(--hauteur-demo, 0px) + var(--hauteur-bandeau)); }
 
 .bandeau__texte {
   overflow: hidden;
@@ -140,13 +153,39 @@ a:hover { color: var(--foret); }
   padding: 18px 20px;
 }
 
-.entete__marque {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 400;
-  font-size: 24px;
-  color: var(--foret);
+/* Le logo, repris de greatly.club : DM Sans en capitales, interlettrage large,
+   suivi d'un rond sauge. Les tailles du site sont reprises et agrandies de 30 %
+   (22px devient 29px, le rond 11px devient 14px). */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   text-decoration: none;
+  color: inherit;
 }
+
+.logo__texte {
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  font-size: 29px;
+  font-weight: 400;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--encre);
+  /* L'interlettrage ajoute une espace après la dernière lettre : on la reprend
+     pour que le rond reste à la bonne distance. */
+  margin-right: -.3em;
+}
+
+.logo__point {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--sauge-clair);
+  flex-shrink: 0;
+}
+
+/* Sur fond forêt, en pied de page. */
+.logo--clair .logo__texte { color: var(--creme); }
 
 .entete__nav {
   display: flex;
@@ -156,7 +195,6 @@ a:hover { color: var(--foret); }
 
 @media (min-width: 900px) {
   .entete { padding: 28px 80px; }
-  .entete__marque { font-size: 28px; }
   .entete__nav { gap: 32px; font-size: 15px; }
 }
 
@@ -333,10 +371,8 @@ a:hover { color: var(--foret); }
   gap: 16px;
 }
 
-.pied__marque {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 24px;
-}
+.pied .logo__texte { font-size: 22px; }
+.pied .logo__point { width: 11px; height: 11px; }
 
 .pied p {
   margin: 0;
@@ -358,8 +394,14 @@ a:hover { color: var(--foret); }
   }
 }
 
-/* Bandeau de mode démo, jamais affiché en production. */
+/* Bandeau de mode démo, jamais affiché en production.
+   En mode explicite il coiffe le bandeau Greatly, lui aussi fixé. */
 .demo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 11;
   margin: 0;
   background: var(--germe);
   color: var(--encre);
@@ -370,6 +412,7 @@ a:hover { color: var(--foret); }
 
 /* En local sans API : une mention discrète en bas, qui ne vole pas la place. */
 .demo--pied {
+  position: static;
   background: none;
   color: var(--taupe);
   font-size: 12px;
