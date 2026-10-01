@@ -72,7 +72,8 @@
 /* Les trois repères de réassurance. Chacun porte sa coche : en une seule ligne
    grise sous le bouton, ils se lisaient comme une mention légale. */
 .reperes {
-  margin: 0;
+  /* Un peu d'air après le bouton : les repères se lisent après lui, pas avec. */
+  margin: 10px 0 0;
   padding: 0;
   list-style: none;
   display: flex;
