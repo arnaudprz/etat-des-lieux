@@ -1,22 +1,34 @@
 # Mise en ligne
 
-Le projet tourne aujourd'hui **en local seulement**. Ce document décrit la mise
-en ligne quand tu voudras la faire. Rien ici n'est urgent : le site fonctionne
-déjà entièrement en mode démo sur ta machine.
+Le site est **déjà en ligne** sur <https://arnaudprz.github.io/etat-des-lieux/>,
+en mode démo. Le backend est **créé, poussé et déployé** ; il manque seulement
+l'autorisation Google et la clé d'administration, que toi seul peux donner.
+
+Ce document décrit l'ensemble de la procédure, avec ce qui est fait et ce qui
+reste.
 
 Tout est expliqué pas à pas. Tu n'as pas besoin de savoir développer.
 
 ---
 
-## Ce que tu dois faire toi-même
+## Où on en est
 
-Cinq choses, dans cet ordre. Compte une petite heure la première fois.
+| # | Étape | État |
+| --- | --- | --- |
+| 1 | Créer le Google Sheet | **Fait** (créé avec le script lié) |
+| 2 | Installer `clasp` et se connecter | **Fait** (`npx clasp`, compte `arnaudprz@gmail.com`) |
+| 3 | Pousser le code et déployer en application web | **Fait** (déploiement `v1`) |
+| 4 | **Autoriser le script dans le navigateur** | **À faire par toi** |
+| 5 | **Définir `ADMIN_KEY`** | **À faire par toi** |
+| 6 | Coller l'URL de l'API dans `config.js` | À faire ensuite |
+| 7 | Créer le repo GitHub et activer Pages | **Fait** |
 
-1. Créer le Google Sheet.
-2. Installer `clasp` et faire `clasp login`.
-3. Déployer le script et définir `ADMIN_KEY` et `PAPIER_BASE`.
-4. Coller l'URL de l'API dans `config.js`.
-5. Créer le repo GitHub et activer Pages.
+Les étapes 4 et 5 passent par une fenêtre de consentement Google et par
+l'interface de l'éditeur : elles ne peuvent pas être automatisées. Compte deux
+minutes.
+
+`PAPIER_BASE` n'a **pas** besoin d'être défini : le code retombe déjà sur 255
+(`PAPIER_BASE_DEFAUT` dans `contenu.gs`).
 
 Et plus tard, quand tu voudras : saisir les 255 réponses papier.
 
@@ -39,15 +51,22 @@ leurs en-têtes la première fois qu'il en a besoin.
 
 `clasp` est l'outil qui envoie le code dans Google Apps Script.
 
+`clasp` est installé **dans le projet**, pas globalement (l'installation globale
+demande les droits administrateur) :
+
 ```sh
-npm install -g @google/clasp
-clasp login
+npm install          # installe clasp avec les autres dépendances
+npx clasp login      # seulement si tu n'es pas déjà connecté
+npx clasp show-authorized-user   # pour vérifier avec quel compte
 ```
+
+> On utilise `clasp` **v3**, dont les commandes diffèrent de la v2 :
+> `create-script`, `create-deployment`, `update-deployment`.
 
 Une page s'ouvre dans le navigateur : connecte-toi avec le compte Google de
 Greatly, celui qui possède le Sheet.
 
-Si `clasp login` refuse de démarrer, active d'abord l'API Apps Script sur
+Si `npx clasp login` refuse de démarrer, active d'abord l'API Apps Script sur
 <https://script.google.com/home/usersettings>.
 
 ---
@@ -56,26 +75,40 @@ Si `clasp login` refuse de démarrer, active d'abord l'API Apps Script sur
 
 ### Créer le projet lié au Sheet
 
-Dans le Sheet, menu **Extensions ▸ Apps Script**. Un projet vide s'ouvre.
-Dans **Paramètres du projet**, copie l'**ID du script**.
-
-De retour dans un terminal :
+Déjà fait, avec une seule commande qui crée **le classeur et le script lié** :
 
 ```sh
 cd worker
-cp .clasp.json.example .clasp.json
+npx clasp create-script --type sheets --title "État des lieux d'équipe · données"
 ```
 
-Ouvre `.clasp.json` et remplace `REMPLACER_PAR_L_ID_DU_PROJET_APPS_SCRIPT` par
-l'ID que tu viens de copier. Puis :
+Elle écrit `worker/.clasp.json` avec l'identifiant du script. Ce fichier est
+ignoré par git : il ne partira jamais dans le repo, qui est public.
+
+> `create-script` écrase `appsscript.json` par celui de Google. Il faut
+> **restaurer le nôtre** : il porte `Europe/Paris` et surtout le bloc `webapp`
+> qui ouvre l'application en accès anonyme. Sans lui, le site ne peut rien
+> enregistrer.
+
+Ensuite, envoyer le code et déployer :
 
 ```sh
-clasp push
+npx clasp push --force
+npx clasp create-deployment --description "v1"
 ```
 
-Recharge la page Apps Script : les fichiers `.gs` sont là.
+### Autoriser le script
 
-> `.clasp.json` est ignoré par git : il ne partira jamais dans le repo.
+**C'est l'étape qui ne peut pas être automatisée.** L'application s'exécute
+« en tant que moi » : tant que le propriétaire n'a pas accordé les
+autorisations, elle répond `403 Une autorisation est nécessaire`, même
+correctement déployée.
+
+1. Ouvre l'éditeur : `cd worker && npx clasp open-script`
+2. En haut, choisis la fonction **`compteurPublic`** et clique **Exécuter**.
+3. Google demande les autorisations. Il affiche « Cette application n'est pas
+   validée » : c'est normal pour un script personnel. Clique **Paramètres
+   avancés**, puis **Accéder à … (non sécurisé)**, puis **Autoriser**.
 
 ### Définir les deux réglages
 
@@ -85,7 +118,7 @@ Ajouter une propriété**.
 | Propriété | Valeur | À quoi ça sert |
 | --- | --- | --- |
 | `ADMIN_KEY` | une longue phrase que tu inventes | Ouvre le tableau de bord. |
-| `PAPIER_BASE` | `255` | Le compteur de l'accueil tant qu'aucune réponse papier n'est importée. |
+| `PAPIER_BASE` | `255` | Facultatif : le code retombe déjà sur 255 tout seul. |
 
 Tu peux aussi ajouter `PLAFOND_PAR_MINUTE` (120 par défaut) pour régler la
 limite d'envois par minute.
@@ -112,9 +145,10 @@ n'est pas validée ». C'est normal pour un script personnel : clique sur
 Copie l'**URL de l'application web**. Elle ressemble à
 `https://script.google.com/macros/s/AKfycb.../exec`.
 
-> À chaque `clasp push`, il faut **redéployer** (Déployer ▸ Gérer les
-> déploiements ▸ crayon ▸ Nouvelle version) pour que la modification soit en
-> ligne. Garder le même déploiement garde la même URL.
+> À chaque `npx clasp push`, il faut **redéployer** pour que la modification
+> soit en ligne, avec `npx clasp update-deployment <id>` ou, dans l'interface,
+> Déployer ▸ Gérer les déploiements ▸ crayon ▸ Nouvelle version. Garder le même
+> déploiement garde la même URL.
 
 ### Vérifier
 
@@ -151,6 +185,9 @@ npm run local
 ---
 
 ## 5. Mettre le site en ligne
+
+> **Déjà fait.** Le repo est <https://github.com/arnaudprz/etat-des-lieux> et
+> Pages sert `main` / `/docs`. Cette section reste pour mémoire.
 
 ### Créer le repo
 
@@ -233,8 +270,9 @@ npm test
 # 5. publier
 git add -A && git commit -m "ce que j'ai changé" && git push
 # 6. si worker/ a changé :
-cd worker && clasp push
-#    puis Déployer ▸ Gérer les déploiements ▸ Nouvelle version
+cd worker && npx clasp push --force
+npx clasp list-deployments                 # relever l'id du déploiement v1
+npx clasp update-deployment <id> --description "v1"   # garde la même URL
 ```
 
 ---
@@ -244,7 +282,8 @@ cd worker && clasp push
 | Symptôme | Cause probable |
 | --- | --- |
 | Le compteur affiche 255 alors qu'il y a des réponses | Le cache du compteur dure 10 minutes. Attends, ou relance `compteurPublic` depuis l'éditeur. |
-| Le tableau de bord refuse la clé | `ADMIN_KEY` n'est pas définie, ou le déploiement n'a pas été mis à jour après un `clasp push`. |
+| Le tableau de bord refuse la clé | `ADMIN_KEY` n'est pas définie, ou le déploiement n'a pas été mis à jour après un `npx clasp push`. |
 | Le site reste en mode démo | `API_URL` est vide dans `config.js`, ou l'adresse porte `?demo=1`. |
 | Rien ne s'enregistre | Le déploiement n'est pas en « Tout le monde », ou l'URL copiée n'est pas celle qui finit par `/exec`. |
+| L'API répond `403 Une autorisation est nécessaire` | Le script n'a jamais été autorisé. Ouvre l'éditeur et lance `compteurPublic` une fois (voir « Autoriser le script »). |
 | Une page s'affiche sans style | Le cache du navigateur. Incrémente `V` dans `config.js`, ou recharge avec Cmd+Maj+R. |

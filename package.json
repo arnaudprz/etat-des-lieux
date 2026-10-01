@@ -9,6 +9,7 @@
     "local": "node scripts/serveur.mjs"
   },
   "devDependencies": {
+    "@google/clasp": "^3.4.1",
     "playwright": "^1.63.0"
   }
 }
