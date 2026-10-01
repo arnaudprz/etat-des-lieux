@@ -359,8 +359,14 @@
 
 .point__numero {
   font-size: 26px;
-  color: var(--sauge-clair);
+  color: var(--sauge-fonce);   /* 5,76:1 sur blanc ; sauge clair restait à 2,97:1 */
   line-height: 1;
+}
+
+/* Sur mobile, le numéro passe au-dessus du titre : la colonne de 48px
+   poussait le texte à 84px et ne laissait que 286px pour lire. */
+@media (max-width: 599px) {
+  .point { grid-template-columns: minmax(0, 1fr); gap: 6px; }
 }
 
 .point__corps { display: flex; flex-direction: column; gap: 6px; }

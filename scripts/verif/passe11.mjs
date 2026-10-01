@@ -133,6 +133,35 @@ async function bordGaucheTexte(page, selecteur) {
   }, selecteur);
 }
 
+/**
+ * Contraste WCAG entre la couleur du texte d'un élément et le fond sur lequel
+ * il est posé (le premier ancêtre au fond opaque). Renvoie une liste
+ * { texte, ratio } pour chaque élément du sélecteur.
+ */
+async function contrastes(page, selecteur) {
+  return page.evaluate((s) => {
+    const rgb = (c) => (c.match(/[\d.]+/g) || []).map(Number);
+    const lum = ([r, g, b]) => {
+      const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+      return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+    };
+    const fond = (n) => {
+      for (let x = n; x; x = x.parentElement) {
+        const c = rgb(getComputedStyle(x).backgroundColor);
+        if (c.length >= 3 && (c.length === 3 || c[3] > 0.5)) return c.slice(0, 3);
+      }
+      return [255, 255, 255];
+    };
+    return Array.from(document.querySelectorAll(s))
+      .filter((n) => n.getBoundingClientRect().width && n.textContent.trim())
+      .map((n) => {
+        const a = lum(rgb(getComputedStyle(n).color).slice(0, 3));
+        const b = lum(fond(n));
+        return { texte: n.textContent.trim().slice(0, 30), ratio: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) };
+      });
+  }, selecteur);
+}
+
 const pres = (a, b, tol = 1) => a != null && b != null && Math.abs(a - b) <= tol;
 const arrondi = (v) => (v == null ? 'absent' : Math.round(v * 10) / 10);
 
@@ -346,6 +375,21 @@ critere(4, 'accueil : compteur et lignes de coches centrés', [390, 360], async 
   if (!pres(m.compteur, m.centre, 2)) return `compteur centré à ${arrondi(m.compteur)} pour ${m.centre}`;
   const decale = m.lignes.find((x) => !pres(x, m.centre, 2));
   return decale == null || `une ligne de coches centrée à ${arrondi(decale)} pour ${m.centre}`;
+});
+// Point 5 · les points 01 à 04 de l'accueil
+critere(5, 'numéro et titre des points à 20px', [390], async ({ page }) => {
+  await aller(page, `${BASE}/index.html`);
+  await page.waitForSelector('.point__numero');
+  const n = await bordGaucheTexte(page, '.point__numero');
+  const t = await bordGaucheTexte(page, '.point__titre');
+  return (pres(n, 20) && pres(t, 20)) || `numéro à ${arrondi(n)}px, titre à ${arrondi(t)}px`;
+});
+
+critere(5, 'contraste du numéro d’au moins 4,5:1', [1280, 390], async ({ page }) => {
+  await aller(page, `${BASE}/index.html`);
+  await page.waitForSelector('.point__numero');
+  const faibles = (await contrastes(page, '.point__numero')).filter((c) => c.ratio < 4.5);
+  return !faibles.length || faibles.map((c) => `${c.texte} ${c.ratio.toFixed(2)}:1`).join(', ');
 });
 // <<< POINTS
 
