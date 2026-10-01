@@ -195,6 +195,17 @@ async function passerLaCible(cible) {
 
   const nbDimensions = await page.locator('.dimensions .carte').count();
   if (nbDimensions !== 8) soucis.push(`[${nom}] accueil : ${nbDimensions} dimensions au lieu de 8`);
+  // Aucun bouton ni lien d'action ne doit rester sans libellé : c'est le
+  // symptôme d'un texte manquant dans contenu.json, et ça passe inaperçu tant
+  // qu'on ne regarde pas la page dans le bon état.
+  const vides = await page.evaluate(() =>
+    [...document.querySelectorAll('.btn, .bouton-doux, button')]
+      .filter((b) => b.offsetParent !== null && b.textContent.trim() === '')
+      .map((b) => b.className || b.tagName));
+  if (vides.length) {
+    soucis.push(`[${nom}] accueil : ${vides.length} bouton(s) sans libellé : ${vides.join(', ')}`);
+  }
+
   const compteur = (await page.locator('[data-compteur]').innerText()).trim();
   if (compteur !== '255') soucis.push(`[${nom}] accueil : compteur à « ${compteur} » au lieu de 255`);
 

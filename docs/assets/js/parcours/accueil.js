@@ -191,6 +191,14 @@ function remplirSources(contenu) {
  */
 function proposerResultatConnu(contenu) {
   const a = contenu.accueil;
+  const d = a.deja_fait;
+
+  // Un contenu plus ancien que ce script n'a pas encore ces textes : le CDN
+  // peut servir l'ancien contenu.json quelques minutes après une mise en ligne.
+  // Sans ce garde-fou, le bouton s'affichait vide. Mieux vaut l'accueil normal
+  // qu'un bouton sans libellé.
+  if (!d || !d.modifier || !d.voir) return;
+
   const adresse = resultatMemorise();
   if (!adresse) return;
 
@@ -201,13 +209,13 @@ function proposerResultatConnu(contenu) {
 
   const ligne = $('[data-deja-fait]');
   if (ligne) {
-    texte(ligne, a.deja_fait.texte);
+    texte(ligne, d.texte);
     ligne.hidden = false;
   }
 
   $$('[data-bouton]').forEach((bouton) => {
     // Le bouton principal ne promet plus un premier état des lieux.
-    texte(bouton, a.deja_fait.modifier);
+    texte(bouton, d.modifier);
     bouton.removeAttribute('href');
     bouton.setAttribute('role', 'button');
     bouton.setAttribute('tabindex', '0');
@@ -221,7 +229,7 @@ function proposerResultatConnu(contenu) {
     });
 
     // Le même bouton, juste à côté, pour aller droit au résultat.
-    const voir = el('a', { classe: 'btn', texte: a.deja_fait.voir, attrs: { href: adresse } });
+    const voir = el('a', { classe: 'btn', texte: d.voir, attrs: { href: adresse } });
     bouton.insertAdjacentElement('afterend', voir);
   });
 }
