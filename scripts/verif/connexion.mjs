@@ -51,8 +51,14 @@ async function nouvellePage() {
     r.fulfill({ response: reponse, body: texte });
   });
   const appels = [];
-  await page.route(/script\.google(usercontent)?\.com/, (r) => {
+  const instants = {};
+  await page.route(/script\.google(usercontent)?\.com/, async (r) => {
     const url = new URL(r.request().url());
+    const action = url.searchParams.get('action');
+    instants[`${action}_demande`] = Date.now();
+    // Un backend lent, comme Apps Script : les réponses mettent une seconde.
+    if (action === 'donnees') await new Promise((ok) => setTimeout(ok, 1000));
+    instants[`${action}_rendu`] = Date.now();
     const j = url.searchParams.get('jeton');
     appels.push(url.searchParams.get('action'));
     let corps;
@@ -66,14 +72,14 @@ async function nouvellePage() {
     r.fulfill({ status: 200, headers: { 'Access-Control-Allow-Origin': '*' },
       contentType: 'application/json', body: JSON.stringify(corps) });
   });
-  return { page, appels };
+  return { page, appels, instants };
 }
 
 const verifier = (cond, msg) => { if (!cond) soucis.push(msg); };
 const visible = (page, sel) => page.locator(sel).isVisible();
 
 // 1. Arrivée : le bouton Google, pas de tableau, aucun appel aux données.
-let { page, appels } = await nouvellePage();
+let { page, appels, instants } = await nouvellePage();
 await page.goto(`${BASE}/admin/`);
 await page.waitForSelector('[data-compte="autorise"]');
 verifier(await visible(page, '[data-acces]'), 'écran d’accès absent');
@@ -91,7 +97,12 @@ verifier(!(await page.evaluate(() => sessionStorage.getItem('greatly_edl_admin')
 
 // 3. Compte autorisé : le tableau s'ouvre, l'export ne porte pas le jeton.
 await page.click('[data-compte="autorise"]');
+await page.waitForSelector('[data-chargement]:not([hidden])', { timeout: 900 })
+  .catch(() => soucis.push('aucun message de chargement pendant l’attente'));
 await page.waitForSelector('[data-tableau]:not([hidden])');
+verifier(instants.contacts_csv_demande < instants.donnees_rendu,
+  'les contacts attendent les réponses au lieu de partir en même temps');
+verifier(!(await visible(page, '[data-chargement]')), 'message de chargement resté affiché');
 verifier(!(await visible(page, '[data-acces]')), 'écran d’accès resté visible');
 verifier(await visible(page, '[data-deconnexion]'), 'bouton de déconnexion absent');
 const href = await page.locator('a[download]').first().getAttribute('href');

@@ -78,6 +78,19 @@
 
 .acces__google { min-height: 44px; }
 
+.admin__chargement {
+  margin: 0;
+  font-size: 15px;
+  color: var(--taupe);
+  animation: admin-pulsation 1.4s ease-in-out infinite;
+}
+
+@keyframes admin-pulsation { 50% { opacity: 0.45; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .admin__chargement { animation: none; }
+}
+
 /* --------------------------------------------------------------- filtres */
 
 .filtres {

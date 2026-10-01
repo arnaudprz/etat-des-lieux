@@ -1,6 +1,6 @@
 # Corrections, passe 11 : UX desktop et mobile, alignement et résultat
 
-Colle ce texte dans Claude Code, dans le repo `etat-des-lieux`, **après** les passes 8 et 9.
+Colle ce texte dans Claude Code, dans le repo `etat-des-lieux`. Point de départ : **ce qui est en ligne aujourd'hui** (branche `main`, `V = 22`). Les anciens prompts `CORRECTIONS-8.md` et `CORRECTIONS-9.md` ne sont jamais passés : ils sont abandonnés, et ce qu'il en restait à faire est repris ici (points 11, 12 et 15). Ne les applique pas.
 
 Source : audit UX du 1er octobre 2026, fait sur le site en ligne (`v=22`) à 1440, 390 et 360 de large. Les causes citées viennent du code (`docs/assets/css/base.css`, `parcours.css`, `docs/assets/js/calcul.js`, `parcours/resultat.js`, `parcours/profil.js`). Si le repo a bougé depuis, applique l'intention et signale l'écart dans le rapport.
 
@@ -12,13 +12,13 @@ Tout est décrit au pixel près, avec la cause quand je l'ai trouvée. Ne réint
 
 ## 0. Méthode de travail (à suivre à la lettre)
 
-1. **Avant de coder**, vérifie que les passes 8 et 9 sont bien appliquées : `.groupe__titre` existe dans `parcours.css` et `phrases_manager` dans `contenu.json`, et leurs scripts de vérification sont OK. Si ce n'est pas le cas, arrête et dis le dans le rapport.
+1. **Avant de coder**, vérifie que `main` correspond au site en ligne et que `npm test` passe. Si ce n'est pas le cas, signale l'écart dans le rapport et pars de `main`.
 2. Fais des captures « avant » de toutes les pages (accueil, profil, questions avec 16 réponses dont 3 relances ouvertes, résultat membre, résultat manager, confidentialité) à 1280, 390 et 360, dans Chromium et WebKit, dans `captures/passe11/avant/`.
 3. **Crée `scripts/verif/passe11.mjs`** (Playwright), sur le modèle de `scripts/verif/parcours.mjs` : même fonction `aller()`, URL de base `http://127.0.0.1:8127` par défaut (`npm run local`), **backend simulé**. Aucune vérification ne doit écrire dans le vrai classeur : jamais l'API de production. Il teste chaque critère ✅ ci dessous, dans Chromium et WebKit, à 1280, 390 et 360. Une ligne par critère avec OK ou KO.
-4. Applique les points **dans l'ordre**, un commit par point. Après chaque point, relance le script et les scripts des passes 4 à 9. Tu ne passes au suivant que si tout est OK.
+4. Applique les points **dans l'ordre**, un commit par point. Après chaque point, relance le script, `scripts/verif/parcours.mjs` et `npm test`. Tu ne passes au suivant que si tout est OK.
 5. **Rapport final** en tableau : point, OK/KO, chemin des captures « après » (`captures/passe11/apres/`), doutes. Rien d'autre.
 
-Fichiers autorisés, dans `docs/` : `index.html`, `profil.html`, `questions.html`, `resultat.html`, `assets/css/base.css`, `assets/css/parcours.css`, `assets/js/calcul.js`, `assets/js/config.js` (pour `V`), `assets/js/parcours/*.js`, `assets/data/contenu.json`, et `assets/js/admin/agregats.js` **seulement pour le point 12**. Hors `docs/` : `tests/`, `scripts/verif/passe11.mjs`, `maquette/Simulateur.dc.html` (seulement pour le point 12), `DECISIONS.md`, le README. **Ne touche ni à `worker/`, ni au reste du tableau de bord, ni à `confidentialite.html`.** Le repo a des modifications non commitées (`config.js`, `connexion.mjs`, `acces.gs`) : n'y touche pas et ne les inclus pas dans tes commits, sauf `V` dans `config.js` en fin de passe.
+Fichiers autorisés, dans `docs/` : `index.html`, `profil.html`, `questions.html`, `resultat.html`, `assets/css/base.css`, `assets/css/parcours.css`, `assets/js/calcul.js`, `assets/js/config.js` (pour `V`), `assets/js/parcours/*.js`, `assets/data/contenu.json`, `assets/img/icone-*.svg` (régénérés, point 11), et `assets/js/admin/agregats.js` **seulement pour le point 14**. Hors `docs/` : `tests/`, `scripts/verif/passe11.mjs`, `maquette/illustrations/pousses.py` et ses `icone-*.svg` (point 11), `maquette/Simulateur.dc.html` (seulement pour le point 14), `DECISIONS.md`, le README. **Ne touche ni à `worker/`, ni au reste du tableau de bord, ni à `confidentialite.html`.** Le repo a des modifications non commitées (`config.js`, `connexion.mjs`, `acces.gs`) : n'y touche pas et ne les inclus pas dans tes commits, sauf `V` dans `config.js` en fin de passe.
 
 Règles habituelles : pas de tiret cadratin, espace insécable avant `? ! : ;`, aucun chiffre ni pourcentage côté répondant, tous les textes lus depuis `contenu.json` (aucun texte en dur dans le JS).
 
@@ -69,9 +69,9 @@ Points de rupture utilisés ici : **mobile = 599px et moins**, ordinateur = 900p
 
 **Ce qu'on voit.** À 390, le premier texte des blocs commence à 16, 20, 40, 43, 44, 84 ou 107px selon le bloc. Chaque écart est petit, mais en défilant la page paraît bricolée.
 
-**La cause.** Marges intérieures différentes : `.affirmation` et `.cadre-etude` à `22px 20px`, `.dimensions .carte` à `18px 20px`, `.pourquoi__carte`, `.apercu`, `.ensemble`, `.garder`, `.partage`, `.etude` à `22px`, `.greatly__texte` à `24px`. La passe 8 a mis `.affirmation` à `18px 16px` sur mobile.
+**La cause.** Marges intérieures différentes : `.affirmation` et `.cadre-etude` à `22px 20px`, `.dimensions .carte` à `18px 20px`, `.pourquoi__carte`, `.apercu`, `.ensemble`, `.garder`, `.partage`, `.etude` à `22px`, `.greatly__texte` à `24px`.
 
-**À faire :** une seule marge intérieure horizontale pour **toutes** les cartes sur mobile, alignée sur la passe 8.
+**À faire :** une seule marge intérieure horizontale pour **toutes** les cartes sur mobile : 16px. C'est aussi ce qui donne de la place à l'échelle de réponse (point 12).
 
 ```css
 :root { --marge-carte: 16px; }
@@ -84,9 +84,9 @@ Points de rupture utilisés ici : **mobile = 599px et moins**, ordinateur = 900p
 }
 ```
 
-Ne touche pas aux marges verticales ni à l'ordinateur. Vérifie que `.affirmation` garde bien les `18px` verticaux de la passe 8. Si une carte n'est pas dans cette liste, ajoute la et liste la dans le rapport.
+Ne touche pas aux marges verticales ni à l'ordinateur. Pour `.affirmation` seulement, la marge verticale passe à `18px` sur mobile. Si une carte n'est pas dans cette liste, ajoute la et liste la dans le rapport.
 
-Règle à respecter partout sous 600px : **axe 20px** pour ce qui est hors carte, **axe 37px** (20 + 1 de bordure + 16) pour le premier texte dans une carte. Les points 5, 13 et 14 suppriment les colonnes d'icône et de numéro qui créent d'autres axes.
+Règle à respecter partout sous 600px : **axe 20px** pour ce qui est hors carte, **axe 37px** (20 + 1 de bordure + 16) pour le premier texte dans une carte. Les points 5, 16 et 17 suppriment les colonnes d'icône et de numéro qui créent d'autres axes.
 
 ✅ À 390 et 360, sur chaque page, le bord gauche de chaque `h1`, `h2`, `.intro` hors carte vaut 20px, à 1px près.
 ✅ À 390 et 360, dans chaque carte listée ci dessus, le bord gauche du premier titre ou paragraphe vaut 37px, à 1px près.
@@ -218,7 +218,46 @@ Texte centré dans les pilules en grille, 2 lignes au plus.
 ✅ À 390, `.choix--ligne` a `border-left-width: 0` et un fond transparent.
 ✅ Cocher une 3e case : elle reste décochée, le sous titre change de couleur, puis revient après 1,5s.
 
-## 11. Contrastes et focus (toutes pages)
+## 11. La barre d'avancement
+
+**Ce qu'on voit.** Au début du questionnaire, la graine « À semer » en haut à gauche ressemble à un demi rond de terre coupé. Et vers la fin, on a deux arbres identiques à gauche et à droite.
+
+**Les causes :**
+
+- `maquette/illustrations/pousses.py`, fonction `icone()` : pour `k = 0`, `g = 52` et `sc = 1.5`. La graine tombe vers `y = 91` dans une `viewBox` de 100, alors que le `clipPath` est un cercle de rayon 48 : elle est coupée par le bas.
+- Le haut du médaillon est rempli en `#F7F4EF`, la couleur du fond de la barre : on ne voit que la moitié basse.
+- `contenu.json > engagement > progression > paliers` : l'arbre (`enracine`) apparaît dès 14 réponses, alors que l'arbre de droite est le but.
+
+**À faire :**
+
+- Dans `pousses.py`, pour `k = 0` seulement : `g = 48` et `sc = 1.2` (les tableaux `g = [52, 74, 76, 76]` et `sc = [1.5, 0.95, 0.5, 0.29]` deviennent `[48, 74, 76, 76]` et `[1.2, 0.95, 0.5, 0.29]`). Régénère les 4 `icone-*.svg` avec le script, pas à la main, et copie les dans `docs/assets/img/`.
+- CSS : `.progression__pousse, .progression__but { border-radius: 50%; box-shadow: 0 0 0 1px var(--bordure); }`.
+- Paliers : `semer` jusqu'à 3, `germe` jusqu'à 8, `croissance` jusqu'à **15**, `enracine` à **16** seulement. À 16, l'arbre de droite passe à `opacity: 1`.
+
+✅ Dans `icone-semer.svg`, la boîte englobante de l'ellipse de la graine tient entièrement dans le cercle de rayon 44 centré en (50, 50).
+✅ Les deux icônes de la barre ont un `box-shadow` non vide.
+✅ Avec 14 et 15 réponses, la pousse de gauche est `icone-croissance.svg`. Avec 16, c'est `icone-enracine.svg` et l'arbre de droite a `opacity: 1`.
+
+## 12. L'échelle de réponse
+
+**Ce qu'on voit.** La coche de la réponse choisie est posée en haut à gauche du bouton, en position absolue. Sur ordinateur, elle a l'air égarée. Sur mobile, elle chevauche le texte (« ✓En bonne partie »). À 390, les quatre boutons font 72px de large : « Pleinement » touche les bords, « Pas encore » et « En bonne partie » sont tassés sur 2 lignes.
+
+**À faire :**
+
+- Supprime la position absolue de `.echelle__coche`.
+- À partir de 600px, la coche est **dans le flux**, juste avant le libellé : `display: inline-block; margin-right: 6px;`. Elle n'apparaît que sur la réponse choisie et ne prend aucune place sinon (`display: none` quand `aria-pressed="false"`).
+- À 599px et moins, pas de coche. La réponse choisie se distingue par son fond plein, son texte blanc et `font-weight: 600`.
+- Garde le contour de focus clavier.
+- À 599px et moins : `.echelle { gap: 6px; }`, `.echelle__choix { padding: 6px 4px; font-size: 13px; }`, et sous 380px `font-size: 12.5px`. La marge de la carte est réglée au point 3.
+- On garde **4 colonnes sur une ligne** : l'échelle se lit d'un coup d'œil de gauche à droite.
+- Mets à jour `DECISIONS.md` : la coche n'apparaît que sur ordinateur, le mobile s'appuie sur le fond plein et le gras.
+
+✅ À toutes les largeurs, la boîte de la coche ne chevauche jamais celle du libellé.
+✅ À 390, `.echelle__coche` a `display: none`.
+✅ À 390 et 360, pour chaque bouton : `scrollWidth <= clientWidth`, et au moins 4px entre le texte et le bord intérieur.
+✅ À 390 et 360, aucun libellé ne dépasse 2 lignes.
+
+## 13. Contrastes et focus (toutes pages)
 
 - `.surtitre` : `color: var(--sauge-fonce);` (était `--sauge`, 4,45:1 sur blanc, juste sous le seuil ; passe à 5,76:1).
 - `--focus` : `3px solid var(--sauge-fonce)` (était à 35 % d'opacité, trop pâle sur le crème).
@@ -228,7 +267,7 @@ Texte centré dans les pilules en grille, 2 lignes au plus.
 ✅ axe-core (règles wcag2a, wcag2aa, wcag21aa, wcag22aa) ne remonte aucune violation sur accueil, profil, questions et résultat, à 390 et 1280.
 ✅ Le contour de focus a un contraste d'au moins 3:1 avec le fond crème.
 
-## 12. Le titre du résultat contredit les bandeaux
+## 14. Le titre du résultat contredit les bandeaux
 
 **Ce qu'on voit.** Réponses `1,2,3,0,2,3,1,2,1,2,3,0,2,3,1,2` (lien `#v2-m1230231212302312`) : 1 repère Bien enraciné, 6 En croissance, 1 En germe, et le titre dit « Une équipe en germe ».
 
@@ -264,7 +303,72 @@ export function carteEnsemble(reponses, contenu) {
 ✅ `phraseForme` et `phraseAppui` ne changent pas (compare leurs sorties avant/après sur les 2 000 jeux).
 ✅ `cartesRecues` donne, pour chaque réponse, la même carte que `carteEnsemble` (test sur les données du mode démo).
 
-## 13. Le haut du résultat
+## 15. Le résultat d'un manager
+
+**Ce qu'on voit.** Un manager qui répond lit par exemple, sous « Le soutien du manager » : « Votre manager vous soutient. Il y a encore de la place pour qu'il fasse davantage le lien entre les métiers. » Or il a répondu à « J'aide mon équipe à travailler ensemble. » Il parle de lui, pas de son manager.
+
+**La cause.** Dans `contenu.json > dimensions`, chaque dimension n'a qu'**une** série de phrases, écrites du point de vue d'un membre. Le même souci touche 3 autres dimensions et la phrase de fin des idées.
+
+**Le principe :**
+
+- Une dimension peut avoir en plus `nom_manager` et `phrases_manager`.
+- Côté résultat : si le rôle est « Le manager » **et** que la version manager existe, on l'utilise. Sinon, on garde la version actuelle.
+- Le rôle vient du lien personnel (`#v2-m…` pour un membre, `#v2-g…` pour un manager : vérifie le dans `lien.js`). Pour un lien `v1` sans rôle, version membre.
+- Le **tableau de bord ne change pas** : il garde les noms de dimension actuels.
+- Copie les textes ci dessous tels quels.
+
+**« Le soutien du manager » (affirmation 10).** `nom_manager` : **Votre soutien à l'équipe**
+
+| Niveau | Phrase |
+| --- | --- |
+| enracine | Vous aidez vraiment votre équipe à travailler ensemble. C'est un appui qui compte pour elle. |
+| croissance | Vous aidez votre équipe à travailler ensemble. Il y a encore de la place pour faire davantage le lien entre les métiers. |
+| germe | Vous aidez votre équipe à travailler ensemble par moments. Vous aimeriez sans doute pouvoir le faire plus souvent. |
+| semer | Aider l'équipe à travailler ensemble n'est pas simple aujourd'hui. Le voir clairement, c'est déjà un premier pas, et ça peut évoluer. |
+
+**« Ce qu'on sait les uns des autres » (affirmations 3 et 4).** Le nom ne change pas. `phrases_manager` :
+
+| Niveau | Phrase |
+| --- | --- |
+| enracine | Dans votre équipe, chacun connaît le travail des autres et sait ce que vous attendez. Ça rend le quotidien plus fluide. |
+| croissance | Votre équipe connaît une bonne partie du travail de chacun. Certaines contraintes, ou certaines de vos attentes, restent encore dans l'ombre. |
+| germe | Chacun connaît surtout les métiers les plus proches du sien. Ce que vous attendez n'est pas toujours clair pour tous. |
+| semer | Le travail de chacun reste encore peu connu des autres, et vos attentes ne sont pas toujours visibles. Ce n'est pas un manque d'envie, souvent un manque d'occasions. |
+
+**« La confiance et le soutien » (affirmations 11, 12 et 13).** Le nom ne change pas. `phrases_manager` :
+
+| Niveau | Phrase |
+| --- | --- |
+| enracine | Dans votre équipe, chacun peut dire ce qu'il pense, vous parler franchement et compter sur les autres. C'est une chance. |
+| croissance | La confiance et l'entraide sont là, même si tout ne se dit pas encore facilement, y compris avec vous. |
+| germe | La confiance existe avec certains. Vous dire un désaccord ou demander de l'aide dépend encore des personnes. |
+| semer | Dans votre équipe, dire ce qu'on pense ou demander de l'aide ne va pas encore de soi. Le regarder en face demande déjà du courage. |
+
+**« Le sens du travail » (affirmations 14 et 15).** Le nom ne change pas. `phrases_manager` :
+
+| Niveau | Phrase |
+| --- | --- |
+| enracine | Votre équipe voit le sens de son travail, et les chiffres restent au service de ce que vous faites ensemble. |
+| croissance | Le sens du travail est là, même si les chiffres prennent parfois beaucoup de place dans vos échanges. |
+| germe | Le sens du travail se voit par moments. Les chiffres occupent souvent le devant, et ça peut essouffler. |
+| semer | Au quotidien, les chiffres prennent le pas sur le sens du travail. Retrouver pourquoi on fait les choses compte, et vous le sentez. |
+
+Les autres dimensions (vise, place, info, accroche) conviennent aux deux rôles : pas de version manager.
+
+**La phrase de fin des idées.** Dans `contenu.json > envies`, ajoute `phrase_finale_manager` : « Ces idées sont les vôtres. Elles peuvent nourrir une prochaine discussion, avec votre équipe ou d'autres managers. » Utilise la dans `resultat.js` (aujourd'hui `contenu.envies.phrase_finale` en dur, ligne 406 environ) quand le rôle est manager. La version membre ne change pas.
+
+**Le titre de groupe dans le questionnaire.** Pour un manager, le groupe « Le soutien du manager » devient **« Votre rôle auprès de l'équipe »**. Ajoute `groupe_manager` sur l'affirmation 10 dans `contenu.json`. Le texte « Pourquoi on s'y intéresse » reste le même.
+
+Mets `DECISIONS.md` à jour : « Le résultat d'un manager est écrit de son point de vue, pour les dimensions où les affirmations manager diffèrent (soutien du manager, ce qu'on sait les uns des autres, confiance, sens). Le tableau de bord garde des noms communs. »
+
+✅ Résultat d'un **manager**, aux 4 niveaux de chaque dimension concernée : le texte affiché ne contient ni « Votre manager », ni « votre manager », ni « qu'il fasse », ni « Vous pouvez dire ce que vous pensez », ni « vos collègues ou votre manager ».
+✅ Résultat d'un manager : le titre de la dimension 10 est « Votre soutien à l'équipe ».
+✅ Résultat d'un **membre** : strictement identique à avant (compare le texte avant/après pour les 4 niveaux).
+✅ Lien `v1` sans rôle : version membre, sans erreur.
+✅ Questionnaire en manager : le groupe s'appelle « Votre rôle auprès de l'équipe ». En membre : « Le soutien du manager ».
+✅ Tableau de bord : les noms de dimension n'ont pas changé.
+
+## 16. Le haut du résultat
 
 **a. Trois boutons de même poids.** « Garder mon résultat », « Modifier mes réponses », « Modifier mon profil » sont trois `bouton-doux`. À 390, ils s'empilent avec trois largeurs différentes (bord droit en escalier). À faire : « Garder mon résultat » reste un `bouton-doux` ; les deux « Modifier » deviennent des `lien-discret`, sur une même ligne sous lui (ils passent l'un sous l'autre seulement s'ils ne tiennent pas).
 
@@ -276,7 +380,7 @@ export function carteEnsemble(reponses, contenu) {
 ✅ À 360, `.ensemble__etiquette` tient sur une ligne.
 ✅ À 390, le bord gauche du médaillon, de l'étiquette et du titre de la carte d'ensemble sont égaux, à 1px près.
 
-## 14. Le bas du résultat
+## 17. Le bas du résultat
 
 **a. Carte « Gardez votre résultat ».** L'icône garde sa colonne sur mobile : titre, texte et bouton commencent à 107px, 64px plus loin que les autres cartes. Cause : `.garder { grid-template-columns: 48px minmax(0, 1fr); }`. À 599px et moins : `grid-template-columns: minmax(0, 1fr);`, icône au dessus du titre, 40px.
 
@@ -304,21 +408,21 @@ export function carteEnsemble(reponses, contenu) {
 ✅ `.bloc__titre` a `font-family` qui commence par « Playfair Display » et `margin-top: 0`.
 ✅ `resultat.html` contient un `footer.pied` et aucun `.mention-finale`.
 
-## 15. Ce qu'on ne touche pas
+## 18. Ce qu'on ne touche pas
 
-- L'échelle de réponse en 4 colonnes sur une ligne (décision de la passe 8).
+- L'échelle de réponse en 4 colonnes sur une ligne.
 - Le compteur centré sur mobile et la réassurance en haut du profil (choix de la passe 10).
 - La carte « Ce qu'on cherche à comprendre » et le bloc Greatly (contenu et place).
 - L'ordre des étapes (profil avant les affirmations) et la promesse « 2 minutes ».
 - Les textes des affirmations, des relances et du résultat (sauf ceux cités ici), le lien v2, l'entonnoir, le dashboard.
 
-## 16. Vérification finale
+## 19. Vérification finale
 
 - `node scripts/verif/passe11.mjs` : tout OK dans Chromium et WebKit, à 1280, 390 et 360, contre le serveur local.
-- `node scripts/verif/parcours.mjs` et les vérifications des passes 8 et 9 passent toujours.
+- `node scripts/verif/parcours.mjs` passe toujours.
 - `npm test` passe (les 204 tests et les nouveaux).
 - Le compteur du vrai classeur n'a pas bougé pendant toute la passe.
-- Captures « après » de toutes les pages du point 0, mêmes largeurs, mêmes navigateurs.
-- `DECISIONS.md` à jour : règle de la carte d'ensemble (répondant et tableau de bord), deux axes sur mobile, compteur et coches centrés sur l'accueil mobile, étapes « Étape n sur 3 » sur mobile, liste des secteurs sans défilement interne, pilules en grille égale, boutons pleine largeur dans les cartes sur mobile.
+- Captures « après » de toutes les pages du point 0, mêmes largeurs, mêmes navigateurs, plus : le haut du questionnaire sans réponse (graine), une réponse « En bonne partie » à 390 et 1280, la fin du questionnaire à 16 réponses, et un résultat manager.
+- `DECISIONS.md` à jour : paliers de la pousse, coche sur ordinateur seulement, résultat manager, règle de la carte d'ensemble (répondant et tableau de bord), deux axes sur mobile, compteur et coches centrés sur l'accueil mobile, étapes « Étape n sur 3 » sur mobile, liste des secteurs sans défilement interne, pilules en grille égale, boutons pleine largeur dans les cartes sur mobile.
 - Changelog du README, `V` incrémenté dans `docs/assets/js/config.js`.
 - Rapport final en tableau, comme au point 0.

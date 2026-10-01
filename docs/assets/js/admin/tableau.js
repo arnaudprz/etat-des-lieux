@@ -236,7 +236,12 @@ async function demanderConnexion(code, email) {
 // ---------------------------------------------------------------- démarrage
 
 async function ouvrir(jeton) {
+  attente(true);
+  // Les deux requêtes partent ensemble : chacune coûte une à deux secondes
+  // côté Apps Script, les enchaîner doublait l'attente.
+  const contacts = chargerContacts(jeton);
   const resultat = await chargerDonnees(etat.contenu, jeton);
+  attente(false);
   if (!resultat.ok) {
     oublierJeton();
     return resultat;
@@ -249,16 +254,23 @@ async function ouvrir(jeton) {
     sortir.title = emailDuJeton(jeton);
   }
   etat.donnees = resultat.donnees;
-  etat.contacts = await chargerContacts(jeton);
+  $('[data-acces]').hidden = true;
+  $('[data-tableau]').hidden = false;
+  rendre();
 
+  // Les contacts complètent le tableau quand ils arrivent, sans le retenir.
+  etat.contacts = await contacts;
   const bouton = etat.sections.contacts.bouton;
   bouton.href = lienExport(etat.contacts);
   bouton.setAttribute('download', 'contacts-etat-des-lieux.csv');
   bouton.removeAttribute('aria-disabled');
-
-  $('[data-tableau]').hidden = false;
-  rendre();
+  if (etat.contacts.length) rendre();
   return { ok: true };
+}
+
+/** Le message d'attente, pendant que l'API répond. */
+function attente(active) {
+  $('[data-chargement]').hidden = !active;
 }
 
 async function demarrer() {
