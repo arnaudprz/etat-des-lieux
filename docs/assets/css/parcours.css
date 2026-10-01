@@ -1163,18 +1163,18 @@
   overflow-wrap: break-word;
 }
 
-/* Une coche discrète : la couleur ne doit jamais être le seul repère.
-   Elle est posée dans le coin, hors du flux, pour ne pas voler de la largeur
-   au libellé, déjà à l'étroit sur mobile. */
-.echelle__coche {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  opacity: 0;
-  transition: opacity .15s ease;
-}
+/* La coche, dans le flux juste avant le libellé, n'existe que sur la réponse
+   choisie et seulement à partir de 600px. Sur mobile, le fond plein, le texte
+   blanc et le gras suffisent : posée en coin, elle chevauchait le libellé. */
+.echelle__coche { display: none; }
 
-.echelle__choix[aria-pressed='true'] .echelle__coche { opacity: 1; }
+@media (min-width: 600px) {
+  .echelle__choix[aria-pressed='true'] .echelle__coche {
+    display: inline-block;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+}
 
 .echelle__coche::before {
   content: '';
@@ -1196,6 +1196,28 @@
   background: var(--sauge-fonce);
   border-color: var(--sauge-fonce);
   color: var(--blanc);
+  font-weight: 600;
+}
+
+/* Quatre colonnes sur une ligne, même à 360 : l'échelle se lit d'un coup
+   d'œil. La césure française rattrape « Pleinement » quand la largeur manque
+   (environ 63px de texte pour 57 à 64px de place). */
+@media (max-width: 599px) {
+  .echelle { gap: 6px; }
+  .echelle__choix {
+    padding: 6px 4px;
+    font-size: 13px;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    /* Seuls les mots longs se coupent, 4 lettres au moins de chaque côté :
+       « Pleine-ment », jamais « Pas en-core ». */
+    hyphenate-limit-chars: 8 4 4;
+    -webkit-hyphenate-limit-before: 4;
+    -webkit-hyphenate-limit-after: 4;
+  }
+}
+@media (max-width: 379px) {
+  .echelle__choix { font-size: 12.5px; }
 }
 
 /* La question « J'aimerais… » s'ouvre sous les boutons de réponse, dans la même
@@ -1318,10 +1340,9 @@
   outline-offset: 2px;
 }
 
-@media (min-width: 560px) {
+@media (min-width: 600px) {
   .echelle { gap: 10px; }
   .echelle__choix { padding: 4px 10px; font-size: 14px; }
-  .echelle__coche { top: 8px; left: 10px; }
 }
 
 @media (min-width: 900px) {

@@ -662,6 +662,50 @@ critere(11, 'paliers : croissance à 14 et 15, arbre plein à 16', [1280, 390], 
   }
   return true;
 });
+// Point 12 · l'échelle de réponse
+/** Mesures de la première échelle, avec « En bonne partie » choisi. */
+async function mesurerEchelle(page) {
+  await allerAuxQuestions(page);
+  await page.locator('.affirmation').first().locator('.echelle__choix').nth(2).click();
+  await page.waitForTimeout(400);
+  return page.locator('.affirmation').first().locator('.echelle__choix').evaluateAll((ns) => ns.map((b) => {
+    const r = b.getBoundingClientRect();
+    const lib = b.querySelector('.echelle__libelle');
+    const plage = document.createRange(); plage.selectNodeContents(lib);
+    const rects = Array.from(plage.getClientRects());
+    const coche = b.querySelector('.echelle__coche');
+    const c = coche.getBoundingClientRect();
+    const l = lib.getBoundingClientRect();
+    const bord = parseFloat(getComputedStyle(b).borderLeftWidth) || 0;
+    return {
+      texte: lib.textContent,
+      presse: b.getAttribute('aria-pressed') === 'true',
+      deborde: b.scrollWidth > b.clientWidth,
+      marge: Math.min(...rects.map((q) => Math.min(q.left - (r.left + bord), (r.right - bord) - q.right))),
+      lignes: new Set(rects.map((q) => Math.round(q.top))).size,
+      coche: getComputedStyle(coche).display,
+      chevauche: c.width > 0 && c.left < l.right && c.right > l.left && c.top < l.bottom && c.bottom > l.top,
+    };
+  }));
+}
+
+critere(12, 'la coche ne chevauche jamais le libellé', [1280, 390, 360], async ({ page }) => {
+  const m = await mesurerEchelle(page);
+  const f = m.find((x) => x.chevauche);
+  return !f || `« ${f.texte} »`;
+});
+
+critere(12, 'pas de coche sur mobile', [390], async ({ page }) => {
+  const m = await mesurerEchelle(page);
+  const f = m.find((x) => x.coche !== 'none');
+  return !f || `coche en ${f.coche} sur « ${f.texte} »`;
+});
+
+critere(12, 'libellés dans leur bouton, 4px de marge, 2 lignes au plus', [390, 360], async ({ page }) => {
+  const m = await mesurerEchelle(page);
+  const f = m.find((x) => x.deborde || x.marge < 4 || x.lignes > 2);
+  return !f || `« ${f.texte} » : débord ${f.deborde}, marge ${arrondi(f.marge)}px, ${f.lignes} lignes`;
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures

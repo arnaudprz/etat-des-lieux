@@ -859,18 +859,23 @@ async function passerLaCible(cible) {
     soucis.push(`[${nom}] progression : l'avancée annonce un chiffre « ${depart.texte} »`);
   }
 
-  // La réponse choisie porte une coche, pas seulement une couleur.
+  // La réponse choisie ne se distingue pas que par la couleur. Depuis la passe
+  // 11 : une coche dans le flux sur ordinateur, le gras sur mobile.
   await page.locator('.affirmation').first().locator('.echelle__choix').nth(3).click();
   await page.waitForTimeout(250);
   const coche = await page.evaluate(() => {
+    const vue = (n) => getComputedStyle(n).display !== 'none' && n.getBoundingClientRect().width > 0;
     const choisi = document.querySelector('.echelle__choix[aria-pressed="true"]');
     const autre = document.querySelector('.echelle__choix[aria-pressed="false"]');
     return {
-      visibleSurChoisi: parseFloat(getComputedStyle(choisi.querySelector('.echelle__coche')).opacity) > 0.5,
-      visibleSurAutre: parseFloat(getComputedStyle(autre.querySelector('.echelle__coche')).opacity) > 0.5,
+      mobile: window.innerWidth < 600,
+      visibleSurChoisi: vue(choisi.querySelector('.echelle__coche')),
+      visibleSurAutre: vue(autre.querySelector('.echelle__coche')),
+      gras: Number(getComputedStyle(choisi).fontWeight) >= 600,
     };
   });
-  if (!coche.visibleSurChoisi) soucis.push(`[${nom}] échelle : la réponse choisie n'a pas de coche`);
+  if (!coche.mobile && !coche.visibleSurChoisi) soucis.push(`[${nom}] échelle : la réponse choisie n'a pas de coche`);
+  if (coche.mobile && !coche.gras) soucis.push(`[${nom}] échelle : la réponse choisie n'est pas en gras`);
   if (coche.visibleSurAutre) soucis.push(`[${nom}] échelle : une réponse non choisie porte une coche`);
 
   // La jauge est collante et ne montre aucun chiffre.

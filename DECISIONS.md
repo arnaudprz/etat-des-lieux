@@ -141,3 +141,5 @@ L'ancienne note de conception parlait d'un contraste à « 4 points d'écart ».
 | --- | --- |
 | Sur mobile, à l'accueil, le compteur et les coches sont centrés sous le bouton pleine largeur | Le compteur était centré et les coches alignées à gauche : deux axes pour un même groupe. |
 | Paliers de la pousse : graine jusqu'à 3 réponses, germe jusqu'à 8, croissance jusqu'à 15, arbre à 16 seulement, et l'arbre du but s'allume à 16 | L'arbre arrivait dès 14 réponses : deux arbres identiques de chaque côté, le but semblait atteint avant la fin. |
+| La coche de la réponse choisie n'apparaît que sur ordinateur, dans le flux avant le libellé ; le mobile s'appuie sur le fond plein, le texte blanc et le gras | Posée en coin, elle chevauchait le libellé sur mobile (« ✓En bonne partie ») et semblait égarée sur ordinateur. |
+| L'échelle garde 4 colonnes sur une ligne jusqu'à 360px, avec césure des mots longs (« Pleine-ment ») | Elle se lit d'un coup d'œil de gauche à droite ; « Pleinement » ne tient pas entier dans 57 à 64px. |
