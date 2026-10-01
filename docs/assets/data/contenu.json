@@ -1011,12 +1011,12 @@
       "but": "enracine"
     },
     "partage": {
-      "question": "Envie de le faire découvrir ?",
-      "texte": "Seule la page d'accueil est partagée, jamais votre résultat.",
-      "bouton": "Partager l'accueil",
+      "question": "Partager l'état des lieux à des collègues ou à votre manager ?",
+      "texte": "Le lien ouvre le questionnaire, jamais votre résultat : chacun fait le sien, le vôtre ne regarde que vous.",
+      "bouton": "Partager l'état des lieux",
       "titre_partage": "État des lieux d'équipe Greatly",
       "phrase_partage": "Un état des lieux d'équipe en 2 minutes, anonyme et sans compte à créer.",
-      "copie": "Lien de l'accueil copié"
+      "copie": "Lien copié"
     },
     "retour": {
       "titre": "Gardez votre résultat",

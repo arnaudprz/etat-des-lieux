@@ -1155,8 +1155,10 @@ async function passerLaCible(cible) {
     if (!adresse.endsWith('/index.html')) {
       soucis.push(`[${nom}] resultat : le partage ne pointe pas vers l'accueil : ${adresse}`);
     }
-    if (!partage.texte.includes("page d'accueil")) {
-      soucis.push(`[${nom}] resultat : le texte ne dit pas que seule l'accueil est partagée`);
+    // On vérifie la garantie, pas une formulation : le texte doit dire que le
+    // résultat ne part pas. Sinon le moindre reformulage casse la vérification.
+    if (!/jamais votre résultat|pas votre résultat|jamais le vôtre/i.test(partage.texte)) {
+      soucis.push(`[${nom}] resultat : le texte ne garantit pas que le résultat n'est jamais partagé : « ${partage.texte} »`);
     }
     if (partage.pointille !== 'dashed') {
       soucis.push(`[${nom}] resultat : l'encadré de partage n'est pas en pointillé`);
