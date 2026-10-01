@@ -212,9 +212,11 @@ function brancherGarder(contenu) {
     });
   }
 
-  // Le raccourci clavier n'a de sens que là où il y a un clavier.
+  // Le raccourci clavier n'a de sens que là où il y a un clavier : pas sur un
+  // téléphone, même quand il ne sait pas partager.
   const favoris = $('[data-retour-raccourci]');
-  if (favoris && !partageDispo) {
+  const pointeurFin = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+  if (favoris && !partageDispo && pointeurFin) {
     texte(favoris, raccourciFavoris(contenu));
     favoris.hidden = false;
   }

@@ -796,7 +796,9 @@ critere(15, 'membre : résultat identique à avant', [1280], async ({ page, navi
   for (const [lien, texte] of Object.entries(avant)) {
     await allerAuResultat(page, lien);
     await page.waitForTimeout(500);
-    const t = await page.locator('[data-resultat]').innerText();
+    // Les zones que le point 15 touche ; empreinte prise sur la version d'avant
+    // le point 15 (commit du point 14), servie à part.
+    const t = (await page.locator('.ensemble, [data-bandes], [data-idees-resultats], [data-ligne-idees]').allInnerTexts()).join('\n');
     if (t !== texte) {
       const i = [...t].findIndex((ch, k) => ch !== texte[k]);
       return `${lien} : diffère vers « ${t.slice(Math.max(0, i - 20), i + 40)} »`;
@@ -872,6 +874,71 @@ critere(16, 'médaillon, étiquette et titre alignés à gauche', [390], async (
   const l = await boite(page, '.ensemble__medaillon');
   if (!pres(med.x, eti.x) || !pres(med.x, titre)) return `médaillon ${arrondi(med.x)}, étiquette ${arrondi(eti.x)}, titre ${arrondi(titre)}`;
   return pres(l.l, 96) || `médaillon de ${arrondi(l.l)}px`;
+});
+
+// Point 17 · le bas du résultat
+critere(17, '« Gardez votre résultat » : titre à 37px', [390], async ({ page }) => {
+  await allerAuResultat(page);
+  const x = await bordGaucheTexte(page, '.garder__titre');
+  return pres(x, 37) || `titre à ${arrondi(x)}px`;
+});
+
+critere(17, 'écran tactile sans partage : pas de raccourci clavier', [1280, 390], async ({ page }) => {
+  // Émule un écran tactile (pointer: coarse) sans navigator.share.
+  await page.addInitScript(() => {
+    const origine = window.matchMedia.bind(window);
+    window.matchMedia = (q) => (/pointer:\s*fine/.test(q)
+      ? { matches: false, media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} }
+      : origine(q));
+    try { delete Navigator.prototype.share; } catch (e) { /* absent */ }
+    try { Object.defineProperty(navigator, 'share', { value: undefined, configurable: true }); } catch (e) { /* absent */ }
+  });
+  await allerAuResultat(page);
+  const cache = await page.locator('[data-retour-raccourci]').isHidden();
+  return cache || 'le raccourci clavier est affiché';
+});
+
+critere(17, 'boutons des cartes à pleine largeur sur mobile', [390, 360], async ({ page }) => {
+  await allerAuResultat(page);
+  const ecarts = await page.evaluate(() => {
+    const cartes = [['.garder', '.garder__corps'], ['.partage', '.partage'], ['.greatly', '.greatly__texte'], ['.etude', '.etude']];
+    const sortie = [];
+    cartes.forEach(([carte, interieur]) => {
+      const i = document.querySelector(interieur);
+      const st = getComputedStyle(i);
+      const r = i.getBoundingClientRect();
+      const largeur = r.width - parseFloat(st.paddingLeft) - parseFloat(st.paddingRight)
+        - parseFloat(st.borderLeftWidth) - parseFloat(st.borderRightWidth);
+      document.querySelector(carte).querySelectorAll('.btn, .bouton-doux').forEach((b) => {
+        const l = b.getBoundingClientRect().width;
+        if (l && Math.abs(l - largeur) > 1) sortie.push(`${carte} « ${b.textContent.trim().slice(0, 24)} » ${Math.round(l)} pour ${Math.round(largeur)}`);
+      });
+    });
+    return sortie;
+  });
+  return !ecarts.length || ecarts.join(', ');
+});
+
+critere(17, '« Partager l’état des lieux » sur une ligne', [1280], async ({ page }) => {
+  await allerAuResultat(page);
+  const lignes = await page.evaluate(() => {
+    const b = document.querySelector('[data-partager-accueil]');
+    const r = document.createRange(); r.selectNodeContents(b);
+    return new Set(Array.from(r.getClientRects()).map((q) => Math.round(q.top))).size;
+  });
+  return lignes === 1 || `${lignes} lignes`;
+});
+
+critere(17, 'titre de l’étude en Playfair, sans marge haute', [1280, 390], async ({ page }) => {
+  await allerAuResultat(page);
+  const st = await page.locator('.bloc__titre').first().evaluate((n) => ({ f: getComputedStyle(n).fontFamily, m: getComputedStyle(n).marginTop }));
+  return (/^["']?Playfair Display/.test(st.f) && st.m === '0px') || `police ${st.f}, marge ${st.m}`;
+});
+
+critere(17, 'resultat.html finit sur footer.pied, sans .mention-finale', [1280], async ({ page }) => {
+  await allerAuResultat(page);
+  const m = await page.evaluate(() => ({ pied: document.querySelectorAll('footer.pied').length, mention: document.querySelectorAll('.mention-finale').length }));
+  return (m.pied === 1 && m.mention === 0) || `${m.pied} footer.pied, ${m.mention} .mention-finale`;
 });
 
 // <<< POINTS

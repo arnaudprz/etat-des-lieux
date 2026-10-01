@@ -1938,3 +1938,41 @@
   }
   .affirmation { padding-top: 18px; padding-bottom: 18px; }
 }
+
+/* ------------------------------------------------- le bas du résultat */
+
+/* Le titre de l'étude et « Merci, c'est noté » : en Playfair comme les
+   autres titres, plutôt que le h2 du navigateur. 28px à partir de 900px. */
+.bloc__titre {
+  margin: 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.2;
+  color: var(--foret);
+}
+@media (min-width: 900px) {
+  .bloc__titre { font-size: 28px; }
+}
+
+/* Le bouton de l'étude part à gauche ; sur mobile il prend toute la largeur. */
+.etude__envoyer { align-self: flex-start; }
+
+@media (min-width: 600px) {
+  .partage .bouton-doux { flex-shrink: 0; white-space: nowrap; }
+}
+
+/* Sous 600px : l'icône de « Gardez votre résultat » passe au-dessus du titre,
+   et tout bouton d'une carte prend la largeur de la carte, comme les boutons
+   du parcours. */
+@media (max-width: 599px) {
+  .garder { grid-template-columns: minmax(0, 1fr); }
+  .garder__pousse { width: 40px; height: 40px; }
+  .garder .btn, .garder .bouton-doux,
+  .partage .btn, .partage .bouton-doux,
+  .greatly .btn, .greatly .bouton-doux,
+  .etude .btn, .etude .bouton-doux {
+    width: 100%;
+    align-self: stretch;
+  }
+}
