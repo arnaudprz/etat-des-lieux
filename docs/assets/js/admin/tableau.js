@@ -204,8 +204,35 @@ function attendreGoogle(delai = 8000) {
 }
 
 /** Affiche le bouton « Se connecter avec Google », et essaie chaque jeton reçu. */
+/** « Copier l'adresse » : le presse-papiers, ou à défaut l'adresse sélectionnée. */
+function installerCopieEmail() {
+  const bouton = $('[data-copier-email]');
+  const adresse = $('[data-email-contact]');
+  const libelle = bouton.textContent;
+  bouton.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(adresse.textContent.trim());
+      bouton.textContent = 'Adresse copiée';
+    } catch (e) {
+      const plage = document.createRange();
+      plage.selectNodeContents(adresse);
+      const selection = getSelection();
+      selection.removeAllRanges();
+      selection.addRange(plage);
+      bouton.textContent = 'Adresse sélectionnée';
+    }
+    setTimeout(() => { bouton.textContent = libelle; }, 2000);
+  });
+}
+
+/** L'accueil prend toute la page ; l'en-tête du tableau revient avec lui. */
+function montrerAccueil(visible) {
+  $('[data-acces]').hidden = !visible;
+  $('[data-entete]').hidden = visible;
+}
+
 async function demanderConnexion(code, email) {
-  $('[data-acces]').hidden = false;
+  montrerAccueil(true);
   if (code) direAcces(code, email);
 
   if (!ID_CLIENT_GOOGLE) return direAcces('config');
@@ -220,7 +247,7 @@ async function demanderConnexion(code, email) {
       direAcces(null);
       const resultat = await ouvrir(credential);
       if (resultat.ok) return;
-      $('[data-acces]').hidden = false;
+      montrerAccueil(true);
       direAcces(resultat.code, resultat.email);
     },
   });
@@ -252,7 +279,7 @@ async function ouvrir(jeton) {
     sortir.title = emailDuJeton(jeton);
   }
   etat.donnees = resultat.donnees;
-  $('[data-acces]').hidden = true;
+  montrerAccueil(false);
   $('[data-tableau]').hidden = false;
   rendre();
 
@@ -284,7 +311,7 @@ function attente(active) {
   ecran.hidden = !active;
   if (!active) return;
 
-  $('[data-acces]').hidden = true;
+  montrerAccueil(false);
   let i = 0;
   message.textContent = MESSAGES_ATTENTE[0];
   minuterieAttente = setInterval(() => {
@@ -313,6 +340,8 @@ async function demarrer() {
     etat.filtres = filtres;
     rendre();
   });
+
+  installerCopieEmail();
 
   $('[data-deconnexion]').addEventListener('click', () => {
     oublierJeton();

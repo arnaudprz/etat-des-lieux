@@ -65,16 +65,144 @@
 
 /* ----------------------------------------------------------------- accès */
 
-.acces {
-  padding: 32px 28px;
+/* ---------------------------------------------------------------- accueil */
+
+.accueil {
+  display: grid;
+  grid-template-columns: 1fr;
+  background: var(--blanc);
+  border: 1px solid var(--bordure);
+  border-radius: 24px;
+  box-shadow: var(--ombre-flottante);
+  overflow: hidden;
+}
+
+.accueil__panneau {
+  padding: 32px 22px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.accueil__surtitre {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--sauge-fonce);
+}
+
+.accueil__titre {
+  margin: -10px 0 0;
+  font-size: clamp(30px, 6vw, 44px);
+  line-height: 1.12;
+  font-weight: 400;
+  color: var(--encre);
+}
+
+.accueil__intro {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--texte-doux);
+  max-width: 52ch;
+}
+
+.accueil__atouts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  max-width: 560px;
 }
 
-.acces__titre { margin: 0; font-size: 24px; }
-.acces__texte { margin: 0; font-size: 15px; line-height: 1.6; color: var(--taupe); }
+.accueil__atout {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--taupe);
+}
+.accueil__atout img { flex-shrink: 0; }
+.accueil__atout strong { display: block; font-weight: 600; color: var(--encre); }
+
+.accueil__connexion {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 22px;
+  border-top: 1px solid var(--bordure);
+}
+
+.accueil__mention { margin: 0; font-size: 13px; line-height: 1.5; color: var(--taupe); }
+
+.demande {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  border-radius: var(--rayon-bloc);
+  background: var(--vert-pale);
+}
+
+.demande__titre { margin: 0; font-size: 22px; font-weight: 400; color: var(--foret); }
+.demande__texte { margin: 0; font-size: 14px; line-height: 1.6; color: var(--texte-doux); }
+
+.demande__contact { display: flex; flex-direction: column; gap: 2px; }
+.demande__nom { font-size: 14px; font-weight: 600; color: var(--encre); }
+.demande__email { font-size: 14px; color: var(--sauge-fonce); overflow-wrap: anywhere; }
+
+.demande__actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.demande__bouton { text-decoration: none; }
+.demande .bouton-secondaire { background: var(--blanc); }
+
+.accueil__visuel {
+  position: relative;
+  margin: 0;
+  order: -1;
+  height: 200px;
+}
+
+.accueil__visuel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 60%;
+}
+
+.accueil__visuel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(45, 54, 38, 0) 35%, rgba(45, 54, 38, .78) 100%);
+}
+
+.accueil__legende {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 16px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--creme-foret);
+}
+.accueil__legende .serif { font-size: 20px; color: var(--creme); }
+
+@media (min-width: 900px) {
+  .accueil {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+    min-height: min(760px, calc(100vh - 48px));
+  }
+  .accueil__panneau { padding: 52px 52px 44px; gap: 26px; justify-content: center; }
+  .accueil__visuel { order: 0; height: auto; }
+  .accueil__legende { left: 36px; right: 36px; bottom: 32px; }
+}
 
 .acces__google { min-height: 44px; }
 

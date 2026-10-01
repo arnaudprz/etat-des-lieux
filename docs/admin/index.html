@@ -10,14 +10,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
-<link rel="stylesheet" href="../assets/css/base.css?v=25">
-<link rel="stylesheet" href="../assets/css/admin.css?v=25">
+<link rel="stylesheet" href="../assets/css/base.css?v=26">
+<link rel="stylesheet" href="../assets/css/admin.css?v=26">
 </head>
 <body class="admin">
 
 <main class="admin__page">
 
-  <header class="admin__entete">
+  <header class="admin__entete" data-entete>
     <div class="admin__identite">
       <span class="admin__surtitre">Greatly · Tableau de bord</span>
       <h1 class="admin__titre serif">État des lieux d'équipe</h1>
@@ -28,12 +28,55 @@
     </div>
   </header>
 
-  <!-- Écran d'accès, masqué en mode démo. -->
-  <section class="carte acces" data-acces hidden>
-    <h2 class="acces__titre serif">Accès au tableau de bord</h2>
-    <p class="acces__texte">Connectez-vous avec votre compte Google. Seules les adresses autorisées voient les réponses.</p>
-    <div class="acces__google" data-bouton-google></div>
-    <p class="message" data-message-acces role="alert" hidden></p>
+  <!-- Accueil et connexion, masqué en mode démo. -->
+  <section class="accueil" data-acces hidden>
+    <div class="accueil__panneau">
+      <span class="accueil__surtitre">Greatly · Espace privé</span>
+      <h1 class="accueil__titre serif">Le tableau de bord de l'état des lieux d'équipe</h1>
+      <p class="accueil__intro">Toutes les réponses au questionnaire, à jour à chaque visite. Voyez où les équipes se sentent solides, où elles décrochent, et ce qu'elles attendent.</p>
+
+      <ul class="accueil__atouts">
+        <li class="accueil__atout">
+          <img src="../assets/img/icone-enracine.svg" alt="" width="40" height="40">
+          <span><strong>Les résultats en direct</strong>chaque questionnaire rempli s'ajoute aussitôt.</span>
+        </li>
+        <li class="accueil__atout">
+          <img src="../assets/img/icone-croissance.svg" alt="" width="40" height="40">
+          <span><strong>Des filtres par profil</strong>rôle, taille d'équipe, secteur, taille d'entreprise.</span>
+        </li>
+        <li class="accueil__atout">
+          <img src="../assets/img/icone-germe.svg" alt="" width="40" height="40">
+          <span><strong>Les demandes d'étude</strong>les contacts à rappeler, exportables en un clic.</span>
+        </li>
+      </ul>
+
+      <div class="accueil__connexion">
+        <div class="acces__google" data-bouton-google></div>
+        <p class="accueil__mention">Accès réservé aux adresses autorisées. Rien n'est partagé avec Google au-delà de votre adresse e-mail.</p>
+        <p class="message" data-message-acces role="alert" hidden></p>
+      </div>
+
+      <aside class="demande" aria-labelledby="demande-titre">
+        <h2 class="demande__titre serif" id="demande-titre">Pas encore d'accès ?</h2>
+        <p class="demande__texte">Le tableau de bord est réservé à l'équipe Greatly et à ses partenaires. Écrivez-moi avec l'adresse Gmail que vous utiliserez, j'ouvre l'accès dans la journée.</p>
+        <div class="demande__contact">
+          <span class="demande__nom">Arnaud Przybylski</span>
+          <span class="demande__email" data-email-contact>arnaudprz@gmail.com</span>
+        </div>
+        <div class="demande__actions">
+          <a class="btn demande__bouton" href="mailto:arnaudprz@gmail.com?subject=Acc%C3%A8s%20au%20tableau%20de%20bord%20%C2%B7%20%C3%A9tat%20des%20lieux">Demander un accès</a>
+          <button class="bouton-secondaire" type="button" data-copier-email>Copier l'adresse</button>
+        </div>
+      </aside>
+    </div>
+
+    <figure class="accueil__visuel">
+      <img src="../assets/img/greatly-house.jpg" alt="La Greatly House, une maison de briques dans son parc, à Verlinghem">
+      <figcaption class="accueil__legende">
+        <span class="serif">La Greatly House</span>
+        Verlinghem, près de Lille. Le lieu où les équipes prennent du recul.
+      </figcaption>
+    </figure>
   </section>
 
   <!-- Le temps qu'Apps Script réponde : la silhouette du tableau à venir. -->
@@ -61,6 +104,6 @@
 </main>
 
 <script src="https://accounts.google.com/gsi/client" async></script>
-<script type="module" src="../assets/js/admin/tableau.js?v=25"></script>
+<script type="module" src="../assets/js/admin/tableau.js?v=26"></script>
 </body>
 </html>
