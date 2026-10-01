@@ -1,12 +1,13 @@
 /**
  * Vérifie la connexion Google du tableau de bord, hors mode démo.
  * Google et le backend sont simulés : rien ne sort vers la production.
- * Usage : node scripts/verif/connexion.mjs [URL_DE_BASE]
+ * Usage : node scripts/verif/connexion.mjs [URL_DE_BASE] [chromium|webkit|firefox]
  */
 
-import { chromium } from 'playwright';
+import * as playwright from 'playwright';
 
 const BASE = process.argv[2] || 'http://127.0.0.1:8127';
+const MOTEUR = process.argv[3] || 'chromium';
 const soucis = [];
 
 /** Un faux jeton Google : seul le contenu compte, la signature n'est pas lue ici. */
@@ -35,7 +36,7 @@ window.google = { accounts: { id: {
   },
 } } };`;
 
-const navigateur = await chromium.launch();
+const navigateur = await playwright[MOTEUR].launch();
 
 async function nouvellePage() {
   const contexte = await navigateur.newContext({ viewport: { width: 1280, height: 900 } });
@@ -117,7 +118,7 @@ verifier(!(await visible(page, '[data-tableau]')), 'tableau ouvert avec un jeton
 
 await navigateur.close();
 if (soucis.length) {
-  console.log('Connexion :\n- ' + soucis.join('\n- '));
+  console.log(`Connexion (${MOTEUR}) :\n- ` + soucis.join('\n- '));
   process.exit(1);
 }
-console.log('Connexion : aucun souci relevé.');
+console.log(`Connexion (${MOTEUR}) : aucun souci relevé.`);
