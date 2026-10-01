@@ -150,14 +150,6 @@
 .demande__titre { margin: 0; font-size: 22px; font-weight: 400; color: var(--foret); }
 .demande__texte { margin: 0; font-size: 14px; line-height: 1.6; color: var(--texte-doux); }
 
-.demande__contact { display: flex; flex-direction: column; gap: 2px; }
-.demande__nom { font-size: 14px; font-weight: 600; color: var(--encre); }
-.demande__email { font-size: 14px; color: var(--sauge-fonce); overflow-wrap: anywhere; }
-
-.demande__actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.demande__bouton { text-decoration: none; }
-.demande .bouton-secondaire { background: var(--blanc); }
-
 .accueil__visuel {
   position: relative;
   margin: 0;

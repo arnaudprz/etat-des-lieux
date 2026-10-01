@@ -204,27 +204,6 @@ function attendreGoogle(delai = 8000) {
 }
 
 /** Affiche le bouton « Se connecter avec Google », et essaie chaque jeton reçu. */
-/** « Copier l'adresse » : le presse-papiers, ou à défaut l'adresse sélectionnée. */
-function installerCopieEmail() {
-  const bouton = $('[data-copier-email]');
-  const adresse = $('[data-email-contact]');
-  const libelle = bouton.textContent;
-  bouton.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(adresse.textContent.trim());
-      bouton.textContent = 'Adresse copiée';
-    } catch (e) {
-      const plage = document.createRange();
-      plage.selectNodeContents(adresse);
-      const selection = getSelection();
-      selection.removeAllRanges();
-      selection.addRange(plage);
-      bouton.textContent = 'Adresse sélectionnée';
-    }
-    setTimeout(() => { bouton.textContent = libelle; }, 2000);
-  });
-}
-
 /** L'accueil prend toute la page ; l'en-tête du tableau revient avec lui. */
 function montrerAccueil(visible) {
   $('[data-acces]').hidden = !visible;
@@ -340,8 +319,6 @@ async function demarrer() {
     etat.filtres = filtres;
     rendre();
   });
-
-  installerCopieEmail();
 
   $('[data-deconnexion]').addEventListener('click', () => {
     oublierJeton();
