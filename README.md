@@ -10,11 +10,11 @@ mots et 4 couleurs. Les chiffres n'existent que dans le tableau de bord.
 ## Statut
 
 **En ligne et en collecte réelle.**
-<https://arnaudprz.github.io/etat-des-lieux/>
+<https://etat-des-lieux.greatly.club/>
 
 Le backend Apps Script est déployé, `API_URL` est renseignée, et les réponses
 sont enregistrées dans le Google Sheet. Le tableau de bord
-(<https://arnaudprz.github.io/etat-des-lieux/admin/>) s'ouvre avec `ADMIN_KEY`.
+(<https://etat-des-lieux.greatly.club/admin/>) s'ouvre avec `ADMIN_KEY`.
 
 Pour retrouver la démo à tout moment, sans rien enregistrer : ajouter `?demo=1`
 à l'adresse.
@@ -59,7 +59,7 @@ les polices de repli, tout reste lisible.
 npm test                                    # 204 tests, sans dépendance
 node scripts/verif/cahier-des-charges.mjs   # les 17 points de la section 10.5
 node scripts/verif/parcours.mjs             # rejoue le parcours dans Chromium et WebKit
-node scripts/verif/parcours.mjs https://arnaudprz.github.io/etat-des-lieux  # le site en ligne
+node scripts/verif/parcours.mjs https://etat-des-lieux.greatly.club  # le site en ligne
 node scripts/verif/parcours.mjs '' '' webkit  # une seule famille de navigateurs
 node scripts/verif/tableau.mjs              # vérifie le tableau de bord
 node scripts/verif/calibrer-demo.mjs        # mesure les données fictives

@@ -1,6 +1,6 @@
 # Mise en ligne
 
-Le site est **déjà en ligne** sur <https://arnaudprz.github.io/etat-des-lieux/>,
+Le site est **déjà en ligne** sur <https://etat-des-lieux.greatly.club/>,
 en mode démo. Le backend est **créé, poussé et déployé** ; il manque seulement
 l'autorisation Google et la clé d'administration, que toi seul peux donner.
 
@@ -212,7 +212,7 @@ git push -u origin main
 
 > **L'aperçu des réseaux sociaux** est déclaré en adresse absolue dans
 > `docs/index.html` (`og:url` et `og:image`), pointant vers
-> `https://arnaudprz.github.io/etat-des-lieux/`. Si tu publies ailleurs,
+> `https://etat-des-lieux.greatly.club/`. Si tu publies ailleurs,
 > corrige ces deux balises, sinon LinkedIn et WhatsApp n'afficheront pas
 > l'image. Pour la régénérer après un changement de titre :
 > `node scripts/generer-images.mjs`.
@@ -228,10 +228,10 @@ Sur le repo : **Settings ▸ Pages**.
 | Dossier | **`/docs`** |
 
 Après une minute, le site est sur
-<https://arnaudprz.github.io/etat-des-lieux/>.
+<https://etat-des-lieux.greatly.club/>.
 
 Le tableau de bord est sur
-<https://arnaudprz.github.io/etat-des-lieux/admin/>. Il demande `ADMIN_KEY`, et
+<https://etat-des-lieux.greatly.club/admin/>. Il demande `ADMIN_KEY`, et
 porte `noindex` pour ne pas se retrouver dans les moteurs de recherche.
 
 > Le repo est **public**. C'est voulu : il ne contient que du code. Aucune
