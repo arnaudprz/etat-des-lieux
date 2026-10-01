@@ -120,6 +120,13 @@ Ajouter une propriété**.
 | `ADMIN_KEY` | une longue phrase que tu inventes | Ouvre le tableau de bord. |
 | `PAPIER_BASE` | `255` | Facultatif : le code retombe déjà sur 255 tout seul. |
 
+> **Écris le nom exactement `ADMIN_KEY`, en capitales.** Les noms de
+> propriétés distinguent les majuscules : avec `ADMIN_Key`, le script ne
+> trouve rien et refuse toutes les clés, sans message explicite.
+
+> Et n'oublie pas **Enregistrer les propriétés du script** : sans ce clic, la
+> ligne reste affichée mais n'est pas conservée.
+
 Tu peux aussi ajouter `PLAFOND_PAR_MINUTE` (120 par défaut) pour régler la
 limite d'envois par minute.
 
@@ -283,6 +290,7 @@ npx clasp update-deployment <id> --description "v1"   # garde la même URL
 | --- | --- |
 | Le compteur affiche 255 alors qu'il y a des réponses | Le cache du compteur dure 10 minutes. Attends, ou relance `compteurPublic` depuis l'éditeur. |
 | Le tableau de bord refuse la clé | `ADMIN_KEY` n'est pas définie, ou le déploiement n'a pas été mis à jour après un `npx clasp push`. |
+| La clé est bien enregistrée mais toujours refusée | **Le nom de la propriété distingue les majuscules.** `ADMIN_Key` ou `Admin_key` ne sont pas `ADMIN_KEY` : `getProperty` renvoie `null` et tout est refusé, quelle que soit la valeur. |
 | Le site reste en mode démo | `API_URL` est vide dans `config.js`, ou l'adresse porte `?demo=1`. |
 | Rien ne s'enregistre | Le déploiement n'est pas en « Tout le monde », ou l'URL copiée n'est pas celle qui finit par `/exec`. |
 | L'API répond `403 Une autorisation est nécessaire` | Le script n'a jamais été autorisé. Ouvre l'éditeur et lance `compteurPublic` une fois (voir « Autoriser le script »). |
