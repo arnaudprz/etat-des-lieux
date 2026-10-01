@@ -30,6 +30,7 @@ function creerFeuille(nom) {
 /**
  * Prépare un environnement complet et y charge tous les fichiers du worker.
  * @param {object} options.proprietes Script Properties de départ.
+ * @param {object} options.jetons Ce que Google répond pour chaque jeton connu.
  * @returns le contexte, avec toutes les fonctions du worker et le faux classeur.
  */
 export function chargerWorker(options = {}) {
@@ -38,6 +39,8 @@ export function chargerWorker(options = {}) {
   const cache = new Map();
   const journal = [];
   let compteurUuid = 0;
+  const jetons = options.jetons || {};
+  const appelsGoogle = [];
 
   const classeur = {
     getSheetByName: (n) => feuilles.get(n) || null,
@@ -87,6 +90,21 @@ export function chargerWorker(options = {}) {
 
     Logger: { log: (m) => journal.push(String(m)) },
 
+    encodeURIComponent,
+
+    // Le point de vérification des jetons de Google : connu → 200, sinon 400.
+    UrlFetchApp: {
+      fetch(url) {
+        appelsGoogle.push(url);
+        const jeton = decodeURIComponent(new URL(url).searchParams.get('id_token') || '');
+        const infos = jetons[jeton];
+        return {
+          getResponseCode: () => (infos ? 200 : 400),
+          getContentText: () => JSON.stringify(infos || { error: 'invalid_token' }),
+        };
+      },
+    },
+
     ContentService: {
       MimeType: { JSON: 'JSON', TEXT: 'TEXT', CSV: 'CSV' },
       createTextOutput(s) {
@@ -120,6 +138,13 @@ export function chargerWorker(options = {}) {
   contexte.__journal = journal;
   contexte.__proprietes = proprietes;
   contexte.__cache = cache;
+  contexte.__appelsGoogle = appelsGoogle;
+  if (options.idClient !== undefined) contexte.ID_CLIENT_GOOGLE = options.idClient;
+
+  /** Ajoute une adresse à l'onglet `acces`, comme on le ferait dans le classeur. */
+  contexte.__autoriser = (email) => {
+    contexte.onglet('acces', ['email']).appendRow([email]);
+  };
 
   /** Les lignes d'un onglet, en objets, pour les assertions. */
   contexte.__lignes = (nom) => {

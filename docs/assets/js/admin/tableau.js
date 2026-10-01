@@ -5,11 +5,14 @@
  */
 
 import { chargerContenu } from '../contenu.js';
-import { modeDemo } from '../config.js';
+import { modeDemo, ID_CLIENT_GOOGLE } from '../config.js';
 import { $, el, vider, typographierPage } from '../parcours/commun.js';
 import { filtrer, filtresVides } from './agregats.js';
 import { installerFiltres } from './filtres.js';
-import { cleGardee, garderCle, oublierCle, chargerDonnees, chargerContacts, lienExport } from './auth.js';
+import {
+  jetonGarde, garderJeton, oublierJeton, emailDuJeton,
+  chargerDonnees, chargerContacts, lienExport,
+} from './auth.js';
 
 import { section, nombre } from './vues/briques.js';
 import { afficherIndicateurs } from './vues/indicateurs.js';
@@ -172,62 +175,90 @@ function rendre() {
 
 // ------------------------------------------------------------------ l'accès
 
-/** Demande la clé, tant qu'elle n'est pas acceptée. */
-function demanderCle(surCle) {
-  const ecran = $('[data-acces]');
-  const formulaire = $('[data-formulaire-cle]');
-  const champ = $('#cle');
-  const message = $('[data-message-cle]');
+/** Messages affichés sous le bouton Google, selon la raison du refus. */
+const MESSAGES_ACCES = {
+  connexion: 'La connexion a expiré. Reconnectez-vous.',
+  refuse: (email) => `Le compte ${email || 'choisi'} n’a pas accès au tableau de bord. Connectez-vous avec un compte autorisé.`,
+  reseau: 'Le tableau de bord ne répond pas. Réessayez dans un instant.',
+  google: 'La connexion Google n’a pas pu se charger. Vérifiez qu’aucun bloqueur ne l’empêche, puis rechargez.',
+  config: 'La connexion Google n’est pas encore configurée.',
+};
 
-  ecran.hidden = false;
-  champ.focus();
+function direAcces(code, email) {
+  const message = $('[data-message-acces]');
+  const texte = MESSAGES_ACCES[code];
+  message.textContent = typeof texte === 'function' ? texte(email) : texte || '';
+  message.hidden = !texte;
+}
 
-  formulaire.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const cle = champ.value.trim();
-    if (!cle) return;
-
-    message.hidden = true;
-    const bouton = formulaire.querySelector('button');
-    bouton.disabled = true;
-
-    const ok = await surCle(cle);
-    bouton.disabled = false;
-    if (ok) {
-      ecran.hidden = true;
-      return;
-    }
-    message.textContent = 'Clé refusée, ou API injoignable.';
-    message.hidden = false;
-    champ.select();
+/** Attend la bibliothèque Google, chargée en async. null si elle ne vient pas. */
+function attendreGoogle(delai = 8000) {
+  return new Promise((resoudre) => {
+    const debut = Date.now();
+    (function verifier() {
+      if (window.google?.accounts?.id) return resoudre(window.google.accounts.id);
+      if (Date.now() - debut > delai) return resoudre(null);
+      setTimeout(verifier, 100);
+    })();
   });
+}
+
+/** Affiche le bouton « Se connecter avec Google », et essaie chaque jeton reçu. */
+async function demanderConnexion(code, email) {
+  $('[data-acces]').hidden = false;
+  if (code) direAcces(code, email);
+
+  if (!ID_CLIENT_GOOGLE) return direAcces('config');
+  const gis = await attendreGoogle();
+  if (!gis) return direAcces('google');
+
+  gis.initialize({
+    client_id: ID_CLIENT_GOOGLE,
+    auto_select: true,
+    cancel_on_tap_outside: false,
+    callback: async ({ credential }) => {
+      direAcces(null);
+      const resultat = await ouvrir(credential);
+      if (resultat.ok) {
+        $('[data-acces]').hidden = true;
+        return;
+      }
+      direAcces(resultat.code, resultat.email);
+    },
+  });
+  gis.renderButton($('[data-bouton-google]'), {
+    theme: 'outline', size: 'large', shape: 'pill', text: 'signin_with', locale: 'fr',
+  });
+  // Après un refus de compte, on ne repropose pas d'office le même.
+  if (code !== 'refuse') gis.prompt();
 }
 
 // ---------------------------------------------------------------- démarrage
 
-async function ouvrir(cle) {
-  const resultat = await chargerDonnees(etat.contenu, cle);
-  if (!resultat.ok) return false;
-
-  garderCle(cle);
-  etat.donnees = resultat.donnees;
-  etat.contacts = await chargerContacts(cle);
-
-  const lien = lienExport(cle, etat.contacts);
-  const bouton = etat.sections.contacts.bouton;
-  if (lien) {
-    bouton.href = lien;
-    bouton.setAttribute('download', 'contacts-etat-des-lieux.csv');
-    bouton.removeAttribute('aria-disabled');
-  } else {
-    bouton.removeAttribute('href');
-    bouton.setAttribute('aria-disabled', 'true');
-    bouton.title = 'L’export sera disponible une fois l’API branchée.';
+async function ouvrir(jeton) {
+  const resultat = await chargerDonnees(etat.contenu, jeton);
+  if (!resultat.ok) {
+    oublierJeton();
+    return resultat;
   }
+
+  if (!modeDemo()) {
+    garderJeton(jeton);
+    const sortir = $('[data-deconnexion]');
+    sortir.hidden = false;
+    sortir.title = emailDuJeton(jeton);
+  }
+  etat.donnees = resultat.donnees;
+  etat.contacts = await chargerContacts(jeton);
+
+  const bouton = etat.sections.contacts.bouton;
+  bouton.href = lienExport(etat.contacts);
+  bouton.setAttribute('download', 'contacts-etat-des-lieux.csv');
+  bouton.removeAttribute('aria-disabled');
 
   $('[data-tableau]').hidden = false;
   rendre();
-  return true;
+  return { ok: true };
 }
 
 async function demarrer() {
@@ -247,7 +278,9 @@ async function demarrer() {
   });
 
   $('[data-deconnexion]').addEventListener('click', () => {
-    oublierCle();
+    oublierJeton();
+    // Sans quoi Google reconnecterait aussitôt le même compte.
+    window.google?.accounts?.id?.disableAutoSelect();
     location.reload();
   });
 
@@ -256,11 +289,15 @@ async function demarrer() {
     return;
   }
 
-  const gardee = cleGardee();
-  if (gardee && (await ouvrir(gardee))) return;
+  const garde = jetonGarde();
+  if (garde) {
+    const resultat = await ouvrir(garde);
+    if (resultat.ok) return;
+    return demanderConnexion(resultat.code === 'connexion' ? null : resultat.code, resultat.email);
+  }
 
-  oublierCle();
-  demanderCle(ouvrir);
+  oublierJeton();
+  demanderConnexion();
 }
 
 demarrer();

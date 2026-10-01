@@ -76,14 +76,7 @@
 .acces__titre { margin: 0; font-size: 24px; }
 .acces__texte { margin: 0; font-size: 15px; line-height: 1.6; color: var(--taupe); }
 
-.acces__formulaire {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.acces__formulaire .champ-texte { flex: 1 1 220px; min-width: 0; }
+.acces__google { min-height: 44px; }
 
 /* --------------------------------------------------------------- filtres */
 

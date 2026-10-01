@@ -99,16 +99,16 @@ export async function agregatsPublics() {
   return r;
 }
 
-/** Les données du tableau de bord. Protégé par clé. */
-export function donneesAdmin(cle) {
-  return lire({ action: 'donnees', cle });
+/** Les données du tableau de bord. Réservé aux comptes Google autorisés. */
+export function donneesAdmin(jeton) {
+  return lire({ action: 'donnees', jeton });
 }
 
-/** L'URL d'export CSV des contacts. Protégé par clé. */
-export function urlContactsCsv(cle) {
+/** L'URL du CSV des contacts. Réservé aux comptes Google autorisés. */
+export function urlContactsCsv(jeton) {
   if (!API_URL) return '';
   const url = new URL(API_URL);
   url.searchParams.set('action', 'contacts_csv');
-  url.searchParams.set('cle', cle);
+  url.searchParams.set('jeton', jeton);
   return url.href;
 }

@@ -1,7 +1,7 @@
 /**
  * Données du tableau de bord privé.
  *
- * Protégé par clé (Script Property ADMIN_KEY).
+ * Réservé aux comptes Google autorisés (voir acces.gs).
  *
  * Cette réponse ne contient jamais de contacts : les coordonnées passent par
  * l'action `contacts_csv`, séparée, pour qu'aucune réponse d'API ne mette côte à

@@ -13,7 +13,8 @@ var ONGLETS = {
   reponses: 'reponses',
   evenements: 'evenements',
   contacts: 'contacts',
-  papier: 'papier'
+  papier: 'papier',
+  acces: 'acces'
 };
 
 /** Colonnes de l'onglet reponses, dans l'ordre. */
@@ -28,7 +29,8 @@ function colonnesReponses() {
 
 var COLONNES = {
   evenements: ['date', 'session', 'type'],
-  contacts: ['date', 'prenom', 'nom', 'entreprise', 'email', 'consentement']
+  contacts: ['date', 'prenom', 'nom', 'entreprise', 'email', 'consentement'],
+  acces: ['email']
 };
 
 // ------------------------------------------------------------------ routage
@@ -63,13 +65,11 @@ function doGet(e) {
     if (p.action === 'compteur') return json(compteurPublic());
     if (p.action === 'agregats') return json(agregatsPublics());
 
-    // Lectures protégées par clé.
-    if (p.action === 'donnees') {
-      if (!cleValide(p.cle)) return json({ ok: false, erreur: 'Clé invalide.' });
-      return json(donneesTableauDeBord());
-    }
-    if (p.action === 'contacts_csv') {
-      if (!cleValide(p.cle)) return texte('Clé invalide.');
+    // Lectures réservées aux comptes Google autorisés (voir acces.gs).
+    if (p.action === 'donnees' || p.action === 'contacts_csv') {
+      var refus = refusAdmin(p.jeton);
+      if (refus) return json(refus);
+      if (p.action === 'donnees') return json(donneesTableauDeBord());
       return csv(contactsCsv(), 'contacts-etat-des-lieux.csv');
     }
 
@@ -101,17 +101,19 @@ function proprietes() {
   return PropertiesService.getScriptProperties();
 }
 
-/** La clé d'administration, gardée dans les Script Properties, jamais dans le code. */
-function cleValide(cle) {
-  var attendue = proprietes().getProperty('ADMIN_KEY');
-  if (!attendue || !cle) return false;
-  if (String(cle).length !== attendue.length) return false;
-  // Comparaison à temps constant, pour ne rien laisser deviner.
-  var ecart = 0;
-  for (var i = 0; i < attendue.length; i++) {
-    ecart |= attendue.charCodeAt(i) ^ String(cle).charCodeAt(i);
+/**
+ * null si la personne connectée peut lire le tableau de bord, sinon la réponse
+ * de refus. `code` dit au front s'il faut se reconnecter ou changer de compte.
+ */
+function refusAdmin(jeton) {
+  var email = emailDuJeton(jeton);
+  if (!email) {
+    return { ok: false, code: 'connexion', erreur: 'Connexion Google expirée ou invalide.' };
   }
-  return ecart === 0;
+  if (!adresseAutorisee(email)) {
+    return { ok: false, code: 'refuse', email: email, erreur: 'Ce compte n’a pas accès au tableau de bord.' };
+  }
+  return null;
 }
 
 /**

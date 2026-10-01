@@ -7,11 +7,38 @@ import { test, describe, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { chargerWorker, reponseValide, REPONSES, PROFIL } from './faux-apps-script.js';
 
-const CLE = 'clef-de-test-0123456789';
+const ID_CLIENT = 'client-test.apps.googleusercontent.com';
+
+/** Ce que Google atteste d'un jeton, avec une heure de validité par défaut. */
+function infosJeton(extra = {}) {
+  return {
+    iss: 'https://accounts.google.com',
+    aud: ID_CLIENT,
+    email: 'arnaudprz@gmail.com',
+    email_verified: 'true',
+    exp: String(Math.floor(Date.now() / 1000) + 3600),
+    ...extra,
+  };
+}
+
+const JETON = 'entete.charge.signature-proprietaire';
+const JETONS = {
+  [JETON]: infosJeton(),
+  'entete.charge.signature-invite': infosJeton({ email: 'Invite@Gmail.com' }),
+  'entete.charge.signature-inconnu': infosJeton({ email: 'inconnu@gmail.com' }),
+  'entete.charge.signature-expire': infosJeton({ exp: String(Math.floor(Date.now() / 1000) - 10) }),
+  'entete.charge.signature-autre-site': infosJeton({ aud: 'autre.apps.googleusercontent.com' }),
+  'entete.charge.signature-non-verifie': infosJeton({ email_verified: 'false' }),
+  'entete.charge.signature-faux-emetteur': infosJeton({ iss: 'https://pirate.example' }),
+};
+
+function worker(proprietes = {}) {
+  return chargerWorker({ proprietes, jetons: JETONS, idClient: ID_CLIENT });
+}
 
 let w;
 beforeEach(() => {
-  w = chargerWorker({ proprietes: { ADMIN_KEY: CLE } });
+  w = worker();
 });
 
 // ------------------------------------------------------- enregistrer une réponse
@@ -171,7 +198,7 @@ describe('événements d’entonnoir', () => {
     w.__post({ action: 'evenement', type: 'partage_accueil', session: 'a' });
     w.__post({ action: 'evenement', type: 'partage_accueil', session: 'a' });
     w.__post({ action: 'evenement', type: 'partage_accueil', session: 'b' });
-    const d = w.__get({ action: 'donnees', cle: CLE });
+    const d = w.__get({ action: 'donnees', jeton: JETON });
     // On compte les visites, pas les clics.
     assert.equal(d.entonnoir.partage_accueil, 2);
   });
@@ -262,7 +289,7 @@ describe('compteur', () => {
   });
 
   test('la valeur de base est réglable', () => {
-    const autre = chargerWorker({ proprietes: { ADMIN_KEY: CLE, PAPIER_BASE: '300' } });
+    const autre = worker({ PAPIER_BASE: '300' });
     assert.equal(autre.__get({ action: 'compteur' }).total, 300);
   });
 });
@@ -368,22 +395,76 @@ describe('import des réponses papier', () => {
 // ------------------------------------------------------------ accès protégés
 
 describe('accès au tableau de bord', () => {
-  test('refuse sans clé ou avec une mauvaise clé', () => {
-    assert.equal(w.__get({ action: 'donnees' }).ok, false);
-    assert.equal(w.__get({ action: 'donnees', cle: 'faux' }).ok, false);
-    assert.equal(w.__get({ action: 'donnees', cle: CLE + 'x' }).ok, false);
+  test('refuse sans jeton ou avec un jeton que Google ne reconnaît pas', () => {
+    assert.equal(w.__get({ action: 'donnees' }).code, 'connexion');
+    assert.equal(w.__get({ action: 'donnees', jeton: 'faux' }).code, 'connexion');
+    assert.equal(w.__get({ action: 'donnees', jeton: 'a.b.c' }).code, 'connexion');
   });
 
-  test('accepte avec la bonne clé', () => {
+  for (const [cas, jeton] of [
+    ['expiré', 'entete.charge.signature-expire'],
+    ['émis pour un autre site', 'entete.charge.signature-autre-site'],
+    ['à l’adresse non vérifiée', 'entete.charge.signature-non-verifie'],
+    ['d’un autre émetteur', 'entete.charge.signature-faux-emetteur'],
+  ]) {
+    test(`refuse un jeton ${cas}`, () => {
+      const r = w.__get({ action: 'donnees', jeton });
+      assert.equal(r.ok, false);
+      assert.equal(r.code, 'connexion');
+    });
+  }
+
+  test('reste fermé tant que l’identifiant OAuth n’est pas renseigné', () => {
+    const ferme = chargerWorker({ jetons: JETONS, idClient: '' });
+    assert.equal(ferme.__get({ action: 'donnees', jeton: JETON }).ok, false);
+    assert.equal(ferme.__appelsGoogle.length, 0);
+  });
+
+  test('refuse un compte Google valide mais non autorisé, en disant lequel', () => {
+    const r = w.__get({ action: 'donnees', jeton: 'entete.charge.signature-inconnu' });
+    assert.equal(r.ok, false);
+    assert.equal(r.code, 'refuse');
+    assert.equal(r.email, 'inconnu@gmail.com');
+    assert.equal(r.reponses, undefined);
+  });
+
+  test('une adresse ajoutée à l’onglet acces entre, sans tenir compte de la casse', () => {
+    const jeton = 'entete.charge.signature-invite';
+    assert.equal(w.__get({ action: 'donnees', jeton }).code, 'refuse');
+    w.__autoriser('  invite@gmail.COM ');
+    assert.equal(w.__get({ action: 'donnees', jeton }).ok, true);
+  });
+
+  test('retirer une adresse ferme l’accès aussitôt, même jeton en cache', () => {
+    const jeton = 'entete.charge.signature-invite';
+    w.__autoriser('invite@gmail.com');
+    assert.equal(w.__get({ action: 'donnees', jeton }).ok, true);
+    w.__feuilles.get('acces').lignes.splice(1);
+    assert.equal(w.__get({ action: 'donnees', jeton }).code, 'refuse');
+  });
+
+  test('le propriétaire entre toujours, et l’onglet acces est créé', () => {
+    assert.equal(w.__get({ action: 'donnees', jeton: JETON }).ok, true);
+    assert.equal(w.__feuilles.get('acces').lignes[0].join(), 'email');
+  });
+
+  test('Google n’est interrogé qu’une fois par jeton', () => {
+    w.__get({ action: 'donnees', jeton: JETON });
+    w.__get({ action: 'donnees', jeton: JETON });
+    w.__get({ action: 'contacts_csv', jeton: JETON });
+    assert.equal(w.__appelsGoogle.length, 1);
+  });
+
+  test('accepte le compte du propriétaire', () => {
     w.__post(reponseValide());
-    const d = w.__get({ action: 'donnees', cle: CLE });
+    const d = w.__get({ action: 'donnees', jeton: JETON });
     assert.equal(d.ok, true);
     assert.equal(d.reponses.length, 1);
   });
 
   test('les données ne contiennent jamais d’identifiant de ligne', () => {
     w.__post(reponseValide());
-    const d = w.__get({ action: 'donnees', cle: CLE });
+    const d = w.__get({ action: 'donnees', jeton: JETON });
     assert.ok(!('id' in d.reponses[0]), 'l’identifiant ne doit pas sortir');
   });
 
@@ -393,7 +474,7 @@ describe('accès au tableau de bord', () => {
       action: 'contact', prenom: 'Camille', nom: 'Durand',
       entreprise: 'Atelier', email: 'c@a.fr', consentement: true,
     });
-    const d = w.__get({ action: 'donnees', cle: CLE });
+    const d = w.__get({ action: 'donnees', jeton: JETON });
     const brut = JSON.stringify(d);
     assert.ok(!brut.includes('Camille'), 'aucun nom ne doit apparaître');
     assert.ok(!brut.includes('c@a.fr'), 'aucune adresse ne doit apparaître');
@@ -402,13 +483,13 @@ describe('accès au tableau de bord', () => {
 
   test('le tableau de bord reçoit l’échelle de chaque ligne', () => {
     w.__post(reponseValide());
-    const d = w.__get({ action: 'donnees', cle: CLE });
+    const d = w.__get({ action: 'donnees', jeton: JETON });
     assert.equal(d.reponses[0].echelle, 'v2-evolution');
   });
 
   test('les réponses sortent sous forme de tableau de 16 valeurs', () => {
     w.__post(reponseValide({ relances: { 7: [0, 'autre'] } }));
-    const d = w.__get({ action: 'donnees', cle: CLE });
+    const d = w.__get({ action: 'donnees', jeton: JETON });
     assert.deepEqual(d.reponses[0].reponses, REPONSES);
     assert.deepEqual(d.reponses[0].relances, { 7: [0, 'autre'] });
   });
@@ -418,7 +499,7 @@ describe('accès au tableau de bord', () => {
     w.__post({ action: 'evenement', type: 'visite', session: 'a' });
     w.__post({ action: 'evenement', type: 'visite', session: 'b' });
     w.__post({ action: 'evenement', type: 'termine', session: 'a' });
-    const d = w.__get({ action: 'donnees', cle: CLE });
+    const d = w.__get({ action: 'donnees', jeton: JETON });
     assert.equal(d.entonnoir.visite, 2);
     assert.equal(d.entonnoir.termine, 1);
   });
@@ -506,9 +587,15 @@ describe('les agrégats publics', () => {
 });
 
 describe('export des contacts', () => {
-  test('refuse sans la bonne clé', () => {
-    const sortie = w.__get({ action: 'contacts_csv' });
-    assert.equal(sortie.getContent(), 'Clé invalide.');
+  test('refuse sans connexion, et à un compte non autorisé', () => {
+    w.__post({
+      action: 'contact', prenom: 'Camille', nom: 'Durand',
+      entreprise: 'Atelier', email: 'c@a.fr', consentement: true,
+    });
+    assert.equal(w.__get({ action: 'contacts_csv' }).code, 'connexion');
+    const refus = w.__get({ action: 'contacts_csv', jeton: 'entete.charge.signature-inconnu' });
+    assert.equal(refus.code, 'refuse');
+    assert.ok(!JSON.stringify(refus).includes('Camille'));
   });
 
   test('renvoie un CSV téléchargeable', () => {
@@ -516,7 +603,7 @@ describe('export des contacts', () => {
       action: 'contact', prenom: 'Camille', nom: 'Durand',
       entreprise: 'Atelier du Nord', email: 'c@a.fr', consentement: true,
     });
-    const sortie = w.__get({ action: 'contacts_csv', cle: CLE });
+    const sortie = w.__get({ action: 'contacts_csv', jeton: JETON });
     assert.equal(sortie.type, 'CSV');
     assert.equal(sortie.fichier, 'contacts-etat-des-lieux.csv');
     const l = sortie.getContent().split('\r\n');
@@ -529,7 +616,7 @@ describe('export des contacts', () => {
       action: 'contact', prenom: 'Camille', nom: 'Durand',
       entreprise: 'Durand, Martin & "Cie"', email: 'c@a.fr', consentement: true,
     });
-    const csv = w.__get({ action: 'contacts_csv', cle: CLE }).getContent();
+    const csv = w.__get({ action: 'contacts_csv', jeton: JETON }).getContent();
     assert.ok(csv.includes('"Durand, Martin & ""Cie"""'));
   });
 });
@@ -538,7 +625,7 @@ describe('export des contacts', () => {
 
 describe('limitation de débit', () => {
   test('refuse au-delà du plafond, sans rien écrire', () => {
-    const petit = chargerWorker({ proprietes: { ADMIN_KEY: CLE, PLAFOND_PAR_MINUTE: '3' } });
+    const petit = worker({ PLAFOND_PAR_MINUTE: '3' });
     assert.equal(petit.__post(reponseValide()).ok, true);
     assert.equal(petit.__post(reponseValide()).ok, true);
     assert.equal(petit.__post(reponseValide()).ok, true);

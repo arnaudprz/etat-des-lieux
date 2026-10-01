@@ -10,12 +10,18 @@ export const API_URL = 'https://script.google.com/macros/s/AKfycbxxpB0S-UJCxRvsx
 export const VERSION_QUESTIONNAIRE = 'v1';
 
 /** Cache-buster des imports. À incrémenter à chaque déploiement. */
-export const V = 22;
+export const V = 23;
 
 /** Valeur affichée par le compteur si l'API ne répond pas. */
 export const COMPTEUR_REPLI = 255;
 
-/** Clé de session du tableau de bord (jamais persistée au-delà de l'onglet). */
+/**
+ * Identifiant OAuth du site, pour la connexion Google du tableau de bord.
+ * Public par nature. Le même figure dans worker/acces.gs.
+ */
+export const ID_CLIENT_GOOGLE = '';
+
+/** Clé de session du jeton Google du tableau de bord (jamais persisté au-delà de l'onglet). */
 export const CLE_SESSION_ADMIN = 'greatly_edl_admin';
 
 /** Clé de sauvegarde du parcours en cours. */
