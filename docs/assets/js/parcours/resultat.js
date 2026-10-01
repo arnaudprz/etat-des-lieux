@@ -16,7 +16,7 @@ import { lire as lireSession, ecrire as ecrireSession, memoriserResultat, profil
 import { phrases as phrasesComparaison, comparaisonActive } from '../comparaison.js';
 import {
   $, el, texte, vider, signalerModeDemo, typographierPage,
-  messageErreur, annoncer, evenement,
+  messageErreur, installerEtapes, annoncer, evenement,
 } from './commun.js';
 
 function afficherEnsemble(resultat) {
@@ -360,6 +360,7 @@ function brancherModifier(contenu, lu) {
 async function demarrer() {
   signalerModeDemo();
   const contenu = await chargerContenu();
+  installerEtapes(contenu);
 
   // contenu permet de vérifier que les indices de choix existent vraiment.
   const lu = decoder(location.hash, contenu);

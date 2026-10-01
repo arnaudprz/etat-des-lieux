@@ -228,6 +228,14 @@ body { padding-top: calc(var(--hauteur-demo, 0px) + var(--hauteur-bandeau)); }
 /* Sur mobile, seule l'étape en cours est nommée : les trois ne tiennent pas. */
 .etape:not(.etape--active) .etape__nom { display: none; }
 
+/* Sur mobile, les points ne tiennent pas à côté du logo : une ligne de texte
+   les remplace. Les étapes restent dans le DOM pour les lecteurs d'écran. */
+.etapes__mobile { display: none; font-size: 13px; color: var(--taupe); white-space: nowrap; }
+@media (max-width: 599px) {
+  .etapes { display: none; }
+  .etapes__mobile { display: inline; }
+}
+
 @media (min-width: 900px) {
   .etapes { gap: 28px; }
   .etape { font-size: 14px; }

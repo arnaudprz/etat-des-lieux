@@ -21,7 +21,7 @@ import { lire, ecrire, dejaEnvoye, retenirEnvoi } from '../session.js';
 import { envoyerReponse } from '../api.js';
 import {
   $, $$, el, texte, vider, signalerModeDemo, typographierPage,
-  messageErreur, annoncer, evenement,
+  messageErreur, installerEtapes, annoncer, evenement,
 } from './commun.js';
 
 /** Clé de la valeur « Autre » dans une relance, telle qu'enregistrée. */
@@ -477,6 +477,7 @@ async function allerAuResultat() {
 async function demarrer() {
   signalerModeDemo();
   contenu = await chargerContenu();
+  installerEtapes(contenu);
 
   const memoire = lire();
   if (!memoire.role) {

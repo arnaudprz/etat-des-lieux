@@ -87,6 +87,23 @@ export function signalerModeDemo() {
   );
 }
 
+/**
+ * Le fil des étapes : les noms viennent de contenu.json, et le mobile lit
+ * « Étape n sur 3 » à la place des points, qui ne tiennent pas à côté du logo.
+ * Un contenu plus ancien que le script garde les noms écrits dans le HTML.
+ */
+export function installerEtapes(contenu) {
+  const def = contenu && contenu.etapes;
+  if (!def) return;
+  const etapes = $$('.etapes .etape');
+  etapes.forEach((e, i) => {
+    if (def.noms && def.noms[i]) texte($('.etape__nom', e), def.noms[i]);
+  });
+  const n = etapes.findIndex((e) => e.classList.contains('etape--active')) + 1;
+  const mobile = $('.etapes__mobile');
+  if (mobile && n > 0 && def.mobile) texte(mobile, def.mobile.replace('{n}', n));
+}
+
 /** Enregistre un événement d'entonnoir, sans jamais bloquer la page. */
 export function evenement(type) {
   try {

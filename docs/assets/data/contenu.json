@@ -1160,5 +1160,13 @@
       "Playfair Display",
       "DM Sans"
     ]
+  },
+  "etapes": {
+    "noms": [
+      "Profil",
+      "Vos réponses",
+      "Votre état des lieux"
+    ],
+    "mobile": "Étape {n} sur 3"
   }
 }

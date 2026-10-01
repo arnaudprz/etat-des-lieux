@@ -11,7 +11,7 @@ import { compteur } from '../api.js';
 import { lire, ecrire, memoriserProfil } from '../session.js';
 import {
   $, el, texte, vider, signalerModeDemo, typographierPage,
-  messageErreur, normaliser,
+  messageErreur, installerEtapes, normaliser,
 } from './commun.js';
 
 /** Les champs obligatoires, dans l'ordre d'affichage. */
@@ -356,6 +356,7 @@ async function afficherCompteur(a) {
 async function demarrer() {
   signalerModeDemo();
   const contenu = await chargerContenu();
+  installerEtapes(contenu);
   const p = contenu.profil;
 
   texte($('[data-titre]'), p.titre);
