@@ -69,10 +69,43 @@
 
 .compteur strong { font-weight: 600; }
 
-.hero__mentions {
+/* Les trois repères de réassurance. Chacun porte sa coche : en une seule ligne
+   grise sous le bouton, ils se lisaient comme une mention légale. */
+.reperes {
   margin: 0;
-  font-size: 14px;
-  color: var(--taupe);
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.repere {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: var(--foret);
+}
+
+.repere__coche {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--voile);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.repere__coche::before {
+  content: '';
+  width: 4px;
+  height: 8px;
+  border: solid var(--sauge-fonce);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
 }
 
 /* L'illustration des quatre pousses. */

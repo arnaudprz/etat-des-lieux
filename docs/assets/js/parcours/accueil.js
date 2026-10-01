@@ -60,9 +60,21 @@ function remplirHaut(a) {
   texte($('[data-badge]'), a.badge);
   texte($('[data-titre]'), a.titre);
   texte($('[data-texte]'), a.texte);
-  texte($('[data-mentions]'), a.mentions);
   texte($('[data-compteur-texte]'), a.compteur);
   $$('[data-bouton]').forEach((b) => texte(b, a.bouton));
+
+  // Trois repères, chacun avec sa coche : en une seule ligne grise sous le
+  // bouton, ils se lisaient comme une mention légale et passaient inaperçus.
+  const reperes = $('[data-reperes]');
+  vider(reperes);
+  a.reperes.forEach((r) => {
+    reperes.appendChild(
+      el('li', { classe: 'repere' }, [
+        el('span', { classe: 'repere__coche', attrs: { 'aria-hidden': 'true' } }),
+        r,
+      ])
+    );
+  });
 }
 
 function remplirPourquoi(contenu) {

@@ -169,7 +169,7 @@ async function passerLaCible(cible) {
   // L'ordre de la page, et sur ordinateur le premier écran complet.
   const structure = await page.evaluate(() => {
     const ordre = Array.from(document.querySelectorAll(
-      '.hero__texte .badge, .hero__titre, .hero__intro, .hero__actions, .hero__mentions, .hero__illustration'
+      '.hero__texte .badge, .hero__titre, .hero__intro, .hero__actions, .reperes, .hero__illustration'
     )).map((x) => x.className.split(' ')[0] || x.tagName.toLowerCase());
     const dansEcran = (sel) => {
       const n = document.querySelector(sel);
@@ -191,7 +191,7 @@ async function passerLaCible(cible) {
   if (structure.points !== 4) {
     soucis.push(`[${nom}] accueil : ${structure.points} points numérotés au lieu de 4`);
   }
-  const ordreAttendu = ['badge', 'hero__titre', 'hero__intro', 'hero__actions', 'hero__mentions', 'hero__illustration'];
+  const ordreAttendu = ['badge', 'hero__titre', 'hero__intro', 'hero__actions', 'reperes', 'hero__illustration'];
   if (JSON.stringify(structure.ordre) !== JSON.stringify(ordreAttendu)) {
     soucis.push(`[${nom}] accueil : ordre ${structure.ordre.join(' > ')}`);
   }
@@ -248,6 +248,21 @@ async function passerLaCible(cible) {
     carte: document.querySelector('meta[name="twitter:card"]')?.getAttribute('content') || '',
     titre: document.querySelector('meta[property="og:title"]')?.getAttribute('content') || '',
   }));
+  // Les trois repères de réassurance, chacun avec sa coche.
+  const reperes = await page.evaluate(() => {
+    const items = Array.from(document.querySelectorAll('.repere'));
+    return {
+      nombre: items.length,
+      textes: items.map((i) => i.textContent.trim()),
+      coches: items.filter((i) => i.querySelector('.repere__coche')).length,
+    };
+  });
+  if (reperes.nombre !== 3) soucis.push(`[${nom}] accueil : ${reperes.nombre} repères au lieu de 3`);
+  if (reperes.coches !== 3) soucis.push(`[${nom}] accueil : ${reperes.coches} coches au lieu de 3`);
+  if (reperes.textes[0] !== 'Anonyme') {
+    soucis.push(`[${nom}] accueil : premier repère « ${reperes.textes[0] || ''} »`);
+  }
+
   if (!metas.icone) soucis.push(`[${nom}] accueil : pas de favicon`);
   if (!metas.ecranAccueil) soucis.push(`[${nom}] accueil : pas d'icône d'écran d'accueil`);
   if (!metas.image.startsWith('http') || !metas.image.endsWith('.png')) {

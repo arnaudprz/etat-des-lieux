@@ -933,7 +933,12 @@
       ],
       "mention": "Formulations Greatly, inspirées de ces travaux."
     },
-    "pied": "Vos réponses sont anonymes. Elles servent à calculer votre résultat et, regroupées, à publier un baromètre."
+    "pied": "Vos réponses sont anonymes. Elles servent à calculer votre résultat et, regroupées, à publier un baromètre.",
+    "reperes": [
+      "Anonyme",
+      "Aucun compte à créer",
+      "Résultat immédiat"
+    ]
   },
   "questions": {
     "titre": "Comment vivez-vous le travail ensemble ?",

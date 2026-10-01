@@ -138,3 +138,4 @@ chacune, et régénère `docs/assets/js/illustrations.js`.
 | 30/09/2026 | `bcbbfac` | Passe 7, section 1 : le bandeau « Revenez bientôt sur votre lien ». |
 | 30/09/2026 | `c919551` | Passe 7, section 2 : préparer « Vous n'êtes pas seul ». |
 | 01/10/2026 | `4afce0e` | Logo du site, bandeau fixe, et bas du résultat en deux blocs. |
+| 01/10/2026 | `à venir` | Les trois repères de réassurance de l'accueil. |
