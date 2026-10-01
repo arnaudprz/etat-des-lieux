@@ -326,6 +326,27 @@ critere(3, 'ordinateur : marges des cartes inchangées', [1280], async ({ page }
   }
   return ecarts.length ? ecarts.join(', ') : true;
 });
+// Point 4 · le haut de l'accueil
+critere(4, 'accueil : compteur et lignes de coches centrés', [390, 360], async ({ page }) => {
+  await aller(page, `${BASE}/index.html`);
+  await page.waitForSelector('.hero .repere');
+  const m = await page.evaluate(() => {
+    const centre = window.innerWidth / 2;
+    const c = document.querySelector('.hero__actions .compteur').getBoundingClientRect();
+    const lignes = {};
+    document.querySelectorAll('.hero .repere').forEach((r) => {
+      const b = r.getBoundingClientRect();
+      const cle = Math.round(b.top);
+      lignes[cle] = lignes[cle] || { g: Infinity, d: -Infinity };
+      lignes[cle].g = Math.min(lignes[cle].g, b.left);
+      lignes[cle].d = Math.max(lignes[cle].d, b.right);
+    });
+    return { centre, compteur: (c.left + c.right) / 2, lignes: Object.values(lignes).map((l) => (l.g + l.d) / 2) };
+  });
+  if (!pres(m.compteur, m.centre, 2)) return `compteur centré à ${arrondi(m.compteur)} pour ${m.centre}`;
+  const decale = m.lignes.find((x) => !pres(x, m.centre, 2));
+  return decale == null || `une ligne de coches centrée à ${arrondi(decale)} pour ${m.centre}`;
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures

@@ -134,3 +134,9 @@ Les choix faits avec Arnaud pendant la conception des maquettes (septembre 2026)
 ## Règle de calcul qui fait foi
 
 L'ancienne note de conception parlait d'un contraste à « 4 points d'écart ». **La règle retenue est celle du simulateur** : contraste quand au moins 2 niveaux de couleur séparent la dimension la plus installée de la moins installée. En cas de doute, `maquette/Simulateur.dc.html` fait foi.
+
+## Passe 11 : mise en page mobile et ordinateur
+
+| Décision | Pourquoi |
+| --- | --- |
+| Sur mobile, à l'accueil, le compteur et les coches sont centrés sous le bouton pleine largeur | Le compteur était centré et les coches alignées à gauche : deux axes pour un même groupe. |
