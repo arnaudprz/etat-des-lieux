@@ -830,6 +830,50 @@ critere(15, 'tableau de bord : noms de dimension inchangés', [1280], async ({ p
   if (t.includes("Votre soutien à l'équipe")) return 'le nom manager apparaît dans le tableau de bord';
   return t.includes('Le soutien du manager') || '« Le soutien du manager » absent du tableau de bord';
 });
+// Point 16 · le haut du résultat
+/** Le vrai parcours jusqu'au résultat : le profil est alors mémorisé, et « Modifier mon profil » s'affiche. */
+async function resultatApresParcours(page) {
+  await allerAuxQuestions(page);
+  await repondre(page, REPONSES);
+  await page.locator('[data-voir]').click();
+  await page.waitForURL(/resultat\.html/, { timeout: 20000 });
+  await page.waitForSelector('[data-resultat]:not([hidden])');
+  await page.waitForTimeout(500);
+}
+
+critere(16, 'les deux « Modifier » en liens discrets, sur une ligne', [390], async ({ page }) => {
+  await resultatApresParcours(page);
+  const m = await page.evaluate(() => ['[data-modifier]', '[data-modifier-profil]'].map((s) => {
+    const n = document.querySelector(s);
+    return { discret: n.classList.contains('lien-discret'), haut: Math.round(n.getBoundingClientRect().top), vu: !n.hidden };
+  }));
+  if (!m.every((x) => x.vu)) return 'un des deux liens est caché';
+  if (!m.every((x) => x.discret)) return 'classe lien-discret absente';
+  return m[0].haut === m[1].haut || `hauts ${m[0].haut} et ${m[1].haut}`;
+});
+
+critere(16, 'l’étiquette de la carte d’ensemble tient sur une ligne', [360], async ({ page }) => {
+  for (const lien of ['#v2-m0000000000000000', '#v2-m1111111111111111', LIEN_MEMBRE, '#v2-m3333333333333333']) {
+    await allerAuResultat(page, lien);
+    const lignes = await page.evaluate(() => {
+      const r = document.createRange(); r.selectNodeContents(document.querySelector('.ensemble__etiquette'));
+      return new Set(Array.from(r.getClientRects()).map((q) => Math.round(q.top))).size;
+    });
+    if (lignes !== 1) return `${lien} : ${lignes} lignes`;
+  }
+  return true;
+});
+
+critere(16, 'médaillon, étiquette et titre alignés à gauche', [390], async ({ page }) => {
+  await allerAuResultat(page);
+  const med = await boite(page, '.ensemble__medaillon');
+  const eti = await boite(page, '.ensemble__etiquette');
+  const titre = await bordGaucheTexte(page, '.ensemble__titre');
+  const l = await boite(page, '.ensemble__medaillon');
+  if (!pres(med.x, eti.x) || !pres(med.x, titre)) return `médaillon ${arrondi(med.x)}, étiquette ${arrondi(eti.x)}, titre ${arrondi(titre)}`;
+  return pres(l.l, 96) || `médaillon de ${arrondi(l.l)}px`;
+});
+
 // <<< POINTS
 
 // --------------------------------------------------------------- captures

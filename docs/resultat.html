@@ -49,8 +49,12 @@
       <p class="intro" style="max-width: 760px">Une photo de votre équipe aujourd'hui, telle que vous la voyez. Pas de note, pas de classement.</p>
       <div class="resultat__actions">
         <button class="bouton-doux" type="button" data-garder>Garder mon résultat</button>
-        <button class="bouton-doux" type="button" data-modifier hidden></button>
-        <button class="bouton-doux" type="button" data-modifier-profil hidden></button>
+        <!-- Une seule action en bouton ; les deux retours en arrière, plus
+             discrets, partagent une ligne sous lui. -->
+        <div class="resultat__modifier">
+          <button class="lien-discret" type="button" data-modifier hidden></button>
+          <button class="lien-discret" type="button" data-modifier-profil hidden></button>
+        </div>
       </div>
     </div>
 

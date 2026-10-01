@@ -128,9 +128,17 @@
    Elles passent l'une sous l'autre quand la place manque. */
 .resultat__actions {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+/* « Modifier mes réponses » et « Modifier mon profil » sur une ligne ; l'un
+   sous l'autre seulement s'ils ne tiennent pas côte à côte. */
+.resultat__modifier {
+  display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
+  gap: 0 16px;
 }
 
 /* Haut d'une étape du parcours : titre, intro, puis les mêmes repères que
@@ -1386,12 +1394,18 @@
   gap: 24px;
 }
 
-/* Sur mobile le médaillon passe au-dessus de l'étiquette, centré. */
+/* Sur mobile le médaillon passe au-dessus de l'étiquette. Centré, il ne
+   suivait pas le texte, aligné à gauche : sous 600px, tout part du même bord. */
 .ensemble__principal {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
+}
+
+@media (max-width: 599px) {
+  .ensemble__principal { align-items: flex-start; }
+  .ensemble .ensemble__medaillon { width: 96px; height: 96px; }
 }
 
 .ensemble__medaillon {

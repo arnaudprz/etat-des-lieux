@@ -1198,7 +1198,8 @@ async function passerLaCible(cible) {
     }
     if (!medaillon.decoratif) soucis.push(`[${nom}] resultat : le médaillon n'est pas décoratif`);
     if (!medaillon.charge) soucis.push(`[${nom}] resultat : le médaillon ne se charge pas`);
-    const tailleAttendue = largeur >= 900 ? 180 : 120;
+    // Passe 11 : 96px sous 600px, 120px entre 600 et 899px, 180px au-delà.
+    const tailleAttendue = largeur >= 900 ? 180 : (largeur >= 600 ? 120 : 96);
     if (medaillon.taille !== tailleAttendue) {
       soucis.push(`[${nom}] resultat : médaillon de ${medaillon.taille}px au lieu de ${tailleAttendue}`);
     }
