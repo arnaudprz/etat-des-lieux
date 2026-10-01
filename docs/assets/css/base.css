@@ -130,11 +130,19 @@ body { padding-top: calc(var(--hauteur-demo, 0px) + var(--hauteur-bandeau)); }
 .bandeau__long { display: none; }
 
 .bandeau a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
   color: var(--creme);
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
   flex-shrink: 0;
+}
+
+/* Sur mobile, le bandeau suit l'axe de la page : texte à 20px du bord. */
+@media (max-width: 599px) {
+  .bandeau { padding: 0 20px; justify-content: space-between; }
 }
 
 @media (min-width: 900px) {

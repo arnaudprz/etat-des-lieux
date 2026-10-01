@@ -202,6 +202,46 @@ critere(1, 'ordinateur : étapes nommées, version mobile cachée', [1280], asyn
   }
   return true;
 });
+// Point 2 · le bandeau du haut
+critere(2, 'texte du bandeau à 20px du bord', [390], async ({ page }) => {
+  await aller(page, `${BASE}/index.html`);
+  const x = await bordGaucheTexte(page, '.bandeau__texte');
+  return pres(x, 20) || `bord gauche à ${arrondi(x)}px`;
+});
+
+critere(2, 'lien du bandeau d’au moins 40px de haut', [1280, 390, 360], async ({ page }) => {
+  for (const url of ['index.html', 'profil.html']) {
+    await aller(page, `${BASE}/${url}`);
+    const b = await boite(page, '.bandeau a');
+    if (!b || b.h < 40 - 0.5) return `${url} : ${b ? arrondi(b.h) : 'absent'}px`;
+  }
+  return true;
+});
+
+critere(2, 'questions : le bandeau défile, la progression reste en haut', [390], async ({ page }) => {
+  await allerAuxQuestions(page);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  const avant = { bandeau: await boite(page, '.bandeau'), prog: await boite(page, '.progression') };
+  if (avant.prog.y < avant.bandeau.bas - 1) return 'à 0 de défilement, la progression chevauche le bandeau';
+  await page.evaluate(() => window.scrollTo(0, 1500));
+  await page.waitForTimeout(300);
+  const bandeau = await boite(page, '.bandeau');
+  const prog = await boite(page, '.progression');
+  if (bandeau && bandeau.bas > 0.5) return `bandeau encore visible (bas à ${arrondi(bandeau.bas)}px)`;
+  return pres(prog.y, 0) || `progression en haut à ${arrondi(prog.y)}px`;
+});
+
+critere(2, '« Question suivante » ne cache pas l’affirmation sous la barre', [1280, 390, 360], async ({ page }) => {
+  await allerAuxQuestions(page);
+  await page.locator('.affirmation').nth(0).locator('.echelle__choix').nth(0).click();
+  await page.waitForSelector('.relance__suivant', { state: 'visible' });
+  await page.locator('.relance__suivant').first().click();
+  await page.waitForTimeout(1200);
+  const prog = await boite(page, '.progression');
+  const cible = await boite(page, '[data-affirmation="2"]');
+  if (!cible) return 'affirmation 2 introuvable';
+  return cible.y >= prog.bas - 1 || `affirmation à ${arrondi(cible.y)}px, barre jusqu’à ${arrondi(prog.bas)}px`;
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures

@@ -1010,6 +1010,17 @@
   );
 }
 
+/* Questionnaire sur mobile : le bandeau Greatly défile avec la page, seule la
+   barre d'avancement reste collée en haut. 84px pris en permanence, dont un
+   lien qui fait sortir, c'était trop pour un petit écran. */
+@media (max-width: 599px) {
+  .page-questions .bandeau { position: absolute; }
+  .page-questions .progression { top: var(--hauteur-demo, 0px); }
+  .page-questions .affirmation {
+    scroll-margin-top: calc(var(--hauteur-demo, 0px) + var(--hauteur-progression) + 16px);
+  }
+}
+
 /* Toujours sauge : ce n'est pas un score, la jauge ne reprend jamais les
    couleurs du résultat. */
 .progression__jauge {
