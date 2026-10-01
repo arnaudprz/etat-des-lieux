@@ -942,7 +942,8 @@
     "deja_fait": {
       "texte": "Vous avez déjà fait votre état des lieux sur cet appareil.",
       "voir": "Voir mon état des lieux",
-      "modifier": "Modifier mes réponses"
+      "modifier": "Modifier mes réponses",
+      "profil": "Modifier mon profil"
     }
   },
   "questions": {
@@ -1037,7 +1038,8 @@
       "titre_partage": "Mon état des lieux d'équipe",
       "phrase_partage": "Mon état des lieux d'équipe, à garder.",
       "echec_copie": "Copie refusée, le lien est ci-dessous",
-      "modifier": "Modifier mes réponses"
+      "modifier": "Modifier mes réponses",
+      "profil": "Modifier mon profil"
     },
     "comparaison": {
       "seuil_ensemble": 100,

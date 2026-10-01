@@ -265,6 +265,16 @@ body { padding-top: calc(var(--hauteur-demo, 0px) + var(--hauteur-bandeau)); }
   opacity: .65;
 }
 
+/* Une action de même famille, mais secondaire : le contour sans le plein.
+   Les trois boutons côte à côte seraient trop lourds tous en vert. */
+.btn--doux {
+  background: transparent;
+  color: var(--foret);
+  border: 1px solid var(--foret);
+}
+
+.btn--doux:hover { background: var(--foret); color: var(--blanc); }
+
 .btn--clair {
   background: var(--creme);
   color: var(--foret);

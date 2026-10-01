@@ -12,7 +12,7 @@ import { decoder } from '../lien.js';
 import { medaillon, icone, chemin } from '../illustration-niveau.js';
 import { parDimension, pourLesResultats, auMoinsUneIdee } from '../envies.js';
 import { envoyerContact, agregatsPublics } from '../api.js';
-import { lire as lireSession, ecrire as ecrireSession, memoriserResultat } from '../session.js';
+import { lire as lireSession, ecrire as ecrireSession, memoriserResultat, profilMemorise } from '../session.js';
 import { phrases as phrasesComparaison, comparaisonActive } from '../comparaison.js';
 import {
   $, el, texte, vider, signalerModeDemo, typographierPage,
@@ -336,6 +336,25 @@ function brancherModifier(contenu, lu) {
     ecrireSession({ role: lu.role, reponses: lu.reponses, relances: lu.relances });
     location.href = 'questions.html';
   });
+
+  // La première partie, le profil : rien n'y ramenait une fois le résultat
+  // affiché. Elle n'est pas dans le lien, on la reprend donc là où elle a été
+  // gardée sur l'appareil.
+  const versProfil = $('[data-modifier-profil]');
+  const memoire = profilMemorise();
+  if (versProfil && memoire && contenu.engagement.retour.profil) {
+    texte(versProfil, contenu.engagement.retour.profil);
+    versProfil.hidden = false;
+    versProfil.addEventListener('click', () => {
+      ecrireSession({
+        role: memoire.role || lu.role,
+        profil: memoire.profil,
+        reponses: lu.reponses,
+        relances: lu.relances,
+      });
+      location.href = 'profil.html';
+    });
+  }
 }
 
 async function demarrer() {

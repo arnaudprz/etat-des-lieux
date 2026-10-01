@@ -8,7 +8,7 @@
 
 import { chargerContenu } from '../contenu.js';
 import { compteur } from '../api.js';
-import { lire, ecrire } from '../session.js';
+import { lire, ecrire, memoriserProfil } from '../session.js';
 import {
   $, el, texte, vider, signalerModeDemo, typographierPage,
   messageErreur, normaliser,
@@ -402,10 +402,10 @@ async function demarrer() {
       return;
     }
     oublierLesManques(formulaire);
-    ecrire({
-      role: roleDepuisChoix(contenu, etat.role),
-      profil: { ...etat },
-    });
+    const role = roleDepuisChoix(contenu, etat.role);
+    ecrire({ role, profil: { ...etat } });
+    // Gardé aussi hors de l'onglet, pour pouvoir y revenir plus tard.
+    memoriserProfil({ ...etat }, role);
     location.href = 'questions.html';
   });
 }

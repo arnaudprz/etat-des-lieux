@@ -10,7 +10,7 @@
 
 import { chargerContenu } from '../contenu.js';
 import { compteur } from '../api.js';
-import { resultatMemorise, ecrire as ecrireSession } from '../session.js';
+import { resultatMemorise, profilMemorise, ecrire as ecrireSession } from '../session.js';
 import { decoder } from '../lien.js';
 import { POUSSES, POUSSES_HAUTEUR } from '../illustrations.js';
 import { $, $$, el, texte, vider, signalerModeDemo, evenement, typographierPage } from './commun.js';
@@ -197,7 +197,7 @@ function proposerResultatConnu(contenu) {
   // peut servir l'ancien contenu.json quelques minutes après une mise en ligne.
   // Sans ce garde-fou, le bouton s'affichait vide. Mieux vaut l'accueil normal
   // qu'un bouton sans libellé.
-  if (!d || !d.modifier || !d.voir) return;
+  if (!d || !d.modifier || !d.voir || !d.profil) return;
 
   const adresse = resultatMemorise();
   if (!adresse) return;
@@ -231,6 +231,23 @@ function proposerResultatConnu(contenu) {
     // Le même bouton, juste à côté, pour aller droit au résultat.
     const voir = el('a', { classe: 'btn', texte: d.voir, attrs: { href: adresse } });
     bouton.insertAdjacentElement('afterend', voir);
+
+    // Et la première partie, le profil, qu'on ne pouvait pas reprendre.
+    const memoire = profilMemorise();
+    if (memoire) {
+      const profil = el('a', { classe: 'btn btn--doux', texte: d.profil, attrs: { href: 'profil.html' } });
+      profil.addEventListener('click', (e) => {
+        e.preventDefault();
+        ecrireSession({
+          role: memoire.role || lu.role,
+          profil: memoire.profil,
+          reponses: lu.reponses,
+          relances: lu.relances,
+        });
+        location.href = 'profil.html';
+      });
+      voir.insertAdjacentElement('afterend', profil);
+    }
   });
 }
 

@@ -93,6 +93,35 @@ export function oublierResultat() {
 }
 
 /**
+ * Le profil, gardé d'une visite à l'autre.
+ *
+ * Il n'est pas dans le lien : sans ça, revenir sur « la première partie »
+ * demandait de tout ressaisir dès que l'onglet avait été fermé. Ces réponses
+ * restent sur l'appareil et ne sont jamais relues depuis le serveur, qui les
+ * conserve sans aucun moyen de les rattacher à quelqu'un.
+ */
+const CLE_PROFIL = 'greatly_edl_profil';
+
+/** Retient le profil saisi. */
+export function memoriserProfil(profil, role) {
+  try {
+    localStorage.setItem(CLE_PROFIL, JSON.stringify({ profil, role }));
+  } catch (e) { /* stockage refusé : on s'en passe */ }
+}
+
+/** Le dernier profil connu sur cet appareil, ou null. */
+export function profilMemorise() {
+  try {
+    const brut = localStorage.getItem(CLE_PROFIL);
+    if (!brut) return null;
+    const v = JSON.parse(brut);
+    return v && v.profil ? v : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
  * Empreinte du dernier questionnaire envoyé au serveur.
  *
  * Revenir sur ses réponses et revalider sans rien changer créait une seconde
