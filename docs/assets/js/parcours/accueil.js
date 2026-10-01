@@ -68,6 +68,11 @@ function remplirHaut(a) {
   // Trois repères, chacun avec sa coche : en une seule ligne grise sous le
   // bouton, ils se lisaient comme une mention légale et passaient inaperçus.
   const reperes = $('[data-reperes]');
+  // Un contenu plus ancien que ce script n'a pas ces textes : le CDN peut
+  // servir l'ancien contenu.json quelques minutes après une mise en ligne.
+  // Sans ce garde-fou, l'erreur interrompait le démarrage et la page restait
+  // à moitié construite.
+  if (!reperes || !Array.isArray(a.reperes)) return;
   vider(reperes);
   a.reperes.forEach((r) => {
     reperes.appendChild(

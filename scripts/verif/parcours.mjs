@@ -170,6 +170,51 @@ async function remplirProfil(page) {
   await page.locator('#secteurs .secteurs__choix', { hasText: /^Santé$/ }).click();
 }
 
+/**
+ * Le parcours résiste-t-il à un contenu plus ancien que le script ?
+ *
+ * Après une mise en ligne, le CDN peut servir l'ancien contenu.json avec le
+ * nouveau JavaScript. Une clé manquante levait alors une erreur qui
+ * interrompait le démarrage : le formulaire du profil n'était jamais
+ * construit, et la page affichait une carte blanche vide. L'essentiel ne doit
+ * jamais dépendre d'un texte décoratif.
+ */
+async function verifierContenuPerime(navigateur, options, soucis) {
+  const cles = ['reperes', 'compteur', 'deja_fait', 'mentions'];
+  const contexte = await navigateur.newContext(options);
+  const page = await contexte.newPage();
+  await repondreALaPlaceDuBackend(page);
+
+  for (const cle of cles) {
+    await page.unroute('**/contenu.json*').catch(() => {});
+    await page.route('**/contenu.json*', async (route) => {
+      const reponse = await route.fetch();
+      const json = await reponse.json();
+      delete json.accueil[cle];
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(json),
+      });
+    });
+
+    await aller(page, `${BASE}/profil.html`);
+    await page.waitForTimeout(1200);
+    const champs = await page.locator('#profil .champ').count();
+    if (champs === 0) {
+      soucis.push(`contenu périmé : sans accueil.${cle}, le formulaire du profil ne se construit pas`);
+    }
+
+    await aller(page, `${BASE}/index.html`);
+    await page.waitForTimeout(1200);
+    const cartes = await page.locator('.dimensions .carte').count();
+    if (cartes === 0) {
+      soucis.push(`contenu périmé : sans accueil.${cle}, l'accueil ne se construit pas`);
+    }
+  }
+  await contexte.close();
+}
+
 async function passerLaCible(cible) {
   const { nom, suffixe, lanceur, options } = cible;
   const largeur = options.viewport ? options.viewport.width : 390;
@@ -1389,6 +1434,15 @@ async function passerLaCible(cible) {
 
 for (const cible of CIBLES) {
   await passerLaCible(cible);
+}
+
+// Une seule passe suffit : la résistance au contenu périmé ne dépend pas du
+// navigateur ni de la largeur.
+if (!FILTRE || FILTRE === 'chromium') {
+  const { chromium } = await import('playwright');
+  const navigateur = await chromium.launch();
+  await verifierContenuPerime(navigateur, { viewport: { width: 1280, height: 900 }, locale: 'fr-FR' }, soucis);
+  await navigateur.close();
 }
 
 console.log(`${capturesPrises} captures écrites dans ${SORTIE}`);

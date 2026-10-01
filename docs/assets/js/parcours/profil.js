@@ -325,7 +325,10 @@ function montrerLesManques(formulaire, reste) {
  */
 function remplirReperes(a) {
   const liste = $('[data-reperes]');
-  if (!liste) return;
+  // Un contenu plus ancien que ce script n'a pas ces textes : le CDN peut
+  // servir l'ancien contenu.json quelques minutes après une mise en ligne.
+  // Sans ce garde-fou, l'erreur interrompait tout et le formulaire restait vide.
+  if (!liste || !a || !Array.isArray(a.reperes)) return;
   vider(liste);
   a.reperes.forEach((r) => {
     liste.appendChild(
@@ -343,7 +346,7 @@ function remplirReperes(a) {
  */
 async function afficherCompteur(a) {
   const cible = $('[data-compteur]');
-  if (!cible) return;
+  if (!cible || !a || !a.compteur) return;
   texte($('[data-compteur-texte]'), a.compteur);
   texte(cible, String(await compteur()));
   const bloc = cible.closest('.compteur');
@@ -357,8 +360,6 @@ async function demarrer() {
 
   texte($('[data-titre]'), p.titre);
   texte($('[data-intro]'), p.texte);
-  remplirReperes(contenu.accueil);
-  afficherCompteur(contenu.accueil);
 
   const formulaire = $('[data-formulaire]');
   const message = $('#message');
@@ -388,6 +389,10 @@ async function demarrer() {
     const entree = formulaire.querySelector(`input[name="${cle}"][value="${CSS.escape(valeur)}"]`);
     if (entree) entree.checked = true;
   });
+
+  // Le décor vient après le formulaire, et ne peut pas l'empêcher d'exister.
+  remplirReperes(contenu.accueil);
+  afficherCompteur(contenu.accueil);
 
   typographierPage();
 
