@@ -1,6 +1,5 @@
 # Mise en ligne
 
-
 > **Depuis le 1er octobre 2026, `ADMIN_KEY` ne sert plus.** Le tableau de bord
 > s'ouvre par connexion Google (voir `worker/acces.gs`) :
 > - `arnaudprz@gmail.com` entre toujours ;
@@ -11,6 +10,7 @@
 >   et `http://localhost:8080`). Il figure dans `worker/acces.gs` et
 >   `docs/assets/js/config.js`.
 > - La propriété `ADMIN_KEY` peut être supprimée des Script Properties.
+
 Le site est **déjà en ligne** sur <https://etat-des-lieux.greatly.club/>,
 en mode démo. Le backend est **créé, poussé et déployé** ; il manque seulement
 l'autorisation Google et la clé d'administration, que toi seul peux donner.
