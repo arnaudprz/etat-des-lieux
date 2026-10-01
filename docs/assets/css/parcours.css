@@ -1789,3 +1789,19 @@
   .etude { padding: 36px 40px; }
   .etude__grille { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+
+/* ------------------------------------------------- deux axes sur mobile */
+
+/* Sous 600px, deux axes seulement : 20px pour ce qui est hors carte, 37px
+   (20 + 1 de bordure + 16) pour le premier texte dans une carte. Toutes les
+   cartes ont donc la même marge intérieure horizontale. */
+:root { --marge-carte: 16px; }
+@media (max-width: 599px) {
+  .pourquoi__carte, .apercu, .cadre-etude, .affirmation, .formulaire,
+  .ensemble, .garder, .partage, .etude, .greatly__texte, .dimensions .carte,
+  .vide, .bloc {
+    padding-left: var(--marge-carte);
+    padding-right: var(--marge-carte);
+  }
+  .affirmation { padding-top: 18px; padding-bottom: 18px; }
+}

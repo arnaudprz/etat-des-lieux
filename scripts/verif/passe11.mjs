@@ -242,6 +242,90 @@ critere(2, '« Question suivante » ne cache pas l’affirmation sous la barre',
   if (!cible) return 'affirmation 2 introuvable';
   return cible.y >= prog.bas - 1 || `affirmation à ${arrondi(cible.y)}px, barre jusqu’à ${arrondi(prog.bas)}px`;
 });
+// Point 3 · deux axes seulement sur mobile
+/** Les quatre pages du parcours, ouvertes dans l'état où leurs cartes se voient. */
+const PAGES_AXES = [
+  ['accueil', (page) => aller(page, `${BASE}/index.html`)],
+  ['profil', (page) => aller(page, `${BASE}/profil.html`)],
+  ['questions', async (page) => { await allerAuxQuestions(page); await repondre(page, REPONSES_TROIS_RELANCES); }],
+  ['resultat', (page) => allerAuResultat(page)],
+];
+/** Les cartes du point 3, plus celles trouvées en route (.vide, .bloc). */
+const CARTES = '.pourquoi__carte, .apercu, .cadre-etude, .affirmation, .formulaire, .ensemble, .garder, '
+  + '.partage, .etude, .greatly__texte, .dimensions .carte, .vide, .bloc';
+/** L'ensemble et « Gardez votre résultat » ont leur propre critère (points 16 et 17). */
+const CARTES_AVEC_POINT_DEDIE = ['ensemble', 'garder'];
+
+critere(3, 'titres et intros hors carte à 20px', [390, 360], async ({ page }) => {
+  for (const [nom, ouvrir] of PAGES_AXES) {
+    await ouvrir(page);
+    const ecarts = await page.evaluate(() => {
+      const premier = (n) => {
+        const w = document.createTreeWalker(n, NodeFilter.SHOW_TEXT, { acceptNode: (t) => (t.nodeValue.trim() ? 1 : 3) });
+        while (w.nextNode()) { const r = document.createRange(); r.selectNodeContents(w.currentNode); const q = r.getClientRects()[0]; if (q && q.width) return q.left; }
+        return null;
+      };
+      return Array.from(document.querySelectorAll('h1, h2, .intro'))
+        .filter((n) => n.getBoundingClientRect().width && !n.closest('.carte, .carte-pointillee, .greatly'))
+        .map((n) => ({ quoi: `${n.tagName}.${n.className.split(' ')[0]}`, x: premier(n) }))
+        .filter((e) => e.x != null && Math.abs(e.x - 20) > 1);
+    });
+    if (ecarts.length) return `${nom} : ${ecarts.map((e) => `${e.quoi} à ${Math.round(e.x)}px`).join(', ')}`;
+  }
+  return true;
+});
+
+critere(3, 'premier texte des cartes à 37px', [390, 360], async ({ page }) => {
+  for (const [nom, ouvrir] of PAGES_AXES) {
+    await ouvrir(page);
+    const ecarts = await page.evaluate(({ sel, exclues }) => {
+      const premier = (n) => {
+        const w = document.createTreeWalker(n, NodeFilter.SHOW_TEXT, { acceptNode: (t) => (t.nodeValue.trim() ? 1 : 3) });
+        while (w.nextNode()) { const r = document.createRange(); r.selectNodeContents(w.currentNode); const q = r.getClientRects()[0]; if (q && q.width) return q.left; }
+        return null;
+      };
+      return Array.from(document.querySelectorAll(sel))
+        .filter((n) => n.getBoundingClientRect().width && !exclues.some((c) => n.classList.contains(c)))
+        .map((n) => {
+          // Une carte sans bordure (le bloc Greatly) a son axe à 36px : 20 + 16.
+          const cadre = n.classList.contains('greatly__texte') ? n.closest('.greatly') : n;
+          const bord = parseFloat(getComputedStyle(cadre).borderLeftWidth) || 0;
+          return { quoi: n.className.split(' ').filter((c) => c !== 'carte')[0] || 'carte', x: premier(n), attendu: 36 + bord };
+        })
+        .filter((e) => e.x != null && Math.abs(e.x - e.attendu) > 1);
+    }, { sel: CARTES, exclues: CARTES_AVEC_POINT_DEDIE });
+    if (ecarts.length) {
+      return `${nom} : ${[...new Set(ecarts.map((e) => `${e.quoi} à ${Math.round(e.x)}px (attendu ${e.attendu})`))].join(', ')}`;
+    }
+  }
+  return true;
+});
+
+/** Les marges intérieures mesurées à 1280 avant la passe : elles ne doivent pas bouger. */
+const MARGES_ORDINATEUR = {
+  '.pourquoi__carte': '32px 32px 32px 32px', '.apercu': '32px 32px 32px 32px',
+  '.formulaire': '40px 40px 40px 40px', '.cadre-etude': '22px 26px 22px 26px',
+  '.affirmation': '28px 32px 28px 32px', '.ensemble': '36px 40px 36px 40px',
+  '.garder': '32px 32px 32px 32px', '.partage': '24px 32px 24px 32px',
+  '.greatly__texte': '40px 44px 40px 44px', '.etude': '36px 40px 36px 40px',
+};
+
+critere(3, 'ordinateur : marges des cartes inchangées', [1280], async ({ page }) => {
+  const ecarts = [];
+  for (const [, ouvrir] of PAGES_AXES) {
+    await ouvrir(page);
+    for (const [sel, attendu] of Object.entries(MARGES_ORDINATEUR)) {
+      const lu = await page.evaluate((s) => {
+        const n = document.querySelector(s);
+        if (!n) return null;
+        const st = getComputedStyle(n);
+        return `${st.paddingTop} ${st.paddingRight} ${st.paddingBottom} ${st.paddingLeft}`;
+      }, sel);
+      if (lu && lu !== attendu) ecarts.push(`${sel} ${lu} au lieu de ${attendu}`);
+    }
+  }
+  return ecarts.length ? ecarts.join(', ') : true;
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures
