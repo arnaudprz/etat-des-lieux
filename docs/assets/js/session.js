@@ -55,3 +55,64 @@ export function idVisite() {
   ecrire({ session: id });
   return id;
 }
+
+// --------------------------------------------------- mémoire durable du résultat
+
+/**
+ * Le dernier état des lieux terminé, gardé d'une visite à l'autre.
+ *
+ * sessionStorage disparaît à la fermeture de l'onglet : quelqu'un qui revient
+ * le lendemain devait tout refaire. On garde donc le lien du résultat dans
+ * localStorage. Ce lien ne contient que des chiffres de réponses, aucune donnée
+ * personnelle, et il ne quitte jamais le navigateur.
+ */
+const CLE_RESULTAT = 'greatly_edl_resultat';
+
+/** Retient le lien du résultat affiché. */
+export function memoriserResultat(adresse) {
+  try {
+    localStorage.setItem(CLE_RESULTAT, adresse);
+  } catch (e) { /* stockage refusé : on s'en passe */ }
+}
+
+/** Le dernier résultat connu sur cet appareil, ou null. */
+export function resultatMemorise() {
+  try {
+    const v = localStorage.getItem(CLE_RESULTAT);
+    return v && v.includes('#') ? v : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/** Oublie le résultat mémorisé. */
+export function oublierResultat() {
+  try {
+    localStorage.removeItem(CLE_RESULTAT);
+  } catch (e) { /* rien à faire */ }
+}
+
+/**
+ * Empreinte du dernier questionnaire envoyé au serveur.
+ *
+ * Revenir sur ses réponses et revalider sans rien changer créait une seconde
+ * ligne identique en base. On retient donc ce qui a été envoyé, et on ne
+ * renvoie pas deux fois la même chose.
+ */
+const CLE_ENVOI = 'greatly_edl_dernier_envoi';
+
+/** Vrai si ce questionnaire a déjà été envoyé tel quel. */
+export function dejaEnvoye(empreinte) {
+  try {
+    return localStorage.getItem(CLE_ENVOI) === empreinte;
+  } catch (e) {
+    return false;
+  }
+}
+
+/** Retient l'empreinte du questionnaire envoyé. */
+export function retenirEnvoi(empreinte) {
+  try {
+    localStorage.setItem(CLE_ENVOI, empreinte);
+  } catch (e) { /* rien à faire */ }
+}

@@ -80,6 +80,33 @@
 
 .compteur strong { font-weight: 600; }
 
+/* Quand un état des lieux a déjà été fait sur cet appareil : on le propose,
+   au lieu de laisser repartir de zéro sans le savoir. */
+.deja-fait {
+  margin: 14px 0 0;
+  font-size: 15px;
+  color: var(--encre-douce, var(--encre));
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.deja-fait__voir {
+  color: var(--foret);
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+
+/* Les deux actions du haut du résultat : garder, et revenir sur ses réponses.
+   Elles passent l'une sous l'autre quand la place manque. */
+.resultat__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
 /* Haut d'une étape du parcours : titre, intro, puis les mêmes repères que
    l'accueil. On les redonne ici parce que c'est le moment où l'on demande des
    informations sur soi, et donc celui où l'on hésite. */

@@ -17,7 +17,7 @@ import { chargerContenu, texteAffirmation, relance as relancePour } from '../con
 import { NB_AFFIRMATIONS, ouvreUneRelance, relancesAEnvoyer } from '../calcul.js';
 import { lienResultat } from '../lien.js';
 import { icone, chemin } from '../illustration-niveau.js';
-import { lire, ecrire } from '../session.js';
+import { lire, ecrire, dejaEnvoye, retenirEnvoi } from '../session.js';
 import { envoyerReponse } from '../api.js';
 import {
   $, $$, el, texte, vider, signalerModeDemo, typographierPage,
@@ -449,13 +449,22 @@ async function allerAuResultat() {
   const relances = relancesAEnvoyer(etat.reponses, etat.relances, contenu);
 
   // Le hash du lien personnel n'est jamais envoyé : seules les réponses partent.
-  await envoyerReponse({
+  const envoi = {
     version: 'v1',
     role: etat.role,
     profil: memoire.profil || {},
     reponses: etat.reponses,
     relances,
-  });
+  };
+
+  // Revenir sur ses réponses puis revalider sans rien changer créait une
+  // seconde ligne identique en base, et faussait le compteur. On n'envoie donc
+  // que ce qui diffère du dernier envoi.
+  const empreinte = JSON.stringify(envoi);
+  if (!dejaEnvoye(empreinte)) {
+    await envoyerReponse(envoi);
+    retenirEnvoi(empreinte);
+  }
   evenement('termine');
   // Le lien porte aussi les idées, pour que le résultat les montre à chaque visite.
   location.href = lienResultat(etat.role, etat.reponses, relances);

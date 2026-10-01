@@ -12,7 +12,7 @@ import { decoder } from '../lien.js';
 import { medaillon, icone, chemin } from '../illustration-niveau.js';
 import { parDimension, pourLesResultats, auMoinsUneIdee } from '../envies.js';
 import { envoyerContact, agregatsPublics } from '../api.js';
-import { lire as lireSession } from '../session.js';
+import { lire as lireSession, ecrire as ecrireSession, memoriserResultat } from '../session.js';
 import { phrases as phrasesComparaison, comparaisonActive } from '../comparaison.js';
 import {
   $, el, texte, vider, signalerModeDemo, typographierPage,
@@ -177,19 +177,26 @@ function brancherGarder(contenu) {
   const copier = $('[data-copier]');
   texte(copier, r.copier);
   copier.addEventListener('click', async () => {
+    let reussi = true;
     try {
       await navigator.clipboard.writeText(location.href);
     } catch (e) {
-      // Repli quand l'API Clipboard est refusée : on sélectionne pour un
-      // copier manuel, après avoir déplié le champ.
+      // Repli quand l'API Clipboard est refusée : on déplie le champ et on
+      // sélectionne, pour un copier manuel.
+      reussi = false;
       const details = $('.lien-perso__details');
       if (details) details.open = true;
       if (champ) { champ.focus(); champ.select(); }
     }
-    texte(copier, r.copie);
-    annoncer(r.copie);
-    evenement('lien_copie');
-    window.setTimeout(() => texte(copier, r.copier), 2500);
+
+    // Ne jamais annoncer une copie qui n'a pas eu lieu : on croyait avoir son
+    // lien, on collait le contenu précédent du presse-papiers, et on repartait
+    // de zéro sans comprendre pourquoi.
+    const dire = reussi ? r.copie : r.echec_copie;
+    texte(copier, dire);
+    annoncer(dire);
+    if (reussi) evenement('lien_copie');
+    window.setTimeout(() => texte(copier, r.copier), reussi ? 2500 : 5000);
   });
 
   const partageDispo = typeof navigator.share === 'function';
@@ -314,6 +321,23 @@ function remercier(formulaire) {
   annoncer("Merci, votre demande d'étude complète est enregistrée.");
 }
 
+/**
+ * « Modifier mes réponses » : repart du questionnaire, déjà rempli.
+ *
+ * Les réponses viennent du lien, pas de la mémoire de l'onglet : le bouton
+ * fonctionne donc aussi sur un lien reçu ou rouvert des jours plus tard.
+ */
+function brancherModifier(contenu, lu) {
+  const bouton = $('[data-modifier]');
+  if (!bouton) return;
+  texte(bouton, contenu.engagement.retour.modifier);
+  bouton.hidden = false;
+  bouton.addEventListener('click', () => {
+    ecrireSession({ role: lu.role, reponses: lu.reponses, relances: lu.relances });
+    location.href = 'questions.html';
+  });
+}
+
 async function demarrer() {
   signalerModeDemo();
   const contenu = await chargerContenu();
@@ -340,6 +364,11 @@ async function demarrer() {
   // Les idées viennent du lien : elles suivent la personne à chaque visite.
   const idees = parDimension(contenu, lu.relances, lu.role);
   const ideesResultats = pourLesResultats(contenu, lu.relances, lu.role);
+
+  // Cet état des lieux devient celui de l'appareil : revenir sur le site le
+  // proposera au lieu de tout faire refaire.
+  memoriserResultat(location.href);
+  brancherModifier(contenu, lu);
 
   $('[data-resultat]').hidden = false;
   afficherEnsemble(resultat);

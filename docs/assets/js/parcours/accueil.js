@@ -10,6 +10,7 @@
 
 import { chargerContenu } from '../contenu.js';
 import { compteur } from '../api.js';
+import { resultatMemorise } from '../session.js';
 import { POUSSES, POUSSES_HAUTEUR } from '../illustrations.js';
 import { $, $$, el, texte, vider, signalerModeDemo, evenement, typographierPage } from './commun.js';
 
@@ -179,6 +180,28 @@ function remplirSources(contenu) {
  * s'affichait le temps de l'appel, puis sautait au vrai chiffre à chaque
  * rechargement.
  */
+/**
+ * Propose l'état des lieux déjà fait sur cet appareil.
+ *
+ * Sans ça, revenir sur le site donnait l'impression qu'il fallait tout
+ * recommencer : le résultat existait pourtant, mais rien ne le disait.
+ */
+function proposerResultatConnu(a) {
+  const bloc = $('[data-deja-fait]');
+  if (!bloc) return;
+  const adresse = resultatMemorise();
+  if (!adresse) return;
+
+  texte($('[data-deja-fait-texte]'), a.deja_fait.texte);
+  const voir = $('[data-deja-fait-voir]');
+  texte(voir, a.deja_fait.voir);
+  voir.href = adresse;
+  bloc.hidden = false;
+
+  // Le bouton principal ne promet plus un premier état des lieux.
+  $$('[data-bouton]').forEach((b) => texte(b, a.deja_fait.refaire));
+}
+
 async function afficherCompteur() {
   const cible = $('[data-compteur]');
   if (!cible) return;
@@ -198,6 +221,7 @@ async function demarrer() {
 
   const contenu = await chargerContenu();
   remplirHaut(contenu.accueil);
+  proposerResultatConnu(contenu.accueil);
   installerPousses(contenu);
   remplirPourquoi(contenu);
   remplirRecevez(contenu);

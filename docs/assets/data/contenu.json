@@ -938,7 +938,12 @@
       "Anonyme",
       "Aucun compte à créer",
       "Résultat immédiat"
-    ]
+    ],
+    "deja_fait": {
+      "texte": "Vous avez déjà fait votre état des lieux sur cet appareil.",
+      "voir": "Revoir mon état des lieux",
+      "refaire": "En refaire un"
+    }
   },
   "questions": {
     "titre": "Comment vivez-vous le travail ensemble ?",
@@ -1030,7 +1035,9 @@
       "favoris_pc": "Ctrl D pour l'ajouter aux favoris",
       "favoris_inconnu": "⌘ D sur Mac, Ctrl D sur PC pour l'ajouter aux favoris",
       "titre_partage": "Mon état des lieux d'équipe",
-      "phrase_partage": "Mon état des lieux d'équipe, à garder."
+      "phrase_partage": "Mon état des lieux d'équipe, à garder.",
+      "echec_copie": "Copie refusée, le lien est ci-dessous",
+      "modifier": "Modifier mes réponses"
     },
     "comparaison": {
       "seuil_ensemble": 100,
