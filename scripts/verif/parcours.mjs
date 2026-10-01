@@ -601,16 +601,20 @@ async function passerLaCible(cible) {
     soucis.push(`[${nom}] secteurs : ${colonnesSecteurs} colonnes au lieu de ${colonnesAttendues}`);
   }
 
-  // Hauteur bornée, avec défilement interne.
-  const hauteurListe = await page.evaluate(() => {
+  // Passe 11 : plus de défilement interne. 8 secteurs, puis « Voir tous les
+  // secteurs » qui déplie le reste dans la page.
+  const repli = await page.evaluate(() => {
     const l = document.querySelector('#secteurs');
-    return { visible: Math.round(l.clientHeight), total: Math.round(l.scrollHeight) };
+    const voir = document.querySelector('.secteurs__voir-tous');
+    return {
+      lignes: l.querySelectorAll('.secteurs__ligne').length,
+      deborde: l.scrollHeight > l.clientHeight + 1,
+      voir: Boolean(voir && voir.getBoundingClientRect().width),
+    };
   });
-  if (hauteurListe.visible > 48 * 6 + 16) {
-    soucis.push(`[${nom}] secteurs : liste haute de ${hauteurListe.visible}px, plus de 6 lignes`);
-  }
-  if (hauteurListe.total <= hauteurListe.visible) {
-    soucis.push(`[${nom}] secteurs : les 20 secteurs tiennent sans défilement, la borne ne sert à rien`);
+  if (repli.deborde) soucis.push(`[${nom}] secteurs : la liste défile sur elle-même`);
+  if (repli.lignes !== 8 || !repli.voir) {
+    soucis.push(`[${nom}] secteurs : ${repli.lignes} secteurs repliés, « Voir tous » ${repli.voir ? 'présent' : 'absent'}`);
   }
 
   // Le placeholder ne doit pas être coupé.

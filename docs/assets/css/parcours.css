@@ -574,6 +574,8 @@
   gap: 12px;
   border-radius: var(--rayon-champ);
   transition: box-shadow .2s ease;
+  /* Amené à l'écran quand il manque : sous le bandeau fixé, pas dessous. */
+  scroll-margin-top: calc(var(--hauteur-demo, 0px) + var(--hauteur-bandeau) + 24px);
 }
 
 /* Mis en évidence quand il manque une réponse. */
@@ -606,17 +608,45 @@
   gap: 8px;
 }
 
-/* Les tranches de taille, en 2 colonnes égales : une par ligne donnait une
-   liste interminable sur mobile. */
-.pilules--colonnes {
+/* Des grilles égales plutôt qu'une ligne libre au bord droit en escalier.
+   Mobile : rôle, genre et taille d'entreprise sur 2 colonnes, taille d'équipe
+   sur 3. À partir de 600px : rôle et taille d'équipe à la largeur de leur plus
+   long choix, taille d'entreprise sur 3 colonnes, genre en ligne libre. */
+.pilules--role,
+.pilules--genre,
+.pilules--taille_entreprise {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.pilules--colonnes .pilule {
+.pilules--taille_equipe {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.pilules--role .pilule,
+.pilules--genre .pilule,
+.pilules--taille_entreprise .pilule,
+.pilules--taille_equipe .pilule {
   justify-content: center;
   text-align: center;
   padding: 0 12px;
+}
+
+@media (min-width: 600px) {
+  .pilules--genre { display: flex; }
+  .pilules--genre .pilule { padding: 0 20px; }
+  .pilules--taille_entreprise { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Des colonnes égales, larges comme le plus long choix. */
+  .pilules--role,
+  .pilules--taille_equipe {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    align-self: flex-start;
+  }
+  .pilules--role .pilule,
+  .pilules--taille_equipe .pilule { padding: 0 20px; }
 }
 
 .pilule {
@@ -687,17 +717,15 @@
 
 .recherche .champ-texte { padding-left: 48px; }
 
-/* Environ 6 lignes, puis la liste défile sur elle-même. */
+/* La liste ne défile pas sur elle-même : 8 secteurs, puis « Voir tous les
+   secteurs » (profil.js). */
 .secteurs {
-  --lignes-visibles: 6;
   margin: 0;
   padding: 6px;
   list-style: none;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 2px;
-  max-height: calc(var(--lignes-visibles) * 48px);
-  overflow-y: auto;
   background: var(--blanc);
   border: 1px solid var(--bordure-forte);
   border-radius: var(--rayon-champ);
@@ -763,6 +791,8 @@
 }
 
 .secteurs__nom { min-width: 0; }
+
+.secteurs__voir-tous { align-self: flex-start; }
 .secteurs__nom strong { font-weight: 600; }
 
 .secteurs__vide {
@@ -976,9 +1006,6 @@
   /* Assez de largeur pour deux colonnes de secteurs. */
   .secteurs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .champ__intitule { font-size: 18px; }
-  /* Assez de place en largeur : les tranches reprennent leur fil. */
-  .pilules--colonnes { display: flex; }
-  .pilules--colonnes .pilule { padding: 0 20px; }
   .navigation {
     flex-direction: row;
     justify-content: space-between;

@@ -1050,7 +1050,7 @@
   },
   "profil": {
     "titre": "Quelques mots sur votre équipe",
-    "texte": "Pour comparer votre résultat à des équipes qui vous ressemblent. Rien ne permet de vous identifier.",
+    "texte": "Pour lire vos réponses à côté de celles d'équipes qui vous ressemblent, quand elles seront assez nombreuses. Rien ne permet de vous identifier.",
     "role": {
       "question": "Dans votre équipe, vous êtes",
       "choix": [
@@ -1089,7 +1089,7 @@
     },
     "secteur": {
       "question": "Secteur d'activité",
-      "placeholder": "Tapez pour rechercher, par exemple « santé »",
+      "placeholder": "Rechercher un secteur",
       "choix": [
         "Agriculture et agroalimentaire",
         "Industrie et production",
@@ -1111,7 +1111,8 @@
         "Administration publique",
         "Associations et économie sociale et solidaire",
         "Autre"
-      ]
+      ],
+      "voir_tous": "Voir tous les secteurs"
     },
     "taille_equipe": {
       "question": "Taille de votre équipe (nombre de personnes)",

@@ -48,12 +48,14 @@ const etat = { role: null, genre: null, taille_entreprise: null, secteur: null, 
  * Un role="radiogroup" avec aria-labelledby donne la même accessibilité, et se
  * met en page comme n'importe quel bloc.
  *
+ * Chaque champ a sa grille (pilules--{cle}) : des pilules de même largeur,
+ * plutôt qu'un bord droit en escalier.
+ *
  * @param {string} cle nom du champ
  * @param {object} definition la question et ses choix, issus de contenu.json
  * @param {Function} surChoix appelée avec la valeur choisie
- * @param {boolean} deuxColonnes range les pastilles sur 2 colonnes égales
  */
-function groupePilules(cle, definition, surChoix, deuxColonnes = false) {
+function groupePilules(cle, definition, surChoix) {
   const idIntitule = `intitule-${cle}`;
 
   const intitule = el('p', { classe: 'champ__intitule', attrs: { id: idIntitule } });
@@ -63,7 +65,7 @@ function groupePilules(cle, definition, surChoix, deuxColonnes = false) {
   }
 
   const pilules = el('div', {
-    classe: 'pilules' + (deuxColonnes ? ' pilules--colonnes' : ''),
+    classe: `pilules pilules--${cle}`,
     attrs: { role: 'radiogroup', 'aria-labelledby': idIntitule },
   });
   definition.choix.forEach((choix, i) => {
@@ -85,8 +87,12 @@ function groupePilules(cle, definition, surChoix, deuxColonnes = false) {
 
 // --------------------------------------------------------- liste des secteurs
 
-/** Nombre de lignes visibles avant que la liste ne défile sur elle-même. */
-const LIGNES_VISIBLES = 6;
+/**
+ * Secteurs montrés avant « Voir tous les secteurs ». La liste ne défile plus
+ * sur elle-même : une liste qui défile dans une page qui défile cachait les
+ * autres secteurs sans rien en dire.
+ */
+const SECTEURS_REPLIES = 8;
 
 /**
  * Le choix du secteur.
@@ -131,7 +137,7 @@ function champSecteur(definition, surChoix) {
       id: 'secteur', type: 'text', role: 'combobox', autocomplete: 'off',
       'aria-autocomplete': 'list', 'aria-controls': 'secteurs', 'aria-expanded': 'true',
       'aria-labelledby': idIntitule,
-      placeholder: 'Rechercher, par exemple santé',
+      placeholder: definition.placeholder || '',
     },
   });
   recherche.appendChild(champ);
@@ -147,7 +153,13 @@ function champSecteur(definition, surChoix) {
     attrs: { role: 'status', 'aria-live': 'polite' },
   });
 
-  const zone = el('div', { classe: 'secteur-recherche' }, [recherche, liste, annonce]);
+  const voirTous = el('button', {
+    classe: 'lien-discret secteurs__voir-tous',
+    texte: definition.voir_tous || '',
+    attrs: { type: 'button' },
+  });
+
+  const zone = el('div', { classe: 'secteur-recherche' }, [recherche, liste, voirTous, annonce]);
 
   const tous = definition.choix.filter((x) => x !== 'Autre');
   const autre = definition.choix.includes('Autre') ? 'Autre' : null;
@@ -155,6 +167,7 @@ function champSecteur(definition, surChoix) {
   let survol = -1;
   let visibles = [];
   let valeur = null;
+  let deplie = false;
 
   /** Met en gras les lettres trouvées. */
   function surligner(texte, requete) {
@@ -196,6 +209,12 @@ function champSecteur(definition, surChoix) {
     // « Autre » accompagne la liste, mais ne la remplit pas : sans cela, une
     // recherche sans résultat n'aurait jamais l'air vide.
     visibles = trouves.length > 0 && autre ? trouves.concat([autre]) : trouves;
+
+    // Sans recherche, la liste se replie sur ses premiers secteurs. Dès qu'on
+    // tape, tous les secteurs correspondants s'affichent, sans limite.
+    const replie = requete === '' && !deplie && visibles.length > SECTEURS_REPLIES && Boolean(definition.voir_tous);
+    if (replie) visibles = visibles.slice(0, SECTEURS_REPLIES);
+    voirTous.hidden = !replie;
 
     vider(liste);
 
@@ -270,9 +289,16 @@ function champSecteur(definition, surChoix) {
 
   modifier.addEventListener('click', rouvrir);
 
+  voirTous.addEventListener('click', () => {
+    deplie = true;
+    dessiner();
+    // Le premier secteur qui vient d'apparaître reçoit le focus.
+    const suivant = liste.querySelector(`#secteur-${SECTEURS_REPLIES}`);
+    if (suivant) suivant.focus();
+  });
+
   bloc.appendChild(choisi);
   bloc.appendChild(zone);
-  liste.style.setProperty('--lignes-visibles', String(LIGNES_VISIBLES));
   dessiner();
 
   return {
@@ -313,7 +339,8 @@ function montrerLesManques(formulaire, reste) {
 
   const douceur = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     ? 'auto' : 'smooth';
-  premier.scrollIntoView({ behavior: douceur, block: 'center' });
+  // scroll-margin-top (CSS) tient compte du bandeau fixé en haut.
+  premier.scrollIntoView({ behavior: douceur, block: 'start' });
 
   const premierChoix = premier.querySelector('input, .champ-texte');
   if (premierChoix) premierChoix.focus({ preventScroll: true });
@@ -374,12 +401,10 @@ async function demarrer() {
 
   formulaire.appendChild(groupePilules('role', p.role, suivi('role')));
   formulaire.appendChild(groupePilules('genre', p.genre, suivi('genre')));
-  // Les tranches de taille sont courtes et nombreuses : sur mobile, une par
-  // ligne donnait une liste interminable.
-  formulaire.appendChild(groupePilules('taille_entreprise', p.taille_entreprise, suivi('taille_entreprise'), true));
+  formulaire.appendChild(groupePilules('taille_entreprise', p.taille_entreprise, suivi('taille_entreprise')));
   const secteur = champSecteur(p.secteur, suivi('secteur'));
   formulaire.appendChild(secteur.bloc);
-  formulaire.appendChild(groupePilules('taille_equipe', p.taille_equipe, suivi('taille_equipe'), true));
+  formulaire.appendChild(groupePilules('taille_equipe', p.taille_equipe, suivi('taille_equipe')));
 
   // Rétablit un profil déjà saisi, pour que le retour en arrière ne perde rien.
   const memoire = lire().profil || {};

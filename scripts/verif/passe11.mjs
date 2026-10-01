@@ -454,6 +454,99 @@ critere(8, 'chaque ligne de l’aperçu a la couleur de son niveau, sans pastill
   if (m.pastilles) return `${m.pastilles} pastille(s) dans l’aperçu`;
   return !m.ecarts.length || m.ecarts.join(', ');
 });
+// Point 9 · le profil
+const INTRO_PROFIL = 'Pour lire vos réponses à côté de celles d\'équipes qui vous ressemblent, quand elles seront assez nombreuses. Rien ne permet de vous identifier.';
+/** Texte affiché, ramené à des espaces et apostrophes simples. */
+const brut = (t) => String(t).replace(/[\u00a0\u202f]/g, ' ').replace(/[’]/g, "'").trim();
+
+critere(9, 'intro du profil exacte', [1280], async ({ page }) => {
+  await aller(page, `${BASE}/profil.html`);
+  await page.waitForSelector('.pilules');
+  const lu = brut(await page.textContent('[data-intro]'));
+  return lu === INTRO_PROFIL || `« ${lu} »`;
+});
+
+critere(9, 'pilules en grille : même largeur dans chaque groupe', [1280, 390, 360], async ({ page, largeur }) => {
+  await aller(page, `${BASE}/profil.html`);
+  await page.waitForSelector('.pilules');
+  const groupes = largeur <= 599 ? ['role', 'genre', 'taille_entreprise', 'taille_equipe'] : ['role', 'taille_entreprise', 'taille_equipe'];
+  for (const g of groupes) {
+    const l = await page.locator(`[data-champ="${g}"] .pilule`).evaluateAll((ns) => ns.map((n) => n.getBoundingClientRect().width));
+    if (Math.max(...l) - Math.min(...l) > 1) return `${g} : largeurs ${l.map(Math.round).join(', ')}`;
+    const lignes = await page.locator(`[data-champ="${g}"] .pilule__libelle`).evaluateAll((ns) => ns.map((n) => {
+      const r = document.createRange(); r.selectNodeContents(n);
+      return new Set(Array.from(r.getClientRects()).map((q) => Math.round(q.top))).size;
+    }));
+    if (Math.max(...lignes) > 2) return `${g} : un libellé sur ${Math.max(...lignes)} lignes`;
+  }
+  return true;
+});
+
+critere(9, 'tailles d’entreprise en 2 lignes de 3', [1280], async ({ page }) => {
+  await aller(page, `${BASE}/profil.html`);
+  await page.waitForSelector('.pilules');
+  const tops = await page.locator('[data-champ="taille_entreprise"] .pilule').evaluateAll((ns) => ns.map((n) => Math.round(n.getBoundingClientRect().top)));
+  const lignes = {};
+  tops.forEach((t) => { lignes[t] = (lignes[t] || 0) + 1; });
+  const v = Object.values(lignes);
+  return (v.length === 2 && v.every((n) => n === 3)) || `répartition ${v.join(' + ')}`;
+});
+
+critere(9, 'secteurs : aucun défilement interne', [1280, 390], async ({ page }) => {
+  await aller(page, `${BASE}/profil.html`);
+  await page.waitForSelector('#secteurs li');
+  const m = await page.evaluate(() => {
+    const l = document.querySelector('.secteurs');
+    const st = getComputedStyle(l);
+    return { oy: st.overflowY, max: st.maxHeight, deborde: l.scrollHeight > l.clientHeight + 1 };
+  });
+  const ok = (m.oy === 'visible' || (m.oy === 'auto' && m.max === 'none')) && !m.deborde;
+  return ok || `overflow-y ${m.oy}, max-height ${m.max}, débordement ${m.deborde}`;
+});
+
+critere(9, 'taper « san » montre la santé sans déplier', [390], async ({ page }) => {
+  await aller(page, `${BASE}/profil.html`);
+  await page.waitForSelector('#secteurs li');
+  await page.fill('#secteur', 'san');
+  await page.waitForTimeout(200);
+  const vue = await page.locator('#secteurs .secteurs__choix', { hasText: /^Santé$/ }).isVisible();
+  return vue || 'Santé n’apparaît pas';
+});
+
+critere(9, 'le texte d’aide de la recherche tient en entier', [360], async ({ page }) => {
+  await aller(page, `${BASE}/profil.html`);
+  await page.waitForSelector('#secteur');
+  const m = await page.evaluate(() => {
+    const champ = document.querySelector('#secteur');
+    const st = getComputedStyle(champ);
+    const clone = document.createElement('span');
+    clone.textContent = champ.placeholder;
+    Object.assign(clone.style, { font: st.font, letterSpacing: st.letterSpacing, whiteSpace: 'nowrap', position: 'absolute', visibility: 'hidden' });
+    document.body.appendChild(clone);
+    const texte = clone.scrollWidth;
+    clone.remove();
+    const utile = champ.clientWidth - parseFloat(st.paddingLeft) - parseFloat(st.paddingRight);
+    return { texte, utile, placeholder: champ.placeholder };
+  });
+  if (m.placeholder !== contenu.profil.secteur.placeholder) return `placeholder « ${m.placeholder} » au lieu de celui de contenu.json`;
+  return m.texte <= m.utile || `${m.texte}px de texte pour ${arrondi(m.utile)}px`;
+});
+
+critere(9, '« Continuer » à vide : focus sur le premier choix du rôle, visible', [1280, 390], async ({ page }) => {
+  await aller(page, `${BASE}/profil.html`);
+  await page.waitForSelector('.pilules');
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.locator('[data-continuer]').click();
+  await page.waitForTimeout(900);
+  const m = await page.evaluate(() => {
+    const premier = document.querySelector('input[name="role"]');
+    const pilule = premier.closest('.pilule').getBoundingClientRect();
+    const bandeau = document.querySelector('.bandeau').getBoundingClientRect();
+    return { focus: document.activeElement === premier, haut: pilule.top, bas: pilule.bottom, limite: bandeau.bottom, ecran: window.innerHeight };
+  });
+  if (!m.focus) return 'le focus n’est pas sur le premier choix du rôle';
+  return (m.haut >= m.limite - 0.5 && m.bas <= m.ecran) || `pilule de ${arrondi(m.haut)} à ${arrondi(m.bas)}px (zone visible ${arrondi(m.limite)} à ${m.ecran})`;
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures
