@@ -472,6 +472,12 @@
     padding: 40px 80px 64px;
     align-items: center;
   }
+  /* Sur grand écran, le texte et l'illustration restent côte à côte, et la
+     bande passe dessous sur toute la largeur. Sans ce placement explicite,
+     elle se glisserait dans la colonne de droite. */
+  .hero__texte { grid-column: 1; grid-row: 1; }
+  .hero__illustration { grid-column: 2; grid-row: 1; }
+  .hero .greatly--bande { grid-column: 1 / -1; grid-row: 2; align-self: stretch; }
   .hero__texte { gap: 22px; }
   .hero__titre { font-size: 54px; line-height: 1.08; }
   .hero__intro { font-size: 19px; }
@@ -1594,8 +1600,26 @@
    marge sur les côtés. La page résultat, elle, garde sa carte arrondie. */
 .greatly--bande {
   border-radius: 0;
-  margin: 40px 0 0;
+  margin: 24px 0 0;
   width: 100%;
+}
+
+/* Dans le haut de page, la bande doit traverser l'écran malgré le retrait du
+   hero : d'où les marges négatives, qui annulent exactement son padding. */
+.hero .greatly--bande {
+  margin-left: -20px;
+  margin-right: -20px;
+  width: auto;
+}
+
+/* Le padding du hero change à 900px : les marges négatives doivent suivre.
+   Cette surcharge est volontairement placée ici, après la règle ci-dessus :
+   le bloc @media du hero, lui, est écrit bien plus haut dans le fichier et
+   serait donc annulé. */
+@media (min-width: 900px) {
+  .hero .greatly--bande {
+    margin: 40px -80px -64px;
+  }
 }
 
 .greatly__photo {

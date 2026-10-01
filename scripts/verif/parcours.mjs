@@ -336,7 +336,10 @@ async function passerLaCible(cible) {
       etiquette: svg.getAttribute('aria-label') || '',
       viewBox: svg.getAttribute('viewBox'),
       etiquettesMasquees: etiquettes ? getComputedStyle(etiquettes).display === 'none' : null,
-      images: document.querySelectorAll('.hero img').length,
+      // L'illustration doit rester en SVG : aucune image bitmap dans le haut
+      // de page. Le bloc Greatly y vit désormais aussi, et sa photo est
+      // légitime : on ne compte donc que les images hors de ce bloc.
+      images: document.querySelectorAll('.hero img:not(.greatly img)').length,
     };
   });
   if (!illustration) {
@@ -346,7 +349,7 @@ async function passerLaCible(cible) {
       soucis.push(`[${nom}] accueil : l'illustration n'a pas son aria-label`);
     }
     if (illustration.images > 0) {
-      soucis.push(`[${nom}] accueil : ${illustration.images} image(s) dans le haut de page`);
+      soucis.push(`[${nom}] accueil : ${illustration.images} image(s) bitmap dans le haut de page, hors bloc Greatly`);
     }
     const etroit = largeur < 900;
     const hauteurAttendue = etroit ? 360 : 420;
