@@ -7,6 +7,7 @@
  */
 
 import { chargerContenu } from '../contenu.js';
+import { compteur } from '../api.js';
 import { lire, ecrire } from '../session.js';
 import {
   $, el, texte, vider, signalerModeDemo, typographierPage,
@@ -318,6 +319,37 @@ function montrerLesManques(formulaire, reste) {
   if (premierChoix) premierChoix.focus({ preventScroll: true });
 }
 
+/**
+ * Les trois repères, repris de l'accueil pour n'avoir qu'une seule source.
+ * Ils répondent à l'hésitation du moment : « pourquoi me demander tout ça ? ».
+ */
+function remplirReperes(a) {
+  const liste = $('[data-reperes]');
+  if (!liste) return;
+  vider(liste);
+  a.reperes.forEach((r) => {
+    liste.appendChild(
+      el('li', { classe: 'repere' }, [
+        el('span', { classe: 'repere__coche', attrs: { 'aria-hidden': 'true' } }),
+        r,
+      ])
+    );
+  });
+}
+
+/**
+ * Le nombre de participants, une fois connu. Comme sur l'accueil, aucun chiffre
+ * n'est écrit dans le HTML : le compteur reste transparent jusqu'à la réponse.
+ */
+async function afficherCompteur(a) {
+  const cible = $('[data-compteur]');
+  if (!cible) return;
+  texte($('[data-compteur-texte]'), a.compteur);
+  texte(cible, String(await compteur()));
+  const bloc = cible.closest('.compteur');
+  if (bloc) bloc.classList.add('compteur--pret');
+}
+
 async function demarrer() {
   signalerModeDemo();
   const contenu = await chargerContenu();
@@ -325,6 +357,8 @@ async function demarrer() {
 
   texte($('[data-titre]'), p.titre);
   texte($('[data-intro]'), p.texte);
+  remplirReperes(contenu.accueil);
+  afficherCompteur(contenu.accueil);
 
   const formulaire = $('[data-formulaire]');
   const message = $('#message');

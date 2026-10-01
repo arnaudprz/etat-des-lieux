@@ -56,6 +56,17 @@
   gap: 10px;
   font-size: 15px;
   color: var(--foret);
+  /* Invisible jusqu'à ce que l'API ait répondu : sinon la valeur de repli
+     s'affiche une fraction de seconde, puis saute au vrai chiffre. On garde
+     la place pour que rien ne bouge au moment où il apparaît. */
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+
+.compteur--pret { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .compteur { transition: none; }
 }
 
 .compteur__point {
@@ -68,6 +79,24 @@
 }
 
 .compteur strong { font-weight: 600; }
+
+/* Haut d'une étape du parcours : titre, intro, puis les mêmes repères que
+   l'accueil. On les redonne ici parce que c'est le moment où l'on demande des
+   informations sur soi, et donc celui où l'on hésite. */
+.haut-etape {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.haut-etape + .formulaire { margin-top: 28px; }
+
+.haut-etape .intro { margin: 0; }
+
+.haut-etape .compteur { margin-top: 2px; }
+
+.haut-etape .reperes { margin-top: 0; }
 
 /* Les trois repères de réassurance. Chacun porte sa coche : en une seule ligne
    grise sous le bouton, ils se lisaient comme une mention légale. */

@@ -171,10 +171,20 @@ function remplirSources(contenu) {
   });
 }
 
+/**
+ * Affiche le nombre de participants, une fois connu.
+ *
+ * Le chiffre n'est écrit nulle part dans le HTML : tant que l'API n'a pas
+ * répondu, le compteur reste transparent. Autrement la valeur de repli
+ * s'affichait le temps de l'appel, puis sautait au vrai chiffre à chaque
+ * rechargement.
+ */
 async function afficherCompteur() {
   const cible = $('[data-compteur]');
   if (!cible) return;
   texte(cible, String(await compteur()));
+  const bloc = cible.closest('.compteur');
+  if (bloc) bloc.classList.add('compteur--pret');
 }
 
 // ---------------------------------------------------------------- démarrage

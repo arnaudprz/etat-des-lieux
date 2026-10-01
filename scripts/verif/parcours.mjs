@@ -165,6 +165,23 @@ async function passerLaCible(cible) {
   const compteur = (await page.locator('[data-compteur]').innerText()).trim();
   if (compteur !== '255') soucis.push(`[${nom}] accueil : compteur à « ${compteur} » au lieu de 255`);
 
+  // Le chiffre ne doit jamais être écrit dans le HTML servi : sinon il
+  // s'affiche avant la réponse de l'API, puis saute à la vraie valeur.
+  const htmlServi = await (await fetch(`${BASE}/index.html`)).text();
+  if (/data-compteur[^>]*>\s*\d/.test(htmlServi)) {
+    soucis.push(`[${nom}] accueil : un nombre est codé en dur dans le compteur du HTML`);
+  }
+  // Et il n'est révélé qu'une fois connu.
+  const compteurPret = await page.evaluate(() => {
+    const b = document.querySelector('.compteur');
+    return b ? { pret: b.classList.contains('compteur--pret'), opacite: getComputedStyle(b).opacity } : null;
+  });
+  if (!compteurPret || !compteurPret.pret) {
+    soucis.push(`[${nom}] accueil : le compteur n'est pas marqué prêt`);
+  } else if (Number(compteurPret.opacite) < 1) {
+    soucis.push(`[${nom}] accueil : compteur prêt mais à l'opacité ${compteurPret.opacite}`);
+  }
+
   // L'illustration est en SVG dans la page, pas en image.
   const illustration = await page.evaluate(() => {
     const svg = document.querySelector('.hero__illustration svg');

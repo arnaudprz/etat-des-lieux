@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
-<link rel="stylesheet" href="assets/css/base.css?v=8">
-<link rel="stylesheet" href="assets/css/parcours.css?v=8">
+<link rel="stylesheet" href="assets/css/base.css?v=10">
+<link rel="stylesheet" href="assets/css/parcours.css?v=10">
 </head>
 <body>
 
@@ -32,13 +32,18 @@
   </div>
 </header>
 
-<main class="centre centre--etroit" style="margin-top: 32px">
-  <div style="display: flex; flex-direction: column; gap: 12px">
+<main class="centre centre--etroit">
+  <div class="haut-etape">
     <h1 class="titre-page" data-titre>Quelques mots sur votre équipe</h1>
     <p class="intro" data-intro></p>
+    <span class="compteur">
+      <span class="compteur__point" aria-hidden="true"></span>
+      <span><strong data-compteur></strong> <span data-compteur-texte></span></span>
+    </span>
+    <ul class="reperes" data-reperes></ul>
   </div>
 
-  <form class="carte formulaire" id="profil" novalidate style="margin-top: 32px" data-formulaire>
+  <form class="carte formulaire" id="profil" novalidate data-formulaire>
     <!-- Les champs sont construits depuis contenu.json par profil.js. -->
   </form>
 
@@ -55,6 +60,6 @@
   <p>Vos réponses sont anonymes. <a href="confidentialite.html">Politique de confidentialité</a></p>
 </footer>
 
-<script type="module" src="assets/js/parcours/profil.js?v=8"></script>
+<script type="module" src="assets/js/parcours/profil.js?v=10"></script>
 </body>
 </html>
