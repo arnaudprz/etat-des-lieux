@@ -4,13 +4,13 @@
  */
 
 /** URL de l'application web Apps Script. Vide tant que le backend n'est pas déployé. */
-export const API_URL = '';
+export const API_URL = 'https://script.google.com/macros/s/AKfycbxxpB0S-UJCxRvsxEJs2zG80FbEwZxXg8f2nx1XWBnYoLb8mfFClvZzSwdrvh6YwThm/exec';
 
 /** Version du questionnaire. Sert de préfixe au lien personnel et de colonne dans le Sheet. */
 export const VERSION_QUESTIONNAIRE = 'v1';
 
 /** Cache-buster des imports. À incrémenter à chaque déploiement. */
-export const V = 8;
+export const V = 9;
 
 /** Valeur affichée par le compteur si l'API ne répond pas. */
 export const COMPTEUR_REPLI = 255;

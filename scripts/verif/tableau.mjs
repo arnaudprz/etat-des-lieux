@@ -14,11 +14,24 @@ const soucis = [];
 const navigateur = await chromium.launch();
 const contexte = await navigateur.newContext({ viewport: { width: 1280, height: 900 }, locale: 'fr-FR' });
 const page = await contexte.newPage();
+// Filet de sécurité : la vérification ne doit jamais toucher la production.
+// `?demo=1` ci-dessous suffit normalement, mais si un jour il ne suffisait plus,
+// cette route empêche toute requête d'aboutir au backend réel.
+await page.route(/script\.google(usercontent)?\.com/, (route) =>
+  route.fulfill({
+    status: 200,
+    contentType: 'application/json; charset=utf-8',
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    body: JSON.stringify({ ok: false, erreur: 'backend coupé pendant la vérification' }),
+  }));
 
 page.on('console', (m) => { if (m.type() === 'error') soucis.push(`console : ${m.text()}`); });
 page.on('pageerror', (e) => soucis.push(`erreur JS : ${e.message}`));
 
-await page.goto(`${BASE}/admin/`, { waitUntil: 'networkidle' });
+// `?demo=1` : le tableau de bord s'ouvre sur des données fictives, sans clé ni
+// appel réseau. Indispensable depuis que `API_URL` est renseignée, sans quoi il
+// resterait bloqué sur la demande de clé.
+await page.goto(`${BASE}/admin/?demo=1`, { waitUntil: 'networkidle' });
 await page.waitForSelector('[data-tableau]:not([hidden])');
 await page.waitForSelector('.affirmation-admin');
 

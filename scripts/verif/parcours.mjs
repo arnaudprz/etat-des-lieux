@@ -63,6 +63,8 @@ function surveiller(page, etiquette) {
   page.on('requestfailed', (r) => {
     // Les polices Google peuvent échouer hors ligne : ce n'est pas bloquant.
     if (r.url().includes('fonts.g')) return;
+    // Le backend est simulé par repondreALaPlaceDuBackend().
+    if (/script\.google(usercontent)?\.com/.test(r.url())) return;
     // Le rechargement déclenché par un changement de hash peut être annulé par
     // la navigation suivante du test : c'est un artefact du test, pas un défaut.
     const raison = r.failure() ? r.failure().errorText : '';
@@ -96,6 +98,34 @@ async function verifierAucunChiffre(page, etiquette, selecteur) {
 // ------------------------------------------------------------------ parcours
 
 /** Remplit le profil et passe aux affirmations. Version membre. */
+/**
+ * Répond à la place du backend.
+ *
+ * Depuis que `API_URL` est renseignée, le parcours envoie de vraies réponses, et
+ * la vérification le remplit jusqu'au bout sur quatre cibles : sans ce
+ * garde-fou, chaque passage écrirait quatre lignes dans le classeur de
+ * production. Passer par `?demo=1` ne suffit pas, le paramètre se perd d'une
+ * page à l'autre ; on intercepte donc au niveau du réseau, ce qui vaut aussi
+ * quand la vérification vise le site en ligne.
+ *
+ * On répond au lieu de couper : une requête avortée remplit la console
+ * d'erreurs, qu'un autre contrôle signalerait à juste titre.
+ */
+async function repondreALaPlaceDuBackend(page) {
+  await page.route(/script\.google(usercontent)?\.com/, (route) => {
+    const url = route.request().url();
+    let corps = { ok: true };
+    if (url.includes('action=compteur')) corps = { ok: true, total: 255 };
+    if (url.includes('action=agregats')) corps = { ok: true, ensemble: null, segments: {} };
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json; charset=utf-8',
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify(corps),
+    });
+  });
+}
+
 async function remplirProfil(page) {
   await page.waitForSelector('.pilules');
   await page.locator('input[name="role"]').nth(1).check();
@@ -123,6 +153,7 @@ async function passerLaCible(cible) {
   const navigateur = await lanceur.launch();
   const contexte = await navigateur.newContext(options);
   const page = await contexte.newPage();
+  await repondreALaPlaceDuBackend(page);
   surveiller(page, nom);
 
   // ------------------------------------------------------------- 1. accueil
