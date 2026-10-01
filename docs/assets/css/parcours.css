@@ -1618,7 +1618,9 @@
    serait donc annulé. */
 @media (min-width: 900px) {
   .hero .greatly--bande {
-    margin: 40px -80px -64px;
+    /* Pas de marge basse négative : elle collait la bande aux cartes
+       suivantes. Le padding bas du hero suffit à les séparer. */
+    margin: 40px -80px 0;
   }
 }
 
