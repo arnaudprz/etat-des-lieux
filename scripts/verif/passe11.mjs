@@ -547,6 +547,72 @@ critere(9, '« Continuer » à vide : focus sur le premier choix du rôle, visib
   if (!m.focus) return 'le focus n’est pas sur le premier choix du rôle';
   return (m.haut >= m.limite - 0.5 && m.bas <= m.ecran) || `pilule de ${arrondi(m.haut)} à ${arrondi(m.bas)}px (zone visible ${arrondi(m.limite)} à ${m.ecran})`;
 });
+// Point 10 · les affirmations
+const INTRO_QUESTIONS = 'Pour chaque affirmation, choisissez la réponse qui vous ressemble le plus. Il n\'y a pas de bonne réponse.';
+
+critere(10, 'intro des affirmations exacte', [1280], async ({ page }) => {
+  await allerAuxQuestions(page);
+  const lu = brut(await page.textContent('[data-intro]'));
+  return lu === INTRO_QUESTIONS || `« ${lu} »`;
+});
+
+critere(10, 'sous-titre de la relance sous le titre, même bord gauche', [1280, 390, 360], async ({ page }) => {
+  await allerAuxQuestions(page);
+  await repondre(page, REPONSES_TROIS_RELANCES);
+  const ecarts = await page.evaluate(() => Array.from(document.querySelectorAll('.relance-enveloppe:not([hidden]) .relance__question'))
+    .map((q) => {
+      const t = q.querySelector('strong').getBoundingClientRect();
+      const s = q.querySelector('.relance__sous-titre').getBoundingClientRect();
+      return { dx: Math.abs(t.left - s.left), dessous: s.top >= t.bottom - 1 };
+    }).filter((e) => e.dx > 1 || !e.dessous));
+  return !ecarts.length || ecarts.map((e) => `décalage ${Math.round(e.dx)}px, dessous ${e.dessous}`).join(', ');
+});
+
+critere(10, 'texte des options d’au moins 270px', [390], async ({ page }) => {
+  await allerAuxQuestions(page);
+  await repondre(page, REPONSES_TROIS_RELANCES);
+  const largeurs = await page.evaluate(() => Array.from(document.querySelectorAll('.relance-enveloppe:not([hidden]) .choix--ligne'))
+    .map((l) => {
+      const st = getComputedStyle(l);
+      const entree = l.querySelector('input').getBoundingClientRect().width;
+      return l.clientWidth - parseFloat(st.paddingLeft) - parseFloat(st.paddingRight) - entree - parseFloat(st.columnGap || st.gap || 0);
+    }));
+  const min = Math.min(...largeurs);
+  return min >= 270 - 0.5 || `${arrondi(min)}px pour le texte`;
+});
+
+critere(10, 'options sans cadre sur mobile', [390], async ({ page }) => {
+  await allerAuxQuestions(page);
+  await repondre(page, REPONSES_TROIS_RELANCES);
+  const st = await page.locator('.relance-enveloppe:not([hidden]) .choix--ligne').first().evaluate((n) => {
+    const c = getComputedStyle(n);
+    return { bord: c.borderLeftWidth, fond: c.backgroundColor };
+  });
+  const transparent = /rgba\(0, 0, 0, 0\)|transparent/.test(st.fond);
+  return (st.bord === '0px' && transparent) || `bordure ${st.bord}, fond ${st.fond}`;
+});
+
+critere(10, 'une 3e case refusée se signale 1,5s', [1280, 390], async ({ page }) => {
+  await allerAuxQuestions(page);
+  await page.locator('.affirmation').nth(0).locator('.echelle__choix').nth(0).click();
+  const relance = page.locator('.relance-enveloppe:not([hidden])').first();
+  await relance.waitFor();
+  const cases = relance.locator('.choix--ligne');
+  await cases.nth(0).click();
+  await cases.nth(1).click();
+  const sous = relance.locator('.relance__sous-titre');
+  const avant = await sous.evaluate((n) => getComputedStyle(n).color);
+  await cases.nth(2).click({ force: true });
+  await page.waitForTimeout(200);
+  const coche = await cases.nth(2).locator('input').isChecked();
+  const pendant = await sous.evaluate((n) => ({ c: getComputedStyle(n).color, g: getComputedStyle(n).fontWeight }));
+  await page.waitForTimeout(1600);
+  const apres = await sous.evaluate((n) => getComputedStyle(n).color);
+  if (coche) return 'la 3e case a été cochée';
+  if (pendant.c === avant) return 'le sous-titre n’a pas changé de couleur';
+  if (Number(pendant.g) < 600) return `graisse ${pendant.g} pendant l’alerte`;
+  return apres === avant || 'le sous-titre n’est pas revenu à sa couleur';
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures

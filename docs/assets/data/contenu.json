@@ -948,7 +948,7 @@
   },
   "questions": {
     "titre": "Comment vivez-vous le travail ensemble ?",
-    "intro": "Pour chaque affirmation, choisissez la réponse qui vous ressemble le plus. Il n'y a pas de bonne réponse. Quand vous répondez Pas encore ou Un peu, une petite question s'ouvre juste en dessous pour savoir ce qui vous aiderait.",
+    "intro": "Pour chaque affirmation, choisissez la réponse qui vous ressemble le plus. Il n'y a pas de bonne réponse.",
     "bouton": "Voir mon résultat",
     "retour": "Retour",
     "recapitulatif_complet": "Vous avez répondu aux 16 affirmations"

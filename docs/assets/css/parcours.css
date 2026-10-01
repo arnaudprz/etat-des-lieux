@@ -1225,12 +1225,16 @@
 }
 
 .relance__sous-titre {
+  display: block;
+  margin: 2px 0 0;
   font-weight: 400;
   font-size: 14px;
   color: var(--taupe);
-  margin-left: 8px;
-  white-space: nowrap;
+  transition: color .2s ease;
 }
+
+/* Une 3e case touchée : la limite ressort pendant 1,5s (questions.js). */
+.relance__sous-titre--rappel { color: var(--sauge-fonce); font-weight: 600; }
 
 .relance__choix {
   display: flex;
@@ -1262,6 +1266,27 @@
   min-height: 48px;
   padding: 12px 16px;
   border-radius: 12px;
+}
+
+.choix__texte { flex: 1; min-width: 0; }
+
+/* Sur mobile, trois cadres imbriqués (carte, panneau sable, option) ne
+   laissaient qu'environ 220px au texte. Les options deviennent des lignes
+   séparées d'un filet ; le panneau garde son fond sable. */
+@media (max-width: 599px) {
+  .relance { padding: 14px 8px; }
+  .relance .choix--ligne,
+  .relance .choix--ligne:has(input:checked) {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--bordure-moyenne);
+    border-radius: 0;
+    padding: 12px 0;
+    gap: 8px;
+  }
+  .relance .choix--ligne:last-child { border-bottom: 0; }
+  .relance .choix--ligne:has(input:checked) { font-weight: 600; }
+  .relance__choix { gap: 0; }
 }
 
 .choix input {

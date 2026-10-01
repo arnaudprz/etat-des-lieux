@@ -111,6 +111,20 @@ function limiterChoix(cases) {
   cases.forEach((c) => { c.disabled = atteint && !c.checked; });
 }
 
+/** Durée du rappel « Deux réponses au plus », quand on touche une 3e case. */
+const RAPPEL_MAXIMUM_MS = 1500;
+
+/** Rappelle la limite : le sous-titre ressort un instant, et il est annoncé. */
+function signalerMaximum(sousTitre) {
+  sousTitre.classList.add('relance__sous-titre--rappel');
+  annoncer(contenu.relance.sous_titre);
+  window.clearTimeout(sousTitre.rappel);
+  sousTitre.rappel = window.setTimeout(
+    () => sousTitre.classList.remove('relance__sous-titre--rappel'),
+    RAPPEL_MAXIMUM_MS
+  );
+}
+
 /**
  * L'encadré d'une affirmation. Construit une fois, montré ou caché ensuite.
  * Pas de <fieldset> ni de <legend> : un role="group" avec aria-labelledby
@@ -122,6 +136,7 @@ function construireRelance(n, surChoixSuivant) {
 
   const idIntitule = `relance-${n}-intitule`;
   const cases = [];
+  const sousTitre = el('span', { classe: 'relance__sous-titre', texte: contenu.relance.sous_titre });
 
   const choix = el('div', { classe: 'relance__choix' });
   const valeurs = def.choix.map((_, i) => i).concat([AUTRE]);
@@ -145,7 +160,16 @@ function construireRelance(n, surChoixSuivant) {
       sauver();
     });
     cases.push(entree);
-    choix.appendChild(el('label', { classe: 'choix choix--ligne' }, [entree, libelle]));
+    const ligne = el('label', { classe: 'choix choix--ligne' }, [
+      entree,
+      el('span', { classe: 'choix__texte', texte: libelle }),
+    ]);
+    // Une case grisée ne réagit pas : sans ce signal, la 3e case était
+    // refusée en silence.
+    ligne.addEventListener('click', () => {
+      if (entree.disabled) signalerMaximum(sousTitre);
+    });
+    choix.appendChild(ligne);
   });
 
   const suivant = el('button', {
@@ -161,7 +185,7 @@ function construireRelance(n, surChoixSuivant) {
   }, [
     el('p', { classe: 'relance__question', attrs: { id: idIntitule } }, [
       el('strong', { texte: def.debut }),
-      el('span', { classe: 'relance__sous-titre', texte: contenu.relance.sous_titre }),
+      sousTitre,
     ]),
     choix,
     suivant,
