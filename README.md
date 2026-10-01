@@ -9,25 +9,28 @@ mots et 4 couleurs. Les chiffres n'existent que dans le tableau de bord.
 
 ## Statut
 
-**Démo en ligne.** Le site est publié sur GitHub Pages :
+**En ligne et en collecte réelle.**
 <https://arnaudprz.github.io/etat-des-lieux/>
 
-Il tourne en **mode démo** : le parcours complet, le calcul du résultat, le lien
-personnel et le tableau de bord fonctionnent, mais le backend Apps Script n'est
-**pas encore déployé**, donc *aucune réponse n'est enregistrée* et le compteur
-affiche sa valeur de repli. Le pied de page le dit aux visiteurs.
+Le backend Apps Script est déployé, `API_URL` est renseignée, et les réponses
+sont enregistrées dans le Google Sheet. Le tableau de bord
+(<https://arnaudprz.github.io/etat-des-lieux/admin/>) s'ouvre avec `ADMIN_KEY`.
 
-Pour relier la démo à de vraies données : déployer le backend, puis renseigner
-`API_URL` dans `docs/assets/js/config.js` (voir `DEPLOY.md`).
+Pour retrouver la démo à tout moment, sans rien enregistrer : ajouter `?demo=1`
+à l'adresse.
+
+> Les vérifications par navigateur **n'écrivent jamais** dans le classeur :
+> elles répondent à la place du backend. Voir `repondreALaPlaceDuBackend()`
+> dans `scripts/verif/parcours.mjs`.
 
 | Élément | État |
 | --- | --- |
 | Parcours public (accueil, profil, affirmations, résultat) | Fait |
 | Calcul du résultat et lien personnel | Fait, testé |
-| Tableau de bord privé | Fait, en mode démo |
-| Backend Apps Script | Écrit et testé, non déployé |
-| Google Sheet | À créer (voir `DEPLOY.md`) |
-| Mise en ligne GitHub Pages | Fait, en mode démo |
+| Tableau de bord privé | Fait, branché sur les vraies données |
+| Backend Apps Script | Déployé, vérifié de bout en bout |
+| Google Sheet | Créé, script lié |
+| Mise en ligne GitHub Pages | Fait, en collecte réelle |
 | Saisie des 255 réponses papier | Reportée |
 
 ## Lancer en local
