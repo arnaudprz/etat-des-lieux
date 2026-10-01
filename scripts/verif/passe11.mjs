@@ -77,6 +77,8 @@ async function remplirProfil(page, role = 'membre') {
   await page.locator('input[name="genre"]').nth(0).check();
   await page.locator('input[name="taille_entreprise"]').nth(2).check();
   await page.locator('input[name="taille_equipe"]').nth(1).check();
+  // Un profil déjà saisi dans cet onglet garde son secteur, champ replié.
+  if (!(await page.locator('#secteur').isVisible())) return;
   await page.fill('#secteur', 'sante');
   await page.waitForSelector('#secteurs li');
   await page.locator('#secteurs .secteurs__choix', { hasText: /^Santé$/ }).first().click();
