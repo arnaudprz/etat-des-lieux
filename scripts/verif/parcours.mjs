@@ -179,6 +179,41 @@ async function remplirProfil(page) {
  * construit, et la page affichait une carte blanche vide. L'essentiel ne doit
  * jamais dépendre d'un texte décoratif.
  */
+async function verifierResultatImmediat(navigateur, options, soucis) {
+  // Le résultat se calcule dans le navigateur : rien ne justifie d'attendre le
+  // serveur avant de l'afficher. L'enregistrement part en tâche de fond.
+  const contexte = await navigateur.newContext(options);
+  const page = await contexte.newPage();
+
+  // Un backend volontairement lent : si l'affichage l'attend, ça se verra.
+  await page.route(/script\.google(usercontent)?\.com/, async (route) => {
+    await new Promise((r) => setTimeout(r, 4000));
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json; charset=utf-8',
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ ok: true, total: 255 }),
+    });
+  });
+
+  await aller(page, `${BASE}/profil.html`);
+  await remplirProfil(page);
+  await page.locator('[data-continuer]').click();
+  await page.waitForSelector('.affirmation', { timeout: 20000 });
+  const n = await page.locator('.affirmation').count();
+  for (let i = 0; i < n; i++) {
+    await page.locator('.affirmation').nth(i).locator('.echelle__choix').nth(2).click();
+  }
+  const depart = Date.now();
+  await page.locator('[data-voir]').click();
+  await page.waitForURL(/resultat\.html/, { timeout: 25000 }).catch(() => {});
+  const attente = Date.now() - depart;
+  if (attente > 2000) {
+    soucis.push(`resultat : ${Math.round(attente / 100) / 10}s d'attente avant l'affichage, le backend est attendu pour rien`);
+  }
+  await contexte.close();
+}
+
 async function verifierContenuPerime(navigateur, options, soucis) {
   const cles = ['reperes', 'compteur', 'deja_fait', 'mentions'];
   const contexte = await navigateur.newContext(options);
@@ -1442,6 +1477,7 @@ if (!FILTRE || FILTRE === 'chromium') {
   const { chromium } = await import('playwright');
   const navigateur = await chromium.launch();
   await verifierContenuPerime(navigateur, { viewport: { width: 1280, height: 900 }, locale: 'fr-FR' }, soucis);
+  await verifierResultatImmediat(navigateur, { viewport: { width: 1280, height: 900 }, locale: 'fr-FR' }, soucis);
   await navigateur.close();
 }
 

@@ -462,7 +462,9 @@ async function allerAuResultat() {
   // que ce qui diffère du dernier envoi.
   const empreinte = JSON.stringify(envoi);
   if (!dejaEnvoye(empreinte)) {
-    await envoyerReponse(envoi);
+    // Pas de `await` : la requête part et se termine toute seule pendant que le
+    // résultat s'affiche.
+    envoyerReponse(envoi);
     retenirEnvoi(empreinte);
   }
   evenement('termine');

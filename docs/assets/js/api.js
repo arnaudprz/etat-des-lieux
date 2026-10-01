@@ -40,12 +40,25 @@ async function lire(params) {
 }
 
 /**
- * Enregistre un questionnaire terminé.
- * Le hash du lien personnel n'est jamais envoyé : seules les réponses brutes,
- * le profil et les relances partent, sans identifiant de session.
+ * Enregistre un questionnaire terminé, sans faire attendre personne.
+ *
+ * Le résultat est calculé dans le navigateur, à partir des réponses : il ne
+ * dépend pas du serveur. Attendre la réponse d'Apps Script avant de l'afficher
+ * imposait plusieurs secondes d'écran figé, pour rien.
+ *
+ * `keepalive` laisse la requête se terminer après le changement de page : on
+ * navigue tout de suite, l'enregistrement se fait derrière.
  */
 export function envoyerReponse(reponse) {
-  return poster('reponse', reponse);
+  if (modeDemo() || !API_URL) return;
+  try {
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'reponse', ...reponse }),
+      keepalive: true,
+    }).catch(() => { /* l'enregistrement ne doit jamais bloquer le parcours */ });
+  } catch (e) { /* idem */ }
 }
 
 /**
