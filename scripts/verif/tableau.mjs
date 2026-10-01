@@ -31,7 +31,10 @@ page.on('pageerror', (e) => soucis.push(`erreur JS : ${e.message}`));
 // `?demo=1` : le tableau de bord s'ouvre sur des données fictives, sans clé ni
 // appel réseau. Indispensable depuis que `API_URL` est renseignée, sans quoi il
 // resterait bloqué sur la demande de clé.
-await page.goto(`${BASE}/admin/?demo=1`, { waitUntil: 'networkidle' });
+// On attend le calme réseau sans en faire une condition : contre le site en
+// ligne, l'appel à l'API garde le réseau occupé et l'attente n'aboutirait pas.
+await page.goto(`${BASE}/admin/?demo=1`, { waitUntil: 'domcontentloaded' });
+await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
 await page.waitForSelector('[data-tableau]:not([hidden])');
 await page.waitForSelector('.affirmation-admin');
 

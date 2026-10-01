@@ -15,6 +15,21 @@ import { mkdirSync } from 'node:fs';
 const BASE = process.argv[2] || 'http://127.0.0.1:8127';
 
 /**
+ * Ouvre une page et attend qu'elle soit stable.
+ *
+ * `networkidle` seul ne se produit jamais contre le site en ligne : l'appel à
+ * l'API Apps Script est lent et garde le réseau occupé, si bien que la
+ * vérification expirait. Mais s'en passer mesure des pages à moitié peintes,
+ * et les contrôles remontent alors des défauts imaginaires, différents à
+ * chaque passage. On attend donc le calme réseau, sans en faire une condition :
+ * passé le délai, on continue.
+ */
+async function aller(page, url) {
+  await page.goto(url, { waitUntil: 'domcontentloaded' });
+  await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
+}
+
+/**
  * Vrai si la page est toujours sur `page.html`, quel que soit le préfixe du site.
  * En local le site est à la racine, sur GitHub Pages il vit sous /etat-des-lieux/ :
  * comparer à un chemin absolu en dur ferait échouer la vérification en ligne.
@@ -157,7 +172,7 @@ async function passerLaCible(cible) {
   surveiller(page, nom);
 
   // ------------------------------------------------------------- 1. accueil
-  await page.goto(`${BASE}/index.html`, { waitUntil: 'networkidle' });
+  await aller(page, `${BASE}/index.html`);
   await page.waitForSelector('.dimensions .carte');
 
   const nbDimensions = await page.locator('.dimensions .carte').count();
@@ -529,7 +544,7 @@ async function passerLaCible(cible) {
   await verifierTirets(page, `${nom} profil`);
   await capturer(`Profil${suffixe}`, `${nom} profil`);
 
-  await page.goto(`${BASE}/profil.html`, { waitUntil: 'networkidle' });
+  await aller(page, `${BASE}/profil.html`);
   await remplirProfil(page);
   await page.locator('[data-continuer]').click();
 
@@ -780,7 +795,7 @@ async function passerLaCible(cible) {
   // On repart d'un questionnaire vierge : sans cela, aucune réponse ne serait
   // « la première fois » et le défilement ne se déclencherait pas.
   await page.evaluate(() => { try { sessionStorage.removeItem('greatly_edl_parcours'); } catch (e) {} });
-  await page.goto(`${BASE}/profil.html`, { waitUntil: 'networkidle' });
+  await aller(page, `${BASE}/profil.html`);
   await remplirProfil(page);
   await page.locator('[data-continuer]').click();
   await page.waitForSelector('.affirmation');
@@ -858,7 +873,7 @@ async function passerLaCible(cible) {
 
   // Scénario 2 : deux réponses réservées éloignées, rien ne saute.
   await page.evaluate(() => { try { sessionStorage.removeItem('greatly_edl_parcours'); } catch (e) {} });
-  await page.goto(`${BASE}/profil.html`, { waitUntil: 'networkidle' });
+  await aller(page, `${BASE}/profil.html`);
   await remplirProfil(page);
   await page.locator('[data-continuer]').click();
   await page.waitForSelector('.affirmation');
@@ -1296,7 +1311,7 @@ async function passerLaCible(cible) {
   // On repasse par une autre page : un changement de hash seul déclenche un
   // rechargement, qui entrerait en course avec la navigation du test.
   await page.goto('about:blank');
-  await page.goto(`${BASE}/resultat.html#v1-m2211220023222221`, { waitUntil: 'networkidle' });
+  await aller(page, `${BASE}/resultat.html#v1-m2211220023222221`);
   await page.waitForSelector('[data-resultat]:not([hidden])');
   const titreV1 = await page.locator('[data-carte-titre]').innerText();
   if (titreV1 !== 'Une équipe en germe') {
@@ -1304,14 +1319,14 @@ async function passerLaCible(cible) {
   }
 
   await page.goto('about:blank');
-  await page.goto(`${BASE}/resultat.html#nawak`, { waitUntil: 'networkidle' });
+  await aller(page, `${BASE}/resultat.html#nawak`);
   await page.waitForSelector('[data-sans-resultat]:not([hidden])');
   if (!(await page.locator('[data-resultat]').isHidden())) {
     soucis.push(`[${nom}] resultat : un hash invalide affiche quand même un résultat`);
   }
   await capturer(`Resultat-sans-lien${suffixe}`, `${nom} resultat vide`);
 
-  await page.goto(`${BASE}/confidentialite.html`, { waitUntil: 'networkidle' });
+  await aller(page, `${BASE}/confidentialite.html`);
   await verifierTirets(page, `${nom} confidentialite`);
   await capturer(`Confidentialite${suffixe}`, `${nom} confidentialite`);
 
