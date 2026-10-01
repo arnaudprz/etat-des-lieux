@@ -219,10 +219,8 @@ async function demanderConnexion(code, email) {
     callback: async ({ credential }) => {
       direAcces(null);
       const resultat = await ouvrir(credential);
-      if (resultat.ok) {
-        $('[data-acces]').hidden = true;
-        return;
-      }
+      if (resultat.ok) return;
+      $('[data-acces]').hidden = false;
       direAcces(resultat.code, resultat.email);
     },
   });
@@ -268,9 +266,36 @@ async function ouvrir(jeton) {
   return { ok: true };
 }
 
-/** Le message d'attente, pendant que l'API répond. */
+/** Ce que dit l'écran d'attente, à mesure qu'elle se prolonge. */
+const MESSAGES_ATTENTE = [
+  'Nous chargeons les derniers résultats…',
+  'Nous rassemblons les réponses de chaque équipe…',
+  'Nous calculons les moyennes et les écarts…',
+  'Encore un instant…',
+];
+
+let minuterieAttente = null;
+
+/** L'écran d'attente, qui remplace la carte d'accès pendant que l'API répond. */
 function attente(active) {
-  $('[data-chargement]').hidden = !active;
+  const ecran = $('[data-chargement]');
+  const message = $('[data-chargement-message]');
+  clearInterval(minuterieAttente);
+  ecran.hidden = !active;
+  if (!active) return;
+
+  $('[data-acces]').hidden = true;
+  let i = 0;
+  message.textContent = MESSAGES_ATTENTE[0];
+  minuterieAttente = setInterval(() => {
+    if (i >= MESSAGES_ATTENTE.length - 1) return clearInterval(minuterieAttente);
+    i += 1;
+    message.style.opacity = '0';
+    setTimeout(() => {
+      message.textContent = MESSAGES_ATTENTE[i];
+      message.style.opacity = '';
+    }, 300);
+  }, 2200);
 }
 
 async function demarrer() {

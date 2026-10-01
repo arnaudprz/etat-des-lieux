@@ -98,7 +98,9 @@ verifier(!(await page.evaluate(() => sessionStorage.getItem('greatly_edl_admin')
 // 3. Compte autorisé : le tableau s'ouvre, l'export ne porte pas le jeton.
 await page.click('[data-compte="autorise"]');
 await page.waitForSelector('[data-chargement]:not([hidden])', { timeout: 900 })
-  .catch(() => soucis.push('aucun message de chargement pendant l’attente'));
+  .catch(() => soucis.push('aucun écran de chargement pendant l’attente'));
+verifier(!(await visible(page, '[data-acces]')), 'carte d’accès visible pendant le chargement');
+if (process.env.CAPTURE) await page.screenshot({ path: process.env.CAPTURE });
 await page.waitForSelector('[data-tableau]:not([hidden])');
 verifier(instants.contacts_csv_demande < instants.donnees_rendu,
   'les contacts attendent les réponses au lieu de partir en même temps');
