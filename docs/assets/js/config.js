@@ -10,7 +10,7 @@ export const API_URL = 'https://script.google.com/macros/s/AKfycbxxpB0S-UJCxRvsx
 export const VERSION_QUESTIONNAIRE = 'v1';
 
 /** Cache-buster des imports. À incrémenter à chaque déploiement. */
-export const V = 18;
+export const V = 20;
 
 /** Valeur affichée par le compteur si l'API ne répond pas. */
 export const COMPTEUR_REPLI = 255;

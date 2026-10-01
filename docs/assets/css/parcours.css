@@ -65,6 +65,10 @@
 
 .compteur--pret { opacity: 1; }
 
+/* Sur mobile, le bouton prend toute la largeur : un compteur collé à gauche
+   dessous paraissait décroché. Centré, il se lit comme sa légende. */
+.hero__actions .compteur { align-self: center; }
+
 @media (prefers-reduced-motion: reduce) {
   .compteur { transition: none; }
 }
@@ -473,6 +477,8 @@
   .hero__intro { font-size: 19px; }
   /* wrap : avec deux boutons et le compteur, la ligne doit pouvoir se replier. */
   .hero__actions { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 20px; }
+  /* En ligne, le compteur suit le bouton : il reprend l'alignement du texte. */
+  .hero__actions .compteur { align-self: auto; }
 
   .pourquoi {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1481,62 +1487,7 @@
   max-width: 760px;
 }
 
-/* Bloc Greatly */
-.greatly {
-  background: var(--foret);
-  border-radius: 20px;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  color: var(--creme);
-}
-
-.greatly__photo {
-  margin: 0;
-  position: relative;
-  min-height: 220px;
-}
-
-.greatly__photo img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: sepia(25%) saturate(70%) brightness(.95) hue-rotate(15deg);
-}
-
-.greatly__texte {
-  padding: 28px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  justify-content: center;
-}
-
-.greatly__sur-titre {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  color: #CBD6BF;
-}
-
-.greatly__titre {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 400;
-  margin: 0;
-  font-size: 28px;
-}
-
-.greatly p {
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.7;
-  color: var(--creme-foret);
-}
-
-.greatly .btn { align-self: flex-start; margin-top: 8px; }
+/* Le bloc Greatly est défini plus haut : ce doublon a été retiré. */
 
 /* Formulaire de l'étude complète */
 .etude {
@@ -1636,6 +1587,15 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   color: var(--creme);
+}
+
+/* Sur l'accueil, le bloc n'est pas une carte posée sur le fond mais une bande
+   qui traverse l'écran, juste sous l'illustration : ni coins arrondis, ni
+   marge sur les côtés. La page résultat, elle, garde sa carte arrondie. */
+.greatly--bande {
+  border-radius: 0;
+  margin: 40px 0 0;
+  width: 100%;
 }
 
 .greatly__photo {

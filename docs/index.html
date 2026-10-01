@@ -29,8 +29,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
-<link rel="stylesheet" href="assets/css/base.css?v=18">
-<link rel="stylesheet" href="assets/css/parcours.css?v=18">
+<link rel="stylesheet" href="assets/css/base.css?v=20">
+<link rel="stylesheet" href="assets/css/parcours.css?v=20">
 </head>
 <body>
 
@@ -75,6 +75,24 @@
   </section>
 
   <!-- 2. Les deux « pourquoi ». -->
+  <!-- Montré seulement à qui a déjà fait son état des lieux : la page n'a plus
+       à le convaincre de commencer, elle peut dire qui est derrière. Placé
+       juste sous l'illustration, et en bande pleine largeur, sans coins
+       arrondis : il sépare le haut de page du reste.
+       Même texte que resultat.html : garder les deux en accord. -->
+  <section class="greatly greatly--bande" id="greatly" data-greatly hidden>
+    <figure class="greatly__photo">
+      <img src="assets/img/greatly-house.jpg" alt="La Greatly House, une maison de briques dans son parc, à Verlinghem">
+    </figure>
+    <div class="greatly__texte">
+      <span class="greatly__sur-titre">Qui est derrière cet état des lieux</span>
+      <h2 class="greatly__titre">Greatly</h2>
+      <p>Greatly accompagne des dirigeants, des managers et des équipes pour cultiver leur énergie et leur lucidité. On y travaille sur ce qui aide à bien travailler ensemble : le temps, la confiance, les relations, le collectif. Pour nous, la performance n'est pas un objectif : elle en est la conséquence.</p>
+      <p>Tout se passe à la Greatly House, une maison et son parc à Verlinghem, près de Lille. Un lieu calme, pensé pour prendre du recul, loin du bureau.</p>
+      <a class="btn btn--clair" href="https://greatly.club">Découvrir Greatly</a>
+    </div>
+  </section>
+
   <section class="pourquoi">
     <div class="carte pourquoi__carte">
       <span class="surtitre" data-pour-vous-surtitre></span>
@@ -127,21 +145,6 @@
     <a class="btn" href="profil.html" data-bouton></a>
   </section>
 
-  <!-- Montré seulement à qui a déjà fait son état des lieux : la page n'a plus
-       à le convaincre de commencer, elle peut dire qui est derrière.
-       Même bloc que resultat.html : garder les deux textes en accord. -->
-  <section class="greatly" id="greatly" data-greatly hidden>
-    <figure class="greatly__photo">
-      <img src="assets/img/greatly-house.jpg" alt="La Greatly House, une maison de briques dans son parc, à Verlinghem">
-    </figure>
-    <div class="greatly__texte">
-      <span class="greatly__sur-titre">Qui est derrière cet état des lieux</span>
-      <h2 class="greatly__titre">Greatly</h2>
-      <p>Greatly accompagne des dirigeants, des managers et des équipes pour cultiver leur énergie et leur lucidité. On y travaille sur ce qui aide à bien travailler ensemble : le temps, la confiance, les relations, le collectif. Pour nous, la performance n'est pas un objectif : elle en est la conséquence.</p>
-      <p>Tout se passe à la Greatly House, une maison et son parc à Verlinghem, près de Lille. Un lieu calme, pensé pour prendre du recul, loin du bureau.</p>
-      <a class="btn btn--clair" href="https://greatly.club">Découvrir Greatly</a>
-    </div>
-  </section>
 
 </main>
 
@@ -150,6 +153,6 @@
   <p><span data-pied></span> <a href="confidentialite.html">Politique de confidentialité</a></p>
 </footer>
 
-<script type="module" src="assets/js/parcours/accueil.js?v=18"></script>
+<script type="module" src="assets/js/parcours/accueil.js?v=20"></script>
 </body>
 </html>
