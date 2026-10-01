@@ -242,7 +242,7 @@ async function verifierContenuPerime(navigateur, options, soucis) {
 
     await aller(page, `${BASE}/index.html`);
     await page.waitForTimeout(1200);
-    const cartes = await page.locator('.dimensions .carte').count();
+    const cartes = await page.locator('.dimensions > *').count();
     if (cartes === 0) {
       soucis.push(`contenu périmé : sans accueil.${cle}, l'accueil ne se construit pas`);
     }
@@ -271,9 +271,9 @@ async function passerLaCible(cible) {
 
   // ------------------------------------------------------------- 1. accueil
   await aller(page, `${BASE}/index.html`);
-  await page.waitForSelector('.dimensions .carte');
+  await page.waitForSelector('.dimensions > *');
 
-  const nbDimensions = await page.locator('.dimensions .carte').count();
+  const nbDimensions = await page.locator('.dimensions > *').count();
   if (nbDimensions !== 8) soucis.push(`[${nom}] accueil : ${nbDimensions} dimensions au lieu de 8`);
   // Aucun bouton ni lien d'action ne doit rester sans libellé : c'est le
   // symptôme d'un texte manquant dans contenu.json, et ça passe inaperçu tant

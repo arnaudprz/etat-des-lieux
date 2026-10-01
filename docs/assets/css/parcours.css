@@ -455,18 +455,27 @@
   font-size: 15px;
 }
 
+/* Une liste, pas des boutons : ni fond, ni ombre, ni coins arrondis, rien à
+   cliquer. Deux colonnes dès le mobile, pour ne pas prendre un écran entier. */
 .dimensions {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 16px;
   align-content: start;
 }
 
-.dimensions .carte {
-  padding: 18px 20px;
-  font-size: 16px;
+.dimensions > * {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--bordure);
+  font-size: 15px;
   font-weight: 500;
+  color: var(--foret);
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
 }
+
+@media (max-width: 359px) { .dimensions { grid-template-columns: minmax(0, 1fr); } }
 
 .appel {
   padding: 0 20px 40px;

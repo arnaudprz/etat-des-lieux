@@ -391,6 +391,28 @@ critere(5, 'contraste du numéro d’au moins 4,5:1', [1280, 390], async ({ page
   const faibles = (await contrastes(page, '.point__numero')).filter((c) => c.ratio < 4.5);
   return !faibles.length || faibles.map((c) => `${c.texte} ${c.ratio.toFixed(2)}:1`).join(', ');
 });
+// Point 6 · les 8 tuiles « Sur quoi repose l'état des lieux »
+critere(6, 'tuiles sans ombre ni coins arrondis', [1280, 390], async ({ page }) => {
+  await aller(page, `${BASE}/index.html`);
+  await page.waitForSelector('.dimensions > *');
+  const tuiles = await page.locator('.dimensions > *').evaluateAll((ns) => ns.map((n) => {
+    const st = getComputedStyle(n);
+    return { ombre: st.boxShadow, rayon: parseFloat(st.borderTopLeftRadius) || 0, curseur: st.cursor };
+  }));
+  if (tuiles.length !== 8) return `${tuiles.length} tuiles`;
+  const fautive = tuiles.find((t) => (t.ombre && t.ombre !== 'none') || t.rayon || t.curseur === 'pointer');
+  return !fautive || `ombre « ${fautive.ombre} », rayon ${fautive.rayon}, curseur ${fautive.curseur}`;
+});
+
+critere(6, 'les 8 tuiles en 4 lignes, moins de 260px', [390], async ({ page }) => {
+  await aller(page, `${BASE}/index.html`);
+  await page.waitForSelector('.dimensions > *');
+  const m = await page.locator('.dimensions > *').evaluateAll((ns) => {
+    const rs = ns.map((n) => n.getBoundingClientRect());
+    return { lignes: new Set(rs.map((r) => Math.round(r.top))).size, hauteur: Math.max(...rs.map((r) => r.bottom)) - Math.min(...rs.map((r) => r.top)) };
+  });
+  return (m.lignes === 4 && m.hauteur < 260) || `${m.lignes} lignes, ${arrondi(m.hauteur)}px`;
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures

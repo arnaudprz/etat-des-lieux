@@ -174,7 +174,7 @@ function remplirSources(contenu) {
   const hote = $('[data-dimensions]');
   vider(hote);
   contenu.dimensions.forEach((d) => {
-    hote.appendChild(el('div', { classe: 'carte', texte: d.nom }));
+    hote.appendChild(el('div', { classe: 'dimensions__item', texte: d.nom }));
   });
 }
 
