@@ -254,7 +254,7 @@
   font-weight: 600;
   letter-spacing: .08em;
   text-transform: uppercase;
-  color: var(--sauge);
+  color: var(--sauge-fonce);   /* 5,76:1 sur blanc ; --sauge restait à 4,45:1 */
 }
 
 .surtitre--clair { color: #B9C6AB; }
@@ -298,17 +298,26 @@
   margin: 0;
   font-size: 16px;
   line-height: 1.6;
-  color: var(--creme-foret);
+  color: var(--texte-doux);
 }
 
 .pourquoi__source {
   margin: 0;
   font-size: 14px;
   line-height: 1.5;
-  color: #B9C6AB;
+  color: var(--taupe);
 }
 
-.pourquoi__source a { color: var(--creme); }
+.pourquoi__source a { color: var(--sauge-fonce); }
+
+/* Les mêmes textes, posés sur le vert forêt. */
+.pourquoi__carte--foret .pourquoi__texte { color: var(--creme-foret); }
+.pourquoi__carte--foret .pourquoi__source { color: #B9C6AB; }
+.pourquoi__carte--foret .pourquoi__source a { color: var(--creme); }
+
+/* Sur le vert forêt, la puce « Bien enraciné » (vert sombre) se fondait dans
+   le fond : un liseré crème la détache, sans changer sa couleur. */
+.pourquoi__carte--foret .pourquoi__puce { box-shadow: 0 0 0 1.5px rgba(247, 244, 239, .55); }
 
 /* ----------------------------------------- ce que vous recevez en 2 minutes */
 

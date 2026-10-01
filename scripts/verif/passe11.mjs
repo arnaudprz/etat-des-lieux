@@ -413,6 +413,27 @@ critere(6, 'les 8 tuiles en 4 lignes, moins de 260px', [390], async ({ page }) =
   });
   return (m.lignes === 4 && m.hauteur < 260) || `${m.lignes} lignes, ${arrondi(m.hauteur)}px`;
 });
+// Point 7 · les deux cartes « Pour vous » et « Pour Greatly »
+critere(7, '« Pour vous » sur fond forêt', [1280, 390], async ({ page }) => {
+  await aller(page, `${BASE}/index.html`);
+  await page.waitForSelector('[data-pour-vous-titre]');
+  const fonds = await page.evaluate(() => {
+    const foret = getComputedStyle(document.documentElement).getPropertyValue('--foret').trim();
+    const carte = Array.from(document.querySelectorAll('.pourquoi__carte'))
+      .find((c) => c.textContent.replace(/\s+/g, ' ').includes('Un regard clair sur votre façon de travailler ensemble'));
+    const hex = (c) => '#' + (c.match(/\d+/g) || []).slice(0, 3).map((v) => Number(v).toString(16).padStart(2, '0')).join('').toUpperCase();
+    return { foret: foret.toUpperCase(), fond: carte ? hex(getComputedStyle(carte).backgroundColor) : null };
+  });
+  return fonds.fond === fonds.foret || `fond ${fonds.fond} au lieu de ${fonds.foret}`;
+});
+
+critere(7, 'textes des deux cartes à 4,5:1 au moins', [1280, 390], async ({ page }) => {
+  await aller(page, `${BASE}/index.html`);
+  await page.waitForSelector('[data-pour-vous-titre]');
+  const faibles = (await contrastes(page, '.pourquoi__carte *:not(:has(*)), .pourquoi__source a'))
+    .filter((c) => c.ratio < 4.5);
+  return !faibles.length || faibles.map((c) => `« ${c.texte} » ${c.ratio.toFixed(2)}:1`).join(', ');
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures
