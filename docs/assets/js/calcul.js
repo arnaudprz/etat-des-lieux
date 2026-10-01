@@ -63,17 +63,27 @@ export function niveauDimension(reponses, numeros) {
 /**
  * Les 8 dimensions, dans l'ordre de contenu.json, avec leur niveau et la phrase
  * qui correspond à ce niveau.
+ *
+ * Pour un manager, une dimension peut avoir son nom et ses phrases écrits de
+ * son point de vue (`nom_manager`, `phrases_manager`) : il a répondu « J'aide
+ * mon équipe… », pas « Mon manager m'aide… ». Sans rôle, ou sans version
+ * manager, la version membre. Le tableau de bord appelle sans rôle et garde
+ * donc des noms communs.
+ *
+ * @param {string} [role] 'membre' ou 'manager'
  */
-export function dimensionsClassees(reponses, contenu) {
+export function dimensionsClassees(reponses, contenu, role) {
+  const manager = role === 'manager';
   return contenu.dimensions.map((d) => {
     const valeur = niveauDimension(reponses, d.affirmations);
     const niveau = contenu.niveaux.find((n) => n.valeur === valeur);
+    const phrases = (manager && d.phrases_manager) || d.phrases;
     return {
       cle: d.cle,
-      nom: d.nom,
+      nom: (manager && d.nom_manager) || d.nom,
       valeur,
       niveau,
-      phrase: d.phrases[niveau.cle],
+      phrase: phrases[niveau.cle] || d.phrases[niveau.cle],
     };
   });
 }
@@ -229,12 +239,14 @@ export function relancesAEnvoyer(reponses, relances, contenu) {
 /**
  * Le résultat complet, prêt à afficher.
  * Ne contient aucun chiffre destiné au répondant : la moyenne reste interne.
+ *
+ * @param {string} [role] 'manager' pour les textes écrits de son point de vue
  */
-export function calculer(reponses, contenu) {
+export function calculer(reponses, contenu, role) {
   if (!reponsesValides(reponses)) {
     throw new Error('Réponses invalides : 16 entiers de 0 à 3 attendus.');
   }
-  const dimensions = dimensionsClassees(reponses, contenu);
+  const dimensions = dimensionsClassees(reponses, contenu, role);
   return {
     dimensions,
     carte: carteEnsemble(reponses, contenu),

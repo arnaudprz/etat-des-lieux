@@ -99,6 +99,10 @@ async function repondre(page, reponses) {
 }
 
 async function allerAuResultat(page, lien = LIEN_MEMBRE) {
+  // D'un résultat à l'autre seul le hash change, et la page se recharge
+  // d'elle-même (hashchange) : on repart d'une page vierge pour ne pas lire
+  // pendant ce rechargement.
+  await page.goto('about:blank');
   await aller(page, `${BASE}/resultat.html${lien}`);
   await page.waitForSelector('[data-resultat]:not([hidden])', { timeout: 15000 });
   await page.waitForTimeout(300);
@@ -761,6 +765,70 @@ critere(14, 'tests node du calcul et du tableau de bord', [1280], async ({ navig
   } catch (e) {
     return String(e.stdout || e.message).split('\n').filter((l) => /not ok/.test(l)).slice(0, 3).join(' | ');
   }
+});
+// Point 15 · le résultat d'un manager
+/** Un manager aux 4 niveaux : chaque dimension prend tour à tour chaque niveau. */
+const LIENS_MANAGER = ['#v2-g0000000000000000-1.0', '#v2-g1111111111111111-1.0', '#v2-g2222222222222222', '#v2-g3333333333333333'];
+const INTERDITS_MANAGER = ['Votre manager', 'votre manager', 'qu\'il fasse', 'Vous pouvez dire ce que vous pensez', 'vos collègues ou votre manager'];
+
+critere(15, 'manager : aucun texte écrit pour un membre', [1280, 390], async ({ page }) => {
+  for (const lien of LIENS_MANAGER) {
+    await allerAuResultat(page, lien);
+    // Ce que vise le point 15 : la carte d'ensemble, les bandeaux et leurs
+    // idées, la phrase de fin des idées. L'encart de partage (« … ou à votre
+    // manager ? ») n'est pas cité par la passe : il reste tel quel (point 18).
+    const t = brut((await page.locator('.ensemble, [data-bandes], [data-idees-resultats], [data-ligne-idees]').allInnerTexts()).join('\n'));
+    const trouve = INTERDITS_MANAGER.find((x) => t.includes(x));
+    if (trouve) return `${lien} : « ${trouve} »`;
+  }
+  return true;
+});
+
+critere(15, 'manager : la dimension 10 s’appelle « Votre soutien à l’équipe »', [1280, 390], async ({ page }) => {
+  await allerAuResultat(page, LIEN_MANAGER);
+  const noms = (await page.locator('.bande__nom').allInnerTexts()).map(brut);
+  return noms.includes("Votre soutien à l'équipe") || `noms : ${noms.join(', ')}`;
+});
+
+critere(15, 'membre : résultat identique à avant', [1280], async ({ page, navigateur }) => {
+  // Empreinte prise avant le point 15, moteur par moteur (innerText diffère un peu).
+  const avant = JSON.parse(readFileSync(join(racine, 'captures/passe11/membre-avant.json'), 'utf8'))[navigateur];
+  for (const [lien, texte] of Object.entries(avant)) {
+    await allerAuResultat(page, lien);
+    await page.waitForTimeout(500);
+    const t = await page.locator('[data-resultat]').innerText();
+    if (t !== texte) {
+      const i = [...t].findIndex((ch, k) => ch !== texte[k]);
+      return `${lien} : diffère vers « ${t.slice(Math.max(0, i - 20), i + 40)} »`;
+    }
+  }
+  return true;
+});
+
+critere(15, 'lien v1 : version membre, sans erreur', [1280, 390], async ({ page }) => {
+  await allerAuResultat(page, '#v1-m2211220023222221');
+  const noms = (await page.locator('.bande__nom').allInnerTexts()).map(brut);
+  return noms.includes('Le soutien du manager') || `noms : ${noms.join(', ')}`;
+});
+
+critere(15, 'questionnaire : titre du groupe 10 selon le rôle', [1280, 390], async ({ page }) => {
+  const groupes = async () => (await page.locator('h2.groupe').allInnerTexts()).map(brut);
+  await allerAuxQuestions(page, 'manager');
+  const g = await groupes();
+  if (!g.includes("Votre rôle auprès de l'équipe") || g.includes('Le soutien du manager')) return `manager : ${g.join(', ')}`;
+  await page.evaluate(() => sessionStorage.clear());
+  await allerAuxQuestions(page, 'membre');
+  const m = await groupes();
+  return (m.includes('Le soutien du manager') && !m.includes("Votre rôle auprès de l'équipe")) || `membre : ${m.join(', ')}`;
+});
+
+critere(15, 'tableau de bord : noms de dimension inchangés', [1280], async ({ page }) => {
+  await aller(page, `${BASE}/admin/?demo=1`);
+  await page.waitForSelector('[data-tableau]:not([hidden])');
+  await page.waitForTimeout(800);
+  const t = brut(await page.locator('[data-sections]').innerText());
+  if (t.includes("Votre soutien à l'équipe")) return 'le nom manager apparaît dans le tableau de bord';
+  return t.includes('Le soutien du manager') || '« Le soutien du manager » absent du tableau de bord';
 });
 // <<< POINTS
 

@@ -390,7 +390,10 @@ function construire(formulaire) {
         formulaire.appendChild(miParcours());
       }
       groupeCourant = a.groupe;
-      formulaire.appendChild(el('h2', { classe: 'groupe', texte: a.groupe }));
+      // Un manager lit le titre écrit pour lui, s'il existe. « Pourquoi on s'y
+      // intéresse » reste rangé sous le titre commun.
+      const titre = (etat.role === 'manager' && a.groupe_manager) || a.groupe;
+      formulaire.appendChild(el('h2', { classe: 'groupe', texte: titre }));
       const ligne = pourquoi(a.groupe);
       if (ligne) formulaire.appendChild(ligne);
     }

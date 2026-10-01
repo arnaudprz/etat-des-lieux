@@ -370,7 +370,7 @@ async function demarrer() {
     return;
   }
 
-  const brut = calculer(lu.reponses, contenu);
+  const brut = calculer(lu.reponses, contenu, lu.role);
   const niveauCarte = contenu.niveaux.find((n) => n.cle === brut.carte.niveau);
   const resultat = {
     ...brut,
@@ -404,7 +404,10 @@ async function demarrer() {
   // Une seule ligne sobre, et seulement s'il y a des idées à montrer.
   const ligne = $('[data-ligne-idees]');
   if (auMoinsUneIdee(lu.relances) && (Object.keys(idees).length > 0 || ideesResultats)) {
-    texte(ligne, contenu.envies.phrase_finale);
+    // Un manager lit une phrase écrite pour lui, s'il y en a une.
+    const finale = (lu.role === 'manager' && contenu.envies.phrase_finale_manager)
+      || contenu.envies.phrase_finale;
+    texte(ligne, finale);
     ligne.hidden = false;
   }
   /**
