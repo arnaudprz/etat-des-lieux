@@ -961,7 +961,9 @@ async function passerLaCible(cible) {
     await page.locator('.affirmation').nth(i).locator('.echelle__choix').nth(0).click();
   }
 
-  // Avec les 16 réponses, la pousse a atteint l'arbre.
+  // Avec les 16 réponses, la pousse a atteint l'arbre. Depuis la passe 11,
+  // l'arbre n'arrive qu'à la 16e réponse : on laisse finir son fondu (200 ms).
+  await page.waitForTimeout(500);
   const arrivee = await avancee();
   if (arrivee.pousse !== 'assets/img/icone-enracine.svg') {
     soucis.push(`[${nom}] progression : après 16 réponses, la pousse est ${arrivee.pousse}`);
