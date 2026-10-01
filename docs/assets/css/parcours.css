@@ -771,17 +771,17 @@
   justify-content: center;
 }
 
-.secteurs__ligne[aria-selected='true'] .secteurs__choix {
+.secteurs__choix[aria-selected='true'] {
   background: var(--vert-pale);
   font-weight: 500;
 }
 
-.secteurs__ligne[aria-selected='true'] .secteurs__rond {
+.secteurs__choix[aria-selected='true'] .secteurs__rond {
   background: var(--sauge-fonce);
   border-color: var(--sauge-fonce);
 }
 
-.secteurs__ligne[aria-selected='true'] .secteurs__rond::after {
+.secteurs__choix[aria-selected='true'] .secteurs__rond::after {
   content: '';
   width: 5px;
   height: 9px;

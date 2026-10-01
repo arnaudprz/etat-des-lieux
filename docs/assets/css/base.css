@@ -29,7 +29,7 @@
   --voile-leger: rgba(138, 155, 122, .1);
   --ombre: 0 2px 8px rgba(0, 0, 0, .04);
   --ombre-flottante: 0 4px 20px rgba(0, 0, 0, .08);
-  --focus: 3px solid rgba(107, 125, 92, .35);
+  --focus: 3px solid var(--sauge-fonce);   /* à 35 % d'opacité, trop pâle sur le crème */
 
   /* Les 4 niveaux. Chaque couleur est toujours accompagnée de son nom écrit. */
   --enracine: #3F4F35;
@@ -39,7 +39,7 @@
   --germe: #E3CF9E;
   --germe-texte: #1A1A1A;
   --semer: #A9743A;
-  --semer-texte: #1A1A1A;
+  --semer-texte: #111111;   /* 4,7:1 sur la terre ; #1A1A1A restait à 4,34:1 */
 
   --rayon-carte: 16px;
   --rayon-bloc: 14px;
@@ -408,7 +408,7 @@ body { padding-top: calc(var(--hauteur-demo, 0px) + var(--hauteur-bandeau)); }
   color: var(--creme-foret);
 }
 
-.pied a { color: var(--creme); }
+.pied a { color: var(--creme); display: inline-block; padding: 12px 0; }
 
 @media (min-width: 900px) {
   .pied {

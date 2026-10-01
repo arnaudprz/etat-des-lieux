@@ -706,6 +706,44 @@ critere(12, 'libellés dans leur bouton, 4px de marge, 2 lignes au plus', [390, 
   const f = m.find((x) => x.deborde || x.marge < 4 || x.lignes > 2);
   return !f || `« ${f.texte} » : débord ${f.deborde}, marge ${arrondi(f.marge)}px, ${f.lignes} lignes`;
 });
+// Point 13 · contrastes et focus
+/** axe-core, installé sans entrer dans package.json (npm install --no-save axe-core). */
+const AXE = join(racine, 'node_modules/axe-core/axe.min.js');
+
+critere(13, 'axe : aucune violation WCAG 2.2 AA', [1280, 390], async ({ page }) => {
+  const violations = [];
+  for (const [nom, ouvrir] of PAGES_AXES) {
+    await ouvrir(page);
+    await page.addScriptTag({ path: AXE });
+    const r = await page.evaluate(() => window.axe.run(document, {
+      runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'] },
+    }));
+    r.violations.forEach((v) => violations.push(`${nom} : ${v.id} (${v.nodes.length})`));
+  }
+  return !violations.length || violations.join(', ');
+});
+
+critere(13, 'contour de focus à 3:1 au moins sur le crème', [1280], async ({ page }) => {
+  await aller(page, `${BASE}/index.html`);
+  const ratio = await page.evaluate(() => {
+    const sonde = document.createElement('span');
+    sonde.style.outline = 'var(--focus)';
+    document.body.appendChild(sonde);
+    const st = getComputedStyle(sonde);
+    const rgba = (st.outlineColor.match(/[\d.]+/g) || []).map(Number);
+    sonde.remove();
+    const creme = [247, 244, 239];
+    const a = rgba.length > 3 ? rgba[3] : 1;
+    const vue = rgba.slice(0, 3).map((c, i) => c * a + creme[i] * (1 - a));
+    const lum = ([r, g, b]) => {
+      const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+      return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+    };
+    const l1 = lum(vue); const l2 = lum(creme);
+    return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+  });
+  return ratio >= 3 || `${ratio.toFixed(2)}:1`;
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures

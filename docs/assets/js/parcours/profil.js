@@ -236,10 +236,13 @@ function champSecteur(definition, surChoix) {
     }
 
     visibles.forEach((secteur, i) => {
+      // Le rôle d'option est porté par le bouton lui-même : posé sur le <li>,
+      // il plaçait un élément interactif dans un autre (axe : nested-interactive).
       const bouton = el('button', {
         classe: 'secteurs__choix',
         attrs: {
           type: 'button', id: `secteur-${i}`, tabindex: '-1',
+          role: 'option', 'aria-selected': String(secteur === valeur),
           'data-secteur': secteur,
         },
       }, [
@@ -250,7 +253,7 @@ function champSecteur(definition, surChoix) {
 
       liste.appendChild(el('li', {
         classe: 'secteurs__ligne' + (i === survol ? ' secteurs__ligne--survol' : ''),
-        attrs: { role: 'option', 'aria-selected': String(secteur === valeur) },
+        attrs: { role: 'none' },
       }, [bouton]));
     });
 
