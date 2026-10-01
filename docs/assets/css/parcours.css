@@ -80,6 +80,22 @@
 
 .compteur strong { font-weight: 600; }
 
+/* Les actions de reprise, sous le bouton principal. Elles existent, mais ne
+   rivalisent pas avec « Voir mon état des lieux », qui est ce qu'on vient
+   chercher. */
+.actions-secondaires {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.actions-secondaires .bouton-doux {
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 14px;
+}
+
 /* Quand un état des lieux a déjà été fait sur cet appareil : on le propose,
    au lieu de laisser repartir de zéro sans le savoir. */
 .deja-fait {

@@ -190,9 +190,8 @@ function remplirSources(contenu) {
  * Propose l'état des lieux déjà fait sur cet appareil.
  *
  * Sans ça, revenir sur le site donnait l'impression qu'il fallait tout
- * recommencer : le résultat existait pourtant, mais rien ne le disait. Les deux
- * actions possibles sont offertes côte à côte, avec le même poids : revoir son
- * état des lieux, ou revenir sur ses réponses.
+ * recommencer : le résultat existait pourtant, mais rien ne le disait. Le
+ * bouton principal y mène, et les reprises restent en retrait dessous.
  */
 function proposerResultatConnu(contenu) {
   const a = contenu.accueil;
@@ -212,6 +211,11 @@ function proposerResultatConnu(contenu) {
   const lu = decoder(new URL(adresse, location.href).hash, contenu);
   if (!lu) return;
 
+  // Qui a déjà répondu n'a plus besoin qu'on le convainque : on lui dit plutôt
+  // qui est derrière cet état des lieux.
+  const greatly = $('[data-greatly]');
+  if (greatly) greatly.hidden = false;
+
   const ligne = $('[data-deja-fait]');
   if (ligne) {
     texte(ligne, d.texte);
@@ -219,30 +223,24 @@ function proposerResultatConnu(contenu) {
   }
 
   $$('[data-bouton]').forEach((bouton) => {
-    // Le bouton principal ne promet plus un premier état des lieux.
-    texte(bouton, d.modifier);
-    bouton.removeAttribute('href');
-    bouton.setAttribute('role', 'button');
-    bouton.setAttribute('tabindex', '0');
-    const modifier = () => {
+    // Revoir son état des lieux est ce qu'on vient chercher : c'est cette
+    // action qui garde le bouton principal. Reprendre ses réponses ou son
+    // profil vient après, en retrait, sur une ligne à part.
+    texte(bouton, d.voir);
+    bouton.setAttribute('href', adresse);
+
+    const reprendre = el('button', { classe: 'bouton-doux', texte: d.modifier, attrs: { type: 'button' } });
+    reprendre.addEventListener('click', () => {
       ecrireSession({ role: lu.role, reponses: lu.reponses, relances: lu.relances });
       location.href = 'questions.html';
-    };
-    bouton.addEventListener('click', modifier);
-    bouton.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); modifier(); }
     });
 
-    // Le même bouton, juste à côté, pour aller droit au résultat.
-    const voir = el('a', { classe: 'btn', texte: d.voir, attrs: { href: adresse } });
-    bouton.insertAdjacentElement('afterend', voir);
+    const secondaires = el('div', { classe: 'actions-secondaires' }, [reprendre]);
 
-    // Et la première partie, le profil, qu'on ne pouvait pas reprendre.
     const memoire = profilMemorise();
     if (memoire) {
-      const profil = el('a', { classe: 'btn btn--doux', texte: d.profil, attrs: { href: 'profil.html' } });
-      profil.addEventListener('click', (e) => {
-        e.preventDefault();
+      const profil = el('button', { classe: 'bouton-doux', texte: d.profil, attrs: { type: 'button' } });
+      profil.addEventListener('click', () => {
         ecrireSession({
           role: memoire.role || lu.role,
           profil: memoire.profil,
@@ -251,8 +249,13 @@ function proposerResultatConnu(contenu) {
         });
         location.href = 'profil.html';
       });
-      voir.insertAdjacentElement('afterend', profil);
+      secondaires.appendChild(profil);
     }
+
+    // Dans le haut de page, le bouton partage sa ligne avec le compteur : les
+    // actions secondaires se placent sous l'ensemble, pas entre les deux.
+    const hote = bouton.closest('.hero__actions') || bouton;
+    hote.insertAdjacentElement('afterend', secondaires);
   });
 }
 
