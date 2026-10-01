@@ -9,10 +9,16 @@ mots et 4 couleurs. Les chiffres n'existent que dans le tableau de bord.
 
 ## Statut
 
-**Version locale.** Tout fonctionne sur la machine, en mode démo : le parcours
-complet, le calcul du résultat, le lien personnel et le tableau de bord avec des
-données fictives. Le backend Apps Script est écrit et testé, mais **pas encore
-déployé**, et il n'existe **pas encore de repo GitHub ni de site en ligne**.
+**Démo en ligne.** Le site est publié sur GitHub Pages :
+<https://arnaudprz.github.io/etat-des-lieux/>
+
+Il tourne en **mode démo** : le parcours complet, le calcul du résultat, le lien
+personnel et le tableau de bord fonctionnent, mais le backend Apps Script n'est
+**pas encore déployé**, donc *aucune réponse n'est enregistrée* et le compteur
+affiche sa valeur de repli. Le pied de page le dit aux visiteurs.
+
+Pour relier la démo à de vraies données : déployer le backend, puis renseigner
+`API_URL` dans `docs/assets/js/config.js` (voir `DEPLOY.md`).
 
 | Élément | État |
 | --- | --- |
@@ -21,7 +27,7 @@ déployé**, et il n'existe **pas encore de repo GitHub ni de site en ligne**.
 | Tableau de bord privé | Fait, en mode démo |
 | Backend Apps Script | Écrit et testé, non déployé |
 | Google Sheet | À créer (voir `DEPLOY.md`) |
-| Mise en ligne GitHub Pages | À faire (voir `DEPLOY.md`) |
+| Mise en ligne GitHub Pages | Fait, en mode démo |
 | Saisie des 255 réponses papier | Reportée |
 
 ## Lancer en local
@@ -50,6 +56,7 @@ les polices de repli, tout reste lisible.
 npm test                                    # 204 tests, sans dépendance
 node scripts/verif/cahier-des-charges.mjs   # les 17 points de la section 10.5
 node scripts/verif/parcours.mjs             # rejoue le parcours dans Chromium et WebKit
+node scripts/verif/parcours.mjs https://arnaudprz.github.io/etat-des-lieux  # le site en ligne
 node scripts/verif/parcours.mjs '' '' webkit  # une seule famille de navigateurs
 node scripts/verif/tableau.mjs              # vérifie le tableau de bord
 node scripts/verif/calibrer-demo.mjs        # mesure les données fictives

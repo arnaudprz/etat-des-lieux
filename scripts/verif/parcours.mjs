@@ -13,6 +13,15 @@ import { chromium, webkit, devices } from 'playwright';
 import { mkdirSync } from 'node:fs';
 
 const BASE = process.argv[2] || 'http://127.0.0.1:8127';
+
+/**
+ * Vrai si la page est toujours sur `page.html`, quel que soit le préfixe du site.
+ * En local le site est à la racine, sur GitHub Pages il vit sous /etat-des-lieux/ :
+ * comparer à un chemin absolu en dur ferait échouer la vérification en ligne.
+ */
+function surLaPage(url, page) {
+  return new URL(url).pathname === new URL(`${BASE}/${page}`).pathname;
+}
 const SORTIE = process.argv[3] || '/tmp/edl-captures';
 const FILTRE = process.argv[4] || '';
 
@@ -361,7 +370,7 @@ async function passerLaCible(cible) {
     }
     const premierVisible = await page.locator('[data-champ="role"]').isVisible();
     if (!premierVisible) soucis.push(`[${nom}] profil : le premier champ manquant n'est pas amené à l'écran`);
-    if (new URL(page.url()).pathname !== '/profil.html') {
+    if (!surLaPage(page.url(), 'profil.html')) {
       soucis.push(`[${nom}] profil : « Continuer » avance malgré les manques`);
     }
   }
@@ -695,7 +704,7 @@ async function passerLaCible(cible) {
     if (oubliee !== 1) soucis.push(`[${nom}] questions : ${oubliee} affirmation mise en évidence au lieu d'une`);
     const premiereVisible = await page.locator('[data-affirmation="1"]').isVisible();
     if (!premiereVisible) soucis.push(`[${nom}] questions : la première affirmation oubliée n'est pas à l'écran`);
-    if (new URL(page.url()).pathname !== '/questions.html') {
+    if (!surLaPage(page.url(), 'questions.html')) {
       soucis.push(`[${nom}] questions : « Continuer » avance malgré les manques`);
     }
   }
