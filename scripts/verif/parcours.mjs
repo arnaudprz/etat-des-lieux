@@ -206,6 +206,27 @@ async function passerLaCible(cible) {
     soucis.push(`[${nom}] accueil : ${vides.length} bouton(s) sans libellé : ${vides.join(', ')}`);
   }
 
+  // Deux actions voisines ne doivent ni se toucher ni se chevaucher : sans
+  // `gap`, elles se lisaient comme un seul bloc.
+  const colles = await page.evaluate(() => {
+    const groupes = [...document.querySelectorAll('.appel, .hero__actions, .resultat__actions')];
+    const ennuis = [];
+    groupes.forEach((g) => {
+      const b = [...g.querySelectorAll('.btn, .bouton-doux')].filter((x) => x.offsetParent !== null);
+      for (let i = 1; i < b.length; i++) {
+        const a = b[i - 1].getBoundingClientRect();
+        const c = b[i].getBoundingClientRect();
+        const memeLigne = Math.abs(a.top - c.top) < 4;
+        const ecart = memeLigne ? c.left - a.right : c.top - a.bottom;
+        if (ecart < 8) ennuis.push(`${g.className} : ${Math.round(ecart)}px`);
+      }
+    });
+    return ennuis;
+  });
+  if (colles.length) {
+    soucis.push(`[${nom}] accueil : boutons trop serrés (${colles.join(', ')})`);
+  }
+
   const compteur = (await page.locator('[data-compteur]').innerText()).trim();
   if (compteur !== '255') soucis.push(`[${nom}] accueil : compteur à « ${compteur} » au lieu de 255`);
 

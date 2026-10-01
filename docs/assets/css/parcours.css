@@ -440,6 +440,8 @@
   padding: 0 20px 40px;
   display: flex;
   flex-direction: column;
+  /* gap : sans lui, deux boutons se touchaient et se lisaient comme un bloc. */
+  gap: 12px;
 }
 
 @media (min-width: 900px) {
@@ -483,7 +485,8 @@
 
   .sources { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 64px; }
   .dimensions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .appel { padding: 0 80px 72px; align-items: center; }
+  /* Côte à côte dès qu'il y a la place, comme en haut de page. */
+  .appel { padding: 0 80px 72px; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: 14px; }
 }
 
 /* ================================================================ 2. PROFIL */
