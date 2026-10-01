@@ -19,7 +19,7 @@ export const COMPTEUR_REPLI = 255;
  * Identifiant OAuth du site, pour la connexion Google du tableau de bord.
  * Public par nature. Le même figure dans worker/acces.gs.
  */
-export const ID_CLIENT_GOOGLE = '';
+export const ID_CLIENT_GOOGLE = '1082440100848-sgfqrci3ni8atjo9kek8enb8ng1dudcm.apps.googleusercontent.com';
 
 /** Clé de session du jeton Google du tableau de bord (jamais persisté au-delà de l'onglet). */
 export const CLE_SESSION_ADMIN = 'greatly_edl_admin';

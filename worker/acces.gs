@@ -13,7 +13,7 @@
  */
 
 /** L'identifiant OAuth du site. Public par nature : il figure aussi dans le front. */
-var ID_CLIENT_GOOGLE = '';
+var ID_CLIENT_GOOGLE = '1082440100848-sgfqrci3ni8atjo9kek8enb8ng1dudcm.apps.googleusercontent.com';
 
 /** Toujours autorisé. */
 var PROPRIETAIRE = 'arnaudprz@gmail.com';
@@ -101,4 +101,15 @@ function verifierAupresDeGoogle(jeton) {
     Logger.log('verifierAupresDeGoogle : ' + err);
     return null;
   }
+}
+
+/**
+ * À lancer une fois dans l'éditeur, après ajout de la connexion Google :
+ * c'est ce qui fait demander à Google l'autorisation d'appeler l'extérieur.
+ * Crée au passage l'onglet `acces`.
+ */
+function autoriserConnexionGoogle() {
+  var r = UrlFetchApp.fetch('https://oauth2.googleapis.com/tokeninfo?id_token=test', { muteHttpExceptions: true });
+  adressesAutorisees();
+  Logger.log('Google répond ' + r.getResponseCode() + ' (400 attendu) · onglet acces prêt.');
 }

@@ -47,7 +47,7 @@ async function nouvellePage() {
   await page.route(/assets\/js\/config\.js/, async (r) => {
     const reponse = await r.fetch();
     const texte = (await reponse.text()).replace(
-      "ID_CLIENT_GOOGLE = ''", "ID_CLIENT_GOOGLE = 'client-test'");
+      /ID_CLIENT_GOOGLE = '[^']*'/, "ID_CLIENT_GOOGLE = 'client-test'");
     r.fulfill({ response: reponse, body: texte });
   });
   const appels = [];
