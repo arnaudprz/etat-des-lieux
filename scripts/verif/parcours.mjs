@@ -30,6 +30,24 @@ async function aller(page, url) {
 }
 
 /**
+ * Attend que toutes les images de la page aient fini de charger.
+ *
+ * Contre le site en ligne, elles arrivent plus tard qu'en local : les contrôles
+ * les jugeaient « non chargées » alors qu'elles l'étaient une seconde après.
+ * Le reproche changeait à chaque passage, le médaillon ici, une pousse là.
+ * On ne conclut donc qu'une fois le chargement terminé, ou le délai écoulé.
+ */
+async function attendreLesImages(page) {
+  await page
+    .waitForFunction(
+      () => Array.from(document.images).every((i) => i.complete),
+      null,
+      { timeout: 15000 }
+    )
+    .catch(() => {});
+}
+
+/**
  * Vrai si la page est toujours sur `page.html`, quel que soit le préfixe du site.
  * En local le site est à la racine, sur GitHub Pages il vit sous /etat-des-lieux/ :
  * comparer à un chemin absolu en dur ferait échouer la vérification en ligne.
@@ -1029,6 +1047,8 @@ async function passerLaCible(cible) {
   }
 
   // Le médaillon suit le niveau, et reste décoratif.
+  await attendreLesImages(page);
+
   const medaillon = await page.evaluate(() => {
     const img = document.querySelector('[data-medaillon]');
     if (!img) return null;

@@ -453,7 +453,8 @@
   .hero__texte { gap: 22px; }
   .hero__titre { font-size: 54px; line-height: 1.08; }
   .hero__intro { font-size: 19px; }
-  .hero__actions { flex-direction: row; align-items: center; gap: 20px; }
+  /* wrap : avec deux boutons et le compteur, la ligne doit pouvoir se replier. */
+  .hero__actions { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 20px; }
 
   .pourquoi {
     grid-template-columns: repeat(2, minmax(0, 1fr));

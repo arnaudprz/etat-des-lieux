@@ -941,8 +941,8 @@
     ],
     "deja_fait": {
       "texte": "Vous avez déjà fait votre état des lieux sur cet appareil.",
-      "voir": "Revoir mon état des lieux",
-      "refaire": "En refaire un"
+      "voir": "Voir mon état des lieux",
+      "modifier": "Modifier mes réponses"
     }
   },
   "questions": {

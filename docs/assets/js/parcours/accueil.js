@@ -10,7 +10,8 @@
 
 import { chargerContenu } from '../contenu.js';
 import { compteur } from '../api.js';
-import { resultatMemorise } from '../session.js';
+import { resultatMemorise, ecrire as ecrireSession } from '../session.js';
+import { decoder } from '../lien.js';
 import { POUSSES, POUSSES_HAUTEUR } from '../illustrations.js';
 import { $, $$, el, texte, vider, signalerModeDemo, evenement, typographierPage } from './commun.js';
 
@@ -184,22 +185,45 @@ function remplirSources(contenu) {
  * Propose l'état des lieux déjà fait sur cet appareil.
  *
  * Sans ça, revenir sur le site donnait l'impression qu'il fallait tout
- * recommencer : le résultat existait pourtant, mais rien ne le disait.
+ * recommencer : le résultat existait pourtant, mais rien ne le disait. Les deux
+ * actions possibles sont offertes côte à côte, avec le même poids : revoir son
+ * état des lieux, ou revenir sur ses réponses.
  */
-function proposerResultatConnu(a) {
-  const bloc = $('[data-deja-fait]');
-  if (!bloc) return;
+function proposerResultatConnu(contenu) {
+  const a = contenu.accueil;
   const adresse = resultatMemorise();
   if (!adresse) return;
 
-  texte($('[data-deja-fait-texte]'), a.deja_fait.texte);
-  const voir = $('[data-deja-fait-voir]');
-  texte(voir, a.deja_fait.voir);
-  voir.href = adresse;
-  bloc.hidden = false;
+  // Les réponses sont dans le lien, pas dans la mémoire de l'onglet : elles
+  // survivent donc à la fermeture du navigateur.
+  const lu = decoder(new URL(adresse, location.href).hash, contenu);
+  if (!lu) return;
 
-  // Le bouton principal ne promet plus un premier état des lieux.
-  $$('[data-bouton]').forEach((b) => texte(b, a.deja_fait.refaire));
+  const ligne = $('[data-deja-fait]');
+  if (ligne) {
+    texte(ligne, a.deja_fait.texte);
+    ligne.hidden = false;
+  }
+
+  $$('[data-bouton]').forEach((bouton) => {
+    // Le bouton principal ne promet plus un premier état des lieux.
+    texte(bouton, a.deja_fait.modifier);
+    bouton.removeAttribute('href');
+    bouton.setAttribute('role', 'button');
+    bouton.setAttribute('tabindex', '0');
+    const modifier = () => {
+      ecrireSession({ role: lu.role, reponses: lu.reponses, relances: lu.relances });
+      location.href = 'questions.html';
+    };
+    bouton.addEventListener('click', modifier);
+    bouton.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); modifier(); }
+    });
+
+    // Le même bouton, juste à côté, pour aller droit au résultat.
+    const voir = el('a', { classe: 'btn', texte: a.deja_fait.voir, attrs: { href: adresse } });
+    bouton.insertAdjacentElement('afterend', voir);
+  });
 }
 
 async function afficherCompteur() {
@@ -221,7 +245,7 @@ async function demarrer() {
 
   const contenu = await chargerContenu();
   remplirHaut(contenu.accueil);
-  proposerResultatConnu(contenu.accueil);
+  proposerResultatConnu(contenu);
   installerPousses(contenu);
   remplirPourquoi(contenu);
   remplirRecevez(contenu);
