@@ -140,3 +140,4 @@ L'ancienne note de conception parlait d'un contraste à « 4 points d'écart ».
 | Décision | Pourquoi |
 | --- | --- |
 | Sur mobile, à l'accueil, le compteur et les coches sont centrés sous le bouton pleine largeur | Le compteur était centré et les coches alignées à gauche : deux axes pour un même groupe. |
+| Paliers de la pousse : graine jusqu'à 3 réponses, germe jusqu'à 8, croissance jusqu'à 15, arbre à 16 seulement, et l'arbre du but s'allume à 16 | L'arbre arrivait dès 14 réponses : deux arbres identiques de chaque côté, le but semblait atteint avant la fin. |

@@ -290,6 +290,9 @@ function majProgression() {
     }
   }
 
+  const but = $('[data-but]');
+  if (but) but.classList.toggle('progression__but--atteint', n === NB_AFFIRMATIONS);
+
   const barre = $('[data-barre]');
   if (barre) {
     barre.setAttribute('aria-valuenow', String(n));

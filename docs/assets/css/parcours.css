@@ -1057,8 +1057,15 @@
 
 .progression__pousse--change { opacity: 0; }
 
-/* Le but reste discret : c'est un horizon, pas un objectif à atteindre. */
+/* Un liseré dessine le médaillon en entier : son haut crème se confondait
+   avec le fond de la barre, on n'en voyait que la moitié basse. */
+.progression__pousse,
+.progression__but { border-radius: 50%; box-shadow: 0 0 0 1px var(--bordure); }
+
+/* Le but reste discret : c'est un horizon, pas un objectif à atteindre.
+   Il s'allume à la 16e réponse, quand la pousse de gauche le rejoint. */
 .progression__but { opacity: .45; }
+.progression__but--atteint { opacity: 1; }
 
 .progression__piste {
   flex: 1 1 auto;

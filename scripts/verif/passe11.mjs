@@ -613,6 +613,55 @@ critere(10, 'une 3e case refusée se signale 1,5s', [1280, 390], async ({ page }
   if (Number(pendant.g) < 600) return `graisse ${pendant.g} pendant l’alerte`;
   return apres === avant || 'le sous-titre n’est pas revenu à sa couleur';
 });
+// Point 11 · la barre d'avancement
+critere(11, 'la graine de icone-semer.svg tient dans le cercle de rayon 44', [1280], async ({ page }) => {
+  await aller(page, `${BASE}/assets/img/icone-semer.svg`);
+  const coins = await page.evaluate(() => {
+    const e = document.querySelector('ellipse');
+    const svg = e.ownerSVGElement;
+    const m = e.getCTM();
+    const cx = +e.getAttribute('cx'); const cy = +e.getAttribute('cy');
+    const rx = +e.getAttribute('rx'); const ry = +e.getAttribute('ry');
+    // La matrice de l'écran ramenée au repère de la viewBox.
+    const echelle = svg.viewBox.baseVal.width / svg.getBoundingClientRect().width;
+    const xs = []; const ys = [];
+    for (let i = 0; i < 360; i++) {
+      const a = (i * Math.PI) / 180;
+      const p = new DOMPoint(cx + rx * Math.cos(a), cy + ry * Math.sin(a)).matrixTransform(m);
+      xs.push(p.x * echelle); ys.push(p.y * echelle);
+    }
+    const g = Math.min(...xs); const d = Math.max(...xs); const h = Math.min(...ys); const b = Math.max(...ys);
+    return [[g, h], [d, h], [g, b], [d, b]];
+  });
+  const loin = coins.map(([x, y]) => Math.hypot(x - 50, y - 50)).find((r) => r > 44);
+  return loin == null || `un coin de la boîte à ${arrondi(loin)} du centre`;
+});
+
+critere(11, 'les deux icônes de la barre ont un liseré', [1280, 390], async ({ page }) => {
+  await allerAuxQuestions(page);
+  const ombres = await page.evaluate(() => ['.progression__pousse', '.progression__but'].map((s) => getComputedStyle(document.querySelector(s)).boxShadow));
+  return ombres.every((o) => o && o !== 'none') || `box-shadow : ${ombres.join(' / ')}`;
+});
+
+critere(11, 'paliers : croissance à 14 et 15, arbre plein à 16', [1280, 390], async ({ page }) => {
+  await allerAuxQuestions(page);
+  const etat = async () => page.evaluate(() => ({
+    pousse: document.querySelector('.progression__pousse').getAttribute('src') || '',
+    but: getComputedStyle(document.querySelector('.progression__but')).opacity,
+  }));
+  const reponses = REPONSES.slice();
+  for (let i = 0; i < 13; i++) await page.locator('.affirmation').nth(i).locator('.echelle__choix').nth(reponses[i]).click();
+  for (const n of [14, 15, 16]) {
+    await page.locator('.affirmation').nth(n - 1).locator('.echelle__choix').nth(reponses[n - 1]).click();
+    await page.waitForTimeout(700);
+    const e = await etat();
+    const attendu = n < 16 ? 'icone-croissance.svg' : 'icone-enracine.svg';
+    if (!e.pousse.includes(attendu)) return `à ${n} réponses : ${e.pousse.split('/').pop()}`;
+    if (n < 16 && e.but === '1') return `à ${n} réponses l’arbre est déjà plein`;
+    if (n === 16 && e.but !== '1') return `à 16 réponses l’arbre reste à ${e.but}`;
+  }
+  return true;
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures

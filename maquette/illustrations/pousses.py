@@ -85,8 +85,10 @@ def scene(k, width=200, height=200):
 def icone(k, size=36):
     """Petite pousse dans un rond crème, pour l'en-tête d'une colonne."""
     W = H = 100
-    g = [52, 74, 76, 76][k]
-    sc = [1.5, 0.95, 0.5, 0.29][k]
+    # La graine (k = 0) remonte et rétrécit : à 52 et 1.5, elle tombait vers
+    # y = 91 et le cercle de rayon 48 la coupait par le bas.
+    g = [48, 74, 76, 76][k]
+    sc = [1.2, 0.95, 0.5, 0.29][k]
     x0 = [65, 180, 305, 445][k]
     body = f'<g transform="translate(50 {g}) scale({sc}) translate({-x0} -292)">{stage(k, x0, 292)}</g>'
     return (f'<svg viewBox="0 0 {W} {H}" width="{size}" height="{size}" aria-hidden="true" style="display: block; flex-shrink: 0">'
@@ -95,8 +97,20 @@ def icone(k, size=36):
             f'<rect x="0" y="{g}" width="100" height="40" fill="#E6DBC8"/>{body}</g></svg>')
 
 
+# Ordre des niveaux, de la graine à l'arbre : nom des fichiers icone-*.svg.
+NIVEAUX = ['semer', 'germe', 'croissance', 'enracine']
+
+
+def fichier_icone(k):
+    """Une icône autonome, telle qu'écrite dans icone-*.svg."""
+    return icone(k, 100).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ', 1)
+
+
 if __name__ == '__main__':
     open('pousses.svg', 'w').write(svg())
+    # À recopier ensuite dans docs/assets/img/.
+    for k, nom in enumerate(NIVEAUX):
+        open(f'icone-{nom}.svg', 'w').write(fichier_icone(k))
     html = '<body style="margin:20px;background:#3F4F35;display:flex;gap:20px;flex-wrap:wrap">'
     html += ''.join(scene(k) for k in range(4)) + ''.join(icone(k, 72) for k in range(4))
     open('scenes.html', 'w').write(html)
