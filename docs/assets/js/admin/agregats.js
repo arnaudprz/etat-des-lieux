@@ -9,7 +9,7 @@
  * « Pas assez de réponses pour ce groupe ».
  */
 
-import { niveauDimension, DERNIERE_AFFIRMATION_RESULTAT, cartePourMoyenne } from '../calcul.js';
+import { niveauDimension, carteEnsemble } from '../calcul.js';
 
 /** En dessous de ce nombre de personnes, on n'affiche aucun chiffre. */
 export const K_MINI = 3;
@@ -230,10 +230,8 @@ export function cartesRecues(reponses, contenu) {
   if (!assezDeMonde(reponses.length)) return [];
   const compte = new Map();
   reponses.forEach((r) => {
-    const m = r.reponses
-      .slice(0, DERNIERE_AFFIRMATION_RESULTAT)
-      .reduce((a, b) => a + b, 0) / DERNIERE_AFFIRMATION_RESULTAT;
-    const carte = cartePourMoyenne(m, contenu);
+    // La carte que chacun a vraiment vue, avec la règle du répondant.
+    const carte = carteEnsemble(r.reponses, contenu);
     compte.set(carte.niveau, (compte.get(carte.niveau) || 0) + 1);
   });
   return contenu.cartes_ensemble.map((c) => {

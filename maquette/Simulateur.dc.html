@@ -130,10 +130,13 @@ pick: () => { const b = lv.slice(); b[i] = k; this.setState({ lv: b }); }
 };
 })
 }));
-let sum = 0, wsum = 0;
-DIMS.forEach((d, i) => { sum += LV[lv[i]].note * d.w; wsum += d.w; });
-const avg = sum / wsum;
-const g = GLOBAL.find((x) => avg >= x.min);
+// Passe 11 : la carte d'ensemble suit les 8 dimensions, avec leur règle
+// d'arrondi (égalités vers le haut). Les seuils `min` ne servent plus.
+let sum = 0;
+DIMS.forEach((d, i) => { sum += LV[lv[i]].note; });
+const avg = sum / DIMS.length;
+const valeur = Math.floor(avg + 0.5);
+const g = GLOBAL.find((x) => x.lvl === 3 - valeur);
 const best = Math.min.apply(null, lv), worst = Math.max.apply(null, lv);
 const tops = DIMS.filter((d, i) => lv[i] === best).map((d) => d.name);
 const hasAppui = best <= 1 && tops.length <= 2 && best !== worst;
@@ -149,7 +152,7 @@ const eIdx = worst >= 2 ? lv.indexOf(worst) : lv.indexOf(best);
 const eclTitle = (worst >= 2 ? 'Un éclairage sur votre dimension « ' : 'Pourquoi ça compte : « ') + DIMS[eIdx].name + ' »';
 const eclText = ECL[eIdx].s;
 const eclBridge = ECL[eIdx].b;
-const rule = 'moyenne cachée de ' + avg.toFixed(2).replace('.', ',') + ' sur 3 (pondérée par le nombre d’affirmations), ' + (worst - best) + ' couleur(s) d’écart.';
+const rule = 'moyenne des 8 dimensions de ' + avg.toFixed(2).replace('.', ',') + ' sur 3, arrondie comme une dimension (égalités vers le haut), ' + (worst - best) + ' couleur(s) d’écart.';
 return {
 rows: rows, title: g.title, text: g.text, gName: LV[g.lvl].name, gBg: LV[g.lvl].bg, gFg: LV[g.lvl].fg,
 hasAppui: hasAppui, appui: appui, hasShape: shape !== '', shape: shape,

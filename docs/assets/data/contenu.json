@@ -801,28 +801,28 @@
     {
       "niveau": "enracine",
       "seuil_min": 2.5,
-      "etiquette": "Votre équipe, dans votre regard : Bien enraciné",
+      "etiquette": "Dans votre regard : Bien enraciné",
       "titre": "Une équipe bien enracinée",
       "texte": "Ce que vous décrivez ressemble à une équipe où l'on se sent bien pour travailler. Un cap partagé, des collègues qui se connaissent, une info qui circule. Ce n'est pas un hasard : c'est le fruit de ce que chacun y met, vous compris."
     },
     {
       "niveau": "croissance",
       "seuil_min": 1.75,
-      "etiquette": "Votre équipe, dans votre regard : En croissance",
+      "etiquette": "Dans votre regard : En croissance",
       "titre": "Une équipe en croissance",
       "texte": "Dans votre regard, beaucoup de choses fonctionnent déjà entre vous. D'autres se cherchent encore, et c'est normal : une équipe se construit dans le temps. Ce qui est déjà là est une base solide pour avancer, à votre rythme."
     },
     {
       "niveau": "germe",
       "seuil_min": 1.0,
-      "etiquette": "Votre équipe, dans votre regard : En germe",
+      "etiquette": "Dans votre regard : En germe",
       "titre": "Une équipe en germe",
       "texte": "Travailler ensemble demande sans doute parfois plus d'efforts qu'il ne faudrait. Votre regard le dit avec justesse. Il montre aussi ce qui est déjà là, et qui peut servir d'appui. Rien n'est figé : chaque dimension peut grandir."
     },
     {
       "niveau": "semer",
       "seuil_min": 0,
-      "etiquette": "Votre équipe, dans votre regard : À semer",
+      "etiquette": "Dans votre regard : À semer",
       "titre": "Un terrain prêt à semer",
       "texte": "Travailler ensemble n'a peut-être pas été simple ces derniers temps. Merci d'avoir pris ce moment pour le regarder : c'est souvent le premier pas. Ce que vous vivez aujourd'hui n'est pas une fin, c'est un point de départ."
     }

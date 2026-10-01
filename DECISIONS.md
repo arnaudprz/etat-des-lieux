@@ -135,6 +135,8 @@ Les choix faits avec Arnaud pendant la conception des maquettes (septembre 2026)
 
 L'ancienne note de conception parlait d'un contraste à « 4 points d'écart ». **La règle retenue est celle du simulateur** : contraste quand au moins 2 niveaux de couleur séparent la dimension la plus installée de la moins installée. En cas de doute, `maquette/Simulateur.dc.html` fait foi.
 
+**La carte d'ensemble se calcule à partir des 8 dimensions, avec la même règle d'arrondi qu'elles** (moyenne des 8 valeurs de niveau, arrondie à l'entier le plus proche, égalités vers le haut). Passe 11 : l'ancienne règle prenait la moyenne brute des affirmations 1 à 15 avec des seuils 2,5 / 1,75 / 1, si bien que les dimensions étaient tirées vers le haut et le titre vers le bas (6 dimensions « En croissance » sous « Une équipe en germe »). Les `seuil_min` de `contenu.json` ne servent plus au répondant. **Le tableau de bord compte la même carte** : `cartesRecues` appelle `carteEnsemble`, il compte donc la carte que chacun a vraiment vue. Un lien déjà partagé peut changer de titre, c'est voulu.
+
 ## Passe 11 : mise en page mobile et ordinateur
 
 | Décision | Pourquoi |

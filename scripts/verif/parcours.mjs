@@ -1114,7 +1114,8 @@ async function passerLaCible(cible) {
   }
 
   const titreCarte = await page.locator('[data-carte-titre]').innerText();
-  if (titreCarte !== 'Une équipe en germe') {
+  // Passe 11 : la carte suit les dimensions, l'exemple de la maquette est en croissance.
+  if (titreCarte !== 'Une équipe en croissance') {
     soucis.push(`[${nom}] resultat : carte « ${titreCarte} »`);
   }
   // La carte se lit d'une traite : texte, appui et forme dans un seul paragraphe.
@@ -1191,9 +1192,9 @@ async function passerLaCible(cible) {
   if (!medaillon) {
     soucis.push(`[${nom}] resultat : pas de médaillon`);
   } else {
-    // Le jeu de réponses donne la carte « en germe ».
-    if (medaillon.source !== 'assets/img/scene-germe.svg') {
-      soucis.push(`[${nom}] resultat : médaillon ${medaillon.source} au lieu de scene-germe.svg`);
+    // Le jeu de réponses donne la carte « en croissance » (règle de la passe 11).
+    if (medaillon.source !== 'assets/img/scene-croissance.svg') {
+      soucis.push(`[${nom}] resultat : médaillon ${medaillon.source} au lieu de scene-croissance.svg`);
     }
     if (!medaillon.decoratif) soucis.push(`[${nom}] resultat : le médaillon n'est pas décoratif`);
     if (!medaillon.charge) soucis.push(`[${nom}] resultat : le médaillon ne se charge pas`);
@@ -1460,7 +1461,7 @@ async function passerLaCible(cible) {
   await aller(page, `${BASE}/resultat.html#v1-m2211220023222221`);
   await page.waitForSelector('[data-resultat]:not([hidden])');
   const titreV1 = await page.locator('[data-carte-titre]').innerText();
-  if (titreV1 !== 'Une équipe en germe') {
+  if (titreV1 !== 'Une équipe en croissance') {
     soucis.push(`[${nom}] resultat : un lien v1 donne « ${titreV1} »`);
   }
 

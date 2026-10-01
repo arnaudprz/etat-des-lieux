@@ -152,6 +152,77 @@ describe('seuils de la carte d’ensemble', () => {
   });
 });
 
+// ------------------------------------- carte d'ensemble (passe 11, point 14)
+
+/** Générateur pseudo-aléatoire à graine fixe : les mêmes 2 000 jeux à chaque fois. */
+function tirage(graine) {
+  let x = graine >>> 0;
+  return () => {
+    x = (x + 0x6d2b79f5) >>> 0;
+    let t = x;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const JEUX = (() => {
+  const hasard = tirage(20261001);
+  return Array.from({ length: 2000 }, () =>
+    Array.from({ length: NB_AFFIRMATIONS }, () => Math.floor(hasard() * 4)));
+})();
+
+/** Les phrases de forme et d'appui telles qu'avant la passe 11, pour comparer. */
+const avantPasse11 = {
+  forme(dims) {
+    const v = dims.map((d) => d.valeur);
+    const haut = Math.max(...v); const bas = Math.min(...v);
+    if (haut === bas) return contenu.phrases_forme.homogene;
+    if (haut - bas >= 2) return contenu.phrases_forme.contraste;
+    return '';
+  },
+  appui(dims) {
+    const v = dims.map((d) => d.valeur);
+    const haut = Math.max(...v); const bas = Math.min(...v);
+    if (haut === bas || haut < 2) return '';
+    const tetes = dims.filter((d) => d.valeur === haut);
+    if (tetes.length > 2) return '';
+    const noms = tetes.map((d) => d.nom.charAt(0).toLowerCase() + d.nom.slice(1)).join(' et ');
+    return contenu.phrases_forme.appui.replace('{dimensions}', noms);
+  },
+};
+
+describe('carte d’ensemble calculée depuis les dimensions', () => {
+  const valeurDe = (cle) => contenu.niveaux.find((n) => n.cle === cle).valeur;
+
+  test('le lien de l’audit (#v2-m1230231212302312) donne « croissance »', () => {
+    const { reponses } = decoder('#v2-m1230231212302312', contenu);
+    assert.equal(carteEnsemble(reponses, contenu).niveau, 'croissance');
+  });
+
+  test('16 fois 0 donne « semer », 16 fois 3 donne « enracine »', () => {
+    assert.equal(carteEnsemble(new Array(16).fill(0), contenu).niveau, 'semer');
+    assert.equal(carteEnsemble(new Array(16).fill(3), contenu).niveau, 'enracine');
+  });
+
+  test('sur 2 000 jeux, la carte reste entre la dimension la plus basse et la plus haute', () => {
+    JEUX.forEach((r) => {
+      const dims = dimensionsClassees(r, contenu);
+      const v = valeurDe(carteEnsemble(r, contenu).niveau);
+      const valeurs = dims.map((d) => d.valeur);
+      assert.ok(v >= Math.min(...valeurs) && v <= Math.max(...valeurs), r.join(''));
+    });
+  });
+
+  test('sur 2 000 jeux, phraseForme et phraseAppui ne changent pas', () => {
+    JEUX.forEach((r) => {
+      const dims = dimensionsClassees(r, contenu);
+      assert.equal(phraseForme(dims, contenu), avantPasse11.forme(dims), r.join(''));
+      assert.equal(phraseAppui(dims, contenu), avantPasse11.appui(dims), r.join(''));
+    });
+  });
+});
+
 // ------------------------------------------------------------ phrase de forme
 
 describe('phrase de forme', () => {
@@ -351,13 +422,15 @@ describe('validation des réponses', () => {
 describe('les 4 préréglages du simulateur', () => {
   const min = (s) => s.charAt(0).toLowerCase() + s.slice(1);
 
-  test('« Exemple de la maquette » : en germe, contrasté, appui sur le soutien du manager', () => {
+  // Passe 11 : la carte suit les dimensions. Leur moyenne (14/8 = 1,75)
+  // s'arrondit à 2, comme une dimension : en croissance (c'était en germe).
+  test('« Exemple de la maquette » : en croissance, contrasté, appui sur le soutien du manager', () => {
     const r = depuisIndicesSimulateur([1, 2, 1, 3, 1, 0, 1, 1]);
     assert.deepEqual(niveauxDe(r), [2, 1, 2, 0, 2, 3, 2, 2]);
     assert.equal(moyenneEnsemble(r).toFixed(4), (25 / 15).toFixed(4));
     const res = calculer(r, contenu);
-    assert.equal(res.carte.niveau, 'germe');
-    assert.equal(res.carte.titre, 'Une équipe en germe');
+    assert.equal(res.carte.niveau, 'croissance');
+    assert.equal(res.carte.titre, contenu.cartes_ensemble.find((c) => c.niveau === 'croissance').titre);
     assert.equal(res.appui, `Ce qui vous porte le plus : ${min(contenu.dimensions[5].nom)}.`);
     assert.equal(res.forme, contenu.phrases_forme.contraste);
   });

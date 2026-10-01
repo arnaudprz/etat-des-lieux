@@ -744,6 +744,24 @@ critere(13, 'contour de focus à 3:1 au moins sur le crème', [1280], async ({ p
   });
   return ratio >= 3 || `${ratio.toFixed(2)}:1`;
 });
+// Point 14 · le titre du résultat suit les bandeaux
+critere(14, 'le lien de l’audit affiche « Une équipe en croissance »', [1280, 390], async ({ page }) => {
+  await allerAuResultat(page, '#v2-m1230231212302312');
+  const titre = brut(await page.textContent('[data-carte-titre]'));
+  const attendu = brut(contenu.cartes_ensemble.find((c) => c.niveau === 'croissance').titre);
+  return titre === attendu || `« ${titre} »`;
+});
+
+critere(14, 'tests node du calcul et du tableau de bord', [1280], async ({ navigateur }) => {
+  if (navigateur !== 'chromium') return true;
+  const { execFileSync } = await import('node:child_process');
+  try {
+    execFileSync(process.execPath, ['--test', 'tests/calcul.test.js', 'tests/agregats.test.js'], { cwd: racine, stdio: 'pipe' });
+    return true;
+  } catch (e) {
+    return String(e.stdout || e.message).split('\n').filter((l) => /not ok/.test(l)).slice(0, 3).join(' | ');
+  }
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures

@@ -102,9 +102,26 @@ export function cartePourMoyenne(moyenneCachee, contenu) {
   return cartes.find((c) => moyenneCachee >= c.seuil_min) || cartes[cartes.length - 1];
 }
 
-/** La carte d'ensemble d'un jeu de réponses. Le Q16 est exclu du calcul. */
+/**
+ * Le niveau de la carte d'ensemble, à partir des 8 dimensions et avec la même
+ * règle d'arrondi qu'elles (égalités vers le haut).
+ *
+ * L'ancienne règle prenait la moyenne brute des affirmations 1 à 15 avec des
+ * seuils 2,5 / 1,75 / 1 : les dimensions étaient tirées vers le haut, le titre
+ * vers le bas, et le titre pouvait contredire les bandeaux (6 dimensions en
+ * croissance sous « Une équipe en germe »). Voir DECISIONS.md, « Règle de
+ * calcul qui fait foi ». `moyenneEnsemble` et `cartePourMoyenne` restent pour
+ * les tests de bornes, mais ne décident plus de la carte du répondant.
+ */
+export function niveauEnsemble(dimensions) {
+  return arrondir(moyenne(dimensions.map((d) => d.valeur)));
+}
+
+/** La carte d'ensemble d'un jeu de réponses. Le Q16 n'entre dans aucune dimension. */
 export function carteEnsemble(reponses, contenu) {
-  return cartePourMoyenne(moyenneEnsemble(reponses), contenu);
+  const valeur = niveauEnsemble(dimensionsClassees(reponses, contenu));
+  const cle = contenu.niveaux.find((n) => n.valeur === valeur).cle;
+  return contenu.cartes_ensemble.find((c) => c.niveau === cle);
 }
 
 // ------------------------------------------------- phrases de forme et d'appui

@@ -19,6 +19,8 @@ import {
 } from '../docs/assets/js/admin/agregats.js';
 
 import { essentiel, ceQuiPorte, deuxRegards, lienAvecLesResultats } from '../docs/assets/js/admin/analyse.js';
+import { reponsesFictives } from '../docs/assets/js/admin/demo.js';
+import { carteEnsemble } from '../docs/assets/js/calcul.js';
 
 const ici = dirname(fileURLToPath(import.meta.url));
 const contenu = JSON.parse(
@@ -400,5 +402,21 @@ describe('« L’essentiel »', () => {
     const c = lienAvecLesResultats(jeu, contenu);
     assert.ok(c.texte.includes('%'));
     assert.ok(c.texte.includes('contre'));
+  });
+});
+
+// --------------------------------------------- la carte vue par le répondant
+
+describe('cartes reçues (passe 11, point 14)', () => {
+  test('chaque réponse du mode démo est comptée sous la carte que donne carteEnsemble', () => {
+    const reponses = reponsesFictives(contenu);
+    const attendu = new Map();
+    reponses.forEach((r) => {
+      const n = carteEnsemble(r.reponses, contenu).niveau;
+      attendu.set(n, (attendu.get(n) || 0) + 1);
+    });
+    const cartes = cartesRecues(reponses, contenu);
+    assert.ok(cartes.length > 0);
+    cartes.forEach((c) => assert.equal(c.effectif, attendu.get(c.carte.niveau) || 0, c.carte.niveau));
   });
 });
