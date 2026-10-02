@@ -124,18 +124,20 @@
     <!-- Notre lecture : le bloc Greatly, relié aux dimensions de la personne. -->
     <section class="bande-page bande-page--chapitre lecture" id="lecture">
       <div class="bande-page__contenu">
-        <div class="greatly">
-          <figure class="greatly__photo">
-            <img src="assets/img/greatly-house.jpg" alt="La Greatly House, une maison de briques dans son parc, à Verlinghem">
-          </figure>
-          <div class="greatly__texte">
-            <span class="greatly__sur-titre">Qui est derrière cet état des lieux</span>
-            <h2 class="greatly__titre titre-chapitre" tabindex="-1">Greatly</h2>
-            <p>Greatly accompagne des dirigeants, des managers et des équipes pour cultiver leur énergie et leur lucidité. On y travaille sur ce qui aide à bien travailler ensemble : le temps, la confiance, les relations, le collectif. Pour nous, la performance n'est pas un objectif : elle en est la conséquence.</p>
-            <p>Tout se passe à la Greatly House, une maison et son parc à Verlinghem, près de Lille. Un lieu calme, pensé pour prendre du recul, loin du bureau.</p>
-            <a class="btn btn--clair" href="https://greatly.club">Découvrir Greatly</a>
+        <div class="lecture__tete">
+          <div class="lecture__gauche">
+            <span class="lecture__surtitre" data-lecture-surtitre></span>
+            <h2 class="lecture__titre titre-chapitre" data-lecture-titre tabindex="-1"></h2>
+          </div>
+          <div class="lecture__droite">
+            <p class="lecture__texte" data-lecture-texte></p>
+            <p class="lecture__citation" data-lecture-citation></p>
           </div>
         </div>
+        <!-- Cinq thèmes, chacun relié à une dimension de la personne, puis un
+             témoignage. Construits par resultat.js depuis contenu.json. -->
+        <div class="lecture__grille" data-lecture-cartes></div>
+        <a class="lecture__bouton" href="https://greatly.club" data-lecture-bouton></a>
       </div>
     </section>
 

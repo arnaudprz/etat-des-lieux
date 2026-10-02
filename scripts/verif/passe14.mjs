@@ -410,6 +410,51 @@ critere(6, 'envies : le chapeau, en 15px sur mobile', [1440, 390], async ({ page
   if (!m.vu || brut(m.texte) !== brut(contenu.resultat.envies.intro)) return `chapeau « ${m.texte} »`;
   return largeur > 599 || m.taille === '15px' || `chapeau en ${m.taille}`;
 });
+// Point 7 · « Notre lecture »
+critere(7, 'lecture : 5 cartes thèmes, un témoignage, aucune pastille de thème', [1440, 390], async ({ page }) => {
+  await allerAuResultat(page, LIEN_AUDIT);
+  const m = await page.evaluate(() => ({
+    cartes: document.querySelectorAll('#lecture [id^="lecture-"]').length,
+    temoignage: document.querySelectorAll('#lecture .lecture__temoignage').length,
+    pastillesTheme: document.querySelectorAll('#lecture .greatly__themes, #lecture .theme-pastille').length,
+  }));
+  return (m.cartes === 5 && m.temoignage === 1 && m.pastillesTheme === 0) || JSON.stringify(m);
+});
+
+critere(7, 'lecture : icône et niveau calculés pour la personne', [1440], async ({ page }) => {
+  const { calculer } = await import(join(racine, 'docs/assets/js/calcul.js'));
+  const { decoder } = await import(join(racine, 'docs/assets/js/lien.js'));
+  for (const lien of [LIEN_AUDIT, LIEN_TOUT_SEMER, LIEN_TOUT_ENRACINE]) {
+    const lu = decoder(lien, contenu);
+    const dims = calculer(lu.reponses, contenu, lu.role).dimensions;
+    await allerAuResultat(page, lien);
+    for (const t of contenu.resultat.greatly.themes) {
+      const d = dims.find((x) => x.cle === t.dimension);
+      const lu2 = await page.evaluate((cle) => {
+        const c = document.getElementById(`lecture-${cle}`);
+        if (!c) return null;
+        return { niveau: c.querySelector('.lecture__niveau').textContent.trim(), icone: c.querySelector('.lecture__icone').getAttribute('src') };
+      }, t.dimension);
+      if (!lu2) return `${lien} : carte ${t.nom} absente`;
+      if (brut(lu2.niveau) !== brut(d.niveau.nom) || !lu2.icone.endsWith(`icone-${d.niveau.cle}.svg`)) {
+        return `${lien} : ${t.nom} montre ${lu2.niveau} (${lu2.icone}) au lieu de ${d.niveau.nom}`;
+      }
+    }
+  }
+  return true;
+});
+
+critere(7, 'lecture : noms manager quand ils existent', [1440], async ({ page }) => {
+  await allerAuResultat(page, LIEN_AUDIT_MANAGER);
+  const nom = await page.evaluate(() => document.querySelector('#lecture-manager .lecture__dimension').textContent.trim());
+  return brut(nom) === brut(contenu.dimensions.find((d) => d.cle === 'manager').nom_manager) || `« ${nom} »`;
+});
+
+critere(7, 'lecture : aucun chiffre ni pourcentage dans les cartes', [1440], async ({ page }) => {
+  await allerAuResultat(page, LIEN_AUDIT);
+  const t = await page.evaluate(() => Array.from(document.querySelectorAll('#lecture [id^="lecture-"], #lecture .lecture__temoignage')).map((n) => n.innerText).join(' '));
+  return !/[0-9%]/.test(t) || 'chiffre trouvé';
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures

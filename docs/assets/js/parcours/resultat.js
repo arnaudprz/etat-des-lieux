@@ -223,6 +223,52 @@ function installerSommaire(contenu) {
   });
 }
 
+/**
+ * « Notre lecture » : la façon dont Greatly lit l'état des lieux, en cinq
+ * thèmes. Chacun est relié à une dimension, et montre le niveau que la
+ * personne lui donne : icône, nom de la dimension (version manager s'il y en
+ * a une) et nom du niveau. Aucun chiffre.
+ */
+function afficherLecture(resultat, contenu) {
+  const g = contenu.resultat && contenu.resultat.greatly;
+  if (!g) return;
+  texte($('[data-lecture-surtitre]'), g.surtitre);
+  titreAvecMot($('[data-lecture-titre]'), g.titre, g.mot);
+  texte($('[data-lecture-texte]'), g.texte);
+  texte($('[data-lecture-citation]'), `« ${g.citation} »`);
+  texte($('[data-lecture-bouton]'), g.bouton);
+
+  const hote = $('[data-lecture-cartes]');
+  vider(hote);
+  g.themes.forEach((t) => {
+    const d = resultat.dimensions.find((x) => x.cle === t.dimension);
+    if (!d) return;
+    hote.appendChild(el('article', { classe: 'lecture__carte', attrs: { id: `lecture-${t.dimension}` } }, [
+      el('div', { classe: 'lecture__entete' }, [
+        // Décorative : le niveau est écrit en toutes lettres plus bas.
+        el('img', { classe: 'lecture__icone', attrs: { src: chemin(icone(d.niveau.cle)), alt: '', 'aria-hidden': 'true' } }),
+        el('h3', { classe: 'lecture__theme', texte: t.nom }),
+      ]),
+      el('div', { classe: 'lecture__regard' }, [
+        el('span', { classe: 'lecture__regard-titre', texte: g.dans_votre_regard }),
+        el('span', { classe: 'lecture__ligne' }, [
+          el('span', { classe: 'lecture__dimension', texte: d.nom }),
+          el('span', { classe: 'lecture__niveau', texte: d.niveau.nom }),
+        ]),
+      ]),
+      el('p', { classe: 'lecture__texte-theme', texte: t.texte }),
+      el('div', { classe: 'lecture__question' }, [
+        el('span', { classe: 'lecture__question-titre', texte: g.question_titre }),
+        el('p', { classe: 'lecture__question-texte', texte: t.question }),
+      ]),
+    ]));
+  });
+  hote.appendChild(el('figure', { classe: 'lecture__temoignage' }, [
+    el('blockquote', { classe: 'lecture__temoignage-texte', texte: `« ${g.temoignage.texte} »` }),
+    el('figcaption', { classe: 'lecture__temoignage-auteur', texte: g.temoignage.auteur }),
+  ]));
+}
+
 /** Le tracé à main levée qui entoure un mot, repris de la maquette. */
 const TRACE_ENTOURE = 'M8 24C5 10 38 3 68 4C93 5 99 18 93 29C83 39 32 40 13 34C2 30 3 17 22 9';
 
@@ -546,6 +592,7 @@ async function demarrer() {
   remplirTextes(contenu);
   afficherEnsemble(resultat);
   afficherBandes(resultat, contenu, idees);
+  afficherLecture(resultat, contenu);
   installerSommaire(contenu);
 
   // L'affirmation 16 n'a pas de dimension : ses idées vont sous la dernière bande.

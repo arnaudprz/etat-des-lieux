@@ -2189,3 +2189,94 @@
 @media (min-width: 900px) {
   .chapitre--envies .bande { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; align-items: start; }
 }
+
+/* Point 7 : « Notre lecture », le bloc Greatly relié au résultat. */
+.lecture { background: #2D3626; color: #F7F4EF; }
+.lecture__tete { display: flex; flex-direction: column; gap: 20px; }
+.lecture__gauche, .lecture__droite { display: flex; flex-direction: column; gap: 12px; }
+.lecture__surtitre { font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #B8C4AC; }
+.lecture__titre { margin: 0; font-family: 'Playfair Display', Georgia, serif; font-weight: 400; font-size: 30px; line-height: 1.15; color: #F7F4EF; }
+.lecture__titre .mot-entoure__trait path { stroke: #E3CF9E; }
+.lecture__texte { margin: 0; font-size: 16px; line-height: 1.65; color: #D9D3C8; }
+.lecture__citation { margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 20px; line-height: 1.4; color: #E3CF9E; }
+
+.lecture__grille { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.lecture__carte {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px;
+  border-radius: 18px;
+  background: #F7F4EF;
+  color: var(--encre);
+}
+.lecture__entete { display: flex; align-items: center; gap: 14px; }
+.lecture__icone { width: 40px; height: 40px; flex-shrink: 0; }
+.lecture__theme { margin: 0; font-family: 'Playfair Display', Georgia, serif; font-weight: 400; font-size: 22px; line-height: 1.2; color: #2D3626; }
+.lecture__regard { display: flex; flex-direction: column; gap: 6px; }
+.lecture__regard-titre { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #7A5424; }
+.lecture__ligne { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.lecture__dimension { font-size: 14px; font-weight: 600; color: #2D3626; }
+.lecture__niveau {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(169, 116, 58, .14);
+  color: #7A5424;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.lecture__texte-theme { margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 17px; line-height: 1.5; color: #2D3626; }
+.lecture__question {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(138, 155, 122, .3);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lecture__question-titre { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #5A6B4D; }
+.lecture__question-texte { margin: 0; font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 17px; line-height: 1.45; color: #5A6B4D; }
+
+.lecture__temoignage {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  padding: 22px;
+  border-radius: 18px;
+  background: #3F4F35;
+  color: #F7F4EF;
+}
+.lecture__temoignage-texte { margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 22px; line-height: 1.4; }
+.lecture__temoignage-auteur { font-size: 13px; line-height: 1.5; color: #B8C4AC; }
+
+.lecture__bouton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--hauteur-bouton);
+  padding: 0 28px;
+  border-radius: 999px;
+  background: #E3CF9E;
+  color: #2D3626;
+  font-weight: 600;
+  text-decoration: none;
+}
+.lecture__bouton:hover { background: #F7F4EF; color: #2D3626; }
+
+@media (min-width: 900px) {
+  .lecture__tete { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 56px; align-items: end; }
+  .lecture__grille { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .lecture__carte, .lecture__temoignage { padding: 28px; }
+  .lecture__icone { width: 48px; height: 48px; }
+  .lecture__theme { font-size: 26px; }
+  .lecture__texte-theme { font-size: 18px; }
+  .lecture__bouton { align-self: flex-start; }
+}
+@media (max-width: 899px) {
+  .lecture__bouton { align-self: stretch; }
+}
