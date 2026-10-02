@@ -128,6 +128,84 @@ function bandeNiveau(c, contenu, idees) {
   return el('div', { classe: 'bande', attrs: { 'data-niveau': c.niveau.cle } }, [entete, corps]);
 }
 
+/**
+ * Le sommaire de la barre (900px et plus) : quatre liens vers les bandes, le
+ * lien de la bande la plus visible marqué comme courant.
+ *
+ * Une bande absente (pas d'appuis, pas d'envies) n'a pas de lien. Le clic fait
+ * défiler doucement (instantanément si les animations sont réduites) et donne
+ * le focus au titre de la bande, pour qui navigue au clavier.
+ */
+function installerSommaire(contenu) {
+  const nav = $('[data-sommaire]');
+  const bouton = $('[data-sommaire-bouton]');
+  const s = contenu.resultat && contenu.resultat.sommaire;
+  if (!nav || !s) return;
+
+  nav.setAttribute('aria-label', s.aria);
+  texte(bouton, s.bouton);
+  nav.hidden = false;
+  bouton.hidden = false;
+
+  const liens = Array.from(nav.querySelectorAll('[data-vers]'));
+  const presents = liens.filter((a) => {
+    const cible = document.getElementById(a.dataset.vers);
+    texte(a, s[a.dataset.vers]);
+    a.hidden = !cible || cible.hidden;
+    return !a.hidden;
+  });
+  const bandes = presents.map((a) => document.getElementById(a.dataset.vers));
+
+  const barre = $('header.entete');
+  const mesurer = () => {
+    document.documentElement.style.setProperty('--hauteur-sommaire', `${Math.round(barre.getBoundingClientRect().height)}px`);
+  };
+  mesurer();
+  window.addEventListener('resize', mesurer);
+
+  const marquer = (id) => presents.forEach((a) => {
+    if (a.dataset.vers === id) a.setAttribute('aria-current', 'location');
+    else a.removeAttribute('aria-current');
+  });
+  marquer('ensemble');
+
+  // La bande la plus visible sous la barre devient la courante.
+  const recalculer = () => {
+    const haut = barre.getBoundingClientRect().bottom;
+    let meilleure = null;
+    let surface = 0;
+    bandes.forEach((b) => {
+      const r = b.getBoundingClientRect();
+      const visible = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, haut);
+      if (visible > surface) { surface = visible; meilleure = b; }
+    });
+    if (meilleure) marquer(meilleure.id);
+  };
+  if ('IntersectionObserver' in window) {
+    const seuils = Array.from({ length: 21 }, (_, i) => i / 20);
+    const observateur = new IntersectionObserver(recalculer, { threshold: seuils });
+    bandes.forEach((b) => observateur.observe(b));
+  }
+  window.addEventListener('scroll', () => window.requestAnimationFrame(recalculer), { passive: true });
+
+  const douceur = () => (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
+  presents.forEach((a) => a.addEventListener('click', (e) => {
+    const cible = document.getElementById(a.dataset.vers);
+    if (!cible) return;
+    e.preventDefault();
+    cible.scrollIntoView({ behavior: douceur(), block: 'start' });
+    const titre = cible.querySelector('h2');
+    if (titre) titre.focus({ preventScroll: true });
+    marquer(cible.id);
+  }));
+  bouton.addEventListener('click', (e) => {
+    const cible = $('#lien-personnel');
+    if (!cible) return;
+    e.preventDefault();
+    cible.scrollIntoView({ behavior: douceur(), block: 'start' });
+  });
+}
+
 /** Les textes fixes de la mise en page F, lus dans contenu.json > resultat. */
 function remplirTextes(contenu) {
   const r = contenu.resultat;
@@ -422,6 +500,7 @@ async function demarrer() {
   remplirTextes(contenu);
   afficherEnsemble(resultat);
   afficherBandes(resultat, contenu, idees);
+  installerSommaire(contenu);
 
   // L'affirmation 16 n'a pas de dimension : ses idées vont sous la dernière bande.
   const hoteResultats = $('[data-idees-resultats]');
@@ -460,6 +539,22 @@ async function demarrer() {
   brancherEtude();
   typographierPage();
 }
+
+/**
+ * Les liens d'ancre de la page (« Qui sommes-nous », le sommaire) ne doivent
+ * jamais toucher au hash : il porte les réponses, et le remplacer par
+ * « #lecture » effaçait le résultat. On fait défiler jusqu'à la cible, sans
+ * changer l'adresse.
+ */
+document.addEventListener('click', (e) => {
+  const lien = e.target.closest && e.target.closest('a[href^="#"]');
+  if (!lien || e.defaultPrevented) return;
+  const cible = document.getElementById(lien.getAttribute('href').slice(1));
+  if (!cible) return;
+  e.preventDefault();
+  const douceur = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  cible.scrollIntoView({ behavior: douceur, block: 'start' });
+});
 
 /**
  * Toute la page découle du hash. S'il change (lien collé, favori rouvert, retour

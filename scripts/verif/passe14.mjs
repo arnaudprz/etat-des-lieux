@@ -286,6 +286,70 @@ critere(3, 'h2 : 48px pour les chapitres, 30px pour les blocs pratiques', [1440]
   const ok = m.chapitres.every((x) => x === '48px') && m.pratiques.every((x) => x === '30px');
   return ok || `chapitres ${m.chapitres.join('/')}, pratiques ${m.pratiques.join('/')}`;
 });
+// Point 4 · l'en-tête devient le sommaire
+critere(4, 'en-tête : plus d’étapes, une nav de 4 liens et un bouton vers le lien', [1440], async ({ page }) => {
+  await allerAuResultat(page, LIEN_IDEES);
+  const m = await page.evaluate(() => {
+    const e = document.querySelector('header.entete');
+    const nav = e.querySelector('nav');
+    return {
+      texte: e.innerText,
+      liens: nav ? Array.from(nav.querySelectorAll('a')).filter((a) => a.getClientRects().length).length : 0,
+      bouton: Boolean(e.querySelector('a[href="#lien-personnel"]')),
+    };
+  });
+  if (/Profil|Vos réponses/.test(m.texte)) return 'les étapes sont encore visibles';
+  if (m.liens !== 4) return `${m.liens} liens dans la nav`;
+  return m.bouton || 'pas de bouton vers #lien-personnel';
+});
+
+critere(4, 'la barre reste en haut après 3000px de défilement', [1440], async ({ page }) => {
+  await allerAuResultat(page, LIEN_IDEES);
+  await page.evaluate(() => window.scrollTo(0, 3000));
+  await page.waitForTimeout(300);
+  const haut = await page.evaluate(() => document.querySelector('header.entete').getBoundingClientRect().top);
+  return haut === 0 || `barre à ${haut}px`;
+});
+
+critere(4, '« Vos envies » à l’écran : seul son lien est actif', [1440], async ({ page }) => {
+  await allerAuResultat(page, LIEN_IDEES);
+  await page.evaluate(() => {
+    const e = document.querySelector('#envies');
+    window.scrollTo(0, e.getBoundingClientRect().top + window.scrollY - 80);
+  });
+  await page.waitForTimeout(700);
+  const actifs = await page.evaluate(() => Array.from(document.querySelectorAll('header.entete nav a[aria-current="location"]')).map((a) => a.getAttribute('href')));
+  return (actifs.length === 1 && actifs[0] === '#envies') || `actifs : ${actifs.join(', ') || 'aucun'}`;
+});
+
+critere(4, 'un clic sur « Ce qui porte » : le titre n’est pas sous la barre', [1440], async ({ page }) => {
+  await allerAuResultat(page, LIEN_IDEES);
+  await page.locator('header.entete nav a[href="#appuis"]').click();
+  await page.waitForTimeout(1500);
+  const m = await page.evaluate(() => ({
+    barre: document.querySelector('header.entete').getBoundingClientRect().bottom,
+    titre: document.querySelector('#appuis h2').getBoundingClientRect().top,
+    focus: document.activeElement === document.querySelector('#appuis h2'),
+  }));
+  if (m.titre < m.barre - 1) return `titre à ${arrondi(m.titre)}px, barre jusqu’à ${arrondi(m.barre)}px`;
+  return m.focus || 'le focus n’est pas sur le titre';
+});
+
+critere(4, 'mobile : en-tête inchangé, pas de sommaire', [390], async ({ page }) => {
+  await allerAuResultat(page, LIEN_IDEES);
+  const m = await page.evaluate(() => {
+    const e = document.querySelector('header.entete');
+    const nav = e.querySelector('nav');
+    return { etape: e.querySelector('.etapes__mobile').getClientRects().length > 0, nav: Boolean(nav && nav.getClientRects().length) };
+  });
+  return (m.etape && !m.nav) || `étape visible ${m.etape}, sommaire visible ${m.nav}`;
+});
+
+critere(4, 'tout enraciné : pas de lien « Ce qui a envie de grandir »', [1440], async ({ page }) => {
+  await allerAuResultat(page, LIEN_TOUT_ENRACINE);
+  const n = await page.locator('header.entete nav a[href="#envies"]').evaluateAll((ns) => ns.filter((a) => a.getClientRects().length).length);
+  return n === 0 || 'le lien est présent';
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures

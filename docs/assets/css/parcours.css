@@ -2001,3 +2001,64 @@
   /* La barre du sommaire (point 4) remplace ce raccourci vers le lien. */
   .resultat__actions [data-garder] { display: none; }
 }
+
+/* Point 4 : à partir de 900px, l'en-tête de la page résultat devient une
+   barre vert forêt collée en haut : le logo, le sommaire, « Garder mon lien ».
+   Le bandeau Greatly au-dessus défile avec la page. En dessous de 900px,
+   l'en-tête ne change pas. */
+.sommaire, .sommaire__bouton { display: none; }
+
+@media (min-width: 900px) {
+  .page-resultat-f .bandeau { position: absolute; }
+  .page-resultat-f .entete {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 32px;
+    align-items: center;
+    padding: 12px 48px;
+    background: #2D3626;
+    box-shadow: 0 6px 18px rgba(20, 26, 16, .18);
+  }
+  .page-resultat-f .entete .logo__texte { color: var(--creme); font-size: 20px; }
+  .page-resultat-f .entete .logo__point { width: 10px; height: 10px; }
+  .page-resultat-f .entete .etapes { display: none; }
+  .page-resultat-f .sommaire:not([hidden]) { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px; }
+  .page-resultat-f .sommaire__lien {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #D9D3C8;
+    text-decoration: none;
+  }
+  .page-resultat-f .sommaire__lien:hover { color: #F7F4EF; }
+  .page-resultat-f .sommaire__lien[aria-current='location'] {
+    background: rgba(247, 244, 239, .14);
+    color: #F7F4EF;
+    font-weight: 600;
+  }
+  .page-resultat-f .sommaire__bouton:not([hidden]) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 0 20px;
+    border-radius: 999px;
+    background: #E3CF9E;
+    color: #2D3626;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  /* Le titre visé passe sous la barre, pas derrière (hauteur mesurée en JS). */
+  .page-resultat-f [data-resultat] section[id] { scroll-margin-top: var(--hauteur-sommaire, 68px); }
+}
+
+/* Le focus donné au titre après un clic dans le sommaire ne s'encadre pas. */
+.page-resultat-f h2[tabindex='-1']:focus { outline: none; }

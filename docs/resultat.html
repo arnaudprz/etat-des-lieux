@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="assets/css/base.css?v=28">
 <link rel="stylesheet" href="assets/css/parcours.css?v=28">
 </head>
-<body>
+<body class="page-resultat-f">
 
 <div class="bandeau">
   <span class="bandeau__texte">
@@ -31,6 +31,14 @@
     <span class="etape etape--active"><span class="etape__point" aria-hidden="true"></span><span class="etape__nom">Votre état des lieux</span></span>
   </div>
   <span class="etapes__mobile" aria-hidden="true"></span>
+  <!-- À partir de 900px, le sommaire remplace les étapes (resultat.js). -->
+  <nav class="sommaire" data-sommaire hidden>
+    <a class="sommaire__lien" href="#ensemble" data-vers="ensemble"></a>
+    <a class="sommaire__lien" href="#appuis" data-vers="appuis"></a>
+    <a class="sommaire__lien" href="#envies" data-vers="envies"></a>
+    <a class="sommaire__lien" href="#lecture" data-vers="lecture"></a>
+  </nav>
+  <a class="sommaire__bouton" href="#lien-personnel" data-sommaire-bouton hidden></a>
 </header>
 
 <main class="page-resultat">
