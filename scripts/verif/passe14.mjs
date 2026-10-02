@@ -175,6 +175,9 @@ async function contrastes(page, selecteur) {
   }, selecteur);
 }
 
+/** Texte affiché, ramené à des espaces et apostrophes simples. */
+const brut = (t) => String(t).replace(/[\u00a0\u202f]/g, ' ').replace(/[’]/g, "'").replace(/\s+/g, ' ').trim();
+
 const pres = (a, b, tol = 1) => a != null && b != null && Math.abs(a - b) <= tol;
 const arrondi = (v) => (v == null ? 'absent' : Math.round(v * 10) / 10);
 
@@ -386,6 +389,26 @@ critere(5, 'mobile : les bandes d’appuis comme avant', [390], async ({ page })
     return { fond: getComputedStyle(e).backgroundColor, scene: getComputedStyle(b.querySelector('.bande__scene')).display, pousse: getComputedStyle(b.querySelector('.bande__pousse')).display };
   });
   return (m.fond !== 'rgba(0, 0, 0, 0)' && m.scene === 'none' && m.pousse !== 'none') || JSON.stringify(m);
+});
+// Point 6 · « Vos envies »
+critere(6, 'envies : pas de filet au-dessus de la première dimension d’un niveau', [1440], async ({ page }) => {
+  for (const lien of [LIEN_AUDIT, LIEN_TOUT_SEMER, LIEN_IDEES]) {
+    await allerAuResultat(page, lien);
+    const fautifs = await page.evaluate(() => Array.from(document.querySelectorAll('#envies .bande__ligne:first-child'))
+      .filter((n) => parseFloat(getComputedStyle(n).borderTopWidth) > 0).length);
+    if (fautifs) return `${lien} : ${fautifs} première(s) dimension(s) avec un filet`;
+  }
+  return true;
+});
+
+critere(6, 'envies : le chapeau, en 15px sur mobile', [1440, 390], async ({ page, largeur }) => {
+  await allerAuResultat(page, LIEN_TOUT_SEMER);
+  const m = await page.evaluate(() => {
+    const n = document.querySelector('#envies .chapitre__intro');
+    return { texte: n ? n.textContent.trim() : '', taille: n ? getComputedStyle(n).fontSize : '', vu: Boolean(n && n.getClientRects().length) };
+  });
+  if (!m.vu || brut(m.texte) !== brut(contenu.resultat.envies.intro)) return `chapeau « ${m.texte} »`;
+  return largeur > 599 || m.taille === '15px' || `chapeau en ${m.taille}`;
 });
 // <<< POINTS
 

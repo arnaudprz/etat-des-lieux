@@ -2149,3 +2149,43 @@
   .chapitre--appuis .bande__ligne--idee,
   .chapitre--appuis .bande--seule .bande__ligne { grid-column: 1 / -1; }
 }
+
+/* Point 6 : « Vos envies » garde son espace. Le chapeau s'affiche aussi sur
+   mobile, en 15px. À partir de 600px, le niveau a son filet ; seules deux
+   dimensions d'un même niveau sont séparées par un autre : la première n'en a
+   pas, puisque le niveau en porte déjà un. */
+@media (max-width: 599px) {
+  .chapitre--envies .chapitre__intro { font-size: 15px; }
+}
+@media (min-width: 600px) {
+  .chapitre--envies { background: #F1E9DA; }
+  .chapitre--envies .bandes { gap: 0; }
+  .chapitre--envies .bande {
+    background: none;
+    border-radius: 0;
+    overflow: visible;
+    padding: 32px 0;
+    border-top: 1px solid var(--bordure-moyenne);
+    gap: 12px;
+  }
+  .chapitre--envies .bande__entete {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0;
+    background: none;
+    color: var(--encre);
+  }
+  .chapitre--envies .bande__pousse { display: none; }
+  .chapitre--envies .bande__scene { display: block; width: 120px; height: 120px; border-radius: 50%; background: var(--blanc); }
+  .chapitre--envies .bande__niveau { font-family: 'Playfair Display', Georgia, serif; font-size: 26px; font-weight: 400; line-height: 1.1; color: var(--foret); }
+  .chapitre--envies .bande__definition { display: block; font-size: 14px; line-height: 1.5; color: var(--texte-doux-2); }
+  .chapitre--envies .bande__corps { padding: 0; }
+  .chapitre--envies .bande__ligne { display: flex; flex-direction: column; gap: 6px; padding: 20px 0; border-top: 0; }
+  .chapitre--envies .bande__ligne:first-child { padding-top: 0; }
+  .chapitre--envies .bande__ligne + .bande__ligne { border-top: 1px solid rgba(138, 155, 122, .2); }
+  .chapitre--envies .bande__nom { font-family: 'Playfair Display', Georgia, serif; font-size: 21px; font-weight: 400; line-height: 1.25; }
+}
+@media (min-width: 900px) {
+  .chapitre--envies .bande { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; align-items: start; }
+}
