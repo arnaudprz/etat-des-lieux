@@ -1986,3 +1986,18 @@
 .bande-page--suite { padding-top: 0; }
 .bande-page--suite .bande-page__contenu:not(:has(> :not([hidden]):not(:empty))) { display: none; }
 .pied__rh { font-size: 12px; text-align: center; max-width: 640px; }
+
+/* Point 3 : deux tailles de titre et deux marges de bande à partir de 900px.
+   Chapitres (vue d'ensemble, appuis, envies, lecture) : 48px et 88px.
+   Blocs pratiques (le lien, les 6 mois) : 30px et 56px. Mobile inchangé. */
+@media (min-width: 900px) {
+  .bande-page { padding: 56px 48px; }
+  .bande-page--chapitre { padding-top: 88px; padding-bottom: 88px; }
+  .bande-page--pratique { padding-top: 56px; padding-bottom: 56px; }
+  .resultat__haut { padding-top: 40px; padding-bottom: 0; }
+  .bande-page--suite { padding-top: 0; }
+  .page-resultat .titre-chapitre { font-size: 48px; line-height: 1.12; }
+  .page-resultat .titre-pratique { font-size: 30px; line-height: 1.2; }
+  /* La barre du sommaire (point 4) remplace ce raccourci vers le lien. */
+  .resultat__actions [data-garder] { display: none; }
+}

@@ -265,6 +265,27 @@ critere(2, 'aucun débordement horizontal', [390, 360], async ({ page }) => {
   }
   return true;
 });
+// Point 3 · largeurs, titres et espacements
+critere(3, 'conteneur de chaque bande à 1040px', [1440], async ({ page }) => {
+  await allerAuResultat(page, LIEN_IDEES);
+  const largeurs = await page.locator('[data-resultat] .bande-page__contenu').evaluateAll((ns) =>
+    ns.filter((n) => n.getBoundingClientRect().height).map((n) => Math.round(n.getBoundingClientRect().width)));
+  const f = largeurs.find((l) => l !== 1040);
+  return f == null || `largeurs : ${largeurs.join(', ')}`;
+});
+
+critere(3, 'h2 : 48px pour les chapitres, 30px pour les blocs pratiques', [1440], async ({ page }) => {
+  await allerAuResultat(page, LIEN_IDEES);
+  const m = await page.evaluate(() => {
+    const t = (s) => { const n = document.querySelector(s); return n ? getComputedStyle(n).fontSize : 'absent'; };
+    return {
+      chapitres: ['#ensemble h2', '#appuis h2', '#envies h2', '#lecture h2'].map(t),
+      pratiques: ['#lien-personnel h2', '#revenir form h2'].map(t),
+    };
+  });
+  const ok = m.chapitres.every((x) => x === '48px') && m.pratiques.every((x) => x === '30px');
+  return ok || `chapitres ${m.chapitres.join('/')}, pratiques ${m.pratiques.join('/')}`;
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures
