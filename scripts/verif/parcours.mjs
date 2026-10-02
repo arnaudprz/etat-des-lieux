@@ -1226,8 +1226,9 @@ async function passerLaCible(cible) {
     if (p.source !== attendu[p.niveau]) {
       soucis.push(`[${nom}] resultat : colonne « ${p.niveau} » porte ${p.source}`);
     }
-    if (p.taille !== 30) soucis.push(`[${nom}] resultat : pousse de ${p.taille}px au lieu de 30`);
-    if (!p.charge) soucis.push(`[${nom}] resultat : la pousse de « ${p.niveau} » ne se charge pas`);
+    // Mise en page F : à partir de 600px, la scène du niveau remplace la pousse.
+    if (largeur < 600 && p.taille !== 30) soucis.push(`[${nom}] resultat : pousse de ${p.taille}px au lieu de 30`);
+    if (largeur < 600 && !p.charge) soucis.push(`[${nom}] resultat : la pousse de « ${p.niveau} » ne se charge pas`);
   });
 
   const etiquette = await page.evaluate(() => {
@@ -1370,8 +1371,9 @@ async function passerLaCible(cible) {
     if (retour.titre !== 'Gardez votre résultat') {
       soucis.push(`[${nom}] resultat : titre du bandeau « ${retour.titre} »`);
     }
-    if (retour.pousse !== 'assets/img/icone-germe.svg') {
-      soucis.push(`[${nom}] resultat : pousse du bandeau ${retour.pousse}`);
+    // Mise en page F : un pictogramme de lien remplace la pousse germe.
+    if (!(await page.locator('#lien-personnel .garder__picto svg').count())) {
+      soucis.push(`[${nom}] resultat : pas de pictogramme de lien`);
     }
     if (retour.ancienneLigne > 0) {
       soucis.push(`[${nom}] resultat : la ligne « Bientôt… » subsiste`);
@@ -1408,7 +1410,9 @@ async function passerLaCible(cible) {
   }
 
   // « Garder mon résultat » amène au lien personnel, qui arrive très bas.
-  const garder = page.locator('[data-garder]');
+  // Depuis la mise en page F, à partir de 900px c'est le bouton « Garder mon
+  // lien » de la barre du sommaire qui joue ce rôle.
+  const garder = page.locator('[data-garder]:visible, [data-sommaire-bouton]:visible');
   if ((await garder.count()) !== 1) {
     soucis.push(`[${nom}] resultat : pas de bouton « Garder mon résultat »`);
   } else {
