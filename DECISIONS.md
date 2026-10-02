@@ -151,3 +151,13 @@ L'ancienne note de conception parlait d'un contraste à « 4 points d'écart ».
 | La liste des secteurs ne défile plus sur elle-même : 8 secteurs, puis « Voir tous les secteurs » ; la recherche montre tous les secteurs qui correspondent | Une liste qui défile dans une page qui défile cachait 14 secteurs sans rien en dire. |
 | Les pilules du profil sont en grilles égales (rôle et genre sur 2 colonnes, taille d'entreprise sur 2 puis 3, taille d'équipe sur 3) | Les bords droits en escalier et les pilules seules sur leur ligne faisaient désordre. |
 | Sous 600px, tout bouton dans une carte (garder, partage, Greatly, étude) prend toute la largeur de la carte | Les boutons des cartes avaient 4 largeurs et 3 points de départ différents, alors que ceux du parcours sont pleine largeur. |
+
+## Page résultat, mise en page F
+
+| Décision | Pourquoi |
+| --- | --- |
+| Une seule largeur de contenu (1040px), deux tailles de titre (48px pour les chapitres, 30px pour les blocs pratiques), deux marges de bande (88px et 56px) à partir de 900px | Une page qui se lit comme un tout, avec une hiérarchie nette entre ce qu'on lit et ce qu'on fait. |
+| Sur ordinateur, le sommaire remplace les étapes dans l'en-tête, qui reste en haut pendant la lecture | Une fois le résultat affiché, les étapes ne servent plus ; le sommaire aide à circuler dans une page longue. Les liens d'ancre ne touchent jamais au hash, qui porte les réponses. |
+| « Vos appuis » passe en cartes sur ordinateur ; « Vos envies » garde son espace | Ce qui porte se parcourt d'un coup d'œil ; ce qui a envie de grandir mérite qu'on s'y arrête. |
+| Le bloc Greatly devient « Notre lecture » : cinq thèmes reliés aux dimensions de la personne, sans chiffre | Greatly se présente par sa façon de lire l'état des lieux de la personne, pas par un texte générique. |
+| Le lien et les 6 mois sont regroupés dans « Garder et revenir » ; « À noter » disparaît, sa phrase sur les RH passe dans le pied de page | Garder son lien et revenir plus tard sont une seule intention. |

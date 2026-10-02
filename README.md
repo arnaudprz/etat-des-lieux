@@ -168,3 +168,12 @@ chacune, et régénère `docs/assets/js/illustrations.js`.
 | 01/10/2026 | `7a450df` | Passe 11, point 16 : haut du résultat, un seul bouton, deux liens « Modifier », médaillon aligné à gauche sur mobile. |
 | 01/10/2026 | `3d6ec0f` | Passe 11, point 17 : bas du résultat, boutons pleine largeur sur mobile, titre de l'étude en Playfair, vrai pied de page. |
 | 01/10/2026 | (ce commit) | Passe 11, fin : décisions, journal, V = 28. Un lien de résultat déjà partagé peut changer de titre : la carte d'ensemble suit désormais les dimensions (point 14). |
+| 02/10/2026 | `76bad67` | Page résultat F, point 1 : textes du bloc resultat dans contenu.json. |
+| 02/10/2026 | `f7ebb94` | Page résultat F, point 2 : nouvel ordre en bandes, appuis et envies séparés, lien après le bloc Greatly. |
+| 02/10/2026 | `1ecf4db` | Page résultat F, point 3 : un conteneur de 1040px, titres de 48 et 30px, bandes de 88 et 56px. |
+| 02/10/2026 | `395a4f2` | Page résultat F, point 4 : le sommaire remplace les étapes dans une barre collée en haut (900px et plus). |
+| 02/10/2026 | `e1820c5` | Page résultat F, point 5 : « Vos appuis » en cartes à partir de 600px, deux colonnes à partir de 900px. |
+| 02/10/2026 | `4f1dd47` | Page résultat F, point 6 : « Vos envies » sans filets doublés, chapeau aussi sur mobile. |
+| 02/10/2026 | `cae1791` | Page résultat F, point 7 : « Notre lecture » remplace le bloc Greatly. |
+| 02/10/2026 | `dd795ab` | Page résultat F, point 8 : « Garder et revenir », le lien et les 6 mois dans une seule carte. |
+| 02/10/2026 | (ce commit) | Page résultat F, fin : décisions, journal, V = 29. Branche `page-resultat-f`, non fusionnée. |

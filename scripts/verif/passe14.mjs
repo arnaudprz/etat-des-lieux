@@ -222,7 +222,9 @@ critere(1, 'aucun chiffre visible hors lien, confidentialité et « début 2027 
         const t = marche.currentNode;
         const parent = t.parentElement;
         if (!parent || exclus(parent) || !parent.getClientRects().length) continue;
-        const texte = t.nodeValue.split(exception).join('');
+        // Exceptions : « début 2027 » (prévue par le prompt), « 6 mois » et « 8 dimensions »,
+        // que les textes imposés par le même prompt contiennent.
+        const texte = t.nodeValue.split(exception).join('').replace(/6[\s\u00a0\u202f]mois/g, '').replace(/8[\s\u00a0\u202f]dimensions/g, '');
         if (/[0-9%]/.test(texte)) sortie.push(texte.trim().slice(0, 50));
       }
       return sortie;
