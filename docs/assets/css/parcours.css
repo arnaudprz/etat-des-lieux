@@ -2369,7 +2369,6 @@
   /* « M'envoyer le lien » rejoint la ligne des liens discrets. */
   .garder__envoyer { background: none; border: 0; padding: 0 4px; min-height: 44px; color: var(--sauge-fonce); text-decoration: underline; text-underline-offset: 3px; }
 
-  .mois { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
   .mois__panneau { padding: 40px; justify-content: center; gap: 20px; }
   .mois__scene, .mois__futur { width: 150px; height: 150px; }
   .mois__phrase { font-size: 22px; }

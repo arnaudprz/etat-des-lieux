@@ -469,23 +469,23 @@ critere(8, 'le lien puis le formulaire, dans #revenir', [1440, 390], async ({ pa
   });
 });
 
-critere(8, 'panneau : la scène du niveau de la carte, sans icônes dans le formulaire', [1440, 390], async ({ page }) => {
-  for (const [lien, cle] of [[LIEN_TOUT_ENRACINE, 'enracine'], [LIEN_TOUT_SEMER, 'semer']]) {
-    await allerAuResultat(page, lien);
-    const m = await page.evaluate(() => ({
-      scene: (document.querySelector('#revenir .mois__scene') || {}).getAttribute?.call(document.querySelector('#revenir .mois__scene'), 'src') || '',
-      icones: document.querySelectorAll('#revenir form img').length,
-    }));
-    if (!m.scene.endsWith(`scene-${cle}.svg`)) return `${lien} : scène ${m.scene || 'absente'}`;
-    if (m.icones) return `${lien} : ${m.icones} icône(s) dans le formulaire`;
-  }
-  return true;
+critere(8, 'plus de bloc « 6 mois », formulaire de l’étude globale sans icônes', [1440, 390], async ({ page }) => {
+  // Décision d'Arnaud après la passe : le rappel à 6 mois est retiré.
+  await allerAuResultat(page, LIEN_AUDIT);
+  const m = await page.evaluate(() => ({
+    six: /6[\s\u00a0\u202f]mois/.test(document.querySelector('#revenir').innerText),
+    icones: document.querySelectorAll('#revenir form img').length,
+    titre: document.querySelector('#revenir form h2').textContent,
+  }));
+  if (m.six) return 'il reste du texte « 6 mois »';
+  if (m.icones) return `${m.icones} icône(s) dans le formulaire`;
+  return brut(m.titre) === brut(contenu.resultat.rester.titre) || `titre « ${m.titre} »`;
 });
 
-critere(8, 'les deux cases décochées au chargement', [1440, 390], async ({ page }) => {
+critere(8, 'la case de l’étude décochée au chargement', [1440, 390], async ({ page }) => {
   await allerAuResultat(page, LIEN_AUDIT);
   const m = await page.evaluate(() => Array.from(document.querySelectorAll('#revenir form input[type="checkbox"]')).map((c) => c.checked));
-  return (m.length === 2 && m.every((x) => !x)) || `cases : ${JSON.stringify(m)}`;
+  return (m.length === 1 && !m[0]) || `cases : ${JSON.stringify(m)}`;
 });
 
 critere(8, '« début 2027 » dans le label de la case étude', [1440], async ({ page }) => {

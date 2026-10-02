@@ -1275,20 +1275,14 @@
       "surtitre": "Garder et revenir"
     },
     "rester": {
-      "titre": "Et dans 6 mois ?",
-      "texte": "Laissez votre e-mail. Nous vous proposerons de refaire votre état des lieux, au bon moment.",
-      "aujourdhui": "Aujourd'hui",
-      "plus_tard": "Dans 6 mois",
-      "phrase": "Vous ne serez comparé qu'à vous-même.",
-      "sous_phrase": "Votre regard peut changer, votre équipe aussi. Refaire l'état des lieux, c'est voir ce qui a poussé.",
-      "rappel": "Me proposer de refaire mon état des lieux dans 6 mois",
-      "etude": "Recevoir aussi l'étude complète, début 2027",
+      "titre": "Recevoir l'étude globale",
+      "texte": "Nous rassemblons les réponses de tous les participants, de façon anonyme, pour mieux comprendre ce qui aide les équipes à bien travailler ensemble. Laissez vos coordonnées pour recevoir l'étude globale quand elle paraîtra.",
+      "etude": "Recevoir l'étude globale, début 2027",
       "etude_detail": "« Ce qui se joue entre les gens » : les 8 dimensions vues par tous les participants, managers et membres côte à côte.",
       "mention": "Ces informations restent séparées de vos réponses, qui demeurent anonymes.",
-      "bouton": "Rester en lien",
-      "manque_choix": "cocher au moins une des deux cases",
+      "bouton": "Recevoir l'étude globale",
       "merci_titre": "Merci, c'est noté",
-      "merci_texte": "Nous reviendrons vers vous comme vous l'avez choisi. Vos coordonnées restent séparées de vos réponses, qui demeurent anonymes."
+      "merci_texte": "Nous vous enverrons l'étude globale dès qu'elle paraîtra. Vos coordonnées restent séparées de vos réponses, qui demeurent anonymes."
     },
     "pied_rh": "Greatly n'est ni un cabinet RH, ni un organisme de formation. Pour aller plus loin avec votre équipe, votre service RH ou le cabinet qui vous accompagne sera le mieux placé."
   }

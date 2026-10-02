@@ -310,10 +310,8 @@ function remplirTextes(contenu) {
   });
   texte($('[data-revenir-surtitre]'), r.revenir.surtitre);
   const m = r.rester;
-  [['aujourdhui', 'aujourdhui'], ['plus-tard', 'plus_tard'], ['phrase', 'phrase'], ['sous-phrase', 'sous_phrase']]
-    .forEach(([attr, cle]) => texte($(`[data-mois-${attr}]`), m[cle]));
-  [['titre', 'titre'], ['texte', 'texte'], ['sous-phrase', 'sous_phrase'], ['rappel', 'rappel'],
-    ['etude', 'etude'], ['etude-detail', 'etude_detail'], ['mention', 'mention'], ['bouton', 'bouton']]
+  [['titre', 'titre'], ['texte', 'texte'], ['etude', 'etude'], ['etude-detail', 'etude_detail'],
+    ['mention', 'mention'], ['bouton', 'bouton']]
     .forEach(([attr, cle]) => texte($(`[data-rester-${attr}]`), m[cle]));
   texte($('[data-pied-rh]'), r.pied_rh);
 }
@@ -442,7 +440,7 @@ function brancherPartage(contenu) {
   texte($('[data-partage-texte]'), p.texte);
   texte($('[data-partage-question-ordi]'), p.question);
   // Sur mobile un bouton sous la carte ; sur ordinateur une ligne dans le
-  // formulaire des 6 mois. Le même partage dans les deux cas.
+  // formulaire de l'étude globale. Le même partage dans les deux cas.
   ['[data-partager-accueil]', '[data-partager-accueil-ordi]'].forEach((sel) => {
     const bouton = $(sel);
     if (bouton) brancherBoutonPartage(bouton, p);
@@ -481,7 +479,7 @@ function brancherEtude(contenu) {
   const formulaire = $('[data-etude]');
   const message = $('[data-message-etude]');
   const rester = (contenu.resultat && contenu.resultat.rester) || {};
-  const manqueChoix = rester.manque_choix || 'votre accord';
+  const manqueChoix = 'votre accord';
   merciTextes = rester;
 
   formulaire.addEventListener('submit', async (e) => {
@@ -494,20 +492,13 @@ function brancherEtude(contenu) {
       return;
     }
 
-    // Les deux cases disent ce que la personne accepte de recevoir : cocher
-    // l'une ou l'autre vaut consentement. Le serveur actuel n'enregistre pas
-    // encore ce choix (rappel, étude) : il est envoyé en plus des champs
-    // existants, et ignoré tant que worker/contacts.gs n'est pas mis à jour.
-    const rappel = donnees.get('rappel') === 'on';
-    const etude = donnees.get('etude') === 'on';
+    // La case de l'étude vaut consentement : mêmes champs qu'avant côté serveur.
     const contact = {
       prenom: String(donnees.get('prenom') || '').trim(),
       nom: String(donnees.get('nom') || '').trim(),
       entreprise: String(donnees.get('entreprise') || '').trim(),
       email: String(donnees.get('email') || '').trim(),
-      consentement: rappel || etude,
-      rappel,
-      etude,
+      consentement: donnees.get('etude') === 'on',
     };
 
     const manque = [];
@@ -620,9 +611,6 @@ async function demarrer() {
   $('[data-resultat]').hidden = false;
   remplirTextes(contenu);
   afficherEnsemble(resultat);
-  // Les 6 mois partent de la carte d'ensemble de la personne, aujourd'hui.
-  const scene = $('[data-mois-scene]');
-  if (scene) scene.src = chemin(medaillon(resultat.carte.niveau));
   afficherBandes(resultat, contenu, idees);
   afficherLecture(resultat, contenu);
   installerSommaire(contenu);

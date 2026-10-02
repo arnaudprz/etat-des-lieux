@@ -141,7 +141,7 @@
       </div>
     </section>
 
-    <!-- Garder et revenir : le lien, puis les 6 mois, dans une seule carte. -->
+    <!-- Garder et revenir : le lien, puis l'étude globale, dans une seule carte. -->
     <section class="bande-page bande-page--pratique revenir" id="revenir">
       <div class="bande-page__contenu">
         <span class="revenir__surtitre" data-revenir-surtitre></span>
@@ -179,27 +179,11 @@
             </div>
           </section>
 
-          <!-- Les 6 mois : aujourd'hui, et le même état des lieux plus tard. -->
+          <!-- Recevoir l'étude globale. -->
           <div class="mois">
-            <div class="mois__panneau">
-              <div class="mois__duo" aria-hidden="true">
-                <figure class="mois__etape">
-                  <img class="mois__scene" alt="" data-mois-scene>
-                  <figcaption data-mois-aujourdhui></figcaption>
-                </figure>
-                <svg class="mois__fleche" viewBox="0 0 40 16" width="40" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h34M30 2l6 6-6 6"/></svg>
-                <figure class="mois__etape">
-                  <svg class="mois__futur" viewBox="0 0 150 150"><circle cx="75" cy="75" r="72" fill="#F7F4EF" stroke="#8FA878" stroke-width="2" stroke-dasharray="6 7"/></svg>
-                  <figcaption data-mois-plus-tard></figcaption>
-                </figure>
-              </div>
-              <p class="mois__phrase" data-mois-phrase></p>
-              <p class="mois__sous-phrase" data-mois-sous-phrase></p>
-            </div>
-
             <form class="mois__formulaire etude" novalidate data-etude>
               <h2 class="bloc__titre titre-pratique" data-rester-titre></h2>
-              <p class="mois__intro"><span class="mois__intro-mobile" data-rester-sous-phrase></span> <span data-rester-texte></span></p>
+              <p class="mois__intro" data-rester-texte></p>
 
               <div class="etude__grille">
                 <div class="etude__champ">
@@ -226,11 +210,7 @@
                 <input id="site" name="site" type="text" tabindex="-1" autocomplete="off">
               </div>
 
-              <!-- Décochées au chargement : le consentement ne se présume pas. -->
-              <label class="consentement">
-                <input type="checkbox" name="rappel">
-                <span data-rester-rappel></span>
-              </label>
+              <!-- Décochée au chargement : le consentement ne se présume pas. -->
               <label class="consentement">
                 <input type="checkbox" name="etude">
                 <span class="consentement__textes">
