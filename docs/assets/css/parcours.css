@@ -1466,7 +1466,13 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  background: var(--niveau-fond);
+  color: var(--niveau-texte);
 }
+
+/* La scène et la définition du niveau ne servent qu'à « Vos appuis » en
+   cartes, à partir de 600px. */
+.bande__scene, .bande__definition { display: none; }
 
 .bande__pousse {
   width: 30px;
@@ -2062,3 +2068,84 @@
 
 /* Le focus donné au titre après un clic dans le sommaire ne s'encadre pas. */
 .page-resultat-f h2[tabindex='-1']:focus { outline: none; }
+
+/* Les chapitres « Vos appuis » et « Vos envies » : surtitre, titre, chapeau. */
+.chapitre__tete { display: flex; flex-direction: column; gap: 12px; }
+.chapitre__surtitre {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--sauge-fonce);
+}
+.chapitre__titre {
+  margin: 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.15;
+  color: var(--foret);
+}
+.chapitre__intro { margin: 0; font-size: 18px; line-height: 1.6; color: var(--texte-doux); max-width: 640px; }
+
+/* Un mot du titre entouré d'un trait à main levée (décoratif). */
+.mot-entoure { position: relative; display: inline-block; padding: 0 .14em; }
+.mot-entoure__trait {
+  position: absolute;
+  left: -4%;
+  top: -8%;
+  width: 108%;
+  height: 122%;
+  overflow: visible;
+  pointer-events: none;
+}
+.mot-entoure__trait path { fill: none; stroke: var(--sauge-clair); stroke-width: 2.2; stroke-linecap: round; }
+
+/* Point 5 : « Vos appuis » en cartes. Sur mobile, rien ne change. De 600 à
+   899px, une colonne de cartes sous le niveau ; à partir de 900px, le niveau
+   à gauche (scène, nom, définition) et deux colonnes de cartes à droite. */
+@media (min-width: 600px) {
+  .chapitre--appuis { background: #E4EADD; }
+  .chapitre--appuis .bandes { gap: 0; }
+  .chapitre--appuis .bande {
+    background: none;
+    border-radius: 0;
+    overflow: visible;
+    padding: 32px 0;
+    border-top: 1px solid var(--bordure-moyenne);
+    gap: 20px;
+  }
+  .chapitre--appuis .bande__entete {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0;
+    background: none;
+    color: var(--encre);
+  }
+  .chapitre--appuis .bande__pousse { display: none; }
+  .chapitre--appuis .bande__scene { display: block; width: 120px; height: 120px; border-radius: 50%; background: var(--blanc); }
+  .chapitre--appuis .bande__niveau { font-family: 'Playfair Display', Georgia, serif; font-size: 26px; font-weight: 400; line-height: 1.1; color: var(--foret); }
+  .chapitre--appuis .bande__definition { display: block; font-size: 14px; line-height: 1.5; color: var(--texte-doux-2); }
+  .chapitre--appuis .bande__corps { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 0; }
+  .chapitre--appuis .bande__ligne,
+  .chapitre--appuis .bande__ligne + .bande__ligne {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px 22px;
+    background: var(--blanc);
+    border-radius: 14px;
+    border: 1px solid rgba(138, 155, 122, .18);
+  }
+  .chapitre--appuis .bande__nom { font-family: 'Playfair Display', Georgia, serif; font-size: 21px; font-weight: 400; line-height: 1.25; }
+  .chapitre--appuis .bande__phrase { font-size: 15px; color: var(--texte-doux); }
+}
+
+@media (min-width: 900px) {
+  .chapitre--appuis .bande { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px; align-items: start; }
+  .chapitre--appuis .bande__corps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Une carte qui porte une idée, ou seule dans son niveau, prend la largeur. */
+  .chapitre--appuis .bande__ligne--idee,
+  .chapitre--appuis .bande--seule .bande__ligne { grid-column: 1 / -1; }
+}

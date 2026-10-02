@@ -350,6 +350,43 @@ critere(4, 'tout enraciné : pas de lien « Ce qui a envie de grandir »', [1440
   const n = await page.locator('header.entete nav a[href="#envies"]').evaluateAll((ns) => ns.filter((a) => a.getClientRects().length).length);
   return n === 0 || 'le lien est présent';
 });
+// Point 5 · « Vos appuis » en cartes
+critere(5, 'appuis : une carte par dimension, pleine largeur si seule ou avec une idée', [1440], async ({ page }) => {
+  for (const lien of [LIEN_AUDIT, LIEN_IDEES]) {
+    await allerAuResultat(page, lien);
+    const m = await page.evaluate(() => {
+      const largeur = (n) => n.getBoundingClientRect().width;
+      const cartes = Array.from(document.querySelectorAll('#appuis .bande__ligne'));
+      const corps = (n) => largeur(n.parentElement);
+      return cartes.map((c) => ({
+        pleine: Math.abs(largeur(c) - corps(c)) < 2,
+        attendue: c.classList.contains('bande__ligne--idee') || c.closest('.bande').classList.contains('bande--seule'),
+        fond: getComputedStyle(c).backgroundColor,
+      }));
+    });
+    if (!m.length) return `${lien} : aucune carte`;
+    const f = m.findIndex((x) => x.pleine !== x.attendue || x.fond !== 'rgb(255, 255, 255)');
+    if (f >= 0) return `${lien} : carte ${f + 1} pleine largeur ${m[f].pleine}, attendue ${m[f].attendue}`;
+  }
+  return true;
+});
+
+critere(5, 'appuis : au moins 250px plus court que les bandes d’avant', [1440], async ({ page, navigateur }) => {
+  const avant = JSON.parse(readFileSync(join(racine, 'captures/passe14/avant/mesures.json'), 'utf8')).appuis_1440[navigateur];
+  await allerAuResultat(page, LIEN_AUDIT);
+  const h = await page.evaluate(() => document.querySelector('#appuis [data-appuis-niveaux]').getBoundingClientRect().height);
+  return h <= avant - 250 || `${Math.round(h)}px contre ${Math.round(avant)}px avant`;
+});
+
+critere(5, 'mobile : les bandes d’appuis comme avant', [390], async ({ page }) => {
+  await allerAuResultat(page, LIEN_AUDIT);
+  const m = await page.evaluate(() => {
+    const b = document.querySelector('#appuis .bande');
+    const e = b.querySelector('.bande__entete');
+    return { fond: getComputedStyle(e).backgroundColor, scene: getComputedStyle(b.querySelector('.bande__scene')).display, pousse: getComputedStyle(b.querySelector('.bande__pousse')).display };
+  });
+  return (m.fond !== 'rgba(0, 0, 0, 0)' && m.scene === 'none' && m.pousse !== 'none') || JSON.stringify(m);
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures

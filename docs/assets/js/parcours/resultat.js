@@ -7,6 +7,7 @@
  */
 
 import { chargerContenu } from '../contenu.js';
+import { typo } from '../typo.js';
 import { calculer } from '../calcul.js';
 import { decoder } from '../lien.js';
 import { medaillon, icone, chemin } from '../illustration-niveau.js';
@@ -103,7 +104,10 @@ function bandeNiveau(c, contenu, idees) {
 
   c.dimensions.forEach((d) => {
     corps.appendChild(
-      el('div', { classe: 'bande__ligne', attrs: { 'data-dimension': d.cle } }, [
+      el('div', {
+        classe: 'bande__ligne' + (idees[d.cle] ? ' bande__ligne--idee' : ''),
+        attrs: { 'data-dimension': d.cle },
+      }, [
         el('span', { classe: 'bande__nom', texte: d.nom }),
         el('div', { classe: 'bande__droite' }, [
           el('span', { classe: 'bande__phrase', texte: d.phrase }),
@@ -113,19 +117,32 @@ function bandeNiveau(c, contenu, idees) {
     );
   });
 
-  const entete = el('div', {
-    classe: 'bande__entete',
-    style: { background: c.niveau.hex, color: c.niveau.texte },
-  }, [
-    // Décorative : le nom du niveau est juste à côté.
+  // Les couleurs passent par des variables : sur mobile l'en-tête est une
+  // bande de couleur, sur ordinateur (« Vos appuis ») une colonne claire.
+  const definitions = (contenu.resultat && contenu.resultat.definitions_niveaux) || {};
+  const entete = el('div', { classe: 'bande__entete' }, [
+    // Décoratives : le nom du niveau est juste à côté.
     el('img', {
       classe: 'bande__pousse',
       attrs: { src: chemin(icone(c.niveau.cle)), alt: '', 'aria-hidden': 'true' },
     }),
+    el('img', {
+      classe: 'bande__scene',
+      attrs: { src: chemin(medaillon(c.niveau.cle)), alt: '', 'aria-hidden': 'true' },
+    }),
     el('span', { classe: 'bande__niveau', texte: c.niveau.nom }),
+    definitions[c.niveau.cle]
+      ? el('span', { classe: 'bande__definition', texte: definitions[c.niveau.cle] })
+      : null,
   ]);
 
-  return el('div', { classe: 'bande', attrs: { 'data-niveau': c.niveau.cle } }, [entete, corps]);
+  const bande = el('div', {
+    classe: 'bande' + (c.dimensions.length === 1 ? ' bande--seule' : ''),
+    attrs: { 'data-niveau': c.niveau.cle },
+  }, [entete, corps]);
+  bande.style.setProperty('--niveau-fond', c.niveau.hex);
+  bande.style.setProperty('--niveau-texte', c.niveau.texte);
+  return bande;
 }
 
 /**
@@ -206,6 +223,35 @@ function installerSommaire(contenu) {
   });
 }
 
+/** Le tracé à main levée qui entoure un mot, repris de la maquette. */
+const TRACE_ENTOURE = 'M8 24C5 10 38 3 68 4C93 5 99 18 93 29C83 39 32 40 13 34C2 30 3 17 22 9';
+
+/**
+ * Écrit un titre dont un mot est entouré d'un trait, comme sur la maquette.
+ * Le trait est décoratif ; le titre se lit tel quel.
+ */
+function titreAvecMot(noeud, titre, mot) {
+  if (!noeud) return;
+  const i = mot ? titre.indexOf(mot) : -1;
+  if (i < 0) { texte(noeud, titre); return; }
+  vider(noeud);
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 100 40');
+  svg.setAttribute('preserveAspectRatio', 'none');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('class', 'mot-entoure__trait');
+  const trace = document.createElementNS(ns, 'path');
+  trace.setAttribute('d', TRACE_ENTOURE);
+  trace.setAttribute('vector-effect', 'non-scaling-stroke');
+  svg.appendChild(trace);
+  noeud.append(
+    document.createTextNode(typo(titre.slice(0, i))),
+    el('span', { classe: 'mot-entoure', texte: mot }, [svg]),
+    document.createTextNode(typo(titre.slice(i + mot.length)))
+  );
+}
+
 /** Les textes fixes de la mise en page F, lus dans contenu.json > resultat. */
 function remplirTextes(contenu) {
   const r = contenu.resultat;
@@ -213,7 +259,7 @@ function remplirTextes(contenu) {
   texte($('[data-resultat-intro]'), r.intro);
   ['appuis', 'envies'].forEach((cle) => {
     texte($(`[data-${cle}-surtitre]`), r[cle].surtitre);
-    texte($(`[data-${cle}-titre]`), r[cle].titre);
+    titreAvecMot($(`[data-${cle}-titre]`), r[cle].titre, r[cle].mot);
     texte($(`[data-${cle}-intro]`), r[cle].intro);
   });
   texte($('[data-revenir-surtitre]'), r.revenir.surtitre);
