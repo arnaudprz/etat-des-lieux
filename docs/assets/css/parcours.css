@@ -1976,3 +1976,13 @@
     align-self: stretch;
   }
 }
+
+/* ============================================ RÉSULTAT, MISE EN PAGE F */
+
+/* Des bandes pleine largeur ; leur contenu tient dans un seul conteneur. */
+.bande-page { padding: 40px 20px; }
+.bande-page__contenu { width: 100%; max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+.resultat__haut { padding-top: 24px; padding-bottom: 0; }
+.bande-page--suite { padding-top: 0; }
+.bande-page--suite .bande-page__contenu:not(:has(> :not([hidden]):not(:empty))) { display: none; }
+.pied__rh { font-size: 12px; text-align: center; max-width: 640px; }

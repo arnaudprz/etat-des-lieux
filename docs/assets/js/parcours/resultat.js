@@ -82,38 +82,64 @@ function encadreIdees(phrase, titre) {
  * phrase de la dimension concernée, dans sa bande.
  */
 function afficherBandes(resultat, contenu, idees) {
-  const hote = $('[data-bandes]');
-  vider(hote);
-
-  resultat.colonnes.forEach((c) => {
-    const corps = el('div', { classe: 'bande__corps' });
-
-    c.dimensions.forEach((d) => {
-      corps.appendChild(
-        el('div', { classe: 'bande__ligne', attrs: { 'data-dimension': d.cle } }, [
-          el('span', { classe: 'bande__nom', texte: d.nom }),
-          el('div', { classe: 'bande__droite' }, [
-            el('span', { classe: 'bande__phrase', texte: d.phrase }),
-            idees[d.cle] ? encadreIdees(idees[d.cle], contenu.envies.titre) : null,
-          ]),
-        ])
-      );
-    });
-
-    const entete = el('div', {
-      classe: 'bande__entete',
-      style: { background: c.niveau.hex, color: c.niveau.texte },
-    }, [
-      // Décorative : le nom du niveau est juste à côté.
-      el('img', {
-        classe: 'bande__pousse',
-        attrs: { src: chemin(icone(c.niveau.cle)), alt: '', 'aria-hidden': 'true' },
-      }),
-      el('span', { classe: 'bande__niveau', texte: c.niveau.nom }),
-    ]);
-
-    hote.appendChild(el('div', { classe: 'bande' }, [entete, corps]));
+  // Mise en page F : les niveaux installés ou en croissance forment « Vos
+  // appuis », ceux qui existent par moments ou restent à semer « Vos envies ».
+  // Une section sans niveau n'apparaît pas, et son lien de sommaire non plus.
+  const parties = [
+    { hote: $('[data-appuis-niveaux]'), section: $('[data-appuis]'), garde: (v) => v >= 2 },
+    { hote: $('[data-envies-niveaux]'), section: $('[data-envies]'), garde: (v) => v <= 1 },
+  ];
+  parties.forEach(({ hote, section, garde }) => {
+    vider(hote);
+    const colonnes = resultat.colonnes.filter((c) => garde(c.niveau.valeur));
+    section.hidden = colonnes.length === 0;
+    colonnes.forEach((c) => hote.appendChild(bandeNiveau(c, contenu, idees)));
   });
+}
+
+/** Une bande de niveau : son nom, puis ses dimensions et leurs idées. */
+function bandeNiveau(c, contenu, idees) {
+  const corps = el('div', { classe: 'bande__corps' });
+
+  c.dimensions.forEach((d) => {
+    corps.appendChild(
+      el('div', { classe: 'bande__ligne', attrs: { 'data-dimension': d.cle } }, [
+        el('span', { classe: 'bande__nom', texte: d.nom }),
+        el('div', { classe: 'bande__droite' }, [
+          el('span', { classe: 'bande__phrase', texte: d.phrase }),
+          idees[d.cle] ? encadreIdees(idees[d.cle], contenu.envies.titre) : null,
+        ]),
+      ])
+    );
+  });
+
+  const entete = el('div', {
+    classe: 'bande__entete',
+    style: { background: c.niveau.hex, color: c.niveau.texte },
+  }, [
+    // Décorative : le nom du niveau est juste à côté.
+    el('img', {
+      classe: 'bande__pousse',
+      attrs: { src: chemin(icone(c.niveau.cle)), alt: '', 'aria-hidden': 'true' },
+    }),
+    el('span', { classe: 'bande__niveau', texte: c.niveau.nom }),
+  ]);
+
+  return el('div', { classe: 'bande', attrs: { 'data-niveau': c.niveau.cle } }, [entete, corps]);
+}
+
+/** Les textes fixes de la mise en page F, lus dans contenu.json > resultat. */
+function remplirTextes(contenu) {
+  const r = contenu.resultat;
+  if (!r) return;
+  texte($('[data-resultat-intro]'), r.intro);
+  ['appuis', 'envies'].forEach((cle) => {
+    texte($(`[data-${cle}-surtitre]`), r[cle].surtitre);
+    texte($(`[data-${cle}-titre]`), r[cle].titre);
+    texte($(`[data-${cle}-intro]`), r[cle].intro);
+  });
+  texte($('[data-revenir-surtitre]'), r.revenir.surtitre);
+  texte($('[data-pied-rh]'), r.pied_rh);
 }
 
 /**
@@ -393,6 +419,7 @@ async function demarrer() {
   brancherModifier(contenu, lu);
 
   $('[data-resultat]').hidden = false;
+  remplirTextes(contenu);
   afficherEnsemble(resultat);
   afficherBandes(resultat, contenu, idees);
 

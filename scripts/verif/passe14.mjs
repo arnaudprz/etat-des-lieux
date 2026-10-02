@@ -228,6 +228,43 @@ critere(1, 'aucun chiffre visible hors lien, confidentialité et « début 2027 
   }
   return true;
 });
+// Point 2 · l'ordre de la page
+critere(2, 'les blocs dans l’ordre demandé', [1440, 390], async ({ page }) => {
+  await allerAuResultat(page, LIEN_IDEES);
+  const ordre = await page.evaluate(() => {
+    const reperes = [
+      ['entete', 'header.entete'], ['haut', '.resultat__haut'], ['ensemble', '#ensemble'],
+      ['appuis', '#appuis'], ['envies', '#envies'], ['idees16', '[data-idees-resultats]'],
+      ['lecture', '#lecture'], ['revenir', '#revenir'], ['partage', '.partage'], ['pied', 'footer.pied'],
+    ];
+    const noeuds = reperes.map(([n, s]) => [n, document.querySelector(s)]);
+    const absents = noeuds.filter(([, x]) => !x).map(([n]) => n);
+    if (absents.length) return `absents : ${absents.join(', ')}`;
+    for (let i = 1; i < noeuds.length; i++) {
+      const [na, a] = noeuds[i - 1]; const [nb, b] = noeuds[i];
+      if (!(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING)) return `${nb} avant ${na}`;
+    }
+    const lien = document.querySelector('#lien-personnel');
+    if (lien.compareDocumentPosition(document.querySelector('#lecture')) & Node.DOCUMENT_POSITION_FOLLOWING) return 'le lien est avant le bloc Greatly';
+    return true;
+  });
+  return ordre;
+});
+
+critere(2, 'aucun « À noter »', [1440], async ({ page }) => {
+  await allerAuResultat(page, LIEN_AUDIT);
+  const t = await page.evaluate(() => document.body.textContent);
+  return !/À noter/.test(t) || '« À noter » présent';
+});
+
+critere(2, 'aucun débordement horizontal', [390, 360], async ({ page }) => {
+  for (const lien of [LIEN_AUDIT, LIEN_IDEES, LIEN_TOUT_ENRACINE]) {
+    await allerAuResultat(page, lien);
+    const d = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (d > 1) return `${lien} : ${d}px de débordement`;
+  }
+  return true;
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures
