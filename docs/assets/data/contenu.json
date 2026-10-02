@@ -1196,5 +1196,100 @@
       "Votre état des lieux"
     ],
     "mobile": "Étape {n} sur 3"
+  },
+  "resultat": {
+    "intro": "Telle que vous la voyez. Pas de note, pas de classement, pas de diagnostic.",
+    "sommaire": {
+      "aria": "Sommaire du résultat",
+      "ensemble": "Vue d'ensemble",
+      "appuis": "Ce qui porte",
+      "envies": "Ce qui a envie de grandir",
+      "lecture": "Notre lecture",
+      "bouton": "Garder mon lien"
+    },
+    "appuis": {
+      "surtitre": "Vos appuis",
+      "titre": "Ce qui porte déjà votre équipe",
+      "mot": "porte",
+      "intro": "Les dimensions que vous voyez installées ou en croissance. Ce sont vos racines, celles sur lesquelles le reste peut grandir."
+    },
+    "envies": {
+      "surtitre": "Vos envies",
+      "titre": "Ce qui a envie de grandir",
+      "mot": "grandir",
+      "intro": "Ce qui existe déjà par moments, et ce qui reste à semer. Quand vous avez proposé une idée, elle est là, dans vos mots."
+    },
+    "definitions_niveaux": {
+      "enracine": "C'est installé. Vous pouvez vous appuyer dessus.",
+      "croissance": "C'est là, la plupart du temps, et ça continue de pousser.",
+      "germe": "Ça existe déjà, par moments, avec certains.",
+      "semer": "Tout est à semer, et tout reste possible."
+    },
+    "greatly": {
+      "surtitre": "Qui est derrière cet état des lieux",
+      "titre": "Pour nous, tout se joue dans les relations",
+      "mot": "relations",
+      "texte": "Greatly accompagne dirigeants, managers et talents clés pendant un an, en groupe de pairs, à la Greatly House près de Lille. Voici comment nous lisons votre état des lieux, thème par thème.",
+      "citation": "La performance n'est pas un objectif, c'est une conséquence.",
+      "dans_votre_regard": "Dans votre regard",
+      "question_titre": "Une question à garder en tête",
+      "themes": [
+        {
+          "nom": "La confiance",
+          "dimension": "confiance",
+          "texte": "Un cadre tient quand la confiance est là, et que chacun l'assume. Elle ne se décrète pas, elle se cultive, dans les petits moments où l'on peut dire ce qu'on pense.",
+          "question": "Et si la confiance, assumée par chacun, devenait ce qui fait tenir le cadre ?"
+        },
+        {
+          "nom": "Le soutien",
+          "dimension": "manager",
+          "texte": "Être soutenu donne de l'élan. Un manager soutenu soutient mieux, et toute l'équipe le sent.",
+          "question": "Et si demander de l'aide devenait une force, pour vous comme pour votre équipe ?"
+        },
+        {
+          "nom": "La connaissance humaine",
+          "dimension": "sait",
+          "texte": "On coordonne mieux ce qu'on comprend, et on comprend mieux ceux qu'on connaît vraiment, au-delà de leur fonction.",
+          "question": "Et si connaître vraiment l'autre devenait votre meilleur outil pour travailler ensemble ?"
+        },
+        {
+          "nom": "L'énergie",
+          "dimension": "sens",
+          "texte": "Le sens est là. L'énergie, elle, n'est jamais la même d'un jour à l'autre. On ne la force pas. On apprend à la connaître, et à organiser ses journées avec elle.",
+          "question": "Et si vous organisiez vos journées avec votre énergie, plutôt que contre elle ?"
+        },
+        {
+          "nom": "La lucidité",
+          "dimension": "info",
+          "texte": "Prendre du recul, écouter ses émotions, laisser de la place au silence : c'est ce qui donne des décisions plus nettes, même quand tout va vite.",
+          "question": "Et si le silence devenait votre meilleur allié pour décider ?"
+        }
+      ],
+      "temoignage": {
+        "texte": "Le silence n'est pas un vide à combler, mais un espace familier et sécurisant.",
+        "auteur": "Un membre du premier groupe Greatly, après l'atelier sur le silence"
+      },
+      "bouton": "Découvrir Greatly"
+    },
+    "revenir": {
+      "surtitre": "Garder et revenir"
+    },
+    "rester": {
+      "titre": "Et dans 6 mois ?",
+      "texte": "Laissez votre e-mail. Nous vous proposerons de refaire votre état des lieux, au bon moment.",
+      "aujourdhui": "Aujourd'hui",
+      "plus_tard": "Dans 6 mois",
+      "phrase": "Vous ne serez comparé qu'à vous-même.",
+      "sous_phrase": "Votre regard peut changer, votre équipe aussi. Refaire l'état des lieux, c'est voir ce qui a poussé.",
+      "rappel": "Me proposer de refaire mon état des lieux dans 6 mois",
+      "etude": "Recevoir aussi l'étude complète, début 2027",
+      "etude_detail": "« Ce qui se joue entre les gens » : les 8 dimensions vues par tous les participants, managers et membres côte à côte.",
+      "mention": "Ces informations restent séparées de vos réponses, qui demeurent anonymes.",
+      "bouton": "Rester en lien",
+      "manque_choix": "cocher au moins une des deux cases",
+      "merci_titre": "Merci, c'est noté",
+      "merci_texte": "Nous reviendrons vers vous comme vous l'avez choisi. Vos coordonnées restent séparées de vos réponses, qui demeurent anonymes."
+    },
+    "pied_rh": "Greatly n'est ni un cabinet RH, ni un organisme de formation. Pour aller plus loin avec votre équipe, votre service RH ou le cabinet qui vous accompagne sera le mieux placé."
   }
 }

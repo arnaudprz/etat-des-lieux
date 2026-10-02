@@ -1,0 +1,322 @@
+/**
+ * Vérifie la passe 14 (page résultat, mise en page F), critère par critère.
+ *
+ * Chaque critère ✅ du document devient une ligne OK ou KO, dans Chromium et
+ * WebKit, à 1440, 1024, 390 et 360 de large. Le backend est toujours simulé : aucune
+ * requête n'atteint l'API de production, rien ne s'écrit dans le classeur.
+ *
+ * Usage :
+ *   node scripts/verif/passe14.mjs [URL_DE_BASE] [--points 1,2,5] [--captures avant|apres]
+ *
+ *   --points    ne vérifie que ces points (par défaut : tous ceux écrits ici)
+ *   --captures  prend les captures de toutes les pages dans captures/passe14/<dossier>/
+ */
+
+import { chromium, webkit } from 'playwright';
+import { mkdirSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const racine = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const args = process.argv.slice(2);
+const option = (nom) => {
+  const i = args.indexOf(nom);
+  return i === -1 ? null : args[i + 1];
+};
+const BASE = args.find((a) => /^https?:/.test(a)) || 'http://127.0.0.1:8127';
+const POINTS = option('--points') ? option('--points').split(',').map(Number) : null;
+const CAPTURES = option('--captures');
+
+if (!/127\.0\.0\.1|localhost/.test(BASE)) {
+  console.error('passe14 : uniquement contre le serveur local (npm run local).');
+  process.exit(2);
+}
+
+const NAVIGATEURS = [
+  { nom: 'chromium', lanceur: chromium },
+  { nom: 'webkit', lanceur: webkit },
+];
+const LARGEURS = [1440, 1024, 390, 360];
+
+/** Réponses de référence (préréglage de la maquette), membre et manager. */
+const REPONSES = [2, 2, 1, 1, 2, 2, 0, 0, 2, 3, 2, 2, 2, 2, 2, 1];
+const LIEN_MEMBRE = '#v2-m2211220023222221';
+const LIEN_MANAGER = '#v2-g2211220023222221';
+/** Les liens de test de la passe 14. */
+const LIEN_AUDIT = '#v2-m1230231212302312';
+const LIEN_AUDIT_MANAGER = '#v2-g1230231212302312';
+const LIEN_TOUT_ENRACINE = '#v2-m3333333333333333';
+const LIEN_TOUT_SEMER = '#v2-m0000000000000000';
+/** Un membre avec des idées sur 3 affirmations (1, 4 et 7, toutes répondues 0 ou 1). */
+const LIEN_IDEES = '#v2-m1230231212302312-1.0-4.1-7.0';
+/** 16 réponses dont exactement 3 ouvrent une relance (3, 4 et 7). */
+const REPONSES_TROIS_RELANCES = [2, 2, 1, 1, 2, 2, 0, 2, 2, 3, 2, 2, 2, 2, 2, 3];
+
+const contenu = JSON.parse(readFileSync(join(racine, 'docs/assets/data/contenu.json'), 'utf8'));
+
+// ------------------------------------------------------------------ outillage
+
+/** Ouvre une page et attend qu'elle soit stable (même règle que parcours.mjs). */
+async function aller(page, url) {
+  await page.goto(url, { waitUntil: 'domcontentloaded' });
+  await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
+}
+
+/** Le backend, simulé. Toute requête vers Apps Script reçoit une réponse locale. */
+async function simulerLeBackend(contexte) {
+  await contexte.route(/script\.google(usercontent)?\.com/, (route) => {
+    const url = route.request().url();
+    let corps = { ok: true };
+    if (url.includes('action=compteur')) corps = { ok: true, total: 255 };
+    if (url.includes('action=agregats')) corps = { ok: true, ensemble: null, segments: {} };
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json; charset=utf-8',
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify(corps),
+    });
+  });
+}
+
+async function remplirProfil(page, role = 'membre') {
+  await page.waitForSelector('.pilules');
+  await page.locator('input[name="role"]').nth(role === 'manager' ? 0 : 1).check();
+  await page.locator('input[name="genre"]').nth(0).check();
+  await page.locator('input[name="taille_entreprise"]').nth(2).check();
+  await page.locator('input[name="taille_equipe"]').nth(1).check();
+  // Un profil déjà saisi dans cet onglet garde son secteur, champ replié.
+  if (!(await page.locator('#secteur').isVisible())) return;
+  await page.fill('#secteur', 'sante');
+  await page.waitForSelector('#secteurs li');
+  await page.locator('#secteurs .secteurs__choix', { hasText: /^Santé$/ }).first().click();
+}
+
+/** Profil rempli, puis la page des affirmations. */
+async function allerAuxQuestions(page, role = 'membre') {
+  await aller(page, `${BASE}/profil.html`);
+  await remplirProfil(page, role);
+  await page.locator('[data-continuer]').click();
+  await page.waitForSelector('.affirmation', { timeout: 20000 });
+  await page.waitForTimeout(300);
+}
+
+async function repondre(page, reponses) {
+  for (let i = 0; i < reponses.length; i++) {
+    await page.locator('.affirmation').nth(i).locator('.echelle__choix').nth(reponses[i]).click();
+  }
+  await page.waitForTimeout(400);
+}
+
+async function allerAuResultat(page, lien = LIEN_MEMBRE) {
+  // D'un résultat à l'autre seul le hash change, et la page se recharge
+  // d'elle-même (hashchange) : on repart d'une page vierge pour ne pas lire
+  // pendant ce rechargement.
+  await page.goto('about:blank');
+  await aller(page, `${BASE}/resultat.html${lien}`);
+  await page.waitForSelector('[data-resultat]:not([hidden])', { timeout: 15000 });
+  await page.waitForTimeout(300);
+}
+
+/** Boîte d'un élément, ou null s'il n'est pas rendu. */
+async function boite(page, selecteur) {
+  return page.evaluate((s) => {
+    const n = document.querySelector(s);
+    if (!n) return null;
+    const r = n.getBoundingClientRect();
+    if (!r.width && !r.height) return null;
+    return { x: r.left, y: r.top, l: r.width, h: r.height, bas: r.bottom, droite: r.right };
+  }, selecteur);
+}
+
+/** Bord gauche du premier texte réellement rendu dans un élément. */
+async function bordGaucheTexte(page, selecteur) {
+  return page.evaluate((s) => {
+    const n = document.querySelector(s);
+    if (!n) return null;
+    const marche = document.createTreeWalker(n, NodeFilter.SHOW_TEXT, {
+      acceptNode: (t) => (t.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT),
+    });
+    while (marche.nextNode()) {
+      const plage = document.createRange();
+      plage.selectNodeContents(marche.currentNode);
+      const r = plage.getClientRects()[0];
+      if (r && r.width) return r.left;
+    }
+    return null;
+  }, selecteur);
+}
+
+/**
+ * Contraste WCAG entre la couleur du texte d'un élément et le fond sur lequel
+ * il est posé (le premier ancêtre au fond opaque). Renvoie une liste
+ * { texte, ratio } pour chaque élément du sélecteur.
+ */
+async function contrastes(page, selecteur) {
+  return page.evaluate((s) => {
+    const rgb = (c) => (c.match(/[\d.]+/g) || []).map(Number);
+    const lum = ([r, g, b]) => {
+      const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+      return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+    };
+    const fond = (n) => {
+      for (let x = n; x; x = x.parentElement) {
+        const c = rgb(getComputedStyle(x).backgroundColor);
+        if (c.length >= 3 && (c.length === 3 || c[3] > 0.5)) return c.slice(0, 3);
+      }
+      return [255, 255, 255];
+    };
+    return Array.from(document.querySelectorAll(s))
+      .filter((n) => n.getBoundingClientRect().width && n.textContent.trim())
+      .map((n) => {
+        const a = lum(rgb(getComputedStyle(n).color).slice(0, 3));
+        const b = lum(fond(n));
+        return { texte: n.textContent.trim().slice(0, 30), ratio: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) };
+      });
+  }, selecteur);
+}
+
+const pres = (a, b, tol = 1) => a != null && b != null && Math.abs(a - b) <= tol;
+const arrondi = (v) => (v == null ? 'absent' : Math.round(v * 10) / 10);
+
+// ------------------------------------------------------------- les critères
+
+/**
+ * Chaque critère : point, intitulé, largeurs concernées, et une fonction qui
+ * reçoit { page, contexte, largeur, navigateur } et renvoie true, ou un texte
+ * qui dit ce qui ne va pas.
+ */
+const CRITERES = [];
+const critere = (point, intitule, largeurs, verifier) =>
+  CRITERES.push({ point, intitule, largeurs, verifier });
+
+// >>> POINTS
+// Point 1 · les textes
+critere(1, 'contenu.json valide, bloc resultat sans a_noter', [1440], async () => {
+  const c = JSON.parse(readFileSync(join(racine, 'docs/assets/data/contenu.json'), 'utf8'));
+  return (c.resultat && c.resultat.a_noter === undefined) || 'bloc resultat absent ou a_noter présent';
+});
+
+critere(1, 'test unitaire : 5 thèmes reliés à 5 dimensions distinctes', [1440], async ({ navigateur }) => {
+  if (navigateur !== 'chromium') return true;
+  const { execFileSync } = await import('node:child_process');
+  try {
+    execFileSync(process.execPath, ['--test', 'tests/resultat.test.js'], { cwd: racine, stdio: 'pipe' });
+    return true;
+  } catch (e) {
+    return String(e.stdout || e.message).split('\n').filter((l) => /not ok/.test(l)).slice(0, 3).join(' | ');
+  }
+});
+
+critere(1, 'aucun chiffre visible hors lien, confidentialité et « début 2027 »', [1440, 390], async ({ page }) => {
+  for (const lien of [LIEN_AUDIT, LIEN_AUDIT_MANAGER, LIEN_IDEES]) {
+    await allerAuResultat(page, lien);
+    const trouves = await page.evaluate((exception) => {
+      // « Étape 3 sur 3 » (en-tête mobile, passe 11) est de la navigation, pas le résultat.
+      const exclus = (n) => n.closest('[data-lien], .lien-perso__details, footer.pied p:first-of-type, .etapes__mobile, script, style');
+      const marche = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const sortie = [];
+      while (marche.nextNode()) {
+        const t = marche.currentNode;
+        const parent = t.parentElement;
+        if (!parent || exclus(parent) || !parent.getClientRects().length) continue;
+        const texte = t.nodeValue.split(exception).join('');
+        if (/[0-9%]/.test(texte)) sortie.push(texte.trim().slice(0, 50));
+      }
+      return sortie;
+    }, contenu.resultat.rester.etude.match(/début \d{4}/)[0]);
+    if (trouves.length) return `${lien} : ${trouves.slice(0, 3).join(' | ')}`;
+  }
+  return true;
+});
+// <<< POINTS
+
+// --------------------------------------------------------------- captures
+
+async function prendreLesCaptures(dossier) {
+  const sortie = join(racine, 'captures/passe14', dossier);
+  const liens = {
+    'membre-audit': LIEN_AUDIT, 'manager-audit': LIEN_AUDIT_MANAGER,
+    'tout-enracine': LIEN_TOUT_ENRACINE, 'tout-semer': LIEN_TOUT_SEMER, 'membre-idees': LIEN_IDEES,
+  };
+  for (const { nom, lanceur } of NAVIGATEURS) {
+    const navigateur = await lanceur.launch();
+    for (const largeur of LARGEURS) {
+      const contexte = await navigateur.newContext({ viewport: { width: largeur, height: 900 }, locale: 'fr-FR' });
+      await simulerLeBackend(contexte);
+      const page = await contexte.newPage();
+      const rep = join(sortie, `${nom}-${largeur}`);
+      mkdirSync(rep, { recursive: true });
+      for (const [fichier, lien] of Object.entries(liens)) {
+        await allerAuResultat(page, lien);
+        await page.waitForTimeout(400);
+        await page.screenshot({ path: join(rep, `${fichier}.png`), fullPage: true });
+      }
+      if (dossier === 'apres') {
+        // Les vues demandées au point 10 : la barre en haut, puis sur « Vos envies ».
+        await allerAuResultat(page, LIEN_IDEES);
+        await page.screenshot({ path: join(rep, 'haut-avec-barre.png') });
+        const envies = page.locator('#envies');
+        if (await envies.count()) {
+          await envies.scrollIntoViewIfNeeded();
+          await page.evaluate(() => window.scrollBy(0, 200));
+          await page.waitForTimeout(600);
+          await page.screenshot({ path: join(rep, 'barre-sur-envies.png') });
+        }
+        for (const id of ['appuis', 'envies', 'lecture', 'revenir']) {
+          const bloc = page.locator(`#${id}`);
+          if (await bloc.count()) await bloc.screenshot({ path: join(rep, `bloc-${id}.png`) }).catch(() => {});
+        }
+        const pied = page.locator('footer.pied');
+        if (await pied.count()) await pied.screenshot({ path: join(rep, 'pied.png') });
+      }
+      await contexte.close();
+    }
+    await navigateur.close();
+  }
+  console.log(`Captures « ${dossier} » dans captures/passe14/${dossier}/`);
+}
+
+// -------------------------------------------------------------- exécution
+
+async function verifier() {
+  const retenus = CRITERES.filter((c) => !POINTS || POINTS.includes(c.point));
+  const lignes = [];
+  for (const { nom, lanceur } of NAVIGATEURS) {
+    const navigateur = await lanceur.launch();
+    for (const largeur of LARGEURS) {
+      for (const c of retenus.filter((x) => x.largeurs.includes(largeur))) {
+        const contexte = await navigateur.newContext({ viewport: { width: largeur, height: 900 }, locale: 'fr-FR' });
+        await simulerLeBackend(contexte);
+        const page = await contexte.newPage();
+        const erreurs = [];
+        page.on('pageerror', (e) => erreurs.push(e.message));
+        let verdict;
+        try {
+          verdict = await c.verifier({ page, contexte, largeur, navigateur: nom, lanceur });
+        } catch (e) {
+          verdict = `exception : ${e.message.split('\n')[0]}`;
+        }
+        if (verdict === true && erreurs.length) verdict = `erreur JS : ${erreurs[0]}`;
+        lignes.push({ ...c, nom, largeur, ok: verdict === true, detail: verdict === true ? '' : String(verdict) });
+        await contexte.close();
+      }
+    }
+    await navigateur.close();
+  }
+
+  lignes.sort((a, b) => a.point - b.point || a.intitule.localeCompare(b.intitule));
+  for (const l of lignes) {
+    console.log(`${l.ok ? 'OK' : 'KO'}  ${String(l.point).padStart(2)} · ${l.intitule} · ${l.nom} ${l.largeur}${l.ok ? '' : ` · ${l.detail}`}`);
+  }
+  const ko = lignes.filter((l) => !l.ok).length;
+  console.log(`\n${lignes.length - ko} OK, ${ko} KO`);
+  return ko;
+}
+
+// ---------------------------------------------------------------- lancement
+
+if (CAPTURES) {
+  await prendreLesCaptures(CAPTURES);
+} else {
+  process.exit((await verifier()) ? 1 : 0);
+}
