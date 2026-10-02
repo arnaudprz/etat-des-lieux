@@ -309,6 +309,12 @@ function remplirTextes(contenu) {
     texte($(`[data-${cle}-intro]`), r[cle].intro);
   });
   texte($('[data-revenir-surtitre]'), r.revenir.surtitre);
+  const m = r.rester;
+  [['aujourdhui', 'aujourdhui'], ['plus-tard', 'plus_tard'], ['phrase', 'phrase'], ['sous-phrase', 'sous_phrase']]
+    .forEach(([attr, cle]) => texte($(`[data-mois-${attr}]`), m[cle]));
+  [['titre', 'titre'], ['texte', 'texte'], ['sous-phrase', 'sous_phrase'], ['rappel', 'rappel'],
+    ['etude', 'etude'], ['etude-detail', 'etude_detail'], ['mention', 'mention'], ['bouton', 'bouton']]
+    .forEach(([attr, cle]) => texte($(`[data-rester-${attr}]`), m[cle]));
   texte($('[data-pied-rh]'), r.pied_rh);
 }
 
@@ -369,6 +375,11 @@ function brancherGarder(contenu) {
 
   const champ = $('[data-lien]');
   if (champ) champ.value = location.href;
+  const champOrdi = $('[data-lien-ordi]');
+  if (champOrdi) {
+    champOrdi.value = location.href;
+    champOrdi.addEventListener('focus', () => champOrdi.select());
+  }
 
   const copier = $('[data-copier]');
   texte(copier, r.copier);
@@ -426,12 +437,19 @@ function brancherGarder(contenu) {
  * de formulaire : un simple partage.
  */
 function brancherPartage(contenu) {
-  const bouton = $('[data-partager-accueil]');
-  if (!bouton) return;
-
   const p = contenu.engagement.partage;
   texte($('[data-partage-question]'), p.question);
   texte($('[data-partage-texte]'), p.texte);
+  texte($('[data-partage-question-ordi]'), p.question);
+  // Sur mobile un bouton sous la carte ; sur ordinateur une ligne dans le
+  // formulaire des 6 mois. Le même partage dans les deux cas.
+  ['[data-partager-accueil]', '[data-partager-accueil-ordi]'].forEach((sel) => {
+    const bouton = $(sel);
+    if (bouton) brancherBoutonPartage(bouton, p);
+  });
+}
+
+function brancherBoutonPartage(bouton, p) {
   texte(bouton, p.bouton);
 
   // L'accueil, sans requête ni hash : on repart de l'adresse de cette page.
@@ -459,9 +477,12 @@ function brancherPartage(contenu) {
   });
 }
 
-function brancherEtude() {
+function brancherEtude(contenu) {
   const formulaire = $('[data-etude]');
   const message = $('[data-message-etude]');
+  const rester = (contenu.resultat && contenu.resultat.rester) || {};
+  const manqueChoix = rester.manque_choix || 'votre accord';
+  merciTextes = rester;
 
   formulaire.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -473,20 +494,28 @@ function brancherEtude() {
       return;
     }
 
+    // Les deux cases disent ce que la personne accepte de recevoir : cocher
+    // l'une ou l'autre vaut consentement. Le serveur actuel n'enregistre pas
+    // encore ce choix (rappel, étude) : il est envoyé en plus des champs
+    // existants, et ignoré tant que worker/contacts.gs n'est pas mis à jour.
+    const rappel = donnees.get('rappel') === 'on';
+    const etude = donnees.get('etude') === 'on';
     const contact = {
       prenom: String(donnees.get('prenom') || '').trim(),
       nom: String(donnees.get('nom') || '').trim(),
       entreprise: String(donnees.get('entreprise') || '').trim(),
       email: String(donnees.get('email') || '').trim(),
-      consentement: donnees.get('consentement') === 'on',
+      consentement: rappel || etude,
+      rappel,
+      etude,
     };
 
     const manque = [];
     if (!contact.prenom) manque.push('votre prénom');
     if (!contact.nom) manque.push('votre nom');
     if (!contact.entreprise) manque.push('votre entreprise');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) manque.push('votre e-mail professionnel');
-    if (!contact.consentement) manque.push('votre accord');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) manque.push('votre e-mail');
+    if (!contact.consentement) manque.push(manqueChoix);
 
     if (manque.length > 0) {
       // Le message visible porte role="alert" : il est déjà annoncé aux lecteurs
@@ -506,17 +535,17 @@ function brancherEtude() {
   });
 }
 
+/** Les textes du remerciement, lus dans contenu.json > resultat > rester. */
+let merciTextes = {};
+
 /** Message de confirmation chaleureux. Aucun e-mail n'est envoyé. */
 function remercier(formulaire) {
-  const merci = el('div', { classe: 'carte bloc' }, [
-    el('h2', { classe: 'bloc__titre', texte: 'Merci, c’est noté' }),
-    el('p', {
-      texte: "Nous vous enverrons l'étude complète dès qu'elle paraîtra. "
-        + 'Vos coordonnées restent séparées de vos réponses, qui demeurent anonymes.',
-    }),
+  const merci = el('div', { classe: 'mois__formulaire bloc' }, [
+    el('h2', { classe: 'bloc__titre titre-pratique', texte: merciTextes.merci_titre }),
+    el('p', { texte: merciTextes.merci_texte }),
   ]);
   formulaire.replaceWith(merci);
-  annoncer("Merci, votre demande d'étude complète est enregistrée.");
+  annoncer(merciTextes.merci_titre);
 }
 
 /**
@@ -591,6 +620,9 @@ async function demarrer() {
   $('[data-resultat]').hidden = false;
   remplirTextes(contenu);
   afficherEnsemble(resultat);
+  // Les 6 mois partent de la carte d'ensemble de la personne, aujourd'hui.
+  const scene = $('[data-mois-scene]');
+  if (scene) scene.src = chemin(medaillon(resultat.carte.niveau));
   afficherBandes(resultat, contenu, idees);
   afficherLecture(resultat, contenu);
   installerSommaire(contenu);
@@ -629,7 +661,7 @@ async function demarrer() {
   brancherRaccourciLien();
   brancherGarder(contenu);
   brancherPartage(contenu);
-  brancherEtude();
+  brancherEtude(contenu);
   typographierPage();
 }
 

@@ -2280,3 +2280,114 @@
 @media (max-width: 899px) {
   .lecture__bouton { align-self: stretch; }
 }
+
+/* Point 8 : « Garder et revenir ». Le lien, puis les 6 mois, dans une seule
+   carte blanche. Sur ordinateur : le champ du lien et « Copier » sur une
+   ligne, les liens discrets dessous ; les 6 mois en deux colonnes. */
+.revenir { background: var(--creme); padding: 40px 20px 32px; }
+.revenir__surtitre { font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #5A6B4D; }
+.revenir__carte {
+  background: var(--blanc);
+  border-radius: 18px;
+  border: 1px solid rgba(138, 155, 122, .22);
+  overflow: hidden;
+}
+
+.revenir .garder {
+  padding: 24px var(--marge-carte);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: none;
+}
+.garder__picto {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #E4EADD;
+  color: #2D3626;
+  flex-shrink: 0;
+}
+.revenir .garder__titre { font-size: 22px; }
+.garder__champ { display: none; }
+.garder__pied { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 24px; }
+
+.mois { border-top: 1px solid rgba(138, 155, 122, .22); }
+.mois__panneau {
+  background: #E4EADD;
+  padding: 28px var(--marge-carte);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+.mois__duo { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.mois__etape { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #2D3626; }
+.mois__scene, .mois__futur { width: 96px; height: 96px; border-radius: 50%; background: var(--blanc); display: block; }
+.mois__futur { background: none; }
+.mois__fleche { color: #5A6B4D; flex-shrink: 0; }
+.mois__phrase { margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 19px; line-height: 1.3; color: #2D3626; }
+.mois__sous-phrase { display: none; margin: 0; font-size: 15px; line-height: 1.6; color: var(--texte-doux); }
+
+.mois__formulaire {
+  padding: 28px var(--marge-carte);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.mois__intro { margin: 0; font-size: 16px; line-height: 1.6; color: var(--texte-doux); }
+.mois__mention { margin: 0; font-size: 13px; line-height: 1.5; color: var(--taupe); }
+.consentement__textes { display: flex; flex-direction: column; gap: 4px; }
+.consentement__detail { font-size: 13px; line-height: 1.5; color: #6B6460; }
+.mois__partage { display: none; }
+
+@media (max-width: 899px) {
+  .mois__formulaire .etude__envoyer { align-self: stretch; width: 100%; }
+}
+
+@media (min-width: 900px) {
+  .revenir { padding: 88px 48px 56px; }
+  .revenir__carte { border-radius: 22px; }
+  .revenir .garder { flex-direction: row; align-items: flex-start; gap: 24px; padding: 40px; }
+  .garder__picto { width: 56px; height: 56px; }
+  .revenir .garder__titre { font-size: 30px; }
+  .garder__actions { display: flex; flex-wrap: nowrap; gap: 12px; align-items: center; }
+  .garder__champ { display: block; flex: 1 1 auto; min-width: 0; }
+  .garder__actions .btn { flex-shrink: 0; }
+  .lien-perso__details { display: none; }
+  .garder__pied { gap: 4px 32px; }
+  /* « M'envoyer le lien » rejoint la ligne des liens discrets. */
+  .garder__envoyer { background: none; border: 0; padding: 0 4px; min-height: 44px; color: var(--sauge-fonce); text-decoration: underline; text-underline-offset: 3px; }
+
+  .mois { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+  .mois__panneau { padding: 40px; justify-content: center; gap: 20px; }
+  .mois__scene, .mois__futur { width: 150px; height: 150px; }
+  .mois__phrase { font-size: 22px; }
+  .mois__sous-phrase { display: block; }
+  .mois__intro-mobile { display: none; }
+  .mois__formulaire { padding: 40px; }
+  .mois__formulaire .etude__grille { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mois__partage {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    margin: 0;
+    padding-top: 18px;
+    border-top: 1px solid rgba(138, 155, 122, .22);
+    font-size: 14px;
+    color: var(--taupe);
+  }
+  /* Sur ordinateur, le bloc « Faire connaître » séparé disparaît. */
+  .bande-page--partage { display: none; }
+}

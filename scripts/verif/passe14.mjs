@@ -455,6 +455,52 @@ critere(7, 'lecture : aucun chiffre ni pourcentage dans les cartes', [1440], asy
   const t = await page.evaluate(() => Array.from(document.querySelectorAll('#lecture [id^="lecture-"], #lecture .lecture__temoignage')).map((n) => n.innerText).join(' '));
   return !/[0-9%]/.test(t) || 'chiffre trouvé';
 });
+// Point 8 · « Garder et revenir »
+critere(8, 'le lien puis le formulaire, dans #revenir', [1440, 390], async ({ page }) => {
+  await allerAuResultat(page, LIEN_AUDIT);
+  return page.evaluate(() => {
+    const r = document.querySelector('#revenir');
+    const lien = r && r.querySelector('#lien-personnel');
+    const form = r && r.querySelector('form');
+    if (!lien || !form) return 'lien ou formulaire hors de #revenir';
+    return Boolean(lien.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING) || 'le formulaire est avant le lien';
+  });
+});
+
+critere(8, 'panneau : la scène du niveau de la carte, sans icônes dans le formulaire', [1440, 390], async ({ page }) => {
+  for (const [lien, cle] of [[LIEN_TOUT_ENRACINE, 'enracine'], [LIEN_TOUT_SEMER, 'semer']]) {
+    await allerAuResultat(page, lien);
+    const m = await page.evaluate(() => ({
+      scene: (document.querySelector('#revenir .mois__scene') || {}).getAttribute?.call(document.querySelector('#revenir .mois__scene'), 'src') || '',
+      icones: document.querySelectorAll('#revenir form img').length,
+    }));
+    if (!m.scene.endsWith(`scene-${cle}.svg`)) return `${lien} : scène ${m.scene || 'absente'}`;
+    if (m.icones) return `${lien} : ${m.icones} icône(s) dans le formulaire`;
+  }
+  return true;
+});
+
+critere(8, 'les deux cases décochées au chargement', [1440, 390], async ({ page }) => {
+  await allerAuResultat(page, LIEN_AUDIT);
+  const m = await page.evaluate(() => Array.from(document.querySelectorAll('#revenir form input[type="checkbox"]')).map((c) => c.checked));
+  return (m.length === 2 && m.every((x) => !x)) || `cases : ${JSON.stringify(m)}`;
+});
+
+critere(8, '« début 2027 » dans le label de la case étude', [1440], async ({ page }) => {
+  await allerAuResultat(page, LIEN_AUDIT);
+  const t = await page.evaluate(() => {
+    const c = document.querySelector('#revenir form input[name="etude"]');
+    return c ? brutTexte(c.closest('label').textContent) : '';
+    function brutTexte(x) { return x.replace(/[\u00a0\u202f]/g, ' '); }
+  });
+  return /début 2027/.test(t) || `label « ${t} »`;
+});
+
+critere(8, 'le pied de page porte la phrase sur les RH', [1440, 390], async ({ page }) => {
+  await allerAuResultat(page, LIEN_AUDIT);
+  const t = brut(await page.locator('footer.pied').innerText());
+  return t.includes('ni un cabinet RH, ni un organisme de formation') || 'phrase absente';
+});
 // <<< POINTS
 
 // --------------------------------------------------------------- captures
