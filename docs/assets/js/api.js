@@ -8,7 +8,7 @@
  * permet de parcourir tout le site en local, sans backend.
  */
 
-import { API_URL, COMPTEUR_REPLI, modeDemo } from './config.js';
+import { API_URL, COMPTEUR_REPLI, modeDemo, SUPABASE_URL, SUPABASE_CLE } from './config.js';
 
 /** Envoie une action au backend. Ne lève jamais : renvoie { ok: false } en cas d'échec. */
 async function poster(action, charge) {
@@ -75,8 +75,21 @@ export function envoyerEvenement(type, session) {
  * Stockée dans une feuille séparée, jamais reliée aux réponses ni à la session.
  * Aucun e-mail n'est envoyé.
  */
-export function envoyerContact(contact) {
-  return poster('contact', contact);
+export async function envoyerContact(contact) {
+  // Les demandes de l'étude arrivent dans le tableau de bord de Greatly (Arnaud, 12 octobre 2026) : base Supabase, fonction
+  // edl_contact (mêmes vérifications que le script : champ piège, consentement, adresse). Le reste passe encore par le script.
+  if (modeDemo()) return { ok: true, demo: true };
+  try {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/edl_contact', {
+      method: 'POST',
+      headers: { apikey: SUPABASE_CLE, Authorization: 'Bearer ' + SUPABASE_CLE, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p: contact }),
+    });
+    if (!r.ok) return { ok: false, statut: r.status };
+    return await r.json();
+  } catch (e) {
+    return { ok: false, erreur: String(e) };
+  }
 }
 
 /** Le compteur de l'accueil. Retombe sur la valeur de repli si l'API ne répond pas. */

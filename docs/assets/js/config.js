@@ -6,6 +6,10 @@
 /** URL de l'application web Apps Script. Vide tant que le backend n'est pas déployé. */
 export const API_URL = 'https://script.google.com/macros/s/AKfycbxxpB0S-UJCxRvsxEJs2zG80FbEwZxXg8f2nx1XWBnYoLb8mfFClvZzSwdrvh6YwThm/exec';
 
+/** La base de Greatly (Supabase), où arrivent les demandes de l'étude. Clé publique, faite pour être vue. */
+export const SUPABASE_URL = 'https://fmwkevzgpybdrkmjdmsu.supabase.co';
+export const SUPABASE_CLE = 'sb_publishable_uEyhTVQfjBecgO5wZiwtzw_BPxuktUH';
+
 /** Version du questionnaire. Sert de préfixe au lien personnel et de colonne dans le Sheet. */
 export const VERSION_QUESTIONNAIRE = 'v1';
 
