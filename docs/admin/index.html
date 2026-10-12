@@ -4,98 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Tableau de bord · État des lieux Greatly</title>
-<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
-<link rel="stylesheet" href="../assets/css/base.css?v=27">
-<link rel="stylesheet" href="../assets/css/admin.css?v=27">
+<title>État des lieux · Tableau de bord</title>
+<!-- Le tableau de bord de l'état des lieux vit désormais dans celui de Greatly (Arnaud, 12 octobre 2026 : « on va tout mettre
+     dans le dashboard »), avec la connexion de l'équipe. Cette adresse y renvoie. -->
+<meta http-equiv="refresh" content="0; url=https://arnaudprz.github.io/espace-intervenant/tableau-de-bord/etat-des-lieux/">
 </head>
-<body class="admin">
-
-<main class="admin__page">
-
-  <header class="admin__entete" data-entete>
-    <div class="admin__identite">
-      <span class="admin__surtitre">Greatly · Tableau de bord</span>
-      <h1 class="admin__titre serif">État des lieux d'équipe</h1>
-    </div>
-    <div class="admin__actions">
-      <span class="badge badge--sable" data-badge hidden></span>
-      <button class="bouton-secondaire" type="button" data-deconnexion hidden>Se déconnecter</button>
-    </div>
-  </header>
-
-  <!-- Accueil et connexion, masqué en mode démo. -->
-  <section class="accueil" data-acces hidden>
-    <div class="accueil__panneau">
-      <span class="accueil__surtitre">Greatly · Espace privé</span>
-      <h1 class="accueil__titre serif">Le tableau de bord de l'état des lieux d'équipe</h1>
-      <p class="accueil__intro">Toutes les réponses au questionnaire, à jour à chaque visite. Voyez où les équipes se sentent solides, où elles décrochent, et ce qu'elles attendent.</p>
-
-      <ul class="accueil__atouts">
-        <li class="accueil__atout">
-          <img src="../assets/img/icone-enracine.svg" alt="" width="40" height="40">
-          <span><strong>Les résultats en direct</strong>chaque questionnaire rempli s'ajoute aussitôt.</span>
-        </li>
-        <li class="accueil__atout">
-          <img src="../assets/img/icone-croissance.svg" alt="" width="40" height="40">
-          <span><strong>Des filtres par profil</strong>rôle, taille d'équipe, secteur, taille d'entreprise.</span>
-        </li>
-        <li class="accueil__atout">
-          <img src="../assets/img/icone-germe.svg" alt="" width="40" height="40">
-          <span><strong>Les demandes d'étude</strong>les contacts à rappeler, exportables en un clic.</span>
-        </li>
-      </ul>
-
-      <div class="accueil__connexion">
-        <div class="acces__google" data-bouton-google></div>
-        <p class="accueil__mention">Accès réservé aux adresses autorisées. Rien n'est partagé avec Google au-delà de votre adresse e-mail.</p>
-        <p class="message" data-message-acces role="alert" hidden></p>
-      </div>
-
-      <aside class="demande" aria-labelledby="demande-titre">
-        <h2 class="demande__titre serif" id="demande-titre">Pas encore d'accès ?</h2>
-        <p class="demande__texte">Le tableau de bord est réservé à l'équipe Greatly et à ses partenaires. Contactez Arnaud directement en lui indiquant l'adresse Gmail que vous utiliserez : il vous ouvrira l'accès.</p>
-      </aside>
-    </div>
-
-    <figure class="accueil__visuel">
-      <img src="../assets/img/greatly-house.jpg" alt="La Greatly House, une maison de briques dans son parc, à Verlinghem">
-      <figcaption class="accueil__legende">
-        <span class="serif">La Greatly House</span>
-        Verlinghem, près de Lille. Le lieu où les équipes prennent du recul.
-      </figcaption>
-    </figure>
-  </section>
-
-  <!-- Le temps qu'Apps Script réponde : la silhouette du tableau à venir. -->
-  <section class="chargement" data-chargement hidden>
-    <p class="chargement__message serif" role="status" data-chargement-message>Nous chargeons les derniers résultats…</p>
-    <div class="chargement__squelette" aria-hidden="true">
-      <div class="carte chargement__filtres"><span class="os"></span><span class="os"></span><span class="os"></span><span class="os"></span></div>
-      <div class="chargement__tuiles">
-        <div class="carte chargement__tuile"><span class="os os--court"></span><span class="os os--chiffre"></span><span class="os"></span></div>
-        <div class="carte chargement__tuile"><span class="os os--court"></span><span class="os os--chiffre"></span><span class="os"></span></div>
-        <div class="carte chargement__tuile"><span class="os os--court"></span><span class="os os--chiffre"></span><span class="os"></span></div>
-        <div class="carte chargement__tuile"><span class="os os--court"></span><span class="os os--chiffre"></span><span class="os"></span></div>
-      </div>
-      <div class="carte chargement__section"><span class="os os--titre"></span><span class="os"></span><span class="os"></span><span class="os os--court"></span></div>
-      <div class="carte chargement__section"><span class="os os--titre"></span><span class="os"></span><span class="os os--court"></span></div>
-    </div>
-  </section>
-
-  <div data-tableau hidden>
-    <div class="carte filtres" data-filtres></div>
-    <div class="tuiles" data-indicateurs></div>
-    <div class="sections" data-sections></div>
-  </div>
-
-</main>
-
-<script src="https://accounts.google.com/gsi/client" async></script>
-<script type="module" src="../assets/js/admin/tableau.js?v=27"></script>
+<body>
+<p><a href="https://arnaudprz.github.io/espace-intervenant/tableau-de-bord/etat-des-lieux/">Le tableau de bord de l'état des lieux est dans celui de Greatly.</a></p>
 </body>
 </html>
