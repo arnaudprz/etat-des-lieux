@@ -6,12 +6,12 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu } from '../contenu.js?v=47';
-import { decoder } from '../lien.js?v=47';
-import { envoyerContact, compteur } from '../api.js?v=47';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=47';
-import { memoriserResultat } from '../session.js?v=47';
-import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=47';
+import { chargerContenu } from '../contenu.js?v=48';
+import { decoder } from '../lien.js?v=48';
+import { envoyerContact, compteur } from '../api.js?v=48';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=48';
+import { memoriserResultat } from '../session.js?v=48';
+import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=48';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -414,9 +414,10 @@ function brancherRecevoir() {
     if (!prenom || !nom || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { msg.textContent = 'Il manque une information, ou l’adresse e-mail n’est pas valide.'; return; }
     if (d.get('accord') !== 'on') { msg.textContent = 'Cochez la case pour que nous puissions vous écrire.'; return; }
     if (String(d.get('site') || '')) return; // un robot
-    const merci = () => f.replaceChildren(el('p', 'recevoir__merci', 'Merci ' + prenom + '. Votre état des lieux arrive dans votre boîte mail, avec le PDF de vos chiffres.'));
+    // Le PDF se prépare après la réponse (Arnaud, 13 octobre 2026 : « on prépare le pdf et vous allez le recevoir dans quelques minutes »).
+    const merci = () => f.replaceChildren(el('p', 'recevoir__merci', 'Merci ' + prenom + '. Nous préparons votre PDF : vous le recevrez dans votre boîte mail d’ici quelques minutes.'));
     if (modeDemo()) { merci(); return; }
-    const bouton = f.querySelector('button'); bouton.disabled = true; msg.textContent = 'Envoi en cours…';
+    const bouton = f.querySelector('button'); bouton.disabled = true; msg.textContent = 'Nous préparons votre PDF…';
     try {
       // La fonction resultat-mail (Supabase) enregistre la demande, fabrique le PDF depuis ce lien et l'envoie par Brevo.
       const r = await fetch(SUPABASE_URL + '/functions/v1/resultat-mail', { method: 'POST',

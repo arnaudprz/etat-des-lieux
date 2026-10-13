@@ -7,7 +7,7 @@
  * doit pas casser le parcours.
  */
 
-import { CLE_SESSION_PARCOURS } from './config.js?v=47';
+import { CLE_SESSION_PARCOURS } from './config.js?v=48';
 
 const VIDE = { role: null, profil: {}, reponses: [], relances: {}, session: null };
 
