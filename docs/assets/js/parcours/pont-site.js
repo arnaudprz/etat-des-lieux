@@ -70,8 +70,9 @@ const TEXTES = {
     'Votre résultat tient dans un lien. Gardez-le pour y revenir quand vous voulez : sans compte, sans e-mail, sans votre nom.',
   'Gardez votre résultat et retrouvez-le quand vous voulez. Sans compte, sans e-mail.':
     'Votre résultat tient dans un lien. Gardez-le pour y revenir : sans compte, sans e-mail, sans votre nom.',
-  'Comment vivez-vous': 'Comment voyez-vous',
-  'le travail ensemble ?': 'votre équipe ou votre activité ?',
+  'Comment vivez-vous': 'Comment voyez-vous votre équipe',
+  // La question tient sur les deux lignes du titre, sans déborder sur la montagne à droite (Arnaud, 13 octobre 2026).
+  'le travail ensemble ?': 'ou votre activité ?',
   // Ce qui ne parlait qu'aux équipes, ouvert aussi aux solos (Arnaud, 13 octobre 2026 : « ok »).
   "État des lieux d'équipe · 2 minutes": 'État des lieux · 2 minutes',
   "Sur les travaux de Jody Hoffer Gittell, à l'université Brandeis : des objectifs partagés, des connaissances partagées et le respect mutuel aident une équipe à mieux travailler ensemble.":
