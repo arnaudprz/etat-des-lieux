@@ -28,7 +28,11 @@ for (const moteur of ['chromium', 'webkit']) for (const [nom, vue] of [['ordinat
   verifier(!(await tailleVisible()), 'solo : la taille d’équipe disparaît');
   await appui(pastille('En encadrant une équipe')); await p.waitForTimeout(100);
   verifier(await tailleVisible(), 'manager : elle revient');
-  await appui(pastille(SOLO)); await appui(pastille(/^10 à 49$/)); await appui(pastille(/^Industrie et production$/));
+  verifier(await p.evaluate(() => [...document.querySelectorAll('[data-maquette] h2')].some((x) => /^Taille de votre entreprise/.test(x.textContent.trim()) && x.getClientRects().length)), 'manager : la taille d’entreprise est demandée');
+  const entrepriseVisible = () => p.evaluate(() => [...document.querySelectorAll('[data-maquette] h2')].some((x) => /^Taille de votre entreprise/.test(x.textContent.trim()) && x.getClientRects().length));
+  await appui(pastille(SOLO)); await p.waitForTimeout(100);
+  verifier(!(await entrepriseVisible()), 'solo : pas de taille d’entreprise non plus');
+  await appui(pastille(/^Industrie et production$/));
   await appui(pastille(/Continuer/)); await p.waitForTimeout(500);
   verifier(await p.locator('#a1').count() > 0, 'solo : on passe aux questions sans taille d’équipe');
   await appui(p.locator('button.e-lien:visible', { hasText: 'Retour' }).first()); await p.waitForTimeout(300);
@@ -39,7 +43,7 @@ for (const moteur of ['chromium', 'webkit']) for (const [nom, vue] of [['ordinat
   await p.waitForURL(/resultat\.html/, { timeout: 8000 }).catch(() => {});
   const envoi = envois.find((x) => x.startsWith('edl_repondre'));
   const charge = envoi ? JSON.parse(envoi.slice('edl_repondre '.length)).p : null;
-  verifier(charge && charge.role === 'solo' && charge.profil.taille_equipe === '' && charge.profil.role === SOLO, 'envoi : rôle solo, libellé solo, taille_equipe vide');
+  verifier(charge && charge.role === 'solo' && charge.profil.taille_equipe === '' && charge.profil.taille_entreprise === '' && charge.profil.role === SOLO, 'envoi : rôle solo, libellé solo, taille d’équipe et d’entreprise vides');
   verifier(/#v2-s/.test(p.url()), 'résultat solo ouvert');
   await b.close();
 }

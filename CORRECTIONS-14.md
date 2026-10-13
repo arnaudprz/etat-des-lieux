@@ -482,3 +482,31 @@ Aucun chiffre d'équipe n'apparaît. Les % viendront tout seuls avec les prochai
   - avec la vraie base en lecture seule (5).
 - Dans tous les cas : aucun chiffre d'équipe, aucun « Toute l'étude », aucun « — », aucun mot d'équipe.
 - Manager et membre : captures identiques au pixel près.
+
+## Un solo n'a pas de taille d'entreprise (13 octobre 2026, nuit, EN LIGNE)
+
+Arnaud : « un solo, il est tout seul ». Le premier brief disait « la taille d'entreprise et le secteur restent » : ce
+n'était donc pas le cache. Maintenant, pour un solo :
+- la question « Taille de votre entreprise » n'est plus dessinée ;
+- elle n'est plus exigée pour passer aux questions ;
+- choisir solo efface la taille déjà cochée ;
+- l'envoi part avec `taille_entreprise` vide.
+
+C'est la retouche 5 de `scripts/solo-maquette.mjs`, avec `avecEntreprise` dans le modèle et la logique. Pour manager et
+membre, rien ne change : la question reste obligatoire, à la même place, et les captures sont identiques.
+
+**Migration 31**
+(`~/espace-intervenant/supabase/migrations/20261013210000_intervenants_31_edl_solo_sans_entreprise.sql`) : `edl_repondre`
+accepte une taille d'entreprise vide pour un solo. Une taille valide reste acceptée, pour une page restée en cache. Elle
+reste obligatoire pour manager et membre. La migration ne remplace qu'une fonction, sans toucher aucune ligne.
+
+Testée sur le banc :
+- un solo sans entreprise est accepté ;
+- un manager ou un membre sans entreprise est refusé ;
+- un solo avec une taille inventée est refusé.
+
+En base, après la migration, les chiffres des équipes et les agrégats sont identiques. Une réponse est arrivée pendant
+l'opération (35 puis 36 lignes), d'où les écarts sur les chiffres solo et les souhaits.
+
+**Cache :** les fichiers de la maquette passent en `-s15`, les anciens noms restent avec le même contenu corrigé, et
+`V = 36`. `config.js` a été vidé par erreur par mon script, puis restauré depuis git avant tout envoi. Seule `V` y change.

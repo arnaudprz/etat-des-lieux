@@ -33,8 +33,16 @@ const EQUIPES = /(\w)\.equipes=(\w)\("teq",(\w)\.profil\.equipes\);/;
 
 // Le modèle : on entoure le bloc qui contient le titre « Taille de votre équipe » et ses pastilles d'un « si ».
 export function retoucherModele(source) {
-  if (source.includes('"si":"avecEquipe"')) return { source, etat: 'déjà fait' };
-  const titre = source.indexOf('Taille de votre équipe (nombre de personnes)');
+  let r = entourer(source, 'Taille de votre équipe (nombre de personnes)', '"pour":"equipes"', 'avecEquipe');
+  // 5. (corrections 14, suite) la taille d'entreprise non plus n'est pas demandée à un solo.
+  const r2 = entourer(r.source, 'Taille de votre entreprise (nombre de salariés)', '"pour":"tailles"', 'avecEntreprise');
+  const fait = [r.etat, r2.etat];
+  return { source: r2.source, etat: fait.includes('retouché') ? 'retouché' : fait.includes('déjà fait') ? 'déjà fait' : 'pas concerné' };
+}
+
+function entourer(source, texte, boucle, condition) {
+  if (source.includes('"si":"' + condition + '"')) return { source, etat: 'déjà fait' };
+  const titre = source.indexOf(texte);
   if (titre < 0) return { source, etat: 'pas concerné' };
   // Le plus petit élément ["div",…] qui contient le titre et la boucle des pastilles d'équipe.
   const fin = (debut) => { let n = 0, chaine = false;
@@ -45,17 +53,18 @@ export function retoucherModele(source) {
   for (let d = source.lastIndexOf('["div",', titre); d >= 0; d = source.lastIndexOf('["div",', d - 1)) {
     const f = fin(d); if (f < 0) continue;
     const bloc = source.slice(d, f);
-    if (f > titre && bloc.includes('"pour":"equipes"')) {
-      return { source: source.slice(0, d) + '{"si":"avecEquipe","e":[' + bloc + ']}' + source.slice(f), etat: 'retouché' };
+    if (f > titre && bloc.includes(boucle)) {
+      return { source: source.slice(0, d) + '{"si":"' + condition + '","e":[' + bloc + ']}' + source.slice(f), etat: 'retouché' };
     }
   }
-  throw new Error('Bloc taille d’équipe introuvable dans le modèle.');
+  throw new Error('Bloc introuvable dans le modèle : ' + texte);
 }
 
 export function retoucher(source) {
   if (source.includes(MARQUE)) {
     // Déjà retouché une première fois : on ajoute seulement la retouche 4 si elle manque.
-    if (source.includes('avecEquipe')) return { source, etat: 'déjà fait' };
+    if (source.includes('avecEntreprise')) return { source, etat: 'déjà fait' };
+    if (source.includes('avecEquipe')) return { source: entreprise(source), etat: 'retouché (5)' };
     const q = EQUIPES.exec(source); const etat = /(\w)=this\.state\|\|\{\}/.exec(source);
     if (!q || !etat) return { source, etat: 'déjà fait' }; // pas de pastilles d'équipe dans ce fichier : rien à ajouter
     return { source: source.replace(EQUIPES, equipes(q, etat[1])), etat: 'retouché (4)' };
@@ -71,8 +80,18 @@ export function retoucher(source) {
     `${st}=this.state||{},_edlS=window.${MARQUE}&&window.${MARQUE}(${d[1]},${st}),${role}=["manager","membre","solo"][${st}.role]||"membre"`);
   s = s.replace(EQUIPE_AVANT, `${e[1]}.teq>=0||${e[1]}.role===2||e.push(`);
   const q = EQUIPES.exec(s);
-  if (q) s = s.replace(EQUIPES, equipes(q, st));
+  if (q) s = entreprise(s.replace(EQUIPES, equipes(q, st)));
   return { source: s, etat: 'retouché' };
+}
+
+// Retouche 5, côté logique : avecEntreprise pour le modèle, la taille d'entreprise n'est pas exigée d'un solo, et choisir
+// solo l'efface aussi (te à -1).
+const ENTREPRISE = /(\w)\.te>=0\|\|e\.push\("la taille de votre entreprise"\)/;
+function entreprise(s) {
+  const e = ENTREPRISE.exec(s); if (!e) return s;
+  s = s.replace(ENTREPRISE, `${e[1]}.te>=0||${e[1]}.role===2||e.push("la taille de votre entreprise")`);
+  s = s.replace(/(\w)\.avecEquipe=(\w)\.role!==2,/, (m, vue, st) => `${m}${vue}.avecEntreprise=${st}.role!==2,`);
+  return s.replace('teq:-1,msg:""})', 'teq:-1,te:-1,msg:""})');
 }
 
 // Retouche 4, côté logique : avecEquipe pour le modèle, et choisir solo efface la taille d'équipe (teq à -1).
