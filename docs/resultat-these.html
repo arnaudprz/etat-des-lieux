@@ -4,11 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Votre état des lieux · Greatly</title>
+<script>/* La version imprimée pour le PDF envoyé par mail (?pdf=1) : copie conforme de la page. */if(/[?&]pdf=1/.test(location.search))document.documentElement.classList.add("mode-pdf");</script>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,800&family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap">
-<link rel="stylesheet" href="assets/css/these.css?v=37">
+<link rel="stylesheet" href="assets/css/these.css?v=46">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=2"><link rel="shortcut icon" href="/favicon.ico?v=2"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 </head>
 <body>
@@ -19,7 +20,7 @@
   <a class="logo" href="/" aria-label="Greatly">GREATLY
     <svg viewBox="0 0 24 24" aria-hidden="true"><g stroke="#23545B" stroke-width="1.4" stroke-linecap="round"><line x1="12" y1="4" x2="12" y2="1.4"/><line x1="17.66" y1="6.34" x2="19.5" y2="4.5"/><line x1="20" y1="12" x2="22.6" y2="12"/><line x1="17.66" y1="17.66" x2="19.5" y2="19.5"/><line x1="12" y1="20" x2="12" y2="22.6"/><line x1="6.34" y1="17.66" x2="4.5" y2="19.5"/><line x1="4" y1="12" x2="1.4" y2="12"/><line x1="6.34" y1="6.34" x2="4.5" y2="4.5"/></g><circle cx="12" cy="12" r="5.4" fill="#B4F25C"/></svg>
   </a>
-  <span class="surtitre">État des lieux</span>
+  <span class="surtitre">État des lieux<span class="pdf-date" data-pdf-date></span></span>
 </header>
 
 <!-- Les montagnes du site (composant PaysageHaut du système), en haut de la page (Arnaud, 13 octobre 2026). -->
@@ -39,7 +40,7 @@
     </section>
 
     <section class="bloc">
-      <div class="colonnes-titres"><div class="lui-tete"><span class="surtitre" data-lui-sur>Votre équipe</span><h2 class="grand-titre"><span class="leger" data-lui-leger>Telle que vous la voyez,</span> <span class="gras" data-lui-titre>votre équipe.</span></h2><p class="lui-resume" data-lui-resume></p></div><div><span class="surtitre" data-droite-sur>Toute l’étude</span><h2><span class="leger" data-droite-leger>Ce que montre</span> <span class="gras" data-droite-gras>l’étude.</span></h2><p class="sous-titre" data-droite-note hidden></p><p class="grand-nombre"><span class="grand-nombre__chiffre" data-n-chiffre>—</span><span class="grand-nombre__texte">personnes ont répondu à l’état des lieux.</span></p><h2 hidden></h2></div></div>
+      <div class="colonnes-titres"><div class="lui-tete"><div class="tete-colonne"><span class="surtitre" data-lui-sur>Votre équipe</span><h2 class="grand-titre"><span class="leger" data-lui-leger>Telle que vous la voyez,</span> <span class="gras" data-lui-titre>votre équipe.</span></h2><p class="lui-resume" data-lui-resume></p></div><div class="etude-cours regard" data-regard hidden><span class="etude-cours__sur">Vos réponses</span><span class="etude-cours__chiffre" data-regard-chiffre>0</span> <span class="etude-cours__texte">réponses, sur la confiance, le soutien, la cohésion, l’engagement et la performance.</span><span class="regard__points" aria-hidden="true"></span><span class="regard__legende"><i class="r0"></i>Pas encore <i class="r1"></i>Un peu <i class="r2"></i>En bonne partie <i class="r3"></i>Pleinement</span></div></div><div><div class="tete-colonne"><span class="surtitre" data-droite-sur>Toute l’étude</span><h2><span class="leger" data-droite-leger>Ce que montre</span> <span class="gras" data-droite-gras>l’étude.</span></h2><p class="sous-titre" data-droite-note hidden></p></div><div class="etude-cours" data-etude-cours hidden><span class="etude-cours__sur">L’étude en cours</span><span class="etude-cours__chiffre" data-n-chiffre>0</span> <span class="etude-cours__texte">personnes ont répondu à l’état des lieux.</span><span class="etude-cours__points" aria-hidden="true"></span><span class="etude-cours__legende"></span></div><h2 hidden></h2></div></div>
       <div class="rangees" data-rangees></div>
       <div class="note" data-note>
         <h3><span class="leger">Comment lire</span> <span class="gras">ces chiffres.</span></h3>
@@ -62,6 +63,41 @@
       </div>
     </section>
 
+    <!-- Recevoir ses chiffres par mail (Arnaud, 13 octobre 2026) : une carte sur toute la largeur, dans la DA des cartes du haut. -->
+    <section class="recevoir" data-recevoir>
+      <div class="recevoir__texte">
+        <span class="etude-cours__sur">Vos chiffres par mail</span>
+        <h2><span class="leger">Gardez</span> <span class="gras">votre état des lieux.</span></h2>
+        <div class="recevoir__apercu">
+          <div class="pdf" aria-hidden="true">
+            <span class="pdf__marque">GREATLY</span>
+            <span class="pdf__titre"></span><span class="pdf__titre pdf__titre--court"></span>
+            <span class="pdf__ligne"><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b></span>
+            <span class="pdf__ligne"><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><b></b></span>
+            <span class="pdf__ligne"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b></span>
+            <span class="pdf__ligne"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b></span>
+            <span class="pdf__nom">Mon état des lieux.pdf</span>
+          </div>
+          <ul class="recevoir__points">
+            <li><strong>Vos chiffres en PDF</strong>, thème par thème, à côté de ceux de l’étude.</li>
+            <li><strong>Le lien de votre résultat</strong>, pour y revenir quand vous voulez.</li>
+            <li><strong>Un seul mail</strong>, rien d’autre.</li>
+          </ul>
+        </div>
+      </div>
+      <form class="recevoir__form" data-recevoir-form novalidate>
+        <div class="recevoir__champs">
+          <label>Prénom<input name="prenom" type="text" autocomplete="given-name" required></label>
+          <label>Nom<input name="nom" type="text" autocomplete="family-name" required></label>
+          <label class="recevoir__large">E-mail<input name="email" type="email" autocomplete="email" required></label>
+        </div>
+        <div class="piege" aria-hidden="true"><label>Site<input name="site" type="text" tabindex="-1" autocomplete="off"></label></div>
+        <label class="recevoir__case"><input type="checkbox" name="accord"> J’accepte que Greatly m’envoie mes chiffres par mail.</label>
+        <p class="recevoir__message" data-recevoir-message role="status"></p>
+        <button class="recevoir__bouton" type="submit"><span>Recevoir mon état des lieux</span><i aria-hidden="true">→</i></button>
+      </form>
+    </section>
+
     <section class="bloc" data-envies hidden>
       <span class="surtitre">Vos envies</span>
       <h2><span class="leger">Ce que vous aimeriez voir grandir,</span> <span class="gras">et ce que ça change ailleurs.</span></h2>
@@ -71,7 +107,8 @@
 
   </div>
 </main>
+<footer class="pied-pdf"><span class="pied-pdf__marque">GREATLY</span><span class="pied-pdf__phrase">La confiance, le soutien, la cohésion : ce qui engage.</span><span class="pied-pdf__site">greatly.club</span></footer>
 
-<script type="module" src="assets/js/parcours/resultat-these.js?v=37"></script>
+<script type="module" src="assets/js/parcours/resultat-these.js?v=46"></script>
 </body>
 </html>

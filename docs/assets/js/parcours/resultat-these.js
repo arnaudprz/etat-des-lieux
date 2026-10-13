@@ -6,12 +6,12 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu } from '../contenu.js?v=37';
-import { decoder } from '../lien.js?v=37';
-import { envoyerContact, compteur } from '../api.js?v=37';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=37';
-import { memoriserResultat } from '../session.js?v=37';
-import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=37';
+import { chargerContenu } from '../contenu.js?v=46';
+import { decoder } from '../lien.js?v=46';
+import { envoyerContact, compteur } from '../api.js?v=46';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=46';
+import { memoriserResultat } from '../session.js?v=46';
+import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=46';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -120,6 +120,7 @@ function afficher(lu, contenu, these) {
   // Le même schéma des deux côtés (Arnaud, 13 octobre 2026 : « le même schéma à droite qu'à gauche, montrer où il se situe vs la
   // totalité de l'étude ») : la confiance, le soutien, la cohésion → l'engagement → la performance. À gauche lui, à droite tous.
   const rep = lu.reponses;
+  carteRegard(rep);
   const solo = lu.role === 'solo';
   const T = solo ? chiffresPourSolo(these) : these || DEMO; const G = T.groupes || {}; const N = T.n || 0;
   const part = (k) => (G[k] && N ? Math.round(G[k].n / N * 100) : null);
@@ -154,7 +155,7 @@ function afficher(lu, contenu, these) {
     if ($('[data-droite-gras]')) $('[data-droite-gras]').textContent = 'les indépendants.';
     if ($('[data-ouv-sur]')) $('[data-ouv-sur]').textContent = 'Ce que montrent les indépendants';
     const note = $('[data-droite-note]');
-    if (note) { note.textContent = incomplet ? 'Leurs chiffres apparaissent thème par thème, dès que 3 indépendants au moins sont de chaque côté.' : ''; note.hidden = !incomplet; }
+    if (note) { note.textContent = ''; note.hidden = true; } // remplacée par la carte « L'étude en cours » (13 octobre 2026)
     // Le grand nombre reste celui de toutes les personnes qui ont répondu (Arnaud, 13 octobre 2026 : « pas que les
     // solopreneurs »), comme pour les équipes.
   }
@@ -163,7 +164,7 @@ function afficher(lu, contenu, these) {
   // Le grand titre d'en-tête est retiré (Arnaud, 13 octobre 2026) : on garde la ligne si on le remet.
   if ($('[data-titre]')) $('[data-titre]').textContent = nbLa === 3 ? 'votre équipe a la confiance, le soutien et la cohésion.' : nbLa === 0 ? 'votre équipe a tout pour grandir.' : 'votre équipe a déjà des atouts.';
   // Le nombre de participants : le compteur public (réponses papier comprises), pas seulement les réponses détaillées en ligne.
-  compteur().then((total) => { document.querySelectorAll('[data-n-reponses]').forEach((n) => { n.textContent = total + ' personnes'; }); document.querySelectorAll('[data-n-chiffre]').forEach((n) => { n.textContent = total; if (solo && !(n.nextSibling && n.nextSibling.nodeType === 3)) n.after(document.createTextNode(' ')); }); }).catch(() => {});
+  compteur().then((total) => { carteEtudeEnCours(total); document.querySelectorAll('[data-n-reponses]').forEach((n) => { n.textContent = total + ' personnes'; }); /* le grand chiffre : la carte « L'étude en cours » s'en charge */ }).catch(() => {});
 
   // La même mesure des deux côtés : l'intensité des réponses (0 à 3) ramenée à 100. Pour lui, ses réponses ; pour l'étude, la
   // moyenne de tous les répondants (edl_these → intensites). « C'est là » à partir de 50, soit une moyenne d'au moins 1,5 sur 3.
@@ -354,7 +355,85 @@ function brancherEtude() {
   });
 }
 
+// La carte « L'étude en cours » de l'accueil, à la place du grand nombre (Arnaud, 13 octobre 2026 : « je la trouve
+// canon »). Le chiffre monte doucement pendant que les points se posent, un point par personne ; au-delà de 400, un
+// point en vaut plusieurs (5, 10, 20, 50…). Pour tout le monde, solo, manager et membre.
+let etudeAnimee = false;
+function carteEtudeEnCours(total) {
+  const c = $('[data-etude-cours]'); if (!c || !(total > 0)) return;
+  const PAS = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
+  const par = PAS.find((x) => total / x <= 400) || Math.ceil(total / 400);
+  const pts = c.querySelector('.etude-cours__points');
+  if (pts.childElementCount !== Math.ceil(total / par)) { pts.textContent = ''; for (let i = 0; i < Math.ceil(total / par); i++) pts.appendChild(document.createElement('i')); }
+  c.querySelector('.etude-cours__legende').textContent = par === 1 ? 'Chaque point, une personne.' : 'Chaque point, ' + par.toLocaleString('fr-FR') + ' personnes.';
+  c.hidden = false;
+  const peindre = (n) => { c.querySelector('.etude-cours__chiffre').textContent = n.toLocaleString('fr-FR');
+    [...pts.children].forEach((x, k) => x.classList.toggle('on', k < Math.ceil(n / par))); };
+  if (etudeAnimee) { peindre(total); return; }
+  etudeAnimee = true;
+  let calme = document.documentElement.classList.contains('mode-pdf'); try { calme = calme || matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { /* rien */ }
+  if (calme) { peindre(total); return; }
+  const lancer = () => { const t0 = performance.now();
+    const pas = (t) => { const x = Math.min(1, (t - t0) / 1800); peindre(Math.round(total * (1 - Math.pow(1 - x, 3)))); if (x < 1) requestAnimationFrame(pas); };
+    requestAnimationFrame(pas); };
+  if ('IntersectionObserver' in window) { const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); lancer(); } }); io.observe(c); }
+  else lancer();
+}
+
+// À gauche, la carte « Votre regard » qui répond à « L'étude en cours » (Arnaud, 13 octobre 2026 : « refais le bloc à
+// gauche, on peut faire mieux »). Un point par réponse, teinté de « Pas encore » à « Pleinement » ; le chiffre monte et
+// les points se posent un à un. Aucun jugement : juste son regard. Pour tout le monde.
+let regardAnime = false;
+function carteRegard(rep) {
+  const c = $('[data-regard]'); if (!c || !Array.isArray(rep)) return;
+  const pts = c.querySelector('.regard__points');
+  if (!pts.childElementCount) rep.forEach((v) => { const i = document.createElement('i'); i.className = 'r' + Math.max(0, Math.min(3, Number(v) || 0)); pts.appendChild(i); });
+  if ($('[data-lui-resume]')) $('[data-lui-resume]').hidden = true; // la carte dit la même chose
+  c.hidden = false;
+  const total = rep.length;
+  const peindre = (n) => { c.querySelector('[data-regard-chiffre]').textContent = String(n); [...pts.children].forEach((x, k) => x.classList.toggle('vu', k < n)); };
+  if (regardAnime) { peindre(total); return; }
+  regardAnime = true;
+  let calme = document.documentElement.classList.contains('mode-pdf'); try { calme = calme || matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { /* rien */ }
+  if (calme) { peindre(total); return; }
+  peindre(0);
+  const lancer = () => { const t0 = performance.now();
+    const pas = (t) => { const x = Math.min(1, (t - t0) / 1600); peindre(Math.round(total * (1 - Math.pow(1 - x, 3)))); if (x < 1) requestAnimationFrame(pas); };
+    requestAnimationFrame(pas); };
+  if ('IntersectionObserver' in window) { const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); lancer(); } }); io.observe(c); }
+  else lancer();
+}
+
+// « Vos chiffres par mail » (13 octobre 2026) : la demande part à la fonction resultat-mail, qui envoie le mail et le PDF.
+// En démonstration, rien ne part : on montre seulement le message de réussite.
+function brancherRecevoir() {
+  const f = $('[data-recevoir-form]'); const msg = $('[data-recevoir-message]'); if (!f) return;
+  f.addEventListener('submit', async (ev) => {
+    ev.preventDefault(); const d = new FormData(f);
+    const prenom = String(d.get('prenom') || '').trim(), nom = String(d.get('nom') || '').trim(), email = String(d.get('email') || '').trim();
+    if (!prenom || !nom || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { msg.textContent = 'Il manque une information, ou l’adresse e-mail n’est pas valide.'; return; }
+    if (d.get('accord') !== 'on') { msg.textContent = 'Cochez la case pour que nous puissions vous écrire.'; return; }
+    if (String(d.get('site') || '')) return; // un robot
+    const merci = () => f.replaceChildren(el('p', 'recevoir__merci', 'Merci ' + prenom + '. Votre état des lieux arrive dans votre boîte mail, avec le PDF de vos chiffres.'));
+    if (modeDemo()) { merci(); return; }
+    const bouton = f.querySelector('button'); bouton.disabled = true; msg.textContent = 'Envoi en cours…';
+    try {
+      // La fonction resultat-mail (Supabase) enregistre la demande, fabrique le PDF depuis ce lien et l'envoie par Brevo.
+      const r = await fetch(SUPABASE_URL + '/functions/v1/resultat-mail', { method: 'POST',
+        headers: { apikey: SUPABASE_CLE, Authorization: 'Bearer ' + SUPABASE_CLE, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prenom, nom, email, accord: true, site: String(d.get('site') || ''), lien: location.href }) });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok && j.ok) { merci(); return; }
+      msg.textContent = j.error === 'Adresse invalide.' ? 'Cette adresse e-mail ne semble pas valide.' : 'L’envoi n’a pas abouti. Réessayez dans un instant.';
+    } catch (e) { msg.textContent = 'L’envoi n’a pas abouti. Réessayez dans un instant.'; }
+    bouton.disabled = false;
+  });
+}
+
 async function demarrer() {
+  // En PDF, la date du jour à côté de « État des lieux », comme sur un document.
+  if (document.documentElement.classList.contains('mode-pdf') && $('[data-pdf-date]'))
+    $('[data-pdf-date]').textContent = ' · ' + new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Paris' });
   const contenu = await chargerContenu();
   const lu = decoder(location.hash, contenu);
   if (!lu) { $('[data-sans-resultat]').hidden = false; return; }
@@ -363,6 +442,7 @@ async function demarrer() {
   afficher(lu, contenu, null);
   brancherGarder();
   brancherEtude();
+  brancherRecevoir();
   let [these, souhaits] = await Promise.all([lireThese(lu.role), lireSouhaits()]);
   // Démonstration d'un solo (?demo=1&solos=N) : des chiffres fictifs d'indépendants, pour voir la bascule au seuil.
   const nDemo = Number(new URLSearchParams(location.search).get('solos'));

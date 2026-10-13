@@ -8,12 +8,12 @@
  * visiteur : il parle aussi bien à un membre qu'à un manager.
  */
 
-import { chargerContenu } from '../contenu.js?v=37';
-import { compteur } from '../api.js?v=37';
-import { resultatMemorise, profilMemorise, ecrire as ecrireSession } from '../session.js?v=37';
-import { decoder } from '../lien.js?v=37';
-import { POUSSES, POUSSES_HAUTEUR } from '../illustrations.js?v=37';
-import { $, $$, el, texte, vider, signalerModeDemo, evenement, typographierPage } from './commun.js?v=37';
+import { chargerContenu } from '../contenu.js?v=46';
+import { compteur } from '../api.js?v=46';
+import { resultatMemorise, profilMemorise, ecrire as ecrireSession } from '../session.js?v=46';
+import { decoder } from '../lien.js?v=46';
+import { POUSSES, POUSSES_HAUTEUR } from '../illustrations.js?v=46';
+import { $, $$, el, texte, vider, signalerModeDemo, evenement, typographierPage } from './commun.js?v=46';
 
 /** En dessous de cette largeur, les étiquettes de l'illustration passent en HTML. */
 const ETROIT = '(max-width: 899px)';
