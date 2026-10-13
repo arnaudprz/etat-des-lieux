@@ -42,10 +42,11 @@ const LETTRE_AUTRE = 'a';
 const MAX_CHOIX_DEFAUT = 2;
 
 /** Lettre du hash pour chaque rôle. */
-const LETTRE = { membre: 'm', manager: 'g' };
-const ROLE = { m: 'membre', g: 'manager' };
+// « s » pour les solos (13 octobre 2026) : on ajoute une lettre, sans changer de version. Les anciens liens se lisent pareil.
+const LETTRE = { membre: 'm', manager: 'g', solo: 's' };
+const ROLE = { m: 'membre', g: 'manager', s: 'solo' };
 
-const BASE = new RegExp(`^(v\\d+)-([mg])([0-${VALEUR_MAX}]{${NB_AFFIRMATIONS}})$`);
+const BASE = new RegExp(`^(v\\d+)-([mgs])([0-${VALEUR_MAX}]{${NB_AFFIRMATIONS}})$`);
 const SEGMENT = new RegExp(`^(\\d{1,2})\\.([0-9${LETTRE_AUTRE}]{1,4})$`);
 
 /** Les rôles acceptés. */
@@ -76,7 +77,7 @@ function ecrireChoix(valeur) {
  * Sans idée, on produit tout de même un lien v2 : c'est la version courante, et
  * un lien sans segment se relit exactement comme un v1.
  *
- * @param {'membre'|'manager'} role
+ * @param {'membre'|'manager'|'solo'} role
  * @param {number[]} reponses 16 valeurs de 0 à 3
  * @param {Object} relances { numéro: [indices ou 'autre'] }
  */

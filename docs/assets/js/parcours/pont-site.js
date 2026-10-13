@@ -29,7 +29,7 @@ const TEXTES = {
   'à bien travailler': 'la cohésion :',
   'ensemble': 'ce qui engage',
   "En 2 minutes, voyez ce qui fonctionne déjà entre vous et ce qui peut encore évoluer. De quoi mettre des mots justes sur ce que vous vivez.":
-    "En 2 minutes, regardez votre équipe telle que vous la voyez : la confiance, le soutien, la cohésion, l’engagement. Puis découvrez ce que montrent toutes les réponses.", // sans dévoiler le résultat (Arnaud)
+    "Regardez votre équipe telle que vous la voyez : la confiance, le soutien, la cohésion, l’engagement. Puis découvrez ce que montrent toutes les réponses.", // sans dévoiler le résultat (Arnaud)
   'Un regard clair sur votre façon de travailler ensemble': 'Votre équipe telle que vous la voyez : la confiance, le soutien, la cohésion',
   'Ce qui vous porte déjà': 'Vos réponses à côté de celles de toutes les personnes qui ont répondu',
   'Ce qui peut encore évoluer': "Ce que montre l'étude : ce qui engage une équipe",
@@ -48,7 +48,7 @@ const TEXTES = {
     "Quand vous répondez « Pas encore » ou « Un peu », vous pouvez dire ce que vous aimeriez. Vous le retrouvez dans votre résultat, à côté de ce que demandent le plus les managers et les équipes. Sans jugement.",
   // La version téléphone a ses propres phrases.
   'En 2 minutes, voyez ce qui fonctionne déjà entre vous et ce qui peut encore évoluer. Anonyme, sans compte.':
-    'En 2 minutes, votre équipe telle que vous la voyez, à côté de toutes les réponses. Anonyme, sans compte.',
+    'Votre équipe telle que vous la voyez, à côté de toutes les réponses. Anonyme, sans compte.',
   'De « À construire » à « Bien installé ». Jamais de note.':
     'À côté de votre regard, toutes les réponses : là où la confiance, le soutien et la cohésion sont là, combien de personnes sont engagées. La performance vient après.',
   'Ce qui est déjà là, et ce qui peut encore évoluer, dit simplement.':
@@ -59,7 +59,9 @@ const TEXTES = {
     "Vos réponses, anonymes et regroupées, nourrissent une étude : la confiance, le soutien et la cohésion vont-ils avec l'engagement ? Pour nous, la performance n'est pas un objectif : elle en est la conséquence.",
   // L'introduction du profil (Arnaud, 13 octobre 2026 : « ce texte n'est pas top »).
   "Pour lire vos réponses à côté de celles d'équipes qui vous ressemblent, quand elles seront assez nombreuses. Rien ne permet de vous identifier.":
-    'Quelques mots pour situer votre équipe parmi toutes les réponses. Rien ne permet de vous identifier.',
+    'Quelques mots pour vous situer parmi toutes les réponses, en équipe ou à votre compte. Rien ne permet de vous identifier.',
+  // Le rôle devient « Vous travaillez », avec trois choix (le troisième vient de window.__edlSolo).
+  'Dans votre équipe, vous êtes': 'Vous travaillez',
   'Gardez votre résultat en favoris et retrouvez-le quand vous voulez. Sans compte, sans e-mail.':
     'Votre résultat tient dans un lien. Gardez-le pour y revenir quand vous voulez : sans compte, sans e-mail, sans votre nom.',
   'Gardez votre résultat et retrouvez-le quand vous voulez. Sans compte, sans e-mail.':
@@ -118,11 +120,19 @@ const nombre = () => {
     }
     if (anime) peindre(b, total);
   }
+  // La signature de Greatly, juste sous le titre (Arnaud, 13 octobre 2026).
+  const h1 = hero.querySelector('h1');
+  if (h1 && !(h1.nextElementSibling && h1.nextElementSibling.classList.contains('edl-signature'))) {
+    hero.querySelectorAll('.edl-signature').forEach((x) => x.remove());
+    const sg = document.createElement('p'); sg.className = 'edl-signature';
+    sg.textContent = 'Greatly éclaire les dirigeants, les talents clés et les équipes qui font rayonner l’entreprise.';
+    h1.after(sg);
+  }
   // Une petite frise des trois étapes, sous le haut de page, dans la même DA que la carte du nombre (Arnaud, 13 octobre 2026).
   if (!hero.querySelector('.edl-frise')) {
     const f = document.createElement('ol'); f.className = 'edl-frise';
     f.innerHTML = [
-      ['Votre équipe', 'Quelques mots : votre rôle, la taille de l’entreprise et de l’équipe.'],
+      ['Votre façon de travailler', 'En équipe ou à votre compte, la taille de l’entreprise, le secteur.'],
       ['16 phrases', 'Pour chacune, de « Pas encore » à « Pleinement ». Environ 2 minutes.'],
       ['Votre état des lieux', 'Votre regard, comparé à des centaines de réponses.'],
     ].map(([t, d], k) => '<li><span class="edl-frise__num">' + (k + 1) + '</span><span class="edl-frise__titre">' + t + '</span><span class="edl-frise__texte">' + d + '</span></li>').join('');
@@ -146,7 +156,18 @@ const retoucher = () => {
     // « Ce que vous recevez en 2 minutes » ne sert à rien (Arnaud, 13 octobre 2026) : retiré aussi.
     if (/^(Huit sommets|Un exemple ?de résultat|Ce que vous ?recevez)/.test(t)) s.style.display = 'none';
   });
+  // Le paragraphe « En 2 minutes, regardez votre équipe… » sous le titre est retiré (Arnaud, 13 octobre 2026) : la
+  // signature de Greatly le remplace.
+  if (page === 'accueil') document.querySelectorAll('[data-maquette] section:first-of-type p').forEach((x) => {
+    if (/^(En 2 minutes|Regardez votre équipe|Votre équipe telle que vous la voyez)/.test(norm(x.textContent || '')) && x.style.display !== 'none') x.style.display = 'none';
+  });
   if (page === 'accueil') nombre();
+  if (page === 'questionnaire') {
+    // Un solo ne répond pas à la taille de l'équipe : le bloc disparaît tant que « À votre compte » est choisi.
+    const t = [...document.querySelectorAll('[data-maquette] *')].filter((x) => x.children.length === 0 && /^Taille de votre équipe/.test(norm(x.textContent || '')));
+    t.forEach((x) => { let b = x.parentElement; while (b && !b.querySelector('button')) b = b.parentElement;
+      if (b) b.toggleAttribute('data-edl-cache', window.__edlRole === 2); }); // un attribut, pour ne jamais toucher au style de la maquette
+  }
   if (page === 'questionnaire') {
     const tel = matchMedia('(max-width: 1023px)').matches;
     document.querySelectorAll('[data-maquette] [id^="a"]').forEach((q) => {
@@ -211,7 +232,10 @@ style.textContent = [
     + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] div[style*="var(--k14)"] strong { font-size: 1.1875rem !important; }'
     + ' html[data-edl="questionnaire"] [data-maquette] button[aria-pressed] { font-size: 1.0625rem !important; }'
     + ' }',
+  '[data-edl-cache] { display: none !important; }',
   '.edl-hero { flex-wrap: wrap; }',
+  '.edl-signature { margin: 0.25rem 0 0; font-family: "Bricolage Grotesque", sans-serif; font-weight: 500; font-size: 1.25rem; line-height: 1.35; color: #23545B; max-width: 34rem; }',
+  '[data-maquette="MEtatDesLieux"] .edl-signature { font-size: 1.0625rem; margin: 12px 0 0; }',
   '.edl-frise { flex: 1 1 100%; list-style: none; margin: 0.5rem 0 0; padding: 1.75rem 2rem; border-radius: 1.5rem; background: #FFFFFF; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; position: relative; animation: edlMonte .8s .15s cubic-bezier(.2,.7,.2,1) both; }',
   '.edl-frise li { position: relative; display: flex; flex-direction: column; gap: 0.375rem; }',
   '.edl-frise li:not(:last-child)::after { content: ""; position: absolute; top: 1rem; left: 2.75rem; right: -1.25rem; height: 2px; background: #DCE8EA; }',
@@ -246,27 +270,63 @@ document.head.appendChild(style);
 let attente = null;
 new MutationObserver(() => { if (attente) return; attente = requestAnimationFrame(() => { attente = null; retoucher(); }); })
   .observe(document.body, { childList: true, subtree: true, characterData: true });
+// Un choix qui ne change que des attributs (une pastille cochée) ne réveille pas l'observateur : on retouche aussi après chaque clic.
+document.addEventListener('click', () => setTimeout(retoucher, 0), true);
 retoucher();
 if (page === 'accueil') compteur().then((t) => { total = t; retoucher(); }).catch(() => {});
 
 if (page === 'accueil') evenement('visite');
 
+// ------------------------------------------------------------- le rôle solo
+// Les maquettes appellent window.__edlSolo(données, état) à chaque rendu (scripts/solo-maquette.mjs). On y ajoute le
+// troisième choix de rôle, et pour un solo ses phrases, ses idées « J'aimerais… » et ses titres de groupes, tirés de
+// contenu.json. Pour un manager ou un membre, tout reste comme avant.
+const LIBELLES_ROLES = ['En encadrant une équipe', "Au sein d'une équipe", 'À votre compte, sans équipe']; // repli, avant contenu.json
+let C = null;
+const pretContenu = chargerContenu().then((c) => { C = c; return c; });
+window.__edlRole = -1;
+window.__edlSolo = (D, st) => {
+  try {
+    window.__edlRole = st && st.role != null ? st.role : -1;
+    if (!D || !D.profil) return;
+    D.profil.roles = (C && C.profil.role.libelles) || LIBELLES_ROLES;
+    if (!C || !Array.isArray(D.affirmations)) return;
+    if (!D.__edlOrigine) D.__edlOrigine = { mi_apres: D.mi_apres, groupes: D.affirmations.map((a) => a.groupe) };
+    const solo = window.__edlRole === 2;
+    D.affirmations.forEach((a, k) => {
+      const c = C.affirmations.find((x) => x.n === a.n); if (!c) return;
+      a.solo = c.solo;
+      a.relance = a.relance || {};
+      if (c.relance && c.relance.solo) a.relance.solo = { debut: c.relance.solo.debut, choix: c.relance.solo.choix };
+      a.groupe = solo && c.groupe_solo ? c.groupe_solo : D.__edlOrigine.groupes[k];
+    });
+    if (solo) {
+      D.pourquoi = Object.assign({}, D.pourquoi, C.pourquoi_solo || {});
+      const k = D.__edlOrigine.groupes.lastIndexOf(D.__edlOrigine.mi_apres);
+      D.mi_apres = k >= 0 ? D.affirmations[k].groupe : D.__edlOrigine.mi_apres;
+    } else D.mi_apres = D.__edlOrigine.mi_apres;
+  } catch (e) { /* le parcours ne doit jamais casser */ }
+};
+
 if (page === 'questionnaire') {
   evenement('commence');
-  const pret = chargerContenu();
+  const pret = pretContenu;
 
   window.__edlFin = async (st) => {
     const contenu = await pret;
     const P = contenu.profil;
     // La maquette garde des positions dans les listes, le vrai parcours garde les libellés : on traduit.
     const choix = (liste, i) => (i != null && i >= 0 && liste[i] != null ? liste[i] : null);
-    const role = st.role === 0 ? 'manager' : 'membre';
+    // Chaque position correspond à un rôle explicite : plus de « membre » par défaut (13 octobre 2026).
+    const role = (P.role.cles || ['manager', 'membre', 'solo'])[st.role];
+    if (!role) return;
     const profil = {
       role: choix(P.role.choix, st.role),
       genre: choix(P.genre.choix, st.genre),
       taille_entreprise: choix(P.taille_entreprise.choix, st.te),
       secteur: st.secteur || null,
-      taille_equipe: choix(P.taille_equipe.choix, st.teq),
+      // Un solo n'a pas d'équipe : la taille d'équipe reste vide.
+      taille_equipe: role === 'solo' ? '' : choix(P.taille_equipe.choix, st.teq),
     };
     const reponses = Array.from({ length: 16 }, (_, k) => Number(st.ans[k + 1]));
     const relances = relancesAEnvoyer(reponses, st.rel || {}, contenu);
@@ -276,6 +336,8 @@ if (page === 'questionnaire') {
     const empreinte = JSON.stringify(envoi);
     if (!dejaEnvoye(empreinte)) { envoyerReponse(envoi); retenirEnvoi(empreinte); }
     evenement('termine');
-    location.href = '/' + lienResultat(role, reponses, relances);
+    // En démonstration (?demo=1), on le reste jusqu'au résultat.
+    const demo = new URLSearchParams(location.search).get('demo') === '1' ? '?demo=1' : '';
+    location.href = '/' + lienResultat(role, reponses, relances).replace('#', demo + '#');
   };
 }

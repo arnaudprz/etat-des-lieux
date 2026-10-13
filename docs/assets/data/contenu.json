@@ -217,8 +217,21 @@
             "Voir comment chaque métier y contribue",
             "Qu'on célèbre davantage nos réussites"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Rejoindre un collectif de pairs",
+            "Avancer avec d'autres sur des projets communs",
+            "Retrouver des pairs régulièrement",
+            "Partager mes objectifs avec quelqu'un",
+            "Trouver des partenaires pour répondre à plusieurs"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Je fais partie d'un collectif pro avec qui j'avance.",
+      "groupe_solo": "Votre collectif pro"
     },
     {
       "n": 2,
@@ -243,8 +256,20 @@
             "Qu'on dise plus souvent « nous »",
             "Qu'on prenne le temps de fêter nos résultats"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Célébrer davantage mes réussites",
+            "Avoir des pairs avec qui partager mes victoires",
+            "Prendre le temps de regarder le chemin parcouru",
+            "Faire mieux connaître mes réussites à mes clients"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Quand je réussis, je le partage avec des pairs qui savent ce que ça représente.",
+      "groupe_solo": "Votre collectif pro"
     },
     {
       "n": 3,
@@ -271,8 +296,21 @@
             "Qu'on partage davantage nos outils",
             "Partager plus de moments informels"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Rencontrer des pairs de mon métier",
+            "Échanger plus souvent sur ma pratique",
+            "Rejoindre un groupe de mon métier",
+            "Avoir un pair avec qui parler technique",
+            "Découvrir comment d'autres font le même métier"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "J'ai autour de moi des pairs qui comprennent mon métier.",
+      "groupe_solo": "Ce qu'on sait de vous"
     },
     {
       "n": 4,
@@ -299,8 +337,21 @@
             "Connaisse mieux ses marges de manœuvre",
             "Découvre la façon dont je regarde le travail"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Mieux présenter ce que je fais",
+            "Poser plus clairement mes attentes",
+            "Mieux cadrer mes missions dès le départ",
+            "Avoir des retours plus réguliers de mes clients",
+            "Faire connaître tout ce que couvre mon métier"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Mes clients et partenaires savent ce que je fais et ce que j'attends d'eux.",
+      "groupe_solo": "Ce qu'on sait de vous"
     },
     {
       "n": 5,
@@ -325,8 +376,20 @@
             "Que chaque métier soit davantage associé aux décisions",
             "Que le travail de chacun soit plus mis en avant"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Fixer mes prix plus sereinement",
+            "Recevoir plus de retours de mes clients",
+            "Mieux montrer la valeur de mon travail",
+            "Être recommandé plus souvent"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Mon travail est reconnu à sa juste valeur, par mes clients comme par mes pairs.",
+      "groupe_solo": "Votre place"
     },
     {
       "n": 6,
@@ -353,8 +416,21 @@
             "Des réunions plus courtes, où chacun s'exprime",
             "Qu'on aborde des sujets plus concrets"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Prendre plus souvent la parole dans mon réseau",
+            "Partager ce que je sais avec d'autres",
+            "Être sollicité pour mon avis",
+            "Trouver un réseau qui me ressemble",
+            "Intervenir lors de rencontres de mon métier"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Dans mon réseau pro, ma parole compte et on m'écoute.",
+      "groupe_solo": "Votre place"
     },
     {
       "n": 7,
@@ -381,8 +457,21 @@
             "Qu'on se parle plus, et qu'on s'écrive moins",
             "Qu'on partage un outil ou un planning commun"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Me fixer un cap clair pour l'année",
+            "Avoir une vue simple de ma trésorerie",
+            "Mieux organiser mon agenda",
+            "Faire le point chaque mois",
+            "Être accompagné sur la gestion"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Je sais où j'en suis : mon cap, mon agenda, ma trésorerie.",
+      "groupe_solo": "Votre organisation"
     },
     {
       "n": 8,
@@ -409,8 +498,21 @@
             "Plus cohérentes entre elles",
             "Plus fiables, sans avoir à vérifier"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Bloquer du temps pour réfléchir",
+            "Prendre du recul avec d'autres",
+            "M'accorder une vraie pause dans l'année",
+            "Mieux répartir production et réflexion",
+            "M'offrir un temps loin du quotidien"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Je garde du temps pour prendre du recul, pas seulement pour produire.",
+      "groupe_solo": "Votre organisation"
     },
     {
       "n": 9,
@@ -437,8 +539,21 @@
             "Qu'on règle davantage les choses ensemble",
             "Qu'on en tire des leçons ensemble"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Oser en parler plus tôt",
+            "Avoir des repères pour dire les choses",
+            "Mieux cadrer les missions au départ",
+            "Pouvoir demander conseil avant d'en parler",
+            "Trouver plus vite une solution ensemble"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Quand ça coince avec un client ou un partenaire, on en parle vite et on trouve une solution.",
+      "groupe_solo": "Quand ça accroche"
     },
     {
       "n": 10,
@@ -466,8 +581,21 @@
             "Mieux connaître chaque métier",
             "Avoir des repères pour dépasser les désaccords"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Avoir un pair à qui demander conseil",
+            "Bénéficier d'un regard extérieur",
+            "Prendre mes décisions avec plus de recul",
+            "Être accompagné sur les choix importants",
+            "Rejoindre un groupe d'entraide entre indépendants"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "J'ai quelqu'un avec qui réfléchir avant une décision importante.",
+      "groupe_solo": "Qui vous épaule"
     },
     {
       "n": 11,
@@ -494,8 +622,20 @@
             "Me sentir plus proche de la hiérarchie",
             "Que nos relations soient plus apaisées"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Avoir quelqu'un à qui confier mes doutes",
+            "Échanger en confiance avec des pairs",
+            "Parler plus librement de ce qui me freine",
+            "Trouver un lieu où dire les choses"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Je peux parler franchement de mes doutes à quelqu'un.",
+      "groupe_solo": "La confiance et le soutien"
     },
     {
       "n": 12,
@@ -522,8 +662,20 @@
             "Qu'on pose un cadre clair sur ce qui reste entre nous",
             "Être plus disponible"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Parler de mes erreurs en confiance",
+            "Apprendre des erreurs des autres",
+            "Partager ce que m'a appris un échec",
+            "Être entouré de pairs bienveillants"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Je peux parler d'une erreur sans me sentir jugé.",
+      "groupe_solo": "La confiance et le soutien"
     },
     {
       "n": 13,
@@ -550,8 +702,21 @@
             "Que la charge soit mieux répartie",
             "Qu'on prenne des moments pour s'entraider"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Savoir plus facilement à qui demander",
+            "Avoir un réseau d'entraide",
+            "Pouvoir déléguer certaines tâches",
+            "Trouver des pairs pour s'entraider",
+            "Être soutenu dans les périodes chargées"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Quand j'ai besoin d'aide, je sais vers qui me tourner.",
+      "groupe_solo": "La confiance et le soutien"
     },
     {
       "n": 14,
@@ -578,8 +743,20 @@
             "Mieux comprendre les décisions",
             "Qu'on parle plus souvent de ce qui compte vraiment"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Me reconnecter à ce qui me motive",
+            "Choisir des missions qui me ressemblent",
+            "Voir l'effet de mon travail chez mes clients",
+            "Prendre le temps de définir ce qui compte pour moi"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Je vois le sens de ce que je fais au quotidien.",
+      "groupe_solo": "Le sens et les résultats"
     },
     {
       "n": 15,
@@ -606,8 +783,20 @@
             "Nos réussites collectives",
             "Ce qu'on apprend ensemble"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Prendre soin de mon rythme de travail",
+            "Parler de ma façon de travailler avec des pairs",
+            "Trouver un meilleur équilibre",
+            "Faire évoluer ma façon de travailler"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Je pense autant à ma façon de travailler qu'au chiffre d'affaires.",
+      "groupe_solo": "Le sens et les résultats"
     },
     {
       "n": 16,
@@ -634,8 +823,21 @@
             "Avoir plus de moyens",
             "Que les métiers se coordonnent mieux"
           ]
+        },
+        "solo": {
+          "debut": "J'aimerais…",
+          "choix": [
+            "Me fixer des objectifs plus clairs",
+            "Suivre mes résultats plus simplement",
+            "Trouver de nouveaux clients",
+            "Être accompagné pour développer mon activité",
+            "Prendre du recul sur ce qui marche"
+          ],
+          "a_valider": true
         }
-      }
+      },
+      "solo": "Mon activité obtient les résultats que je vise.",
+      "groupe_solo": "Le sens et les résultats"
     }
   ],
   "relance": {
@@ -1079,10 +1281,21 @@
     "titre": "Quelques mots sur votre équipe",
     "texte": "Pour lire vos réponses à côté de celles d'équipes qui vous ressemblent, quand elles seront assez nombreuses. Rien ne permet de vous identifier.",
     "role": {
-      "question": "Dans votre équipe, vous êtes",
+      "question": "Vous travaillez",
       "choix": [
         "Le manager",
-        "Un membre de l'équipe"
+        "Un membre de l'équipe",
+        "À votre compte, sans équipe"
+      ],
+      "cles": [
+        "manager",
+        "membre",
+        "solo"
+      ],
+      "libelles": [
+        "En encadrant une équipe",
+        "Au sein d'une équipe",
+        "À votre compte, sans équipe"
       ]
     },
     "genre": {
@@ -1152,7 +1365,8 @@
         "2 à 5",
         "6 à 12",
         "13 et plus"
-      ]
+      ],
+      "sauf_role": "solo"
     }
   },
   "fondations": {
@@ -1285,5 +1499,15 @@
       "merci_texte": "Nous vous enverrons l'étude globale dès qu'elle paraîtra. Vos coordonnées restent séparées de vos réponses, qui demeurent anonymes."
     },
     "pied_rh": "Greatly n'est ni un cabinet RH, ni un organisme de formation. Pour aller plus loin avec votre équipe, votre service RH ou le cabinet qui vous accompagne sera le mieux placé."
+  },
+  "pourquoi_solo": {
+    "Votre collectif pro": "On se demande si vous avancez seul ou entouré de pairs. Travailler à son compte ne veut pas dire travailler sans collectif.",
+    "Ce qu'on sait de vous": "On veut comprendre si vos pairs, vos clients et vos partenaires savent ce que vous faites. C'est ce qui permet d'anticiper plutôt que de subir.",
+    "Votre place": "On cherche à savoir si votre travail est reconnu, par vos clients comme par vos pairs, et si votre parole compte.",
+    "Votre organisation": "On s'interroge sur ce qui vous donne de la visibilité : votre cap, votre agenda, votre trésorerie, et du temps pour prendre du recul.",
+    "Quand ça accroche": "On regarde comment se règlent les tensions avec un client ou un partenaire : vite et ensemble, ou plus lentement.",
+    "Qui vous épaule": "On se demande si vous avez quelqu'un avec qui réfléchir avant une décision importante.",
+    "La confiance et le soutien": "On cherche à savoir si vous pouvez parler franchement de vos doutes et de vos erreurs, et vers qui vous tourner quand il le faut.",
+    "Le sens et les résultats": "On regarde ce qui donne du sens à votre activité, et les résultats qu'elle obtient. Pour nous, les résultats sont une conséquence, pas un point de départ."
   }
 }

@@ -92,11 +92,25 @@ async function lireSouhaits() {
   } catch (e) { return null; }
 }
 
-async function lireThese() {
+// La thèse par rôle (13 octobre 2026) : un solo ne voit que des solos, un manager ou un membre jamais de solos. Tant que
+// la base n'a pas la fonction à paramètre (migration 29), on retombe sur l'ancienne, qui ne connaît pas encore de solo.
+async function appelThese(corps) {
+  const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/edl_these', { method: 'POST', headers: { apikey: SUPABASE_CLE, Authorization: 'Bearer ' + SUPABASE_CLE, 'Content-Type': 'application/json' }, body: JSON.stringify(corps) });
+  const d = r.ok ? await r.json() : null; return d && d.ok ? d : null;
+}
+async function lireThese(role) {
   if (modeDemo() || !SUPABASE_URL) return null;
   try {
-    const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/edl_these', { method: 'POST', headers: { apikey: SUPABASE_CLE, Authorization: 'Bearer ' + SUPABASE_CLE, 'Content-Type': 'application/json' }, body: '{}' });
-    const d = r.ok ? await r.json() : null; return d && d.ok ? d : null;
+    let d = await appelThese({ p_role: role }).catch(() => null);
+    if (!d) d = await appelThese({});
+    if (!d) return null;
+    // Un solo : ses chiffres seulement s'ils viennent bien des solos et qu'il y en a au moins 3 ; sinon ceux des équipes,
+    // présentés comme tels (« Dans les équipes qui ont répondu »), jamais comme « toute l'étude ».
+    if (role === 'solo' && (d.role !== 'solo' || (d.n || 0) < 3)) {
+      const e = (await appelThese({ p_role: 'membre' }).catch(() => null)) || (d.role !== 'solo' ? d : null);
+      if (e) { e.repli = true; return e; }
+    }
+    return d;
   } catch (e) { return null; }
 }
 
@@ -123,7 +137,16 @@ function afficher(lu, contenu, these) {
   // Rien de jugé (Arnaud, 13 octobre 2026 : « on va rien juger, 2 atouts sur 3 ») : un titre qui ne compte pas, une phrase qui décrit.
   const debut = (txt) => txt.charAt(0).toUpperCase() + txt.slice(1);
   // On ne juge pas (Arnaud, 13 octobre 2026) : un titre et une phrase qui décrivent, sans dire ce qui va ou ne va pas.
-  $('[data-lui-titre]').textContent = 'votre équipe.';
+  // Un solo parle de son activité, pas d'une équipe ; à droite, des indépendants, ou les équipes tant qu'ils sont moins de 3.
+  const solo = lu.role === 'solo'; const repli = solo && (!these || these.repli);
+  $('[data-lui-titre]').textContent = solo ? 'votre activité.' : 'votre équipe.';
+  if ($('[data-lui-sur]')) $('[data-lui-sur]').textContent = solo ? 'Votre activité' : 'Votre équipe';
+  const D_SUR = !solo ? 'Toute l’étude' : repli ? 'Pour vous situer' : 'Les indépendants';
+  if ($('[data-droite-sur]')) $('[data-droite-sur]').textContent = D_SUR;
+  if ($('[data-droite-leger]')) $('[data-droite-leger]').textContent = !solo ? 'Ce que montre' : repli ? 'Dans les équipes' : 'Ce que montrent';
+  if ($('[data-droite-gras]')) $('[data-droite-gras]').textContent = !solo ? 'l’étude.' : repli ? 'qui ont répondu.' : 'les indépendants.';
+  if ($('[data-ouv-sur]')) $('[data-ouv-sur]').textContent = !solo ? 'Ce que montre l’étude' : repli ? 'Dans les équipes qui ont répondu' : 'Ce que montrent les indépendants';
+  afficher.cote = { gauche: solo ? 'Votre activité' : 'Votre équipe', droite: D_SUR };
   $('[data-lui-resume]').textContent = 'Vos réponses, thème par thème : la confiance, le soutien, la cohésion, puis l’engagement et la performance.';
   // Le grand titre d'en-tête est retiré (Arnaud, 13 octobre 2026) : on garde la ligne si on le remet.
   if ($('[data-titre]')) $('[data-titre]').textContent = nbLa === 3 ? 'votre équipe a la confiance, le soutien et la cohésion.' : nbLa === 0 ? 'votre équipe a tout pour grandir.' : 'votre équipe a déjà des atouts.';
@@ -186,7 +209,7 @@ function afficher(lu, contenu, these) {
     const tete = enTete(l.icone, l.nom); // sans étiquette « C'est là » / « À grandir » (Arnaud, 13 octobre 2026)
     const coeur = el('div', 'lui-coeur'); coeur.append(el('span', 'grand', l.lui_p == null ? '—' : l.lui_p + ' sur 100'), pastilles(l.lui_p, true));
     // Sur téléphone, les deux cartes d'un thème passent l'une sous l'autre : une petite étiquette dit de quel côté on est.
-    gauche.append(el('span', 'carte__cote', 'Votre équipe'), tete, coeur);
+    gauche.append(el('span', 'carte__cote', afficher.cote.gauche), tete, coeur);
     // Ce que vous demandez, quand le répondant a coché des idées sur ce thème (Arnaud, 13 octobre 2026) : comme « Ce qu'ils demandent » à droite.
     const miens = [];
     l.affs.forEach((n) => { const rel = contenu.affirmations[n - 1] && contenu.affirmations[n - 1].relance && contenu.affirmations[n - 1].relance[lu.role];
@@ -203,7 +226,7 @@ function afficher(lu, contenu, these) {
     const droite = el('div', 'carte simple simple--tous');
     const tete2 = enTete(l.icone, l.nom);
     if (l.a != null && l.b != null) tete2.appendChild(el('span', 'ecart', (l.a - l.b >= 0 ? '+' : '') + (l.a - l.b) + ' points'));
-    droite.append(el('span', 'carte__cote', 'Toute l’étude'), tete2);
+    droite.append(el('span', 'carte__cote', afficher.cote.droite), tete2);
     const mot = l.mot ? 'atteignent leurs objectifs' : 'sont engagées';
     if (l.a != null && l.b != null && l.phrase) droite.appendChild(el('p', 'these-ligne', l.phrase(l.a, l.b)));
     const rangs = el('div', 'rangs');
@@ -223,10 +246,10 @@ function afficher(lu, contenu, these) {
       const rel = contenu.affirmations[l2.n - 1].relance[role]; const t = rel && rel.choix[l2.choix]; if (!t) return null;
       const d = (rel.debut || '').replace(/…$/, '').trim(); const voeu = d && d !== 'J\'aimerais' ? d + ' ' + t.charAt(0).toLowerCase() + t.slice(1) : t;
       return { voeu, p: l2.p }; };
-    const dm = demande('manager'), de = demande('membre');
-    if (dm || de) {
+    const dm = demande('manager'), de = demande('membre'), ds = lu.role === 'solo' ? demande('solo') : null;
+    if (dm || de || ds) {
       const bloc = el('div', 'demandes'); bloc.appendChild(el('span', 'demandes__titre', 'Ce qu’ils demandent'));
-      [[dm, 'Les managers'], [de, 'Les équipes']].forEach(([x, qui]) => { if (!x) return; const ln = el('p', 'demande');
+      [[dm, 'Les managers'], [de, 'Les équipes'], [ds, 'Les indépendants']].forEach(([x, qui]) => { if (!x) return; const ln = el('p', 'demande');
         ln.append(el('strong', '', qui + ' : '), el('span', '', '« ' + x.voeu + ' »')); bloc.appendChild(ln); }); // sans chiffre (Arnaud)
       droite.appendChild(bloc);
     }
@@ -314,7 +337,7 @@ async function demarrer() {
   afficher(lu, contenu, null);
   brancherGarder();
   brancherEtude();
-  const [these, souhaits] = await Promise.all([lireThese(), lireSouhaits()]);
+  const [these, souhaits] = await Promise.all([lireThese(lu.role), lireSouhaits()]);
   afficher.souhaits = souhaits || [];
   if (these) afficher(lu, contenu, these);
 }
