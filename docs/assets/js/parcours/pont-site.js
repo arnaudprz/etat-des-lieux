@@ -127,6 +127,17 @@ const retoucher = () => {
     if (/^(Huit sommets|Un exemple ?de résultat)/.test(t)) s.style.display = 'none';
   });
   if (page === 'accueil') nombre();
+  if (page === 'questionnaire') {
+    const tel = matchMedia('(max-width: 1023px)').matches;
+    document.querySelectorAll('[data-maquette] [id^="a"]').forEach((q) => {
+      const idees = [...q.children].find((c) => c.tagName === 'DIV' && /var\(--k14\)/.test(c.getAttribute('style') || ''));
+      if (!idees) return;
+      const boutons = [...q.querySelectorAll(':scope > div > button[aria-pressed]')];
+      const i = boutons.findIndex((b) => b.getAttribute('aria-pressed') === 'true');
+      const o = tel && i >= 0 ? String((i + 1) * 10 + 5) : '';
+      if (idees.style.order !== o) idees.style.order = o;
+    });
+  }
   // Aucun lien vers les nouveaux sites de Greatly ni vers les préprods (Arnaud, 13 octobre 2026). La politique de
   // confidentialité renvoie à celle de l'état des lieux ; les autres liens (rendez-vous, mentions…) disparaissent.
   // Le logo GREATLY reste en haut à gauche, et ramène à l'accueil de l'état des lieux (la maquette le remet à chaque rendu).
@@ -155,13 +166,30 @@ style.textContent = [
   '[data-maquette="MEtatDesLieux"] h1 .g-peps { display: inline-block; white-space: nowrap; }',
   // Sur téléphone, le panneau « Votre avancée » du questionnaire ne colle plus en haut : il prenait la moitié de l'écran
   // et les questions passaient dessous (Arnaud, 13 octobre 2026). Il reste en tête de liste, puis défile avec le reste.
-  '@media (max-width: 1023px) { html[data-edl="questionnaire"] [data-maquette] aside { position: static !important; top: auto !important; max-height: none !important; } }',
+  // « Votre avancée » ne sert pas sur téléphone (Arnaud, 13 octobre 2026) : on le garde seulement sur ordinateur.
+  '@media (max-width: 1023px) { html[data-edl="questionnaire"] [data-maquette] aside { display: none !important; } }',
   // Sur téléphone, le profil et les questions prennent toute la largeur, sans encadré, et les questions se lisent plus
   // gros (Arnaud, 13 octobre 2026).
   '@media (max-width: 1023px) {'
     + ' html[data-edl="questionnaire"] [data-maquette] div[style*="border-radius:1.75rem"][style*="border:var(--k3)"] { border: 0 !important; border-radius: 0 !important; background: transparent !important; padding: 0 !important; }'
     + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"][style*="border-radius:1.5rem"] { border: 0 !important; border-top: 1px solid var(--k45) !important; border-radius: 0 !important; background: transparent !important; padding: 1.75rem 0 1.5rem !important; }'
     + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] p[style*="font-size:1.375rem"] { font-size: 1.6875rem !important; font-weight: 600 !important; line-height: 1.25 !important; }'
+    // Les quatre réponses deviennent des éléments de la carte : les idées (« J'aimerais… ») peuvent alors s'ouvrir juste
+    // sous le bouton choisi, « Pas encore » ou « Un peu », et pas sous les quatre (Arnaud, 13 octobre 2026).
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"][style*="border-radius:1.5rem"] { gap: 0.625rem !important; }'
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] > div[style*="grid-template-columns:repeat(4"] { display: contents !important; }'
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] > p { margin-bottom: 0.5rem !important; }'
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] > * { order: 100; }'
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] > p:first-child { order: 0; }'
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] > div > button[aria-pressed]:nth-child(1) { order: 10; }'
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] > div > button[aria-pressed]:nth-child(2) { order: 20; }'
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] > div > button[aria-pressed]:nth-child(3) { order: 30; }'
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] > div > button[aria-pressed]:nth-child(4) { order: 40; }'
+    // Des polices plus grandes : réponses, idées, profil.
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] button[aria-pressed] { font-size: 1.125rem !important; min-height: 3.5rem !important; }'
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] div[style*="var(--k14)"] button { font-size: 1.0625rem !important; }'
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] div[style*="var(--k14)"] strong { font-size: 1.1875rem !important; }'
+    + ' html[data-edl="questionnaire"] [data-maquette] button[aria-pressed] { font-size: 1.0625rem !important; }'
     + ' }',
   // La carte du nombre : à droite du texte, à sa hauteur, sans flotter.
   '.edl-hero-section { min-height: 0 !important; }',
