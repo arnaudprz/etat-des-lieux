@@ -32,12 +32,14 @@ const TEXTES = {
   'ensemble': 'ce qui engage',
   "En 2 minutes, voyez ce qui fonctionne déjà entre vous et ce qui peut encore évoluer. De quoi mettre des mots justes sur ce que vous vivez.":
     "Regardez votre équipe telle que vous la voyez : la confiance, le soutien, la cohésion, l’engagement. Puis découvrez ce que montrent toutes les réponses.", // sans dévoiler le résultat (Arnaud)
-  'Un regard clair sur votre façon de travailler ensemble': 'Votre équipe telle que vous la voyez : la confiance, le soutien, la cohésion',
-  'Ce qui vous porte déjà': 'Vos réponses à côté de celles de toutes les personnes qui ont répondu',
-  'Ce qui peut encore évoluer': "Ce que montre l'étude : ce qui engage une équipe",
-  'Une étude pour mieux éclairer les équipes': 'Une étude pour montrer ce qui engage les équipes',
+  // « Ce que vous y gagnez » parle aux équipes comme aux solos : on le lit avant de choisir son profil (Arnaud, 13 octobre 2026).
+  'Un regard clair sur votre façon de travailler ensemble': 'Votre équipe ou votre activité, telle que vous la voyez : la confiance, le soutien, la cohésion',
+  'Ce qui vous porte déjà': 'Vos réponses à côté de celles de personnes qui travaillent comme vous',
+  'Ce qui peut encore évoluer': "Ce que montre l'étude : ce qui nourrit l'engagement",
+  'Des mots pour en parler, avec vos collègues ou votre manager': 'Des mots pour en parler, avec votre équipe, votre manager ou votre collectif',
+  'Une étude pour mieux éclairer les équipes': "Une étude pour montrer ce qui nourrit l'engagement",
   "Vos réponses, anonymes et regroupées, aident nos intervenants à préparer des ateliers ancrés dans le vécu des équipes, et nos programmes à évoluer. L'étude complète est partagée avec ceux qui le souhaitent.":
-    "Vos réponses, anonymes et regroupées, nourrissent une étude : la confiance, le soutien et la cohésion vont-ils avec l'engagement ? Pour nous, la performance n'est pas un objectif : elle en est la conséquence. L'étude complète est partagée avec ceux qui le souhaitent.",
+    "Vos réponses, anonymes et regroupées, nourrissent une étude : la confiance, le soutien et la cohésion vont-ils avec l'engagement, en équipe comme à son compte ? Pour nous, la performance n'est pas un objectif : elle en est la conséquence. L'étude complète est partagée avec ceux qui le souhaitent.",
   // « Ce que vous recevez en 2 minutes » : quatre blocs ancrés dans ce que la personne vit vraiment (Arnaud, 13 octobre 2026).
   "Une lecture d'ensemble": 'Votre équipe, telle que vous la voyez',
   'En quelques lignes, la façon dont vous travaillez ensemble, vue depuis votre place.':
@@ -56,9 +58,9 @@ const TEXTES = {
   'Ce qui est déjà là, et ce qui peut encore évoluer, dit simplement.':
     'Ce que vous aimeriez, à côté de ce que demandent le plus les managers et les équipes.',
   'Un regard clair sur votre façon de travailler ensemble : ce qui vous porte déjà, ce qui peut encore évoluer, et des mots pour en parler.':
-    'Votre équipe telle que vous la voyez : la confiance, le soutien, la cohésion. À côté, ce que montrent toutes les réponses : ce qui engage une équipe.',
+    "Votre équipe ou votre activité, telle que vous la voyez : la confiance, le soutien, la cohésion. À côté, ce que montrent toutes les réponses : ce qui nourrit l'engagement.",
   'Vos réponses, anonymes et regroupées, aident nos intervenants à préparer des ateliers ancrés dans le vécu des équipes, et nos programmes à évoluer.':
-    "Vos réponses, anonymes et regroupées, nourrissent une étude : la confiance, le soutien et la cohésion vont-ils avec l'engagement ? Pour nous, la performance n'est pas un objectif : elle en est la conséquence.",
+    "Vos réponses, anonymes et regroupées, nourrissent une étude : la confiance, le soutien et la cohésion vont-ils avec l'engagement, en équipe comme à son compte ? Pour nous, la performance n'est pas un objectif : elle en est la conséquence.",
   // L'introduction du profil (Arnaud, 13 octobre 2026 : « ce texte n'est pas top »).
   "Pour lire vos réponses à côté de celles d'équipes qui vous ressemblent, quand elles seront assez nombreuses. Rien ne permet de vous identifier.":
     'Quelques mots pour vous situer parmi toutes les réponses, en équipe ou à votre compte. Rien ne permet de vous identifier.',
@@ -69,7 +71,11 @@ const TEXTES = {
   'Gardez votre résultat et retrouvez-le quand vous voulez. Sans compte, sans e-mail.':
     'Votre résultat tient dans un lien. Gardez-le pour y revenir : sans compte, sans e-mail, sans votre nom.',
   'Comment vivez-vous': 'Comment voyez-vous',
-  'le travail ensemble ?': 'votre équipe ?',
+  'le travail ensemble ?': 'votre équipe ou votre activité ?',
+  // Ce qui ne parlait qu'aux équipes, ouvert aussi aux solos (Arnaud, 13 octobre 2026 : « ok »).
+  "État des lieux d'équipe · 2 minutes": 'État des lieux · 2 minutes',
+  "Sur les travaux de Jody Hoffer Gittell, à l'université Brandeis : des objectifs partagés, des connaissances partagées et le respect mutuel aident une équipe à mieux travailler ensemble.":
+    "Sur les travaux de Jody Hoffer Gittell, à l'université Brandeis : des objectifs partagés, des connaissances partagées et le respect mutuel aident à mieux travailler ensemble, en équipe comme avec ses partenaires.",
 };
 const TEXTES_N = Object.fromEntries(Object.entries(TEXTES).map(([k, v]) => [norm(k), v]));
 
