@@ -114,3 +114,25 @@ describe('solo : retouche des maquettes', () => {
     assert.equal(retoucher('const x=1').etat, 'pas concerné');
   });
 });
+
+describe('solo : taille d’équipe (corrections 14)', () => {
+  test('le modèle ne dessine le bloc taille d’équipe que si avecEquipe', async () => {
+    const { retoucherModele } = await import('../scripts/solo-maquette.mjs');
+    const modele = '[["div",{"style":"a"},[["h2",{},["Votre rôle"]]]],["div",{"style":"b"},[["div",{},[["h2",{},["Taille de votre équipe (nombre de personnes)"]]]],["div",{},[{"pour":"equipes","comme":"p","e":[["button",{},["{{p.lab}}"]]]}]]]]]';
+    const r = retoucherModele(modele);
+    assert.equal(r.etat, 'retouché');
+    assert.ok(r.source.includes('{"si":"avecEquipe","e":[["div",{"style":"b"}'));
+    assert.ok(r.source.includes('["h2",{},["Votre rôle"]]'), 'le reste ne bouge pas');
+    assert.equal(retoucherModele(r.source).etat, 'déjà fait');
+  });
+  test('la logique calcule avecEquipe, et choisir solo efface la taille d’équipe', () => {
+    const avant = 'const r={profil:{tailles:[],equipes:[]}},z=r.profil.tailles,t=this.state||{},i=t.role===0?"manager":"membre",m=1;n.roles=j("role",r.profil.roles),n.equipes=j("teq",r.profil.equipes);n.continuer=()=>{const e=[];t.teq>=0||e.push("x")}';
+    const s = retoucher(avant).source;
+    assert.match(s, /n\.avecEquipe=t\.role!==2/);
+    assert.match(s, /n\.roles\[2\]\.pick=\(\)=>this\.setState\(\{role:t\.role===2\?-1:2,teq:-1,msg:""\}\)/);
+  });
+  test('un solo envoie une taille d’équipe vide, manager et membre gardent la leur', () => {
+    const src = readFileSync(new URL('../docs/assets/js/parcours/pont-site.js', import.meta.url), 'utf8');
+    assert.match(src, /taille_equipe: role === 'solo' \? '' : choix\(P\.taille_equipe\.choix, st\.teq\)/);
+  });
+});

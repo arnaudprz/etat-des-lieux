@@ -10,9 +10,9 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu } from '../contenu.js?v=32';
+import { chargerContenu } from '../contenu.js?v=33';
 import { relancesAEnvoyer } from '../calcul.js';
-import { lienResultat } from '../lien.js?v=32';
+import { lienResultat } from '../lien.js?v=33';
 import { envoyerReponse, compteur } from '../api.js';
 import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js';
 import { evenement } from './commun.js';

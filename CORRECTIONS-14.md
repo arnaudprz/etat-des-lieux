@@ -282,3 +282,62 @@ passeraient toujours.
   choisi.
 - La note « Comment lire ces chiffres » est commune à tous les rôles ; elle n'a pas changé.
 
+
+## Bug solo : la question « Taille de votre équipe » (13 octobre 2026, soir, EN LOCAL, non déployé)
+
+### Ce que j'ai cherché
+
+J'ai reproduit dans des navigateurs neufs, en navigation privée et sans cache :
+- Chrome et WebKit (le moteur de Safari) ;
+- sur ordinateur et sur téléphone ;
+- en ligne et en local avec `?demo=1` ;
+- au clic et au tap ;
+- avec un retour au profil depuis les questions.
+
+Dans tous ces cas, le bloc finissait par se masquer. Le seul défaut net : une taille d'équipe choisie avant de passer en solo
+restait cochée en cachette. Elle n'était pas envoyée, mais elle n'était pas effacée non plus.
+
+### La vraie cause
+
+Le masque de `pont-site.js` venait **après** l'affichage. La maquette dessinait le bloc, puis `pont-site.js` le cachait :
+- après un clic, une fraction de seconde plus tard ;
+- ou quand l'observateur de la page voyait changer des éléments.
+
+Mesuré : juste après le clic solo, le rôle vaut bien 2, mais le bloc est encore visible. Il ne disparaît qu'au tour suivant.
+Ça dépend du rythme du navigateur et de l'appareil. Et un changement qui ne touche que des attributs, une pastille cochée par
+exemple, ne réveille pas l'observateur. Sur un appareil plus lent, ou avec un autre ordre d'événements, le bloc pouvait
+rester affiché.
+
+Le cache peut avoir aggravé les choses. Les fichiers retouchés de la maquette gardaient le même nom qu'avant, donc un
+navigateur pouvait mélanger des versions pendant quelques minutes.
+
+### La correction
+
+- **La maquette ne dessine plus le bloc pour un solo.** Le modèle l'entoure d'un « si avecEquipe », et la logique calcule
+  `avecEquipe = rôle différent de solo`. Plus de masque après coup, donc plus de question de timing. Le bloc revient dès qu'on
+  repasse manager ou membre, à la même place, et reste obligatoire pour eux.
+- **Choisir solo efface la taille d'équipe déjà cochée.** Un solo envoie toujours `taille_equipe` vide.
+- **Le bouton pour passer aux questions** ne demande pas la taille d'équipe à un solo. C'était déjà le cas, et c'est vérifié.
+- **Retour au profil depuis les questions :** le bloc reste absent pour un solo. Il n'y a pas de reprise de profil depuis la
+  session : la maquette repart d'un profil vide au rechargement. Ce chemin n'existe donc pas.
+- **Caches :** les 7 fichiers de la maquette retouchés et leur chargeur portent un nouveau nom (`-s14`), les 4 pages pointent
+  vers ce nouveau chargeur, et `V` passe à 33.
+- `scripts/solo-maquette.mjs` fait maintenant aussi cette quatrième retouche. On peut toujours le relancer.
+
+### Vérifications
+
+- `npm test` : 200 tests réussis, dont les nouveaux tests solo :
+  - le modèle n'a le bloc que sous condition ;
+  - choisir solo efface la taille ;
+  - un solo envoie `taille_equipe` vide.
+  
+  Le seul échec reste l'ancien `agregats.test.js` de l'admin supprimé.
+- `scripts/test-parcours-solo.mjs` passe sur les 4 combinaisons : Chrome et WebKit, ordinateur et téléphone, chaque fois dans
+  un navigateur neuf. Il vérifie que :
+  - membre demande la taille, solo la fait disparaître, manager la fait revenir ;
+  - un solo passe aux questions ;
+  - au retour au profil, le bloc est toujours absent ;
+  - l'envoi part avec `taille_equipe` vide ;
+  - le résultat solo s'ouvre.
+- Manager et membre : les captures des résultats, avant et après, sont identiques au pixel près sur ordinateur et téléphone.
+  Le questionnaire ne change que par le bloc de fin (« Comment voyez-vous / votre travail ? »), demandé au point 5.
