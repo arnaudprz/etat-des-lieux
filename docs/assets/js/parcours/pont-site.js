@@ -10,9 +10,9 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu } from '../contenu.js?v=31';
+import { chargerContenu } from '../contenu.js?v=32';
 import { relancesAEnvoyer } from '../calcul.js';
-import { lienResultat } from '../lien.js?v=31';
+import { lienResultat } from '../lien.js?v=32';
 import { envoyerReponse, compteur } from '../api.js';
 import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js';
 import { evenement } from './commun.js';
@@ -70,9 +70,9 @@ const TEXTES = {
     'Votre résultat tient dans un lien. Gardez-le pour y revenir quand vous voulez : sans compte, sans e-mail, sans votre nom.',
   'Gardez votre résultat et retrouvez-le quand vous voulez. Sans compte, sans e-mail.':
     'Votre résultat tient dans un lien. Gardez-le pour y revenir : sans compte, sans e-mail, sans votre nom.',
-  'Comment vivez-vous': 'Comment voyez-vous votre équipe',
-  // La question tient sur les deux lignes du titre, sans déborder sur la montagne à droite (Arnaud, 13 octobre 2026).
-  'le travail ensemble ?': 'ou votre activité ?',
+  'Comment vivez-vous': 'Comment voyez-vous ',
+  // Bloc de fin : « Comment voyez-vous / votre travail ? », les deux lignes séparées par une espace (14e corrections).
+  'le travail ensemble ?': 'votre travail ?',
   // Ce qui ne parlait qu'aux équipes, ouvert aussi aux solos (Arnaud, 13 octobre 2026 : « ok »).
   "État des lieux d'équipe · 2 minutes": 'État des lieux · 2 minutes',
   "Sur les travaux de Jody Hoffer Gittell, à l'université Brandeis : des objectifs partagés, des connaissances partagées et le respect mutuel aident une équipe à mieux travailler ensemble.":
@@ -290,7 +290,7 @@ if (page === 'accueil') evenement('visite');
 // Les maquettes appellent window.__edlSolo(données, état) à chaque rendu (scripts/solo-maquette.mjs). On y ajoute le
 // troisième choix de rôle, et pour un solo ses phrases, ses idées « J'aimerais… » et ses titres de groupes, tirés de
 // contenu.json. Pour un manager ou un membre, tout reste comme avant.
-const LIBELLES_ROLES = ['En encadrant une équipe', "Au sein d'une équipe", 'À votre compte, sans équipe']; // repli, avant contenu.json
+const LIBELLES_ROLES = ['En encadrant une équipe', "Au sein d'une équipe", 'En solo ou en profession libérale']; // repli, avant contenu.json
 let C = null;
 const pretContenu = chargerContenu().then((c) => { C = c; return c; });
 window.__edlRole = -1;

@@ -6,10 +6,10 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu } from '../contenu.js?v=31';
-import { decoder } from '../lien.js?v=31';
+import { chargerContenu } from '../contenu.js?v=32';
+import { decoder } from '../lien.js?v=32';
 import { envoyerContact, compteur } from '../api.js';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=31';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=32';
 import { memoriserResultat } from '../session.js';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -139,19 +139,29 @@ function afficher(lu, contenu, these) {
   // On ne juge pas (Arnaud, 13 octobre 2026) : un titre et une phrase qui décrivent, sans dire ce qui va ou ne va pas.
   // Un solo parle de son activité, pas d'une équipe ; à droite, des indépendants, ou les équipes tant qu'ils sont moins de 3.
   const solo = lu.role === 'solo'; const repli = solo && (!these || these.repli);
-  $('[data-lui-titre]').textContent = solo ? 'votre activité.' : 'votre équipe.';
-  if ($('[data-lui-sur]')) $('[data-lui-sur]').textContent = solo ? 'Votre activité' : 'Votre équipe';
-  const D_SUR = !solo ? 'Toute l’étude' : repli ? 'Pour vous situer' : 'Les indépendants';
-  if ($('[data-droite-sur]')) $('[data-droite-sur]').textContent = D_SUR;
-  if ($('[data-droite-leger]')) $('[data-droite-leger]').textContent = !solo ? 'Ce que montre' : repli ? 'Dans les équipes' : 'Ce que montrent';
-  if ($('[data-droite-gras]')) $('[data-droite-gras]').textContent = !solo ? 'l’étude.' : repli ? 'qui ont répondu.' : 'les indépendants.';
-  if ($('[data-ouv-sur]')) $('[data-ouv-sur]').textContent = !solo ? 'Ce que montre l’étude' : repli ? 'Dans les équipes qui ont répondu' : 'Ce que montrent les indépendants';
+  // Un solo (14e corrections, 13 octobre 2026) : aucun mot d'équipe, de manager ni de collègue. Manager et membre : inchangé.
+  // À gauche « Votre activité, telle que vous la voyez. », sans répéter « votre activité » dans le surtitre.
+  if (solo) {
+    if ($('[data-lui-leger]')) $('[data-lui-leger]').textContent = 'Votre activité,';
+    $('[data-lui-titre]').textContent = 'telle que vous la voyez.';
+    if ($('[data-lui-sur]')) $('[data-lui-sur]').textContent = 'Votre regard';
+  } else $('[data-lui-titre]').textContent = 'votre équipe.';
+  // À droite : « Ce que montre l'étude » tant qu'il y a moins de 3 solos, avec une ligne qui le dit ; ensuite les indépendants.
+  const D_SUR = !solo || repli ? 'Toute l’étude' : 'Les indépendants';
+  if (solo) {
+    if ($('[data-droite-sur]')) $('[data-droite-sur]').textContent = D_SUR;
+    if ($('[data-droite-leger]')) $('[data-droite-leger]').textContent = repli ? 'Ce que montre' : 'Ce que montrent';
+    if ($('[data-droite-gras]')) $('[data-droite-gras]').textContent = repli ? 'l’étude.' : 'les indépendants.';
+    if ($('[data-ouv-sur]')) $('[data-ouv-sur]').textContent = repli ? 'Ce que montre l’étude' : 'Ce que montrent les indépendants';
+    const note = $('[data-droite-note]');
+    if (note) { note.textContent = repli ? 'Pas encore assez d’indépendants pour leurs propres chiffres. Voici ce que montrent toutes les réponses.' : ''; note.hidden = !repli; }
+  }
   afficher.cote = { gauche: solo ? 'Votre activité' : 'Votre équipe', droite: D_SUR };
   $('[data-lui-resume]').textContent = 'Vos réponses, thème par thème : la confiance, le soutien, la cohésion, puis l’engagement et la performance.';
   // Le grand titre d'en-tête est retiré (Arnaud, 13 octobre 2026) : on garde la ligne si on le remet.
   if ($('[data-titre]')) $('[data-titre]').textContent = nbLa === 3 ? 'votre équipe a la confiance, le soutien et la cohésion.' : nbLa === 0 ? 'votre équipe a tout pour grandir.' : 'votre équipe a déjà des atouts.';
   // Le nombre de participants : le compteur public (réponses papier comprises), pas seulement les réponses détaillées en ligne.
-  compteur().then((total) => { document.querySelectorAll('[data-n-reponses]').forEach((n) => { n.textContent = total + ' personnes'; }); document.querySelectorAll('[data-n-chiffre]').forEach((n) => { n.textContent = total; }); }).catch(() => {});
+  compteur().then((total) => { document.querySelectorAll('[data-n-reponses]').forEach((n) => { n.textContent = total + ' personnes'; }); document.querySelectorAll('[data-n-chiffre]').forEach((n) => { n.textContent = total; if (solo && !(n.nextSibling && n.nextSibling.nodeType === 3)) n.after(document.createTextNode(' ')); }); }).catch(() => {});
 
   // La même mesure des deux côtés : l'intensité des réponses (0 à 3) ramenée à 100. Pour lui, ses réponses ; pour l'étude, la
   // moyenne de tous les répondants (edl_these → intensites). « C'est là » à partir de 50, soit une moyenne d'au moins 1,5 sur 3.
@@ -162,6 +172,8 @@ function afficher(lu, contenu, these) {
   const eng = (k) => (G[k] && G[k].engages != null ? G[k].engages : null);
   const dit = (a, b) => (a == null || b == null ? '' : a + '\u00a0% des personnes sont engagées, contre ' + (b === 0 ? 'aucune' : b + '\u00a0%') + ' ailleurs.');
   const NOMS = { confiance: ['la confiance', 'Là où la confiance est là, '], soutien: ['le soutien', 'Là où on se sent soutenu, '], cohesion: ['la cohésion', 'Là où l’équipe est soudée, '] };
+  // Pour un solo, les phrases ne parlent que de personnes, jamais d'équipe (13 octobre 2026).
+  if (solo) { NOMS.soutien = ['le soutien', 'Là où le soutien est là, ']; NOMS.cohesion = ['la cohésion', 'Là où la cohésion est là, ']; }
   // Des phrases comme « Ce qu'on peut dire, chiffres à l'appui » (Arnaud, 13 octobre 2026), au-dessus des pastilles.
   const MANQUE = { confiance: 'Là où elle manque, ', soutien: 'Là où il manque, ', cohesion: 'Là où elle manque, ' };
   const reste = (b) => (b === 0 ? 'aucune.' : pc(b) + '.');
@@ -225,7 +237,7 @@ function afficher(lu, contenu, these) {
     // sa rangée surlignée avec « vous » (la légende sous le titre explique le vert vif).
     const droite = el('div', 'carte simple simple--tous');
     const tete2 = enTete(l.icone, l.nom);
-    if (l.a != null && l.b != null) tete2.appendChild(el('span', 'ecart', (l.a - l.b >= 0 ? '+' : '') + (l.a - l.b) + ' points'));
+    if (l.a != null && l.b != null) { if (solo) tete2.appendChild(document.createTextNode(' ')); tete2.appendChild(el('span', 'ecart', (l.a - l.b >= 0 ? '+' : '') + (l.a - l.b) + ' points')); }
     droite.append(el('span', 'carte__cote', afficher.cote.droite), tete2);
     const mot = l.mot ? 'atteignent leurs objectifs' : 'sont engagées';
     if (l.a != null && l.b != null && l.phrase) droite.appendChild(el('p', 'these-ligne', l.phrase(l.a, l.b)));
@@ -246,7 +258,15 @@ function afficher(lu, contenu, these) {
       const rel = contenu.affirmations[l2.n - 1].relance[role]; const t = rel && rel.choix[l2.choix]; if (!t) return null;
       const d = (rel.debut || '').replace(/…$/, '').trim(); const voeu = d && d !== 'J\'aimerais' ? d + ' ' + t.charAt(0).toLowerCase() + t.slice(1) : t;
       return { voeu, p: l2.p }; };
-    const dm = demande('manager'), de = demande('membre'), ds = lu.role === 'solo' ? demande('solo') : null;
+    // Un solo ne voit jamais « Les managers » ni « Les équipes » : seulement ce que demandent les autres indépendants,
+    // et seulement si au moins 3 solos ont choisi ce souhait. Sinon, pas de bloc.
+    if (solo) {
+      const l3 = SW.filter((x) => x.role === 'solo' && l.affs.includes(x.n) && x.choisis >= 3).sort((a, b) => b.p - a.p || b.choisis - a.choisis)[0];
+      const rel = l3 && contenu.affirmations[l3.n - 1].relance.solo; const t3 = rel && rel.choix[l3.choix];
+      if (t3) { const bloc = el('div', 'demandes'); bloc.appendChild(el('span', 'demandes__titre', 'Ce que demandent les autres indépendants'));
+        bloc.appendChild(el('p', 'demande', '« ' + t3 + ' »')); droite.appendChild(bloc); }
+    }
+    const dm = solo ? null : demande('manager'), de = solo ? null : demande('membre'), ds = null;
     if (dm || de || ds) {
       const bloc = el('div', 'demandes'); bloc.appendChild(el('span', 'demandes__titre', 'Ce qu’ils demandent'));
       [[dm, 'Les managers'], [de, 'Les équipes'], [ds, 'Les indépendants']].forEach(([x, qui]) => { if (!x) return; const ln = el('p', 'demande');
@@ -277,7 +297,7 @@ function afficher(lu, contenu, these) {
     [['L’engagement', 'sont engagées', t.engages, mq.engages], ['La performance', 'atteignent leurs objectifs', t.perf, mq.perf]].forEach(([nom, verbe, a, b]) => {
       if (a == null || b == null) return;
       const c = el('div', 'carte simple simple--tous ouv-carte');
-      const tete = enTete(null, nom); tete.appendChild(el('span', 'ecart', (a - b >= 0 ? '+' : '') + (a - b) + ' points')); c.appendChild(tete);
+      const tete = enTete(null, nom); if (solo) tete.appendChild(document.createTextNode(' ')); tete.appendChild(el('span', 'ecart', (a - b >= 0 ? '+' : '') + (a - b) + ' points')); c.appendChild(tete);
       const rs = el('div', 'rangs');
       [[a, 'Avec les trois réunis', true], [b, 'Quand l’un des trois manque', false]].forEach(([p, lib, fort]) => {
         const r = el('div', 'rang' + (fort ? ' rang--avec' : ' rang--sans'));

@@ -221,16 +221,16 @@
         "solo": {
           "debut": "J'aimerais…",
           "choix": [
-            "Rejoindre un collectif de pairs",
-            "Avancer avec d'autres sur des projets communs",
-            "Retrouver des pairs régulièrement",
-            "Partager mes objectifs avec quelqu'un",
-            "Trouver des partenaires pour répondre à plusieurs"
+            "Rejoindre un collectif d'indépendants",
+            "Retrouver mon collectif plus régulièrement",
+            "Avancer avec d'autres indépendants sur des projets communs",
+            "Partager mes objectifs avec mon collectif",
+            "Répondre à plusieurs à de plus gros projets"
           ],
           "a_valider": true
         }
       },
-      "solo": "Je fais partie d'un collectif pro avec qui j'avance.",
+      "solo": "J'avance avec un collectif d'indépendants qui compte pour moi.",
       "groupe_solo": "Votre collectif pro"
     },
     {
@@ -260,15 +260,15 @@
         "solo": {
           "debut": "J'aimerais…",
           "choix": [
-            "Célébrer davantage mes réussites",
-            "Avoir des pairs avec qui partager mes victoires",
-            "Prendre le temps de regarder le chemin parcouru",
-            "Faire mieux connaître mes réussites à mes clients"
+            "Partager plus clairement mes objectifs avec mes partenaires",
+            "Mieux cadrer le travail avec mes sous-traitants",
+            "Faire le point plus souvent avec mes partenaires",
+            "Avoir un collectif avec qui partager mes réussites"
           ],
           "a_valider": true
         }
       },
-      "solo": "Quand je réussis, je le partage avec des pairs qui savent ce que ça représente.",
+      "solo": "Avec mes partenaires et sous-traitants, nous visons le même résultat.",
       "groupe_solo": "Votre collectif pro"
     },
     {
@@ -300,16 +300,16 @@
         "solo": {
           "debut": "J'aimerais…",
           "choix": [
-            "Rencontrer des pairs de mon métier",
-            "Échanger plus souvent sur ma pratique",
-            "Rejoindre un groupe de mon métier",
-            "Avoir un pair avec qui parler technique",
-            "Découvrir comment d'autres font le même métier"
+            "Rencontrer d'autres indépendants de mon métier",
+            "Échanger plus souvent avec d'autres indépendants",
+            "Rejoindre un collectif d'indépendants",
+            "Découvrir comment d'autres indépendants s'organisent",
+            "Avoir quelqu'un de confiance qui connaît mon métier"
           ],
           "a_valider": true
         }
       },
-      "solo": "J'ai autour de moi des pairs qui comprennent mon métier.",
+      "solo": "Je connais d'autres indépendants qui vivent les mêmes réalités que moi.",
       "groupe_solo": "Ce qu'on sait de vous"
     },
     {
@@ -350,7 +350,7 @@
           "a_valider": true
         }
       },
-      "solo": "Mes clients et partenaires savent ce que je fais et ce que j'attends d'eux.",
+      "solo": "Mes clients savent ce que je fais et ce que j'attends d'eux.",
       "groupe_solo": "Ce qu'on sait de vous"
     },
     {
@@ -381,14 +381,14 @@
           "debut": "J'aimerais…",
           "choix": [
             "Fixer mes prix plus sereinement",
-            "Recevoir plus de retours de mes clients",
             "Mieux montrer la valeur de mon travail",
+            "Oser revoir mes tarifs",
             "Être recommandé plus souvent"
           ],
           "a_valider": true
         }
       },
-      "solo": "Mon travail est reconnu à sa juste valeur, par mes clients comme par mes pairs.",
+      "solo": "Mes clients reconnaissent la valeur de mon travail, et je la facture à son juste prix.",
       "groupe_solo": "Votre place"
     },
     {
@@ -420,16 +420,16 @@
         "solo": {
           "debut": "J'aimerais…",
           "choix": [
-            "Prendre plus souvent la parole dans mon réseau",
-            "Partager ce que je sais avec d'autres",
+            "Prendre plus souvent la parole dans mon collectif",
+            "Partager ce que je sais avec d'autres indépendants",
             "Être sollicité pour mon avis",
-            "Trouver un réseau qui me ressemble",
-            "Intervenir lors de rencontres de mon métier"
+            "Trouver un collectif qui me ressemble",
+            "Animer un temps d'échange dans mon collectif"
           ],
           "a_valider": true
         }
       },
-      "solo": "Dans mon réseau pro, ma parole compte et on m'écoute.",
+      "solo": "Dans mon collectif, mon avis compte et on m'écoute.",
       "groupe_solo": "Votre place"
     },
     {
@@ -461,7 +461,7 @@
         "solo": {
           "debut": "J'aimerais…",
           "choix": [
-            "Me fixer un cap clair pour l'année",
+            "Me fixer des priorités claires pour l'année",
             "Avoir une vue simple de ma trésorerie",
             "Mieux organiser mon agenda",
             "Faire le point chaque mois",
@@ -470,7 +470,7 @@
           "a_valider": true
         }
       },
-      "solo": "Je sais où j'en suis : mon cap, mon agenda, ma trésorerie.",
+      "solo": "Je sais où j'en suis : mes priorités, mon agenda, ma trésorerie.",
       "groupe_solo": "Votre organisation"
     },
     {
@@ -502,16 +502,16 @@
         "solo": {
           "debut": "J'aimerais…",
           "choix": [
-            "Bloquer du temps pour réfléchir",
-            "Prendre du recul avec d'autres",
+            "Bloquer du temps chaque semaine pour piloter",
+            "Prendre du recul avec mon collectif",
             "M'accorder une vraie pause dans l'année",
-            "Mieux répartir production et réflexion",
+            "Mieux répartir production et pilotage",
             "M'offrir un temps loin du quotidien"
           ],
           "a_valider": true
         }
       },
-      "solo": "Je garde du temps pour prendre du recul, pas seulement pour produire.",
+      "solo": "Je garde du temps pour piloter mon activité, pas seulement pour produire.",
       "groupe_solo": "Votre organisation"
     },
     {
@@ -552,7 +552,7 @@
           "a_valider": true
         }
       },
-      "solo": "Quand ça coince avec un client ou un partenaire, on en parle vite et on trouve une solution.",
+      "solo": "Quand ça coince avec un client, on en parle vite et on trouve une solution.",
       "groupe_solo": "Quand ça accroche"
     },
     {
@@ -585,16 +585,16 @@
         "solo": {
           "debut": "J'aimerais…",
           "choix": [
-            "Avoir un pair à qui demander conseil",
+            "Avoir quelqu'un de confiance à qui demander conseil",
             "Bénéficier d'un regard extérieur",
             "Prendre mes décisions avec plus de recul",
             "Être accompagné sur les choix importants",
-            "Rejoindre un groupe d'entraide entre indépendants"
+            "En parler dans un collectif d'indépendants"
           ],
           "a_valider": true
         }
       },
-      "solo": "J'ai quelqu'un avec qui réfléchir avant une décision importante.",
+      "solo": "Avant une décision importante (un prix, un client, un investissement), j'ai quelqu'un avec qui en parler.",
       "groupe_solo": "Qui vous épaule"
     },
     {
@@ -626,15 +626,15 @@
         "solo": {
           "debut": "J'aimerais…",
           "choix": [
-            "Avoir quelqu'un à qui confier mes doutes",
-            "Échanger en confiance avec des pairs",
-            "Parler plus librement de ce qui me freine",
-            "Trouver un lieu où dire les choses"
+            "Oser dire non à un client",
+            "Avoir des repères pour dire les choses",
+            "Poser mes limites dès le départ",
+            "Préparer les échanges délicats avec quelqu'un de confiance"
           ],
           "a_valider": true
         }
       },
-      "solo": "Je peux parler franchement de mes doutes à quelqu'un.",
+      "solo": "Avec mes clients, je peux dire ce que je pense, même quand ce n'est pas ce qu'ils veulent entendre.",
       "groupe_solo": "La confiance et le soutien"
     },
     {
@@ -666,15 +666,15 @@
         "solo": {
           "debut": "J'aimerais…",
           "choix": [
-            "Parler de mes erreurs en confiance",
-            "Apprendre des erreurs des autres",
-            "Partager ce que m'a appris un échec",
-            "Être entouré de pairs bienveillants"
+            "Avoir quelqu'un de confiance à qui confier mes doutes",
+            "Parler de mes erreurs sans crainte",
+            "Apprendre des erreurs d'autres indépendants",
+            "Partager ce que m'a appris un échec"
           ],
           "a_valider": true
         }
       },
-      "solo": "Je peux parler d'une erreur sans me sentir jugé.",
+      "solo": "Je peux parler d'un doute ou d'une erreur sur mon activité avec quelqu'un de confiance.",
       "groupe_solo": "La confiance et le soutien"
     },
     {
@@ -707,15 +707,15 @@
           "debut": "J'aimerais…",
           "choix": [
             "Savoir plus facilement à qui demander",
-            "Avoir un réseau d'entraide",
+            "Avoir un collectif d'entraide",
             "Pouvoir déléguer certaines tâches",
-            "Trouver des pairs pour s'entraider",
+            "Trouver d'autres indépendants pour s'entraider",
             "Être soutenu dans les périodes chargées"
           ],
           "a_valider": true
         }
       },
-      "solo": "Quand j'ai besoin d'aide, je sais vers qui me tourner.",
+      "solo": "Quand je suis bloqué ou débordé, je sais sur qui compter.",
       "groupe_solo": "La confiance et le soutien"
     },
     {
@@ -747,7 +747,7 @@
         "solo": {
           "debut": "J'aimerais…",
           "choix": [
-            "Me reconnecter à ce qui me motive",
+            "Me reconnecter à ce qui m'a fait choisir ce métier",
             "Choisir des missions qui me ressemblent",
             "Voir l'effet de mon travail chez mes clients",
             "Prendre le temps de définir ce qui compte pour moi"
@@ -755,7 +755,7 @@
           "a_valider": true
         }
       },
-      "solo": "Je vois le sens de ce que je fais au quotidien.",
+      "solo": "Je sais pourquoi j'ai choisi de travailler à mon compte, et ça me porte encore.",
       "groupe_solo": "Le sens et les résultats"
     },
     {
@@ -788,14 +788,14 @@
           "debut": "J'aimerais…",
           "choix": [
             "Prendre soin de mon rythme de travail",
-            "Parler de ma façon de travailler avec des pairs",
+            "Parler de ma façon de travailler avec d'autres indépendants",
             "Trouver un meilleur équilibre",
-            "Faire évoluer ma façon de travailler"
+            "Garder de l'énergie sur la durée"
           ],
           "a_valider": true
         }
       },
-      "solo": "Je pense autant à ma façon de travailler qu'au chiffre d'affaires.",
+      "solo": "Je me sens pleinement engagé dans mon activité, avec une énergie qui dure.",
       "groupe_solo": "Le sens et les résultats"
     },
     {
@@ -836,7 +836,7 @@
           "a_valider": true
         }
       },
-      "solo": "Mon activité obtient les résultats que je vise.",
+      "solo": "Mon activité atteint les objectifs que je me fixe.",
       "groupe_solo": "Le sens et les résultats"
     }
   ],
@@ -1285,7 +1285,7 @@
       "choix": [
         "Le manager",
         "Un membre de l'équipe",
-        "À votre compte, sans équipe"
+        "En solo ou en profession libérale"
       ],
       "cles": [
         "manager",
@@ -1295,7 +1295,7 @@
       "libelles": [
         "En encadrant une équipe",
         "Au sein d'une équipe",
-        "À votre compte, sans équipe"
+        "En solo ou en profession libérale"
       ]
     },
     "genre": {
@@ -1501,13 +1501,13 @@
     "pied_rh": "Greatly n'est ni un cabinet RH, ni un organisme de formation. Pour aller plus loin avec votre équipe, votre service RH ou le cabinet qui vous accompagne sera le mieux placé."
   },
   "pourquoi_solo": {
-    "Votre collectif pro": "On se demande si vous avancez seul ou entouré de pairs. Travailler à son compte ne veut pas dire travailler sans collectif.",
-    "Ce qu'on sait de vous": "On veut comprendre si vos pairs, vos clients et vos partenaires savent ce que vous faites. C'est ce qui permet d'anticiper plutôt que de subir.",
-    "Votre place": "On cherche à savoir si votre travail est reconnu, par vos clients comme par vos pairs, et si votre parole compte.",
-    "Votre organisation": "On s'interroge sur ce qui vous donne de la visibilité : votre cap, votre agenda, votre trésorerie, et du temps pour prendre du recul.",
+    "Votre collectif pro": "On se demande si vous avancez seul ou avec un collectif d'indépendants, et avec vos partenaires. Travailler à son compte ne veut pas dire travailler sans collectif.",
+    "Ce qu'on sait de vous": "On veut comprendre si vos clients et d'autres indépendants savent ce que vous faites. C'est ce qui permet d'anticiper plutôt que de subir.",
+    "Votre place": "On cherche à savoir si votre travail est reconnu à sa juste valeur, et si votre avis compte dans votre collectif.",
+    "Votre organisation": "On s'interroge sur ce qui vous donne de la visibilité : vos priorités, votre agenda, votre trésorerie, et du temps pour piloter votre activité.",
     "Quand ça accroche": "On regarde comment se règlent les tensions avec un client ou un partenaire : vite et ensemble, ou plus lentement.",
-    "Qui vous épaule": "On se demande si vous avez quelqu'un avec qui réfléchir avant une décision importante.",
-    "La confiance et le soutien": "On cherche à savoir si vous pouvez parler franchement de vos doutes et de vos erreurs, et vers qui vous tourner quand il le faut.",
+    "Qui vous épaule": "On se demande si vous avez quelqu'un de confiance avec qui parler avant une décision importante.",
+    "La confiance et le soutien": "On cherche à savoir si vous pouvez dire les choses franchement, parler d'un doute ou d'une erreur, et sur qui compter quand ça déborde.",
     "Le sens et les résultats": "On regarde ce qui donne du sens à votre activité, et les résultats qu'elle obtient. Pour nous, les résultats sont une conséquence, pas un point de départ."
   }
 }

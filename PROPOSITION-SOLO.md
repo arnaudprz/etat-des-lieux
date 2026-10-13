@@ -1,3 +1,5 @@
+> **Remplacé par CORRECTIONS-14.md** (13 octobre 2026) : libellé, phrases et idées solo validés ou réécrits. Ce fichier garde la première proposition, pour mémoire.
+
 # Proposition solo, à relire
 
 13 octobre 2026. Tout ce qui est ici est en local, rien n'est en ligne. Les idées sont marquées « à valider » dans `docs/assets/data/contenu.json` (clé `solo`, champ `a_valider`).

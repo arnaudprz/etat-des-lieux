@@ -16,7 +16,8 @@ describe('solo : profil', () => {
   test('trois rôles explicites, dans l’ordre de la maquette', () => {
     assert.deepEqual(contenu.profil.role.cles, ['manager', 'membre', 'solo']);
     assert.equal(contenu.profil.role.question, 'Vous travaillez');
-    assert.deepEqual(contenu.profil.role.libelles, ['En encadrant une équipe', "Au sein d'une équipe", 'À votre compte, sans équipe']);
+    assert.deepEqual(contenu.profil.role.libelles, ['En encadrant une équipe', "Au sein d'une équipe", 'En solo ou en profession libérale']);
+    assert.equal(contenu.profil.role.choix[2], 'En solo ou en profession libérale');
   });
   test('les valeurs enregistrées pour manager et membre ne changent pas', () => {
     assert.equal(contenu.profil.role.choix[0], 'Le manager');
@@ -66,6 +67,15 @@ describe('solo : envoi', () => {
 });
 
 describe('solo : contenus', () => {
+  test('les 16 phrases validées le 13 octobre', () => {
+    assert.equal(contenu.affirmations[0].solo, "J'avance avec un collectif d'indépendants qui compte pour moi.");
+    assert.equal(contenu.affirmations[9].solo, "Avant une décision importante (un prix, un client, un investissement), j'ai quelqu'un avec qui en parler.");
+    assert.equal(contenu.affirmations[15].solo, 'Mon activité atteint les objectifs que je me fixe.');
+  });
+  test('autant d’idées qu’avant par affirmation (la base contrôle ces nombres)', () => {
+    const nb = { 1: 5, 2: 4, 3: 5, 4: 5, 5: 4, 6: 5, 7: 5, 8: 5, 9: 5, 10: 5, 11: 4, 12: 4, 13: 5, 14: 4, 15: 4, 16: 5 };
+    for (const a of contenu.affirmations) assert.equal(a.relance.solo.choix.length, nb[a.n], 'idées ' + a.n);
+  });
   test('16 phrases solo, aux mêmes numéros', () => {
     assert.equal(contenu.affirmations.length, 16);
     contenu.affirmations.forEach((a, k) => { assert.equal(a.n, k + 1); assert.ok(a.solo && a.solo.length > 10, 'phrase ' + a.n); });
@@ -81,7 +91,8 @@ describe('solo : contenus', () => {
     const textes = contenu.affirmations.flatMap((a) => [a.solo, a.groupe_solo, ...a.relance.solo.choix]).concat(Object.values(contenu.pourquoi_solo));
     for (const t of textes) {
       assert.doesNotMatch(t, /[—–]/, t);
-      assert.doesNotMatch(t, /\b(expérience|expert|cohorte|promotion|bilan)\b/i, t);
+      assert.doesNotMatch(t, /\b(expérience|expert|cohorte|promotion|bilan|pairs?)\b|des gens/i, t);
+      assert.doesNotMatch(t, /\b(équipe|manager|collègues?)\b/i, t); // un solo ne lit jamais ces mots
     }
   });
   test('les fondations de la thèse ne changent pas', () => {
