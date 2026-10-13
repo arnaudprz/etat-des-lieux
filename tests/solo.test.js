@@ -136,3 +136,18 @@ describe('solo : taille d’équipe (corrections 14)', () => {
     assert.match(src, /taille_equipe: role === 'solo' \? '' : choix\(P\.taille_equipe\.choix, st\.teq\)/);
   });
 });
+
+describe('solo : uniquement des chiffres d’indépendants', () => {
+  test('un solo ne reçoit jamais les chiffres d’un autre rôle', async () => {
+    const { chiffresPourSolo, VIDE_SOLO } = await import('../docs/assets/js/seuil-solo.js');
+    assert.equal(chiffresPourSolo({ role: 'equipes', n: 300 }), VIDE_SOLO);
+    assert.equal(chiffresPourSolo(null), VIDE_SOLO);
+    const d = { role: 'solo', n: 5 }; assert.equal(chiffresPourSolo(d), d);
+  });
+  test('une case s’affiche dès 3 indépendants, pas avant', async () => {
+    const { caseSolo } = await import('../docs/assets/js/seuil-solo.js');
+    assert.equal(caseSolo({ n: 2, engages: null }), false);
+    assert.equal(caseSolo({ n: 3, engages: 67 }), true);
+    assert.equal(caseSolo(undefined), false);
+  });
+});

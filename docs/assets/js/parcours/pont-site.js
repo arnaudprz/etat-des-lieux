@@ -10,12 +10,12 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu } from '../contenu.js?v=33';
-import { relancesAEnvoyer } from '../calcul.js';
-import { lienResultat } from '../lien.js?v=33';
-import { envoyerReponse, compteur } from '../api.js';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js';
-import { evenement } from './commun.js';
+import { chargerContenu } from '../contenu.js?v=35';
+import { relancesAEnvoyer } from '../calcul.js?v=35';
+import { lienResultat } from '../lien.js?v=35';
+import { envoyerReponse, compteur } from '../api.js?v=35';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=35';
+import { evenement } from './commun.js?v=35';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -39,7 +39,7 @@ const TEXTES = {
   'Des mots pour en parler, avec vos collègues ou votre manager': 'Des mots pour en parler, avec votre équipe, votre manager ou votre collectif',
   'Une étude pour mieux éclairer les équipes': "Une étude pour montrer ce qui nourrit l'engagement",
   "Vos réponses, anonymes et regroupées, aident nos intervenants à préparer des ateliers ancrés dans le vécu des équipes, et nos programmes à évoluer. L'étude complète est partagée avec ceux qui le souhaitent.":
-    "Vos réponses, anonymes et regroupées, nourrissent une étude : la confiance, le soutien et la cohésion vont-ils avec l'engagement, en équipe comme à son compte ? Pour nous, la performance n'est pas un objectif : elle en est la conséquence. L'étude complète est partagée avec ceux qui le souhaitent.",
+    "Vos réponses restent anonymes. Regroupées, elles servent une étude qui vérifie une idée simple : quand la confiance, le soutien et la cohésion sont là, on s'engage davantage, et les résultats suivent. En équipe comme à son compte. L'étude complète est partagée avec ceux qui le souhaitent.", // texte validé le 13 octobre 2026 (ordinateur)
   // « Ce que vous recevez en 2 minutes » : quatre blocs ancrés dans ce que la personne vit vraiment (Arnaud, 13 octobre 2026).
   "Une lecture d'ensemble": 'Votre équipe, telle que vous la voyez',
   'En quelques lignes, la façon dont vous travaillez ensemble, vue depuis votre place.':
@@ -60,7 +60,7 @@ const TEXTES = {
   'Un regard clair sur votre façon de travailler ensemble : ce qui vous porte déjà, ce qui peut encore évoluer, et des mots pour en parler.':
     "Votre équipe ou votre activité, telle que vous la voyez : la confiance, le soutien, la cohésion. À côté, ce que montrent toutes les réponses : ce qui nourrit l'engagement.",
   'Vos réponses, anonymes et regroupées, aident nos intervenants à préparer des ateliers ancrés dans le vécu des équipes, et nos programmes à évoluer.':
-    "Vos réponses, anonymes et regroupées, nourrissent une étude : la confiance, le soutien et la cohésion vont-ils avec l'engagement, en équipe comme à son compte ? Pour nous, la performance n'est pas un objectif : elle en est la conséquence.",
+    "Vos réponses restent anonymes. Regroupées, elles servent une étude qui vérifie une idée simple : quand la confiance, le soutien et la cohésion sont là, on s'engage davantage, et les résultats suivent. En équipe comme à son compte. L'étude complète est partagée avec ceux qui le souhaitent.", // la même phrase sur téléphone
   // L'introduction du profil (Arnaud, 13 octobre 2026 : « ce texte n'est pas top »).
   "Pour lire vos réponses à côté de celles d'équipes qui vous ressemblent, quand elles seront assez nombreuses. Rien ne permet de vous identifier.":
     'Quelques mots pour vous situer parmi toutes les réponses, en équipe ou à votre compte. Rien ne permet de vous identifier.',
@@ -76,7 +76,10 @@ const TEXTES = {
   // Ce qui ne parlait qu'aux équipes, ouvert aussi aux solos (Arnaud, 13 octobre 2026 : « ok »).
   "État des lieux d'équipe · 2 minutes": 'État des lieux · 2 minutes',
   "Sur les travaux de Jody Hoffer Gittell, à l'université Brandeis : des objectifs partagés, des connaissances partagées et le respect mutuel aident une équipe à mieux travailler ensemble.":
-    "Sur les travaux de Jody Hoffer Gittell, à l'université Brandeis : des objectifs partagés, des connaissances partagées et le respect mutuel aident à mieux travailler ensemble, en équipe comme avec ses partenaires.",
+    "Sur les travaux de Jody Hoffer Gittell, à l'université Brandeis : quand on vise le même objectif, qu'on sait ce que fait l'autre et qu'on se respecte, on travaille mieux ensemble. En équipe comme avec ses partenaires.",
+  // Bloc « Anonyme » du bas de l'accueil (13 octobre 2026). Le lien de confidentialité qui suit reste à sa place.
+  'Anonyme. Aucun compte à créer. Résultat immédiat. Vos réponses servent à calculer votre résultat et, regroupées, à publier une étude.':
+    "Anonyme et sans compte : personne ne sait qui a répondu. Votre résultat s'affiche tout de suite. Vos réponses, regroupées avec les autres, nourrissent l'étude.",
 };
 const TEXTES_N = Object.fromEntries(Object.entries(TEXTES).map(([k, v]) => [norm(k), v]));
 
@@ -336,7 +339,9 @@ if (page === 'questionnaire') {
     const choix = (liste, i) => (i != null && i >= 0 && liste[i] != null ? liste[i] : null);
     // Chaque position correspond à un rôle explicite : plus de « membre » par défaut (13 octobre 2026).
     const role = (P.role.cles || ['manager', 'membre', 'solo'])[st.role];
-    if (!role) return;
+    // Un rôle qui ne correspond à aucune clé connue (un fichier ancien resté en cache, par exemple) : on n'enregistre rien,
+    // et on recharge la page pour repartir avec les bons fichiers (13 octobre 2026).
+    if (!role || !['manager', 'membre', 'solo'].includes(role)) { console.error('[edl] rôle inconnu', st.role); location.reload(); return; }
     const profil = {
       role: choix(P.role.choix, st.role),
       genre: choix(P.genre.choix, st.genre),

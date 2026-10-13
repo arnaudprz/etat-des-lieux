@@ -341,3 +341,144 @@ navigateur pouvait mélanger des versions pendant quelques minutes.
   - le résultat solo s'ouvre.
 - Manager et membre : les captures des résultats, avant et après, sont identiques au pixel près sur ordinateur et téléphone.
   Le questionnaire ne change que par le bloc de fin (« Comment voyez-vous / votre travail ? »), demandé au point 5.
+
+## Suite (13 octobre 2026, soir) : versions, seuil solo, textes de l'accueil. EN LOCAL, non déployé
+
+Le correctif de la taille d'équipe (section précédente) est en ligne depuis ce soir. Il a été vérifié en ligne sur Chrome et
+WebKit, ordinateur et téléphone. Tout ce qui suit est en local.
+
+### Causes trouvées
+
+- **Cache.** Les modules du parcours s'importaient sans version (`calcul.js`, `api.js`, `session.js`, `commun.js`, etc.),
+  ou avec des versions différentes d'un fichier à l'autre. Les fichiers de la maquette gardaient leur nom après
+  retouche. Un navigateur pouvait donc garder un ancien fichier et le mélanger aux nouveaux.
+- **Taille d'équipe.** Voir la section précédente : un masque posé après coup, qui dépendait du rythme du navigateur.
+  Corrigé dans la maquette elle-même.
+- **Chiffres solo.** Avec 5 solos, la page passait aux chiffres des indépendants dès 3 réponses. Presque toutes les cases
+  comptaient moins de 3 personnes, d'où les « — » et les « Moins de 3 personnes : pas de chiffre ».
+
+### Ce qui a changé
+
+1. **Une seule version partout.**
+   - `V` dans `config.js` (35). Tous les imports internes des modules et toutes les pages portent `?v=35`.
+   - `scripts/verifier-versions.mjs` le vérifie, et il est dans `npm test` (`tests/versions.test.js`). À lancer avant chaque
+     livraison.
+   - Dans `pont-site.js`, un rôle qui ne correspond à aucune clé connue n'enregistre rien et recharge la page.
+2. **Taille d'équipe** : déjà corrigée et en ligne (section précédente). Pour manager et membre, la question reste
+   obligatoire, à la même place.
+3. **Résultat solo, seuil** (`docs/assets/js/seuil-solo.js`, `SEUIL_SOLO = 30`, facile à changer) :
+   - **Chiffres des indépendants** seulement à partir de 30 réponses solo, et si chaque case de la page compte au moins
+     3 personnes. Titre : « Ce que montrent les indépendants ».
+   - **Sinon, toute l'étude** (`edl_these` sans rôle), avec les mêmes % et les mêmes phrases que pour les équipes, sans
+     mot d'équipe. Titre : « Ce que montre l'étude », avec la ligne « Pas encore assez d'indépendants pour leurs propres
+     chiffres. Voici ce que montrent toutes les réponses. »
+   - Jamais de mélange sur une même page, jamais de « — ».
+   - « Ce que demandent les autres indépendants » n'apparaît qu'au-dessus du seuil, et si au moins 3 solos ont choisi
+     l'idée.
+   - En démonstration, `?demo=1&solos=N` montre la bascule avec des chiffres fictifs.
+4. **Accueil, trois textes** (table `TEXTES` de `pont-site.js`, sur ordinateur et téléphone) :
+   - **« Ce que nous y gagnons », à droite :** « Vos réponses restent anonymes. Regroupées, elles servent une étude qui
+     vérifie une idée simple : quand la confiance, le soutien et la cohésion sont là, on s'engage davantage, et les
+     résultats suivent. En équipe comme à son compte. L'étude complète est partagée avec ceux qui le souhaitent. » Le
+     téléphone a la même phrase.
+   - **« Sur quoi repose » :** « Sur les travaux de Jody Hoffer Gittell, à l'université Brandeis : quand on vise le même
+     objectif, qu'on sait ce que fait l'autre et qu'on se respecte, on travaille mieux ensemble. En équipe comme avec ses
+     partenaires. »
+   - **Bloc « Anonyme » (ordinateur) :** « Anonyme et sans compte : personne ne sait qui a répondu. Votre résultat s'affiche
+     tout de suite. Vos réponses, regroupées avec les autres, nourrissent l'étude. » Il y a une espace avant le lien
+     « Politique de confidentialité de l'état des lieux », qui pointe toujours vers `/etat-des-lieux/confidentialite/`.
+     Le téléphone n'a pas ce bloc, et le questionnaire non plus.
+
+### Fichiers touchés
+
+- `docs/assets/js/seuil-solo.js` (nouveau)
+- `docs/assets/js/parcours/resultat-these.js`
+- `docs/assets/js/parcours/pont-site.js`
+- `docs/assets/js/config.js` (`V = 35`)
+- tous les modules de `docs/assets/js/` (imports en `?v=35`)
+- toutes les pages `.html` (scripts et feuilles en `?v=35`)
+- `scripts/verifier-versions.mjs` (nouveau), `tests/versions.test.js` (nouveau)
+- `tests/solo.test.js` : seuil, taille d'équipe, modèle
+
+### Réponses enregistrées comme « membre » à la place d'un solo
+
+La table ne garde ni le libellé choisi, ni l'heure : seulement le rôle et la date. On ne peut donc pas prouver qu'une
+réponse « membre » venait d'un solo.
+
+Le 13 octobre, il y a 2 réponses « membre », toutes deux avec une taille d'équipe :
+- « 2 à 5 personnes », 1 à 9 salariés, Énergie, eau et environnement ;
+- « 6 à 12 personnes », 10 à 49 salariés, BTP et construction.
+
+Un solo transformé en membre par un ancien fichier aurait dû choisir une taille d'équipe, donc on ne peut pas les écarter
+non plus. Rien n'a été modifié.
+
+Les 5 réponses solo du 13 octobre sont correctes : rôle `solo`, taille d'équipe vide. Elles comptent dans l'étude solo.
+
+### Vérifications
+
+- `npm test` : 206 tests réussis. Seul échoue l'ancien `agregats.test.js`, comme avant.
+- `scripts/test-parcours-solo.mjs` en navigation privée (navigateurs neufs) : Chrome et WebKit, ordinateur et téléphone,
+  tout est bon.
+- **Cache :** dans un même navigateur, d'abord tout le site en `v=30`, servi avec 10 minutes de cache comme GitHub, puis le
+  site actuel. La nouvelle page est chargée (`v=34` au moment du test). Le parcours solo complet est correct : pas de
+  taille d'équipe, idées solo, envoi `solo` avec une taille vide, résultat en `-s`, aucun « Les managers / Les équipes ».
+  Vérifié avec Chrome et WebKit, sur ordinateur et téléphone.
+- **Résultat solo :**
+  - avec la vraie base en lecture seule (5 solos) : toute l'étude, par exemple « Là où la confiance est là, 96 % des
+    personnes sont engagées » ;
+  - en démo avec 5 et 29 solos : toute l'étude ;
+  - en démo avec 40 solos : les indépendants, avec leur demande ;
+  - jamais de « — », de « Moins de 3 » ni de mot d'équipe.
+- **Manager et membre :** les captures des résultats sont identiques au pixel près, avant et après, sur ordinateur et
+  téléphone (`captures/corrections-14/*-apres-suite.png`).
+
+### Ordre de mise en ligne
+
+Aucune migration n'est nécessaire : `edl_these` accepte déjà un appel sans rôle. Il suffit de pousser le site, avec ton
+accord.
+
+## Changement de règle : un solo ne voit que des chiffres d'indépendants (13 octobre 2026, soir, EN LOCAL)
+
+Arnaud : « on ne va pas montrer des chiffres d'équipes à un solopreneur, ça n'a pas de sens ». Il a choisi « ses chiffres
+dès que possible ». **Cette règle remplace le seuil de 30 décrit plus haut.**
+
+### La nouvelle règle
+
+- **Que des chiffres d'indépendants.** Un solo ne voit jamais les chiffres des équipes ni ceux de « toute l'étude ». Si la
+  base ne renvoie pas de chiffres solo, la page fait comme s'il n'y avait encore aucun indépendant.
+- **Case par case.** Un thème affiche ses % dès que 3 indépendants au moins sont de chaque côté (« là où c'est là » et
+  « là où ça manque »). Sinon, la carte dit : « Le chiffre des indépendants s'affiche ici dès que 3 d'entre eux au moins
+  sont de chaque côté. » Jamais de « — ».
+- **Titres :** toujours « Ce que montrent les indépendants ». Tant qu'un thème attend, une ligne sous le titre :
+  « Leurs chiffres apparaissent thème par thème, dès que 3 indépendants au moins sont de chaque côté. »
+- **Grand nombre :** « N indépendants ont répondu à l'état des lieux », au lieu du total de toutes les personnes.
+- **Haut de page** (la thèse avec ses chiffres) : il s'affiche dès que les deux groupes « trois réunis » et « l'un des
+  trois manque » comptent chacun au moins 3 indépendants. Corrigé au passage : il restait masqué quand les chiffres
+  arrivaient après un premier affichage vide.
+- **« Ce que demandent les autres indépendants » :** l'idée solo la plus choisie, dès qu'au moins 3 solos l'ont choisie.
+
+### Aujourd'hui, avec la vraie base
+
+Il y a 5 indépendants. Pour chaque thème, l'un des deux côtés compte moins de 3 personnes. Un solo voit donc ses propres
+réponses à gauche, et à droite :
+- les 5 cartes « Le chiffre des indépendants s'affiche ici… » ;
+- « 5 indépendants ont répondu » ;
+- le bloc des demandes, puisqu'au moins 3 solos ont choisi une même idée.
+
+Aucun chiffre d'équipe n'apparaît. Les % viendront tout seuls avec les prochaines réponses solo.
+
+### Fichiers
+
+- `docs/assets/js/seuil-solo.js` : il ne contient plus de seuil, seulement `caseSolo`, `chiffresPourSolo` et `VIDE_SOLO`.
+- `docs/assets/js/parcours/resultat-these.js`.
+- `tests/solo.test.js` : les tests du seuil sont remplacés par « jamais les chiffres d'un autre rôle » et « une case dès
+  3 indépendants ».
+
+### Vérifications
+
+- `npm test` : 203 tests réussis. Seul échoue l'ancien `agregats.test.js`, comme avant.
+- Résultat solo :
+  - en démo avec 0, 8 et 40 indépendants, sur ordinateur et téléphone ;
+  - avec la vraie base en lecture seule (5).
+- Dans tous les cas : aucun chiffre d'équipe, aucun « Toute l'étude », aucun « — », aucun mot d'équipe.
+- Manager et membre : captures identiques au pixel près.

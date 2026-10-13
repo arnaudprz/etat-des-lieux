@@ -6,11 +6,12 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu } from '../contenu.js?v=33';
-import { decoder } from '../lien.js?v=33';
-import { envoyerContact, compteur } from '../api.js';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=33';
-import { memoriserResultat } from '../session.js';
+import { chargerContenu } from '../contenu.js?v=35';
+import { decoder } from '../lien.js?v=35';
+import { envoyerContact, compteur } from '../api.js?v=35';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=35';
+import { memoriserResultat } from '../session.js?v=35';
+import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=35';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -104,12 +105,8 @@ async function lireThese(role) {
     let d = await appelThese({ p_role: role }).catch(() => null);
     if (!d) d = await appelThese({});
     if (!d) return null;
-    // Un solo : ses chiffres seulement s'ils viennent bien des solos et qu'il y en a au moins 3 ; sinon ceux des équipes,
-    // présentés comme tels (« Dans les équipes qui ont répondu »), jamais comme « toute l'étude ».
-    if (role === 'solo' && (d.role !== 'solo' || (d.n || 0) < 3)) {
-      const e = (await appelThese({ p_role: 'membre' }).catch(() => null)) || (d.role !== 'solo' ? d : null);
-      if (e) { e.repli = true; return e; }
-    }
+    // Un solo ne voit que des chiffres d'indépendants, jamais ceux des équipes (seuil-solo.js).
+    if (role === 'solo') return chiffresPourSolo(d);
     return d;
   } catch (e) { return null; }
 }
@@ -123,7 +120,8 @@ function afficher(lu, contenu, these) {
   // Le même schéma des deux côtés (Arnaud, 13 octobre 2026 : « le même schéma à droite qu'à gauche, montrer où il se situe vs la
   // totalité de l'étude ») : la confiance, le soutien, la cohésion → l'engagement → la performance. À gauche lui, à droite tous.
   const rep = lu.reponses;
-  const T = these || DEMO; const G = T.groupes || {}; const N = T.n || 0;
+  const solo = lu.role === 'solo';
+  const T = solo ? chiffresPourSolo(these) : these || DEMO; const G = T.groupes || {}; const N = T.n || 0;
   const part = (k) => (G[k] && N ? Math.round(G[k].n / N * 100) : null);
   const compte = (k, champ) => (G[k] && G[k][champ] != null ? G[k].n * G[k][champ] / 100 : 0);
   const engTous = N ? Math.round((compte('toutes', 'engages') + compte('manque', 'engages')) / N * 100) : null;
@@ -138,7 +136,8 @@ function afficher(lu, contenu, these) {
   const debut = (txt) => txt.charAt(0).toUpperCase() + txt.slice(1);
   // On ne juge pas (Arnaud, 13 octobre 2026) : un titre et une phrase qui décrivent, sans dire ce qui va ou ne va pas.
   // Un solo parle de son activité, pas d'une équipe ; à droite, des indépendants, ou les équipes tant qu'ils sont moins de 3.
-  const solo = lu.role === 'solo'; const repli = solo && (!these || these.repli);
+  // Un solo : uniquement les indépendants, thème par thème, dès que chaque côté compte au moins 3 personnes.
+  const incomplet = solo && !['toutes', 'manque', 'confiance_avec', 'confiance_sans', 'soutien_avec', 'soutien_sans', 'cohesion_avec', 'cohesion_sans'].every((k) => caseSolo(G[k]));
   // Un solo (14e corrections, 13 octobre 2026) : aucun mot d'équipe, de manager ni de collègue. Manager et membre : inchangé.
   // À gauche « Votre activité, telle que vous la voyez. », sans répéter « votre activité » dans le surtitre.
   if (solo) {
@@ -146,22 +145,26 @@ function afficher(lu, contenu, these) {
     $('[data-lui-titre]').textContent = 'telle que vous la voyez.';
     if ($('[data-lui-sur]')) $('[data-lui-sur]').textContent = 'Votre regard';
   } else $('[data-lui-titre]').textContent = 'votre équipe.';
-  // À droite : « Ce que montre l'étude » tant qu'il y a moins de 3 solos, avec une ligne qui le dit ; ensuite les indépendants.
-  const D_SUR = !solo || repli ? 'Toute l’étude' : 'Les indépendants';
+  // À droite, pour un solo : toujours « Ce que montrent les indépendants ». Tant que certains thèmes n'ont pas encore assez
+  // d'indépendants, une ligne le dit, en positif.
+  const D_SUR = !solo ? 'Toute l’étude' : 'Les indépendants';
   if (solo) {
     if ($('[data-droite-sur]')) $('[data-droite-sur]').textContent = D_SUR;
-    if ($('[data-droite-leger]')) $('[data-droite-leger]').textContent = repli ? 'Ce que montre' : 'Ce que montrent';
-    if ($('[data-droite-gras]')) $('[data-droite-gras]').textContent = repli ? 'l’étude.' : 'les indépendants.';
-    if ($('[data-ouv-sur]')) $('[data-ouv-sur]').textContent = repli ? 'Ce que montre l’étude' : 'Ce que montrent les indépendants';
+    if ($('[data-droite-leger]')) $('[data-droite-leger]').textContent = 'Ce que montrent';
+    if ($('[data-droite-gras]')) $('[data-droite-gras]').textContent = 'les indépendants.';
+    if ($('[data-ouv-sur]')) $('[data-ouv-sur]').textContent = 'Ce que montrent les indépendants';
     const note = $('[data-droite-note]');
-    if (note) { note.textContent = repli ? 'Pas encore assez d’indépendants pour leurs propres chiffres. Voici ce que montrent toutes les réponses.' : ''; note.hidden = !repli; }
+    if (note) { note.textContent = incomplet ? 'Leurs chiffres apparaissent thème par thème, dès que 3 indépendants au moins sont de chaque côté.' : ''; note.hidden = !incomplet; }
+    // Le grand nombre : les indépendants qui ont répondu, pas toutes les personnes.
+    const nb = $('[data-n-chiffre]'); const tx = document.querySelector('.grand-nombre__texte');
+    if (nb) nb.textContent = String(N); if (tx) tx.textContent = N > 1 ? 'indépendants ont répondu à l’état des lieux.' : 'indépendant a répondu à l’état des lieux.';
   }
   afficher.cote = { gauche: solo ? 'Votre activité' : 'Votre équipe', droite: D_SUR };
   $('[data-lui-resume]').textContent = 'Vos réponses, thème par thème : la confiance, le soutien, la cohésion, puis l’engagement et la performance.';
   // Le grand titre d'en-tête est retiré (Arnaud, 13 octobre 2026) : on garde la ligne si on le remet.
   if ($('[data-titre]')) $('[data-titre]').textContent = nbLa === 3 ? 'votre équipe a la confiance, le soutien et la cohésion.' : nbLa === 0 ? 'votre équipe a tout pour grandir.' : 'votre équipe a déjà des atouts.';
   // Le nombre de participants : le compteur public (réponses papier comprises), pas seulement les réponses détaillées en ligne.
-  compteur().then((total) => { document.querySelectorAll('[data-n-reponses]').forEach((n) => { n.textContent = total + ' personnes'; }); document.querySelectorAll('[data-n-chiffre]').forEach((n) => { n.textContent = total; if (solo && !(n.nextSibling && n.nextSibling.nodeType === 3)) n.after(document.createTextNode(' ')); }); }).catch(() => {});
+  compteur().then((total) => { document.querySelectorAll('[data-n-reponses]').forEach((n) => { n.textContent = total + ' personnes'; }); document.querySelectorAll('[data-n-chiffre]').forEach((n) => { if (solo) { if (!(n.nextSibling && n.nextSibling.nodeType === 3)) n.after(document.createTextNode(' ')); return; } n.textContent = total; if (solo && !(n.nextSibling && n.nextSibling.nodeType === 3)) n.after(document.createTextNode(' ')); }); }).catch(() => {});
 
   // La même mesure des deux côtés : l'intensité des réponses (0 à 3) ramenée à 100. Pour lui, ses réponses ; pour l'étude, la
   // moyenne de tous les répondants (edl_these → intensites). « C'est là » à partir de 50, soit une moyenne d'au moins 1,5 sur 3.
@@ -241,6 +244,9 @@ function afficher(lu, contenu, these) {
     droite.append(el('span', 'carte__cote', afficher.cote.droite), tete2);
     const mot = l.mot ? 'atteignent leurs objectifs' : 'sont engagées';
     if (l.a != null && l.b != null && l.phrase) droite.appendChild(el('p', 'these-ligne', l.phrase(l.a, l.b)));
+    // Un solo dont le thème n'a pas encore 3 indépendants de chaque côté : une phrase, jamais de « — » ni de chiffre d'équipe.
+    const attente = solo && (l.a == null || l.b == null);
+    if (attente) droite.appendChild(el('p', 'these-ligne', 'Le chiffre des indépendants s’affiche ici dès que 3 d’entre eux au moins sont de chaque côté.'));
     const rangs = el('div', 'rangs');
     [[l.a, l.a_nom, true], [l.b, l.b_nom, false]].forEach(([p, nom, fort]) => {
       // Pas de marque de sa position à droite (Arnaud, 13 octobre 2026 : « on ne doit pas marquer sa position ») : l'écart parle seul.
@@ -251,7 +257,7 @@ function afficher(lu, contenu, these) {
       rangs.appendChild(r);
     });
     void mot;
-    droite.append(rangs);
+    if (!attente) droite.append(rangs);
     // Ce que demandent les managers et les équipes, pour ce thème (Arnaud, 13 octobre 2026) : le souhait le plus choisi par rôle.
     const SW = afficher.souhaits || [];
     const demande = (role) => { const l2 = SW.filter((x) => x.role === role && l.affs.includes(x.n)).sort((a, b) => b.p - a.p || b.choisis - a.choisis)[0]; if (!l2) return null;
@@ -291,6 +297,7 @@ function afficher(lu, contenu, these) {
       r.append(tt, pastilles(p, true), el('span', 'rang__val', pc(p))); hR.appendChild(r); }); }
   // La thèse tout en haut, sur toute la largeur, avec ses chiffres (Arnaud, 13 octobre 2026) : le concept global avant le détail.
   if (t && mq && t.engages != null && mq.engages != null) {
+    if ($('[data-ouverture]')) $('[data-ouverture]').hidden = false; // réaffiché quand les chiffres arrivent après un premier affichage vide
     $('[data-ouv-titre]').textContent = pc(t.engages) + ' des personnes sont engagées.';
     $('[data-ouv-chapo]').textContent = 'Ailleurs, ' + pc(mq.engages) + '.' + (t.perf != null && mq.perf != null ? ' Et la performance suit\u00a0: ' + pc(t.perf) + ' atteignent leurs objectifs, contre ' + pc(mq.perf) + '.' : '');
     const hC = $('[data-ouv-chiffres]'); hC.textContent = '';
@@ -357,7 +364,16 @@ async function demarrer() {
   afficher(lu, contenu, null);
   brancherGarder();
   brancherEtude();
-  const [these, souhaits] = await Promise.all([lireThese(lu.role), lireSouhaits()]);
+  let [these, souhaits] = await Promise.all([lireThese(lu.role), lireSouhaits()]);
+  // Démonstration d'un solo (?demo=1&solos=N) : des chiffres fictifs d'indépendants, pour voir la bascule au seuil.
+  const nDemo = Number(new URLSearchParams(location.search).get('solos'));
+  if (modeDemo() && lu.role === 'solo') {
+    const c = (n, e, p) => ({ n, engages: n >= 3 ? e : null, perf: n >= 3 ? p : null });
+    const q = {}; for (let n = 1; n <= 16; n++) q[n] = { avec: c(Math.ceil(nDemo / 2), 90, 75), sans: c(Math.floor(nDemo / 2), 45, 35) };
+    these = { ok: true, role: 'solo', n: nDemo || 0, intensites: nDemo >= 3 ? { confiance: 66, soutien: 61, cohesion: 58, engagement: 72, performance: 63 } : null, questions: q,
+      groupes: Object.fromEntries(Object.entries(DEMO.groupes).map(([k, g], i) => [k, c(Math.round((nDemo || 0) * (i % 2 ? 0.4 : 0.6)), g.engages, g.perf != null ? g.perf : g.engages - 12)])) };
+    souhaits = nDemo >= 6 ? [{ role: 'solo', n: 10, choix: 0, concernes: 6, choisis: 3, p: 50 }] : [];
+  }
   afficher.souhaits = souhaits || [];
   if (these) afficher(lu, contenu, these);
 }
