@@ -10,12 +10,12 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu } from '../contenu.js?v=46';
-import { relancesAEnvoyer } from '../calcul.js?v=46';
-import { lienResultat } from '../lien.js?v=46';
-import { envoyerReponse, compteur } from '../api.js?v=46';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=46';
-import { evenement } from './commun.js?v=46';
+import { chargerContenu } from '../contenu.js?v=47';
+import { relancesAEnvoyer } from '../calcul.js?v=47';
+import { lienResultat } from '../lien.js?v=47';
+import { envoyerReponse, compteur } from '../api.js?v=47';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=47';
+import { evenement } from './commun.js?v=47';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -80,6 +80,9 @@ const TEXTES = {
   // Bloc « Anonyme » du bas de l'accueil (13 octobre 2026). Le lien de confidentialité qui suit reste à sa place.
   'Anonyme. Aucun compte à créer. Résultat immédiat. Vos réponses servent à calculer votre résultat et, regroupées, à publier une étude.':
     "Anonyme et sans compte : personne ne sait qui a répondu. Votre résultat s'affiche tout de suite. Vos réponses, regroupées avec les autres, nourrissent l'étude.",
+  // Confidentialité : « Vos chiffres par mail » envoie désormais un mail, à la demande (Arnaud, 13 octobre 2026 : « go »).
+  "Aucun e-mail automatique n'est envoyé par cet outil.":
+    "Si vous demandez vos chiffres par mail, nous gardons votre prénom, votre nom, votre e-mail et le lien de votre résultat, pour vous l'envoyer. Ils ne servent à rien d'autre. Vous pouvez demander leur effacement à arnaud@greatly.club.",
 };
 const TEXTES_N = Object.fromEntries(Object.entries(TEXTES).map(([k, v]) => [norm(k), v]));
 
