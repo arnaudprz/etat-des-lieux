@@ -36,26 +36,34 @@ const TEXTES = {
   'Une étude pour mieux éclairer les équipes': 'Une étude pour montrer ce qui engage les équipes',
   "Vos réponses, anonymes et regroupées, aident nos intervenants à préparer des ateliers ancrés dans le vécu des équipes, et nos programmes à évoluer. L'étude complète est partagée avec ceux qui le souhaitent.":
     "Vos réponses, anonymes et regroupées, nourrissent une étude : la confiance, le soutien et la cohésion vont-ils avec l'engagement ? Pour nous, la performance n'est pas un objectif : elle en est la conséquence. L'étude complète est partagée avec ceux qui le souhaitent.",
-  "Une lecture d'ensemble": 'Votre équipe, thème par thème',
+  // « Ce que vous recevez en 2 minutes » : quatre blocs ancrés dans ce que la personne vit vraiment (Arnaud, 13 octobre 2026).
+  "Une lecture d'ensemble": 'Votre équipe, telle que vous la voyez',
   'En quelques lignes, la façon dont vous travaillez ensemble, vue depuis votre place.':
-    "La confiance, le soutien, la cohésion, puis l'engagement et la performance, tels que vous les voyez.",
-  'Huit repères, quatre niveaux': "Ce que montre l'étude",
+    "16 phrases simples, comme « Je peux parler franchement à mon manager, y compris d'une erreur ». Pour la confiance, le soutien, la cohésion, puis l'engagement et la performance : un chiffre sur 100. Votre regard, pas une note.",
+  'Huit repères, quatre niveaux': 'Ce qui engage une équipe',
   "Le cap commun, l'info, la confiance, le soutien… Chaque repère prend l'un des quatre niveaux, de « À construire » à « Bien installé ». Jamais de note.":
-    'À côté, toutes les réponses : là où la confiance, le soutien et la cohésion sont là, la part des personnes engagées, et celle qui atteint ses objectifs.',
-  'Une phrase pour chaque repère': 'Ce que demandent les autres',
+    "À côté de votre regard, celui de toutes les personnes qui ont répondu : là où la confiance, le soutien et la cohésion sont là, et là où ils manquent, combien de personnes sont engagées. Puis combien atteignent leurs objectifs : la performance vient après, elle n'est pas le point de départ.",
+  'Une phrase pour chaque repère': 'Ce que vous aimeriez, ce que les autres demandent',
   'Ce qui est déjà là, et ce qui peut encore évoluer, dit simplement et sans jugement.':
-    'Pour chaque thème, ce que demandent les managers et les équipes. Jamais de note, jamais de jugement.',
+    "Quand vous répondez « Pas encore » ou « Un peu », vous pouvez dire ce que vous aimeriez. Vous le retrouvez dans votre résultat, à côté de ce que demandent le plus les managers et les équipes. Sans jugement.",
   // La version téléphone a ses propres phrases.
   'En 2 minutes, voyez ce qui fonctionne déjà entre vous et ce qui peut encore évoluer. Anonyme, sans compte.':
     'En 2 minutes, votre équipe telle que vous la voyez, à côté de toutes les réponses. Anonyme, sans compte.',
   'De « À construire » à « Bien installé ». Jamais de note.':
-    'Là où la confiance, le soutien et la cohésion sont là, la part des personnes engagées.',
+    'À côté de votre regard, toutes les réponses : là où la confiance, le soutien et la cohésion sont là, combien de personnes sont engagées. La performance vient après.',
   'Ce qui est déjà là, et ce qui peut encore évoluer, dit simplement.':
-    'Pour chaque thème, ce que demandent les managers et les équipes.',
+    'Ce que vous aimeriez, à côté de ce que demandent le plus les managers et les équipes.',
   'Un regard clair sur votre façon de travailler ensemble : ce qui vous porte déjà, ce qui peut encore évoluer, et des mots pour en parler.':
     'Votre équipe telle que vous la voyez : la confiance, le soutien, la cohésion. À côté, ce que montrent toutes les réponses : ce qui engage une équipe.',
   'Vos réponses, anonymes et regroupées, aident nos intervenants à préparer des ateliers ancrés dans le vécu des équipes, et nos programmes à évoluer.':
     "Vos réponses, anonymes et regroupées, nourrissent une étude : la confiance, le soutien et la cohésion vont-ils avec l'engagement ? Pour nous, la performance n'est pas un objectif : elle en est la conséquence.",
+  // L'introduction du profil (Arnaud, 13 octobre 2026 : « ce texte n'est pas top »).
+  "Pour lire vos réponses à côté de celles d'équipes qui vous ressemblent, quand elles seront assez nombreuses. Rien ne permet de vous identifier.":
+    'Quelques mots pour situer votre équipe parmi toutes les réponses. Rien ne permet de vous identifier.',
+  'Gardez votre résultat en favoris et retrouvez-le quand vous voulez. Sans compte, sans e-mail.':
+    'Votre résultat tient dans un lien. Gardez-le pour y revenir quand vous voulez : sans compte, sans e-mail, sans votre nom.',
+  'Gardez votre résultat et retrouvez-le quand vous voulez. Sans compte, sans e-mail.':
+    'Votre résultat tient dans un lien. Gardez-le pour y revenir : sans compte, sans e-mail, sans votre nom.',
   'Comment vivez-vous': 'Comment voyez-vous',
   'le travail ensemble ?': 'votre équipe ?',
 };
@@ -110,6 +118,17 @@ const nombre = () => {
     }
     if (anime) peindre(b, total);
   }
+  // Une petite frise des trois étapes, sous le haut de page, dans la même DA que la carte du nombre (Arnaud, 13 octobre 2026).
+  if (!hero.querySelector('.edl-frise')) {
+    const f = document.createElement('ol'); f.className = 'edl-frise';
+    f.innerHTML = [
+      ['Votre équipe', 'Quelques mots : votre rôle, la taille de l’entreprise et de l’équipe.'],
+      ['16 phrases', 'Pour chacune, de « Pas encore » à « Pleinement ». Environ 2 minutes.'],
+      ['Votre état des lieux', 'Votre regard, comparé à des centaines de réponses.'],
+    ].map(([t, d], k) => '<li><span class="edl-frise__num">' + (k + 1) + '</span><span class="edl-frise__titre">' + t + '</span><span class="edl-frise__texte">' + d + '</span></li>').join('');
+    const nb = hero.querySelector('.edl-nombre');
+    if (m.dataset.maquette === 'MEtatDesLieux') { f.classList.add('edl-frise--mobile'); nb.after(f); } else nb.parentElement.appendChild(f);
+  }
   if ('IntersectionObserver' in window && !anime) {
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); lancer(b); } }); io.observe(b);
   } else if (!anime) lancer(b);
@@ -124,7 +143,8 @@ const retoucher = () => {
   // L'exemple de résultat de la maquette (huit sommets, quatre niveaux) n'existe plus : on le retire.
   document.querySelectorAll('[data-maquette] section').forEach((s) => {
     const t = norm(s.textContent || '');
-    if (/^(Huit sommets|Un exemple ?de résultat)/.test(t)) s.style.display = 'none';
+    // « Ce que vous recevez en 2 minutes » ne sert à rien (Arnaud, 13 octobre 2026) : retiré aussi.
+    if (/^(Huit sommets|Un exemple ?de résultat|Ce que vous ?recevez)/.test(t)) s.style.display = 'none';
   });
   if (page === 'accueil') nombre();
   if (page === 'questionnaire') {
@@ -191,6 +211,18 @@ style.textContent = [
     + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] div[style*="var(--k14)"] strong { font-size: 1.1875rem !important; }'
     + ' html[data-edl="questionnaire"] [data-maquette] button[aria-pressed] { font-size: 1.0625rem !important; }'
     + ' }',
+  '.edl-hero { flex-wrap: wrap; }',
+  '.edl-frise { flex: 1 1 100%; list-style: none; margin: 0.5rem 0 0; padding: 1.75rem 2rem; border-radius: 1.5rem; background: #FFFFFF; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; position: relative; animation: edlMonte .8s .15s cubic-bezier(.2,.7,.2,1) both; }',
+  '.edl-frise li { position: relative; display: flex; flex-direction: column; gap: 0.375rem; }',
+  '.edl-frise li:not(:last-child)::after { content: ""; position: absolute; top: 1rem; left: 2.75rem; right: -1.25rem; height: 2px; background: #DCE8EA; }',
+  '.edl-frise__num { width: 2rem; height: 2rem; border-radius: 999px; background: #23545B; color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; }',
+  '.edl-frise li:last-child .edl-frise__num { background: #B4F25C; color: #0C1011; }',
+  '.edl-frise__titre { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 1.25rem; letter-spacing: -0.02em; color: #0C1011; }',
+  '.edl-frise__texte { font-size: 1rem; line-height: 1.45; color: #455051; }',
+  '.edl-frise--mobile { grid-template-columns: 1fr; gap: 1.25rem; margin: 12px 0 6px; padding: 22px 20px; }',
+  '.edl-frise--mobile li { padding-left: 3rem; }',
+  '.edl-frise--mobile .edl-frise__num { position: absolute; left: 0; top: 0; margin: 0; }',
+  '.edl-frise--mobile li:not(:last-child)::after { top: 2.5rem; bottom: -1rem; left: 0.9375rem; right: auto; width: 2px; height: auto; }',
   // La carte du nombre : à droite du texte, à sa hauteur, sans flotter.
   '.edl-hero-section { min-height: 0 !important; }',
   '.edl-hero { display: flex; align-items: stretch; justify-content: space-between; gap: 3rem; padding-bottom: 4.5rem !important; }',
