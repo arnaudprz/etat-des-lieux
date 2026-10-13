@@ -156,6 +156,13 @@ style.textContent = [
   // Sur téléphone, le panneau « Votre avancée » du questionnaire ne colle plus en haut : il prenait la moitié de l'écran
   // et les questions passaient dessous (Arnaud, 13 octobre 2026). Il reste en tête de liste, puis défile avec le reste.
   '@media (max-width: 1023px) { html[data-edl="questionnaire"] [data-maquette] aside { position: static !important; top: auto !important; max-height: none !important; } }',
+  // Sur téléphone, le profil et les questions prennent toute la largeur, sans encadré, et les questions se lisent plus
+  // gros (Arnaud, 13 octobre 2026).
+  '@media (max-width: 1023px) {'
+    + ' html[data-edl="questionnaire"] [data-maquette] div[style*="border-radius:1.75rem"][style*="border:var(--k3)"] { border: 0 !important; border-radius: 0 !important; background: transparent !important; padding: 0 !important; }'
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"][style*="border-radius:1.5rem"] { border: 0 !important; border-top: 1px solid var(--k45) !important; border-radius: 0 !important; background: transparent !important; padding: 1.75rem 0 1.5rem !important; }'
+    + ' html[data-edl="questionnaire"] [data-maquette] [id^="a"] p[style*="font-size:1.375rem"] { font-size: 1.6875rem !important; font-weight: 600 !important; line-height: 1.25 !important; }'
+    + ' }',
   // La carte du nombre : à droite du texte, à sa hauteur, sans flotter.
   '.edl-hero-section { min-height: 0 !important; }',
   '.edl-hero { display: flex; align-items: stretch; justify-content: space-between; gap: 3rem; padding-bottom: 4.5rem !important; }',
