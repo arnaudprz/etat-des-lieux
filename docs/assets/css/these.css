@@ -193,3 +193,11 @@ main{margin-top:-1rem}
   .bloc,.ouverture{padding:1.25rem 1rem}
   .grand-nombre{flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:0.5rem}
 }
+/* Sur téléphone, toute la largeur (Arnaud, 13 octobre 2026) : plus de marge autour des blocs, les cartes vont presque au bord. */
+@media (max-width:820px){
+  main{padding-left:0!important;padding-right:0!important}
+  .bloc,.ouverture{border-radius:0;padding:1.5rem 0.75rem}
+  .colonnes-titres,.ouverture>.surtitre,.ouverture h1,.ouverture__chapo{padding-left:0.5rem;padding-right:0.5rem}
+  .note{border-radius:0.75rem;padding:1.25rem 1rem}
+  .carte{padding:1rem}
+}
