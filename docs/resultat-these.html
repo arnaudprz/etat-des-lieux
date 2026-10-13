@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Votre état des lieux · Greatly</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,800&family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="assets/css/these.css?v=33">
+</head>
+<body>
+<!-- La page de résultat, refaite dans la thèse de Greatly (Arnaud, 13 octobre 2026) : vos atouts (la confiance, le soutien,
+     la cohésion), ce que montrent toutes les réponses (l'engagement, puis la performance), vos envies, en positif. DA du système de
+     composants du site (Systeme.dc.html). Le résultat vient du lien (#v1-…), comme l'ancienne page ; rien ne part au serveur. -->
+<header class="haut">
+  <a class="logo" href="https://greatly.club" aria-label="Greatly">GREATLY
+    <svg viewBox="0 0 24 24" aria-hidden="true"><g stroke="#23545B" stroke-width="1.4" stroke-linecap="round"><line x1="12" y1="4" x2="12" y2="1.4"/><line x1="17.66" y1="6.34" x2="19.5" y2="4.5"/><line x1="20" y1="12" x2="22.6" y2="12"/><line x1="17.66" y1="17.66" x2="19.5" y2="19.5"/><line x1="12" y1="20" x2="12" y2="22.6"/><line x1="6.34" y1="17.66" x2="4.5" y2="19.5"/><line x1="4" y1="12" x2="1.4" y2="12"/><line x1="6.34" y1="6.34" x2="4.5" y2="4.5"/></g><circle cx="12" cy="12" r="5.4" fill="#B4F25C"/></svg>
+  </a>
+  <span class="surtitre">État des lieux d’équipe</span>
+</header>
+
+<!-- Les montagnes du site (composant PaysageHaut du système), en haut de la page (Arnaud, 13 octobre 2026). -->
+<main>
+  <section class="vide" data-sans-resultat hidden>
+    <h1><span class="leger">Ce lien ne porte pas</span> <span class="gras">de résultat.</span></h1>
+    <p class="chapo">Le lien est peut-être incomplet. Vous pouvez refaire l’état des lieux : il prend deux minutes.</p>
+    <a class="bouton" href="index.html">Faire mon état des lieux</a>
+  </section>
+
+  <div data-resultat hidden>
+    <section class="ouverture" data-ouverture>
+      <span class="surtitre">Ce que montre l’étude</span>
+      <h1><span class="leger">Là où la confiance, le soutien et la cohésion sont réunis,</span> <span class="gras" data-ouv-titre>les personnes sont plus engagées.</span></h1>
+      <p class="ouverture__chapo" data-ouv-chapo></p>
+      <div class="ouverture__chiffres" data-ouv-chiffres></div>
+    </section>
+
+    <section class="bloc">
+      <div class="colonnes-titres"><div class="lui-tete"><span class="surtitre">Votre équipe</span><h2 class="grand-titre"><span class="leger">Telle que vous la voyez,</span> <span class="gras" data-lui-titre>votre équipe.</span></h2><p class="lui-resume" data-lui-resume></p></div><div><span class="surtitre">Toute l’étude</span><h2><span class="leger">Ce que montre</span> <span class="gras">l’étude.</span></h2><p class="grand-nombre"><span class="grand-nombre__chiffre" data-n-chiffre>—</span><span class="grand-nombre__texte">personnes ont répondu à l’état des lieux.</span></p><h2 hidden></h2></div></div>
+      <div class="rangees" data-rangees></div>
+      <div class="note" data-note>
+        <h3><span class="leger">Comment lire</span> <span class="gras">ces chiffres.</span></h3>
+        <div class="note__colonnes">
+          <div>
+            <h4>À gauche, sur 100</h4>
+            <p>Chaque thème regroupe une à quatre affirmations. Pour chacune, vous avez répondu de « Pas encore » (0) à « Pleinement » (3). Nous faisons la moyenne de vos réponses sur le thème, puis nous la ramenons à 100 : 0 veut dire « pas encore » partout, 100 « pleinement » partout. C’est votre regard sur votre équipe, pas une note.</p>
+            <h4>À droite, en pourcentage</h4>
+            <p>Ici, on compte des personnes. Pour chaque personne qui a répondu, on regarde si le thème est là dans son regard : une moyenne d’au moins 1,5 sur 3, soit 50 sur 100. On sépare ainsi celles qui l’ont et celles qui ne l’ont pas assez. Puis on regarde, dans chaque groupe, la part des personnes engagées, avec la même règle sur les affirmations de l’engagement, ou qui disent atteindre leurs objectifs. L’écart en points est la différence entre ces deux pourcentages.</p>
+            <h4>Ce qui est compté</h4>
+            <p><strong data-n-reponses>Des centaines de personnes</strong> ont répondu. Ce sont les réponses des autres personnes, jamais celles de votre équipe. Un groupe de moins de 3 personnes n’affiche pas de chiffre. Ces chiffres montrent un lien entre les thèmes et l’engagement : à eux seuls, ils ne prouvent pas une cause.</p>
+          </div>
+          <div>
+            <h4>D’où viennent ces questions</h4>
+            <p>L’état des lieux s’appuie sur les travaux de Jody Hoffer Gittell, chercheuse au MIT puis professeure à l’université Brandeis, près de Boston. Elle a étudié pendant des années comment des métiers différents travaillent ensemble, d’abord dans les escales de compagnies aériennes, puis dans les hôpitaux. Elle a appelé cela la coordination relationnelle.</p>
+            <p>Ce qu’elle a montré : là où les équipes partagent les mêmes objectifs, savent ce que font les autres, se respectent et se parlent au bon moment, le travail va plus vite et mieux. Dans les escales, les avions repartaient plus vite, avec moins de retards et moins de bagages perdus. À l’hôpital, les patients étaient mieux soignés et sortaient plus tôt. Et les gens se sentaient mieux dans leur travail.</p>
+            <p>Nos affirmations reprennent ses piliers avec nos mots. La cohésion, ici, ce sont des objectifs partagés et la place reconnue de chacun. Le soutien rejoint ce qu’elle a observé sur les responsables : les escales qui marchaient le mieux avaient des responsables présents pour soutenir et conseiller, pas pour contrôler. Nous y avons ajouté la confiance et l’engagement, pour poser notre question : la confiance, le soutien et la cohésion vont-ils avec l’engagement ?</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloc" data-envies hidden>
+      <span class="surtitre">Vos envies</span>
+      <h2><span class="leger">Ce que vous aimeriez voir grandir,</span> <span class="gras">et ce que ça change ailleurs.</span></h2>
+      <div class="liste" data-envies-liste></div>
+    </section>
+
+
+  </div>
+</main>
+
+<script type="module" src="assets/js/parcours/resultat-these.js?v=46"></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+/* La page de résultat dans la thèse (13 octobre 2026) : le système de composants du site (Systeme.dc.html).
+   Une seule famille, le bleu-vert, en aplats sans contour ni ombre ; le vert vif en accent. Titres en deux temps. */
+:root{--bv:#23545B;--bv-fonce:#16393F;--strate:#3F6F76;--rubans:#6E979C;--sol:#A0BFC3;--teinte:#C7D9DC;--ciel:#DCE8EA;--pale:#E4EEEF;--fond:#EEF4F5;
+  --texte:#0C1011;--second:#455051;--discret:#697374;--vif:#B4F25C}
+*{box-sizing:border-box}
+body{margin:0;background:#FFFFFF;color:var(--texte);font-family:'DM Sans',sans-serif;font-size:1.0625rem;line-height:1.55}
+.haut{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.25rem clamp(1rem,4vw,3rem);border-bottom:1px solid var(--ciel)}
+.logo{display:inline-flex;align-items:center;gap:0.625rem;color:var(--texte);text-decoration:none;font-size:1.125rem;font-weight:500;letter-spacing:.26em}
+.logo svg{width:1.5rem;height:1.5rem}
+.surtitre{display:block;font-size:0.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bv)}
+main{max-width:76rem;margin:0 auto;padding:2.5rem clamp(1rem,4vw,3rem) 4rem;display:flex;flex-direction:column;gap:2.5rem}
+h1,h2,h3{margin:0;line-height:1.08}
+.leger{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;letter-spacing:-.02em}
+.gras{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.04em}
+h1 .leger{font-size:clamp(2rem,4.5vw,3.25rem)} h1 .gras{font-size:clamp(2.25rem,5vw,3.75rem)}
+h2 .leger{font-size:clamp(1.5rem,3vw,2rem)} h2 .gras{font-size:clamp(1.625rem,3.2vw,2.25rem)}
+.chapo{font-family:'Bricolage Grotesque',sans-serif;font-weight:300;font-size:clamp(1.125rem,2vw,1.375rem);line-height:1.45;color:var(--second);max-width:44rem;margin:0.75rem 0 0}
+.intro{display:flex;flex-direction:column;gap:0.75rem}
+.bloc{display:flex;flex-direction:column;gap:1.25rem;padding:clamp(1.25rem,3vw,2rem);border-radius:1.5rem;background:var(--fond)}
+.bloc.pale{background:var(--pale)}
+.colonnes-titres{display:grid;grid-template-columns:1fr 1.6fr;gap:1rem 1.5rem}
+.colonnes-titres>div{display:flex;flex-direction:column;gap:0.375rem}
+.etapes{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:0.75rem}
+.etapes li{display:flex;gap:0.625rem;font-size:0.9375rem;line-height:1.5}
+.num{flex:none;display:inline-flex;align-items:center;justify-content:center;width:1.5rem;height:1.5rem;border-radius:999px;background:var(--vif);font-weight:800;font-size:0.75rem}
+.rangees{display:flex;flex-direction:column;gap:0.875rem}
+.rangee{display:grid;grid-template-columns:1fr 1.6fr;gap:0.875rem;align-items:stretch}
+.carte{display:flex;flex-direction:column;gap:0.75rem;padding:1.125rem 1.25rem;border-radius:1rem}
+.carte__tete{display:flex;align-items:center;gap:0.75rem}
+.disque{flex:none;display:inline-flex;align-items:center;justify-content:center;width:2.25rem;height:2.25rem;border-radius:999px;background:var(--bv);color:var(--vif)}
+.disque svg{width:60%;height:60%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.carte__nom{flex:1;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.125rem;letter-spacing:-.02em;line-height:1.2}
+.ecart{padding:0.2rem 0.65rem;border-radius:999px;background:var(--vif);font-size:0.75rem;font-weight:800;white-space:nowrap}
+.lui{background:#FFFFFF}
+.lui--la{background:var(--bv);color:#FFFFFF}.lui--la .disque{background:#FFFFFF;color:var(--bv)}
+.etat{align-self:flex-start;padding:0.2rem 0.65rem;border-radius:999px;font-size:0.75rem;font-weight:800}
+.lui--la .etat{background:var(--vif);color:var(--texte)} .lui--grandir .etat{background:var(--ciel);color:var(--bv)}
+.phrase{margin:0;font-size:0.9375rem;line-height:1.5}
+.lui--la .phrase{color:#FFFFFF}
+.vos-reponses{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:0.25rem;font-size:0.8125rem;line-height:1.4;color:var(--second)}
+.lui--la .vos-reponses{color:var(--ciel)}
+.etude.carte{background:#FFFFFF}
+.carte.etude .deux{display:grid;grid-template-columns:1fr 1fr;gap:0.625rem}
+.cote{position:relative;display:flex;flex-direction:column;gap:0.4rem;padding:0.875rem 1rem;border-radius:0.75rem}
+.cote--la{background:var(--bv);color:#FFFFFF}.cote--ailleurs{background:var(--ciel)}
+.cote__titre{font-size:0.75rem;font-weight:700}.cote--la .cote__titre{color:var(--ciel)}.cote--ailleurs .cote__titre{color:var(--second)}
+.cote__val{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.875rem;letter-spacing:-.04em;line-height:1}
+.cote__sur10{font-size:0.75rem;line-height:1.4}.cote--la .cote__sur10{color:var(--ciel)}.cote--ailleurs .cote__sur10{color:var(--second)}
+.pts{display:flex;gap:0.22rem}.pts i{display:block;width:0.6875rem;height:0.6875rem;border-radius:999px}
+.cote--la .on-fort{background:var(--vif)}.cote--la .off{background:rgba(255,255,255,.22)}
+.cote--ailleurs .on{background:var(--rubans)}.cote--ailleurs .off{background:rgba(12,16,17,.12)}
+.ici{align-self:flex-start;padding:0.15rem 0.55rem;border-radius:999px;background:var(--vif);color:var(--texte);font-size:0.6875rem;font-weight:800}
+.liste{display:flex;flex-direction:column;gap:0.625rem}
+.envie{display:flex;gap:0.875rem;padding:1rem 1.25rem;border-radius:0.875rem;background:#FFFFFF}
+.guillemet{flex:none;font-family:'Instrument Serif',serif;font-size:2.25rem;line-height:0.8;color:var(--bv)}
+.envie p{margin:0}.envie__voeu{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.0625rem}.envie__phrase{font-size:0.9375rem;color:var(--second)}
+.garder p,.etude p{margin:0;color:var(--second);font-size:0.9375rem}
+.garder{display:flex;flex-direction:column;gap:0.625rem}
+.garder__ligne{display:flex;gap:0.625rem;flex-wrap:wrap}
+.garder__ligne input{flex:1 1 18rem;min-height:2.75rem;padding:0 1rem;border:0;border-radius:999px;background:#FFFFFF;font:inherit;font-size:0.875rem;color:var(--second)}
+.bouton{display:inline-flex;align-items:center;justify-content:center;min-height:2.75rem;padding:0 1.375rem;border:0;border-radius:999px;background:var(--bv);color:#FFFFFF;font:inherit;font-weight:700;font-size:0.9375rem;text-decoration:none;cursor:pointer}
+.bouton:disabled{opacity:.6}
+.etude{display:flex;flex-direction:column;gap:0.75rem;padding-top:1.25rem;border-top:1px solid var(--teinte)}
+.etude h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:-.02em}
+.champs{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:0.75rem}
+.champs label{display:flex;flex-direction:column;gap:0.3rem;font-size:0.8125rem;font-weight:700}
+.champs input{min-height:2.75rem;padding:0 0.875rem;border:0;border-radius:0.625rem;background:#FFFFFF;font:inherit;font-weight:400;font-size:0.9375rem}
+.case{display:flex;gap:0.5rem;align-items:flex-start;font-size:0.875rem}
+.piege{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.message{min-height:1.2em;color:var(--bv);font-weight:600}
+.merci{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.125rem;color:var(--bv)!important}
+.vide{display:flex;flex-direction:column;gap:1rem;align-items:flex-start}
+:focus-visible{outline:2px solid var(--bv);outline-offset:3px}
+@media (max-width:820px){.rangee,.colonnes-titres{grid-template-columns:1fr}.colonnes-titres>div:last-child{display:none}}
+.paysage{height:clamp(11rem,24vw,19rem);overflow:hidden;background:#E4EEEF}.paysage svg{display:block;width:100%;height:100%}
+main{margin-top:-1rem}
+[hidden]{display:none!important}
+.simple{background:#FFFFFF;gap:0.5rem}.simple--la{background:var(--bv);color:#FFFFFF}.simple--la .disque{background:#FFFFFF;color:var(--bv)}
+.grand{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:2.25rem;letter-spacing:-.04em;line-height:1}
+.simple--grandir .grand{color:var(--strate)}
+.simple--tous .pts .on{background:var(--bv)}.simple--tous .pts .off{background:var(--ciel)}
+.rangee{grid-template-columns:1fr 1fr}
+.colonnes-titres{grid-template-columns:1fr 1fr}
+.fleche{display:grid;grid-template-columns:1fr 1fr;gap:0.875rem;font-size:0.8125rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--bv);padding:0.25rem 1.25rem}
+.these{margin:0;padding:1rem 1.25rem;border-radius:0.875rem;background:var(--bv);color:#FFFFFF;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.125rem;line-height:1.4}
+.these:empty{display:none}
+@media (max-width:820px){.rangee,.fleche{grid-template-columns:1fr 1fr}.colonnes-titres>div:last-child{display:flex}.colonnes-titres{grid-template-columns:1fr 1fr}}
+.simple .carte__tete .etat{margin-left:auto}.simple--la .pts .on-fort{background:var(--vif)}.simple--la .pts .off{background:rgba(255,255,255,.22)}.simple--grandir .pts .on{background:var(--rubans)}.simple--grandir .pts .off{background:var(--ciel)}.simple--grandir .etat{background:var(--ciel);color:var(--bv)}.simple--la .etat{background:var(--vif);color:var(--texte)}
+.definition{margin:0;font-size:0.8125rem;line-height:1.5;color:var(--second)}
+.change{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:0.25rem 0.75rem;padding:0.625rem 0.75rem;border-radius:0.625rem}
+.change--la{background:var(--bv);color:#FFFFFF}.change--ailleurs{background:var(--ciel)}
+.change__nom{display:flex;flex-wrap:wrap;align-items:center;gap:0.4rem;font-size:0.8125rem;font-weight:700}
+.change__val{grid-row:span 2;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.75rem;letter-spacing:-.04em}
+.change--la .on-fort{background:var(--vif)}.change--la .off{background:rgba(255,255,255,.22)}.change--ailleurs .on{background:var(--rubans)}.change--ailleurs .off{background:rgba(12,16,17,.12)}
+.simple--tous{gap:0.5rem}
+.participants{margin:0.25rem 0 0;font-size:1rem;color:var(--second)}.participants strong{color:var(--bv)}
+/* Moins de vert foncé (Arnaud, 13 octobre 2026 : « beaucoup trop de vert foncé ») : le foncé reste aux boutons et aux pictogrammes ;
+   les cartes et les bandes passent sur les teintes claires du bleu-vert, le vert vif en accent. */
+.simple--la,.lui--la{background:#FFFFFF;color:var(--texte)}
+.simple--la .disque,.lui--la .disque{background:var(--bv);color:var(--vif)}
+.simple--la .phrase,.lui--la .phrase{color:var(--texte)}
+.simple--la .pts .on-fort{background:var(--bv)}.simple--la .pts .off{background:var(--ciel)}
+.simple--grandir{background:#FFFFFF}.simple--grandir .grand{color:var(--rubans)}
+.change--la{background:var(--ciel);color:var(--texte)}.change--ailleurs{background:var(--fond)}
+.change--la .on-fort{background:var(--bv)}.change--la .off{background:#FFFFFF}
+.change--ailleurs .on{background:var(--sol)}.change--ailleurs .off{background:#FFFFFF}
+.these{background:#FFFFFF;color:var(--texte);border-left:0}
+.change--vous{background:var(--vif)!important;color:var(--texte)}
+.change--vous .on-fort,.change--vous .on{background:var(--bv)!important}.change--vous .off{background:rgba(12,16,17,.14)!important}
+.change:not(.change--vous){opacity:.72}
+.change__nom{display:flex;flex-direction:column;align-items:flex-start;gap:0.3rem}
+.vous{display:inline-flex;align-items:center;gap:0.35rem;padding:0.15rem 0.55rem 0.15rem 0.2rem;border-radius:999px;background:var(--bv);color:#FFFFFF;font-size:0.6875rem;font-weight:800;letter-spacing:.02em}
+.vous svg{width:1rem;height:1rem;fill:none;stroke:var(--vif);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pourquoi{margin:0;padding:0.625rem 0.875rem;border-radius:0.625rem;background:var(--fond);font-size:0.875rem;line-height:1.5;color:var(--texte)}
+.change__val{display:flex;flex-direction:column;align-items:flex-end;line-height:1}
+.change__chiffre{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.75rem;letter-spacing:-.04em}
+.change__mot{font-family:'DM Sans',sans-serif;font-weight:500;font-size:0.6875rem;letter-spacing:0;margin-top:0.2rem;text-align:right;max-width:9rem;line-height:1.25}
+.situe{margin:0;font-size:1rem;line-height:1.55}.situe strong{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1.125rem}
+.contraste{margin:0;padding:0.625rem 0.875rem;border-radius:0.625rem;background:var(--fond);font-size:0.9375rem;line-height:1.5;color:var(--second)}
+.sous-titre{margin:0.25rem 0 0;font-size:1rem;color:var(--second)}.sous-titre strong{color:var(--bv)}
+.these-court{margin:0.375rem 0 0;font-family:"Bricolage Grotesque",sans-serif;font-weight:500;font-size:1.0625rem;line-height:1.4;color:var(--texte)}.these-court:empty{display:none}
+.pts-ligne .pts i{width:0.8125rem;height:0.8125rem}.pts-ligne .on-fort{background:var(--bv)}.pts-ligne .off{background:var(--ciel)}.pts-ligne--autre{margin-top:0.4rem}.pts-ligne--autre .on{background:var(--sol)}.pts-ligne--autre .off{background:#FFFFFF}
+.rangs{display:flex;flex-direction:column;gap:0.375rem}
+.rang{display:grid;grid-template-columns:minmax(0,1fr) auto 4.5rem;align-items:center;gap:0.75rem;padding:0.5rem 0.75rem;border-radius:0.625rem;background:var(--fond)}
+.rang--vous{background:var(--vif)}
+.rang__nom{display:flex;flex-wrap:wrap;align-items:center;gap:0.4rem;font-size:0.8125rem;font-weight:700}
+.comme{padding:0.1rem 0.5rem;border-radius:999px;background:var(--bv);color:#FFFFFF;font-size:0.6875rem;font-weight:800}
+.rang .pts i{width:0.75rem;height:0.75rem}.rang .on-fort{background:var(--bv)}.rang .off{background:#FFFFFF}.rang--vous .off{background:rgba(12,16,17,.14)}
+.rang__val{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1rem;text-align:right;white-space:nowrap}
+@media (max-width:820px){.rang{grid-template-columns:1fr auto}.rang .pts{display:none}}
+.rangs--these{margin-top:0.625rem}.rangs--these .rang{background:#FFFFFF}.rangs--these .rang--vous{background:var(--vif)}
+.lui-tete{display:flex;flex-direction:column;gap:0.5rem}
+.grand-titre .leger{display:block;font-size:clamp(1.75rem,3.2vw,2.375rem)}.grand-titre .gras{display:block;font-size:clamp(2rem,3.8vw,2.875rem);line-height:1.02}
+.lui-resume{margin:0.25rem 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:300;font-size:1.25rem;line-height:1.4;color:var(--second)}
+/* Les cartes de gauche prennent toute leur hauteur (Arnaud, 13 octobre 2026 : « utilise toute la taille des cards pour la DA ») :
+   le titre en haut, le chiffre en grand au milieu, la phrase en bas. */
+.rangee>.simple:first-child{justify-content:space-between;padding:1.375rem 1.5rem;gap:1rem}
+.lui-coeur{display:flex;flex-direction:column;gap:0.75rem;flex:1;justify-content:center}
+.rangee>.simple:first-child .grand{font-size:clamp(2.75rem,5vw,4rem);letter-spacing:-.05em}
+.rangee>.simple:first-child .pts{gap:0.4rem}.rangee>.simple:first-child .pts i{width:1.125rem;height:1.125rem}
+.rangee>.simple:first-child .phrase{font-size:1rem}
+.these-ligne{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:500;font-size:1.0625rem;line-height:1.35;color:var(--texte)}
+.vous-pastille{display:inline-flex;align-items:center;gap:0.25rem;padding:0.1rem 0.5rem 0.1rem 0.25rem;border-radius:999px;background:var(--bv);color:#FFFFFF;font-size:0.6875rem;font-weight:800}
+.vous-pastille svg{width:0.875rem;height:0.875rem;fill:none;stroke:var(--vif);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rang__nom{flex-direction:row}
+.legende-vous{margin:0.5rem 0 0;display:flex;align-items:center;gap:0.5rem;font-size:0.8125rem;color:var(--second)}
+.simple--tous{justify-content:flex-start}
+.rang--avec{background:var(--ciel)}.rang--sans{background:var(--fond)}.rang--avec .on-fort{background:var(--bv)}.rang--sans .on-fort{background:var(--rubans)}.rang .off{background:#FFFFFF}
+.demandes{display:flex;flex-direction:column;gap:0.35rem;padding-top:0.625rem;border-top:1px solid var(--ciel)}
+.demandes__titre{font-size:0.6875rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--bv)}
+.demande{margin:0;font-size:0.875rem;line-height:1.45}.demande__p{color:var(--second);font-size:0.8125rem}
+.pts i.part{position:relative;overflow:hidden}.pts i.part b{position:absolute;left:0;top:0;bottom:0;display:block}
+/* Sur ordinateur, la page prend 80 % de la largeur (Arnaud, 13 octobre 2026). */
+@media (min-width:1024px){main{max-width:80vw}}
+.note{display:flex;flex-direction:column;gap:1rem;padding:clamp(1.25rem,3vw,2rem);border-radius:1.25rem;background:#FFFFFF}
+.note h3{margin:0;font-size:clamp(1.5rem,2.4vw,2rem);line-height:1.1}
+.note__colonnes{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.note h4{margin:1rem 0 0.25rem;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:0.9375rem;color:var(--texte)}
+.note h4:first-child{margin-top:0}
+.note p{margin:0 0 0.5rem;font-size:0.875rem;line-height:1.55;color:var(--second)}
+.note strong{color:var(--texte)}
+@media (max-width:820px){.note__colonnes{grid-template-columns:1fr;gap:0.5rem}}
+/* La thèse en ouverture, sur toute la largeur (Arnaud, 13 octobre 2026). */
+.ouverture{display:flex;flex-direction:column;gap:0.75rem;padding:clamp(1.5rem,4vw,2.75rem);border-radius:1.5rem;background:var(--fond)}
+.ouverture h1{margin:0.25rem 0 0;line-height:1.05}
+.ouverture h1 .leger{display:block;font-size:clamp(1.625rem,3vw,2.5rem)}
+.ouverture h1 .gras{display:block;font-size:clamp(2.25rem,5vw,4rem)}
+.ouverture__chapo{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:300;font-size:clamp(1.125rem,2vw,1.375rem);line-height:1.45;color:var(--second)}
+.ouverture__chiffres{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:0.75rem}
+.ouverture__chiffres .rang__val{font-size:1.125rem}
+.ouv-carte__pied{margin:0;font-size:0.8125rem;color:var(--second)}
+.ouverture__source{margin:0.25rem 0 0;font-size:0.875rem;color:var(--second)}.ouverture__source strong{color:var(--bv)}
+@media (max-width:820px){.ouverture__chiffres{grid-template-columns:1fr}}
+[data-resultat]{display:flex;flex-direction:column;gap:1.5rem}
+/* Le nombre de répondants, en grand sous « Ce que montre l'étude » (Arnaud, 13 octobre 2026). */
+.grand-nombre{display:flex;flex-direction:column;gap:0.25rem;margin:0.75rem 0 0}
+.grand-nombre__chiffre{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(3.5rem,7vw,6rem);line-height:0.9;letter-spacing:-.04em;color:var(--texte)}
+.grand-nombre__texte{font-family:'Bricolage Grotesque',sans-serif;font-weight:300;font-size:clamp(1.125rem,2vw,1.375rem);color:var(--second)}
+/* « Ce qu’ils demandent » se lit comme « Ce que vous demandez » à gauche (Arnaud, 13 octobre 2026). */
+.demande strong{font-weight:400;color:var(--second)}
+/* Version téléphone (13 octobre 2026) : une colonne, chaque thème garde ses deux cartes l'une sous l'autre, pastilles visibles. */
+.carte__cote{display:none}
+@media (max-width:820px){
+  main{padding-left:1rem;padding-right:1rem}
+  .rangee,.fleche,.colonnes-titres{grid-template-columns:1fr!important}
+  .colonnes-titres{gap:1.5rem}
+  .fleche span:last-child{display:none}
+  .rangee{gap:0.5rem;margin-bottom:0.75rem}
+  .carte__cote{display:block;font-size:0.6875rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--bv);margin-bottom:-0.25rem}
+  .rang{grid-template-columns:1fr auto!important;row-gap:0.375rem}
+  .rang .rang__nom{grid-column:1/-1}
+  .rang .pts{display:flex!important}
+  .bloc,.ouverture{padding:1.25rem 1rem}
+  .grand-nombre{flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:0.5rem}
+}

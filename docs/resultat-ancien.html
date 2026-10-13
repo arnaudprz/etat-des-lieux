@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Votre état des lieux · Greatly</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
+<link rel="stylesheet" href="assets/css/base.css?v=31">
+<link rel="stylesheet" href="assets/css/parcours.css?v=31">
+</head>
+<body class="page-resultat-f">
+
+<div class="bandeau">
+  <span class="bandeau__texte">
+    <span class="bandeau__long">Un état des lieux proposé par Greatly, qui accompagne dirigeants, managers et équipes à la Greatly House, près de Lille</span>
+    <span class="bandeau__court">Proposé par Greatly, près de Lille</span>
+  </span>
+  <a href="#lecture"><span class="bandeau__long">Qui sommes-nous</span><span class="bandeau__court">En savoir plus</span></a>
+</div>
+
+<header class="entete">
+  <a class="logo" href="index.html"><span class="logo__texte">Greatly</span><span class="logo__point" aria-hidden="true"></span></a>
+  <div class="etapes">
+    <span class="etape"><span class="etape__point" aria-hidden="true"></span><span class="etape__nom">Profil</span></span>
+    <span class="etape"><span class="etape__point" aria-hidden="true"></span><span class="etape__nom">Vos réponses</span></span>
+    <span class="etape etape--active"><span class="etape__point" aria-hidden="true"></span><span class="etape__nom">Votre état des lieux</span></span>
+  </div>
+  <span class="etapes__mobile" aria-hidden="true"></span>
+  <!-- À partir de 900px, le sommaire remplace les étapes (resultat.js). -->
+  <nav class="sommaire" data-sommaire hidden>
+    <a class="sommaire__lien" href="#ensemble" data-vers="ensemble"></a>
+    <a class="sommaire__lien" href="#appuis" data-vers="appuis"></a>
+    <a class="sommaire__lien" href="#envies" data-vers="envies"></a>
+    <a class="sommaire__lien" href="#lecture" data-vers="lecture"></a>
+  </nav>
+  <a class="sommaire__bouton" href="#lien-personnel" data-sommaire-bouton hidden></a>
+</header>
+
+<main class="page-resultat">
+
+  <!-- Affiché quand le lien ne porte pas de résultat lisible. -->
+  <div class="bande-page" data-sans-resultat hidden>
+    <div class="bande-page__contenu">
+      <section class="carte vide">
+        <h1 class="titre-page">Ce lien ne porte pas de résultat</h1>
+        <p class="intro">Le lien est peut-être incomplet, ou il a été coupé en chemin. Vous pouvez refaire l'état des lieux, il prend deux minutes.</p>
+        <a class="btn" href="index.html">Revenir à l'accueil</a>
+      </section>
+    </div>
+  </div>
+
+  <!-- Mise en page F : des bandes pleine largeur, un seul conteneur de 1040px.
+       De haut en bas : le haut, la vue d'ensemble, vos appuis, vos envies,
+       notre lecture, garder et revenir, faire connaître. -->
+  <div data-resultat hidden>
+
+    <div class="bande-page resultat__haut">
+      <div class="bande-page__contenu resultat__entete">
+        <h1 class="resultat__titre">Votre état des lieux</h1>
+        <p class="intro" data-resultat-intro></p>
+        <div class="resultat__actions">
+          <!-- Sous 900px, pas de barre de sommaire : ce bouton y mène au lien. -->
+          <button class="bouton-doux" type="button" data-garder>Garder mon résultat</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="bande-page bande-page--chapitre" id="ensemble">
+      <div class="bande-page__contenu">
+        <div class="carte carte--avant ensemble">
+          <div class="ensemble__principal">
+            <!-- Décorative : le niveau est toujours écrit en toutes lettres à côté. -->
+            <img class="ensemble__medaillon" alt="" aria-hidden="true" data-medaillon>
+            <div class="ensemble__haut">
+              <span class="ensemble__etiquette" data-etiquette></span>
+              <h2 class="ensemble__titre titre-chapitre" data-carte-titre tabindex="-1"></h2>
+              <p data-carte-texte></p>
+              <p data-appui hidden></p>
+              <p data-forme hidden></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bien enraciné et En croissance. Absente si aucune dimension n'y est. -->
+    <section class="bande-page bande-page--chapitre chapitre chapitre--appuis" id="appuis" data-appuis hidden>
+      <div class="bande-page__contenu">
+        <div class="chapitre__tete">
+          <span class="chapitre__surtitre" data-appuis-surtitre></span>
+          <h2 class="chapitre__titre titre-chapitre" data-appuis-titre tabindex="-1"></h2>
+          <p class="chapitre__intro" data-appuis-intro></p>
+        </div>
+        <div class="bandes" data-appuis-niveaux></div>
+      </div>
+    </section>
+
+    <!-- En germe et À semer, puis les idées de l'affirmation 16. -->
+    <section class="bande-page bande-page--chapitre chapitre chapitre--envies" id="envies" data-envies hidden>
+      <div class="bande-page__contenu">
+        <div class="chapitre__tete">
+          <span class="chapitre__surtitre" data-envies-surtitre></span>
+          <h2 class="chapitre__titre titre-chapitre" data-envies-titre tabindex="-1"></h2>
+          <p class="chapitre__intro" data-envies-intro></p>
+        </div>
+        <div class="bandes" data-envies-niveaux></div>
+      </div>
+    </section>
+
+    <!-- Les idées portées par l'affirmation 16, qui n'a pas de dimension, et la
+         phrase de fin des idées. Juste après « Vos envies ». -->
+    <div class="bande-page bande-page--suite" data-suite-idees>
+      <div class="bande-page__contenu">
+        <div data-idees-resultats></div>
+        <p class="ligne-idees" data-ligne-idees hidden></p>
+      </div>
+    </div>
+
+    <!-- Notre lecture : le bloc Greatly, relié aux dimensions de la personne. -->
+    <section class="bande-page bande-page--chapitre lecture" id="lecture">
+      <div class="bande-page__contenu">
+        <div class="lecture__tete">
+          <div class="lecture__gauche">
+            <span class="lecture__surtitre" data-lecture-surtitre></span>
+            <h2 class="lecture__titre titre-chapitre" data-lecture-titre tabindex="-1"></h2>
+          </div>
+          <div class="lecture__droite">
+            <p class="lecture__texte" data-lecture-texte></p>
+            <p class="lecture__citation" data-lecture-citation></p>
+          </div>
+        </div>
+        <!-- Cinq thèmes, chacun relié à une dimension de la personne, puis un
+             témoignage. Construits par resultat.js depuis contenu.json. -->
+        <div class="lecture__grille" data-lecture-cartes></div>
+        <a class="lecture__bouton" href="https://greatly.club" data-lecture-bouton></a>
+      </div>
+    </section>
+
+    <!-- Garder et revenir : le lien, puis l'étude globale, dans une seule carte. -->
+    <section class="bande-page bande-page--pratique revenir" id="revenir">
+      <div class="bande-page__contenu">
+        <span class="revenir__surtitre" data-revenir-surtitre></span>
+        <div class="revenir__carte">
+
+          <!-- Le lien personnel. Il contient les réponses et les idées, jamais
+               de donnée personnelle. -->
+          <section class="garder" id="lien-personnel">
+            <span class="garder__picto" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>
+            </span>
+            <div class="garder__corps">
+              <h2 class="garder__titre titre-pratique" data-retour-titre></h2>
+              <p class="garder__texte" data-retour-texte></p>
+
+              <div class="garder__actions">
+                <!-- Sur ordinateur, le lien est lisible à côté du bouton. -->
+                <input class="champ-texte garder__champ" type="text" aria-label="Votre lien personnel" data-lien-ordi readonly>
+                <button class="btn" type="button" data-copier></button>
+              </div>
+
+              <!-- Un div, pas un p : un <details> ne peut pas vivre dans un
+                   paragraphe. Sur mobile, l'URL brute reste repliée. -->
+              <div class="garder__pied">
+                <details class="lien-perso__details">
+                  <summary data-voir-lien></summary>
+                  <input class="champ-texte" type="text" aria-label="Votre lien personnel" data-lien readonly>
+                </details>
+                <!-- Seulement là où l'appareil sait partager. -->
+                <button class="bouton-doux garder__envoyer" type="button" data-partager hidden></button>
+                <button class="lien-discret" type="button" data-modifier hidden></button>
+                <button class="lien-discret" type="button" data-modifier-profil hidden></button>
+                <span class="garder__favoris" data-retour-raccourci hidden></span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Recevoir l'étude globale. -->
+          <div class="mois">
+            <form class="mois__formulaire etude" novalidate data-etude>
+              <h2 class="bloc__titre titre-pratique" data-rester-titre></h2>
+              <p class="mois__intro" data-rester-texte></p>
+
+              <div class="etude__grille">
+                <div class="etude__champ">
+                  <label class="etude__intitule" for="prenom">Prénom</label>
+                  <input class="champ-texte" id="prenom" name="prenom" type="text" autocomplete="given-name" required>
+                </div>
+                <div class="etude__champ">
+                  <label class="etude__intitule" for="nom">Nom</label>
+                  <input class="champ-texte" id="nom" name="nom" type="text" autocomplete="family-name" required>
+                </div>
+                <div class="etude__champ">
+                  <label class="etude__intitule" for="mail">E-mail</label>
+                  <input class="champ-texte" id="mail" name="email" type="email" autocomplete="email" placeholder="prenom@entreprise.fr" required>
+                </div>
+                <div class="etude__champ">
+                  <label class="etude__intitule" for="entreprise">Entreprise</label>
+                  <input class="champ-texte" id="entreprise" name="entreprise" type="text" autocomplete="organization" required>
+                </div>
+              </div>
+
+              <!-- Champ piège : un robot le remplit, une personne ne le voit pas. -->
+              <div class="piege" aria-hidden="true">
+                <label for="site">Site</label>
+                <input id="site" name="site" type="text" tabindex="-1" autocomplete="off">
+              </div>
+
+              <!-- Décochée au chargement : le consentement ne se présume pas. -->
+              <label class="consentement">
+                <input type="checkbox" name="etude">
+                <span class="consentement__textes">
+                  <span data-rester-etude></span>
+                  <span class="consentement__detail" data-rester-etude-detail></span>
+                </span>
+              </label>
+
+              <p class="mois__mention" data-rester-mention></p>
+              <p class="message" data-message-etude role="alert" hidden></p>
+
+              <button class="btn etude__envoyer" type="submit" data-rester-bouton></button>
+
+              <!-- Sur ordinateur, « Faire connaître » tient en une ligne ici. -->
+              <p class="mois__partage">
+                <span data-partage-question-ordi></span>
+                <button class="lien-discret" type="button" data-partager-accueil-ordi></button>
+              </p>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Faire découvrir l'état des lieux. Seule la page d'accueil est
+         partagée : jamais le résultat, jamais le hash. -->
+    <div class="bande-page bande-page--partage">
+      <div class="bande-page__contenu">
+        <section class="carte-pointillee partage">
+          <p class="partage__texte">
+            <strong data-partage-question></strong>
+            <span data-partage-texte></span>
+          </p>
+          <button class="bouton-doux" type="button" data-partager-accueil></button>
+        </section>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="pied">
+  <span class="logo logo--clair"><span class="logo__texte">Greatly</span><span class="logo__point" aria-hidden="true"></span></span>
+  <p>Vos réponses sont anonymes. <a href="confidentialite.html">Politique de confidentialité</a></p>
+  <p class="pied__rh" data-pied-rh></p>
+</footer>
+
+<script type="module" src="assets/js/parcours/resultat.js?v=31"></script>
+</body>
+</html>
