@@ -6,12 +6,12 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu } from '../contenu.js?v=36';
-import { decoder } from '../lien.js?v=36';
-import { envoyerContact, compteur } from '../api.js?v=36';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=36';
-import { memoriserResultat } from '../session.js?v=36';
-import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=36';
+import { chargerContenu } from '../contenu.js?v=37';
+import { decoder } from '../lien.js?v=37';
+import { envoyerContact, compteur } from '../api.js?v=37';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=37';
+import { memoriserResultat } from '../session.js?v=37';
+import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=37';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -155,16 +155,15 @@ function afficher(lu, contenu, these) {
     if ($('[data-ouv-sur]')) $('[data-ouv-sur]').textContent = 'Ce que montrent les indépendants';
     const note = $('[data-droite-note]');
     if (note) { note.textContent = incomplet ? 'Leurs chiffres apparaissent thème par thème, dès que 3 indépendants au moins sont de chaque côté.' : ''; note.hidden = !incomplet; }
-    // Le grand nombre : les indépendants qui ont répondu, pas toutes les personnes.
-    const nb = $('[data-n-chiffre]'); const tx = document.querySelector('.grand-nombre__texte');
-    if (nb) nb.textContent = String(N); if (tx) tx.textContent = N > 1 ? 'indépendants ont répondu à l’état des lieux.' : 'indépendant a répondu à l’état des lieux.';
+    // Le grand nombre reste celui de toutes les personnes qui ont répondu (Arnaud, 13 octobre 2026 : « pas que les
+    // solopreneurs »), comme pour les équipes.
   }
   afficher.cote = { gauche: solo ? 'Votre activité' : 'Votre équipe', droite: D_SUR };
   $('[data-lui-resume]').textContent = 'Vos réponses, thème par thème : la confiance, le soutien, la cohésion, puis l’engagement et la performance.';
   // Le grand titre d'en-tête est retiré (Arnaud, 13 octobre 2026) : on garde la ligne si on le remet.
   if ($('[data-titre]')) $('[data-titre]').textContent = nbLa === 3 ? 'votre équipe a la confiance, le soutien et la cohésion.' : nbLa === 0 ? 'votre équipe a tout pour grandir.' : 'votre équipe a déjà des atouts.';
   // Le nombre de participants : le compteur public (réponses papier comprises), pas seulement les réponses détaillées en ligne.
-  compteur().then((total) => { document.querySelectorAll('[data-n-reponses]').forEach((n) => { n.textContent = total + ' personnes'; }); document.querySelectorAll('[data-n-chiffre]').forEach((n) => { if (solo) { if (!(n.nextSibling && n.nextSibling.nodeType === 3)) n.after(document.createTextNode(' ')); return; } n.textContent = total; if (solo && !(n.nextSibling && n.nextSibling.nodeType === 3)) n.after(document.createTextNode(' ')); }); }).catch(() => {});
+  compteur().then((total) => { document.querySelectorAll('[data-n-reponses]').forEach((n) => { n.textContent = total + ' personnes'; }); document.querySelectorAll('[data-n-chiffre]').forEach((n) => { n.textContent = total; if (solo && !(n.nextSibling && n.nextSibling.nodeType === 3)) n.after(document.createTextNode(' ')); }); }).catch(() => {});
 
   // La même mesure des deux côtés : l'intensité des réponses (0 à 3) ramenée à 100. Pour lui, ses réponses ; pour l'étude, la
   // moyenne de tous les répondants (edl_these → intensites). « C'est là » à partir de 50, soit une moyenne d'au moins 1,5 sur 3.
