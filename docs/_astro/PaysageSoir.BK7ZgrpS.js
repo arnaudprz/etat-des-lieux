@@ -1,0 +1,1 @@
+import{L as r}from"./logique.Clq0T3b_.js";class t extends r{renderVals(){const e=this.props||{};return{msg:e.messages??!0,forme:e.forme??"rencontre",is_rencontre:(e.forme??"rencontre")==="rencontre",is_traversee:e.forme==="traversee",is_tresse:e.forme==="tresse",is_comite:e.forme==="comite"}}}export{t as default};

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ce qui vous aide à bien travailler ensemble · Greatly</title>
+<meta name="description" content="En 2 minutes, voyez ce qui fonctionne déjà entre vous et ce qui peut encore évoluer. Anonyme, aucun compte à créer, résultat immédiat.">
+
+<!-- Aperçu des réseaux. L'image doit être un PNG en adresse absolue :
+     LinkedIn, WhatsApp et Slack n'affichent pas les SVG et ne résolvent pas
+     les chemins relatifs. L'adresse doit suivre celle du site, voir DEPLOY.md. -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://etat-des-lieux.greatly.club/">
+<meta property="og:site_name" content="Greatly">
+<meta property="og:title" content="Ce qui vous aide à bien travailler ensemble">
+<meta property="og:description" content="Un état des lieux d'équipe en 2 minutes. Anonyme, aucun compte à créer, résultat immédiat.">
+<meta property="og:image" content="https://etat-des-lieux.greatly.club/assets/img/apercu-reseaux.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Quatre pousses, de la graine semée à l'arbre bien enraciné">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ce qui vous aide à bien travailler ensemble">
+<meta name="twitter:description" content="Un état des lieux d'équipe en 2 minutes. Anonyme, aucun compte à créer, résultat immédiat.">
+<meta name="twitter:image" content="https://etat-des-lieux.greatly.club/assets/img/apercu-reseaux.png">
+
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
+<link rel="stylesheet" href="assets/css/base.css?v=31">
+<link rel="stylesheet" href="assets/css/parcours.css?v=31">
+</head>
+<body>
+
+<div class="bandeau">
+  <span class="bandeau__texte">
+    <span class="bandeau__long">Un état des lieux proposé par Greatly, qui accompagne dirigeants, managers et équipes à la Greatly House, près de Lille</span>
+    <span class="bandeau__court">Proposé par Greatly, près de Lille</span>
+  </span>
+  <a href="https://greatly.club"><span class="bandeau__long">Qui sommes-nous</span><span class="bandeau__court">En savoir plus</span></a>
+</div>
+
+<header class="entete">
+  <span class="logo"><span class="logo__texte">Greatly</span><span class="logo__point" aria-hidden="true"></span></span>
+</header>
+
+<main>
+
+  <!-- 1. Le haut de page. -->
+  <section class="hero">
+    <div class="hero__texte">
+      <span class="badge" data-badge></span>
+      <h1 class="hero__titre" data-titre></h1>
+      <p class="hero__intro" data-texte></p>
+      <div class="hero__actions">
+        <a class="btn" href="profil.html" data-bouton></a>
+        <span class="compteur">
+          <span class="compteur__point" aria-hidden="true"></span>
+          <span><strong data-compteur></strong> <span data-compteur-texte></span></span>
+        </span>
+      </div>
+      <ul class="reperes" data-reperes></ul>
+      <p class="deja-fait" data-deja-fait hidden data-deja-fait-texte></p>
+    </div>
+
+    <!-- Montré seulement à qui a déjà fait son état des lieux : la page n'a plus
+         à le convaincre de commencer, elle peut dire qui est derrière. Placé
+         entre le texte et l'illustration : sur mobile il vient donc avant les
+         arbres. En bande pleine largeur, sans coins arrondis.
+         Même texte que resultat.html : garder les deux en accord. -->
+    <section class="greatly greatly--bande" id="greatly" data-greatly hidden>
+      <figure class="greatly__photo">
+        <img src="assets/img/greatly-house.jpg" alt="La Greatly House, une maison de briques dans son parc, à Verlinghem">
+      </figure>
+      <div class="greatly__texte">
+        <span class="greatly__sur-titre">Qui est derrière cet état des lieux</span>
+        <h2 class="greatly__titre">Greatly</h2>
+        <p>Greatly accompagne des dirigeants, des managers et des équipes pour cultiver leur énergie et leur lucidité. On y travaille sur ce qui aide à bien travailler ensemble : le temps, la confiance, les relations, le collectif. Pour nous, la performance n'est pas un objectif : elle en est la conséquence.</p>
+        <p>Tout se passe à la Greatly House, une maison et son parc à Verlinghem, près de Lille. Un lieu calme, pensé pour prendre du recul, loin du bureau.</p>
+        <a class="btn btn--clair" href="https://greatly.club">Découvrir Greatly</a>
+      </div>
+    </section>
+
+    <!-- L'illustration est insérée en SVG par accueil.js : elle reste nette et
+         n'ajoute aucune requête. Sur mobile, ses étiquettes internes laissent
+         la place aux pastilles ci-dessous. -->
+    <figure class="hero__illustration">
+      <div data-pousses></div>
+      <figcaption class="nuancier nuancier--mobile" data-nuancier></figcaption>
+    </figure>
+  </section>
+
+  <!-- 2. Les deux « pourquoi ». -->
+  <section class="pourquoi">
+    <div class="carte pourquoi__carte pourquoi__carte--foret">
+      <span class="surtitre surtitre--clair" data-pour-vous-surtitre></span>
+      <h2 class="pourquoi__titre" data-pour-vous-titre></h2>
+      <ul class="pourquoi__liste" data-pour-vous-lignes></ul>
+    </div>
+
+    <div class="carte pourquoi__carte">
+      <span class="surtitre" data-pour-greatly-surtitre></span>
+      <h2 class="pourquoi__titre" data-pour-greatly-titre></h2>
+      <p class="pourquoi__texte" data-pour-greatly-texte></p>
+      <p class="pourquoi__source" data-pour-greatly-source></p>
+    </div>
+  </section>
+
+  <!-- 3. Ce que vous recevez. -->
+  <section class="section section--blanche">
+    <div class="recevez">
+      <div class="recevez__texte">
+        <span class="surtitre" data-resultat-surtitre></span>
+        <h2 class="section__titre" data-resultat-titre></h2>
+        <div class="recevez__points" data-points></div>
+      </div>
+
+      <div class="carte apercu">
+        <div class="apercu__entete">
+          <span class="apercu__titre" data-apercu-titre></span>
+          <span class="apercu__mention" data-apercu-mention></span>
+        </div>
+        <div class="apercu__lignes" data-apercu></div>
+        <div class="apercu__pied" data-apercu-pied></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sur quoi repose l'état des lieux. -->
+  <section class="section" id="dimensions">
+    <div class="sources">
+      <div class="sources__texte">
+        <h2 class="section__titre" data-sources-titre></h2>
+        <p data-sources-texte></p>
+        <ul class="sources__liste" data-sources-liens></ul>
+        <p class="mention" data-sources-mention></p>
+      </div>
+      <div class="dimensions" data-dimensions></div>
+    </div>
+  </section>
+
+  <section class="appel">
+    <a class="btn" href="profil.html" data-bouton></a>
+  </section>
+
+
+</main>
+
+<footer class="pied">
+  <span class="logo logo--clair"><span class="logo__texte">Greatly</span><span class="logo__point" aria-hidden="true"></span></span>
+  <p><span data-pied></span> <a href="confidentialite.html">Politique de confidentialité</a></p>
+</footer>
+
+<script type="module" src="assets/js/parcours/accueil.js?v=31"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+class h{constructor(){this.props={},this.state={}}setState(t,s){const i=typeof t=="function"?t(this.state,this.props):t;this.state={...this.state,...i},this.__maj&&this.__maj(),s&&s()}forceUpdate(t){this.__maj&&this.__maj(),t&&t()}}export{h as L};

@@ -51,7 +51,7 @@ Les maquettes du dashboard contiennent des **données fictives**. Le vrai dashbo
 4. **Aucun e-mail envoyé**, ni au répondant ni à personne. Pas de PDF. Le répondant garde son résultat grâce à **son lien personnel**.
 5. **Pas d'invitation d'équipe**, pas de partage à son manager ou à ses collègues. On ne met aucune pression sur le manager.
 6. **Anonymat réel.** Les réponses ne contiennent aucune donnée personnelle. Les coordonnées laissées pour recevoir l'étude complète sont stockées **à part** et ne sont **jamais reliées** aux réponses, même par un identifiant.
-7. **Pas d'éclairage sur les travaux de Gittell dans le résultat.** Les sources apparaissent seulement sur l'accueil, dans « Sur quoi repose l'état des lieux ».
+7. **Les travaux de Gittell sont cités dans le résultat**, dans la note « Comment lire ces chiffres » en bas de page (décision d'Arnaud, 13 octobre 2026, qui remplace l'ancienne règle « pas d'éclairage sur Gittell dans le résultat »). Ils restent aussi sur l'accueil.
 8. **Typographie des textes** : pas de tiret cadratin ni de tiret d'incise dans les textes affichés. Guillemets français « ». Espace insécable avant `? ! : ;` et à l'intérieur des guillemets, pour qu'un « ? » ne se retrouve jamais seul en début de ligne.
 9. **Mobile d'abord** pour tout le parcours public. Le dashboard est pour ordinateur.
 10. **Accessible** : contrastes AA, focus visible, boutons de réponse utilisables au clavier (`role="radiogroup"` ou `aria-pressed`), libellés explicites, jamais d'information portée par la couleur seule (chaque couleur a toujours son nom écrit à côté).
