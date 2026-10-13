@@ -8,9 +8,11 @@
  *
  * Sur l'accueil, on compte une visite ; sur le questionnaire, un début de parcours.
  */
-import { chargerContenu } from '../contenu.js';
+// Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
+// ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
+import { chargerContenu } from '../contenu.js?v=31';
 import { relancesAEnvoyer } from '../calcul.js';
-import { lienResultat } from '../lien.js';
+import { lienResultat } from '../lien.js?v=31';
 import { envoyerReponse, compteur } from '../api.js';
 import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js';
 import { evenement } from './commun.js';
@@ -313,6 +315,14 @@ if (page === 'questionnaire') {
   const pret = pretContenu;
 
   window.__edlFin = async (st) => {
+    // Jamais un clic muet : si le lien ne se fabrique pas (un ancien lien.js resté en cache), on recharge lien.js à neuf
+    // et on réessaie, sans perdre les réponses.
+    try { await fin(st); } catch (e) {
+      console.error('[edl] fin du parcours', e);
+      try { const frais = await import('../lien.js?t=' + Date.now()); await fin(st, frais.lienResultat); } catch (e2) { console.error('[edl] nouvel essai', e2); }
+    }
+  };
+  const fin = async (st, fabriquer = lienResultat) => {
     const contenu = await pret;
     const P = contenu.profil;
     // La maquette garde des positions dans les listes, le vrai parcours garde les libellés : on traduit.
@@ -338,6 +348,6 @@ if (page === 'questionnaire') {
     evenement('termine');
     // En démonstration (?demo=1), on le reste jusqu'au résultat.
     const demo = new URLSearchParams(location.search).get('demo') === '1' ? '?demo=1' : '';
-    location.href = '/' + lienResultat(role, reponses, relances).replace('#', demo + '#');
+    location.href = '/' + fabriquer(role, reponses, relances).replace('#', demo + '#');
   };
 }

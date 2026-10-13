@@ -6,10 +6,10 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu } from '../contenu.js';
-import { decoder } from '../lien.js';
+import { chargerContenu } from '../contenu.js?v=31';
+import { decoder } from '../lien.js?v=31';
 import { envoyerContact, compteur } from '../api.js';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=31';
 import { memoriserResultat } from '../session.js';
 
 const $ = (s, r = document) => r.querySelector(s);
