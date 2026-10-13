@@ -153,6 +153,9 @@ style.textContent = [
   'html[data-edl="accueil"] [data-maquette] main > div[style*="background:#23545B"] { display: none !important; }',
   // « ce qui engage » reste d'un bloc sur téléphone.
   '[data-maquette="MEtatDesLieux"] h1 .g-peps { display: inline-block; white-space: nowrap; }',
+  // Sur téléphone, le panneau « Votre avancée » du questionnaire ne colle plus en haut : il prenait la moitié de l'écran
+  // et les questions passaient dessous (Arnaud, 13 octobre 2026). Il reste en tête de liste, puis défile avec le reste.
+  '@media (max-width: 1023px) { html[data-edl="questionnaire"] [data-maquette] aside { position: static !important; top: auto !important; max-height: none !important; } }',
   // La carte du nombre : à droite du texte, à sa hauteur, sans flotter.
   '.edl-hero-section { min-height: 0 !important; }',
   '.edl-hero { display: flex; align-items: stretch; justify-content: space-between; gap: 3rem; padding-bottom: 4.5rem !important; }',
