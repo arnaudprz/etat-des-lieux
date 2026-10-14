@@ -73,7 +73,9 @@ describe('solo : contenus', () => {
     assert.equal(contenu.affirmations[15].solo, 'Mon activité atteint les objectifs que je me fixe.');
   });
   test('autant d’idées qu’avant par affirmation (la base contrôle ces nombres)', () => {
-    const nb = { 1: 5, 2: 4, 3: 5, 4: 5, 5: 4, 6: 5, 7: 5, 8: 5, 9: 5, 10: 5, 11: 4, 12: 4, 13: 5, 14: 4, 15: 4, 16: 5 };
+    // Q10 : 4 idées depuis le 14 octobre 2026 (doublon « regard extérieur » retiré). La base accepte toujours : elle vérifie
+    // seulement qu'un numéro d'idée reste sous l'ancien maximum (5).
+    const nb = { 1: 5, 2: 4, 3: 5, 4: 5, 5: 4, 6: 5, 7: 5, 8: 5, 9: 5, 10: 4, 11: 4, 12: 4, 13: 5, 14: 4, 15: 4, 16: 5 };
     for (const a of contenu.affirmations) assert.equal(a.relance.solo.choix.length, nb[a.n], 'idées ' + a.n);
   });
   test('16 phrases solo, aux mêmes numéros', () => {

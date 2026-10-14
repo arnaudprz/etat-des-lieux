@@ -3,7 +3,7 @@
  * Le fichier est lu une seule fois par page puis mis en cache mémoire.
  */
 
-import { V } from './config.js?v=69';
+import { V } from './config.js?v=71';
 
 let promesse = null;
 

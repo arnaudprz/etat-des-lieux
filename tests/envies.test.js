@@ -37,11 +37,12 @@ describe('les fragments', () => {
   });
 
   test('la version manager reprend celle du membre quand elle n’existe pas', () => {
-    // Seules les affirmations 4, 6, 10 et 12 ont des choix manager différents.
+    // Les affirmations 4, 6, 10 et 12 ont des choix manager différents ; depuis le 14 octobre 2026 aussi 11, 13 et 14
+    // (relances réécrites du point de vue du manager). Pour 3 et 8, le sens ne change pas : la version membre suffit.
     const propres = contenu.affirmations
       .filter((a) => contenu.envies.fragments[String(a.n)].manager)
       .map((a) => a.n);
-    assert.deepEqual(propres, [4, 6, 10, 12]);
+    assert.deepEqual(propres, [4, 6, 10, 11, 12, 13, 14]);
     assert.deepEqual(fragments(contenu, 1, 'manager'), fragments(contenu, 1, 'membre'));
     assert.notDeepEqual(fragments(contenu, 4, 'manager'), fragments(contenu, 4, 'membre'));
   });

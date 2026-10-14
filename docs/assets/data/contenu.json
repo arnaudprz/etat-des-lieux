@@ -290,11 +290,11 @@
         "manager": {
           "debut": "J'aimerais…",
           "choix": [
-            "Découvrir le poste d'un collègue, le temps d'une journée",
+            "Que chacun découvre le poste d'un collègue, le temps d'une journée",
             "Que chaque métier présente son quotidien",
             "Qu'on se retrouve plus souvent entre métiers",
             "Qu'on partage davantage nos outils",
-            "Partager plus de moments informels"
+            "Qu'on partage plus de moments informels"
           ]
         },
         "solo": {
@@ -302,7 +302,7 @@
           "choix": [
             "Rencontrer d'autres indépendants de mon métier",
             "Échanger plus souvent avec d'autres indépendants",
-            "Rejoindre un collectif d'indépendants",
+            "Faire partie d'un groupe d'indépendants de mon métier",
             "Découvrir comment d'autres indépendants s'organisent",
             "Avoir quelqu'un de confiance qui connaît mon métier"
           ],
@@ -465,7 +465,7 @@
             "Avoir une vue simple de ma trésorerie",
             "Mieux organiser mon agenda",
             "Faire le point chaque mois",
-            "Être accompagné sur la gestion"
+            "Avoir un appui sur la gestion"
           ],
           "a_valider": true
         }
@@ -490,10 +490,10 @@
           ]
         },
         "manager": {
-          "debut": "J'aimerais recevoir des infos…",
+          "debut": "J'aimerais que les infos soient…",
           "choix": [
             "Plus complètes",
-            "Plus tôt",
+            "Transmises plus tôt",
             "Dans un format partagé par tous",
             "Plus cohérentes entre elles",
             "Plus fiables, sans avoir à vérifier"
@@ -586,9 +586,8 @@
           "debut": "J'aimerais…",
           "choix": [
             "Avoir quelqu'un de confiance à qui demander conseil",
-            "Bénéficier d'un regard extérieur",
             "Prendre mes décisions avec plus de recul",
-            "Être accompagné sur les choix importants",
+            "Avoir un regard extérieur sur les choix importants",
             "En parler dans un collectif d'indépendants"
           ],
           "a_valider": true
@@ -616,11 +615,10 @@
         "manager": {
           "debut": "J'aimerais…",
           "choix": [
-            "Pouvoir tout dire sans crainte",
-            "Qu'on prenne plus de temps pour en parler",
-            "Sentir que ma parole compte davantage",
-            "Me sentir plus proche de la hiérarchie",
-            "Que nos relations soient plus apaisées"
+            "Que chacun ose me contredire",
+            "Demander l'avis de l'équipe avant de trancher",
+            "Créer des moments où chacun parle librement",
+            "Accueillir les désaccords plus sereinement"
           ]
         },
         "solo": {
@@ -696,9 +694,9 @@
         "manager": {
           "debut": "J'aimerais…",
           "choix": [
-            "Avoir un peu plus de temps",
-            "Savoir plus facilement à qui demander",
-            "Me sentir plus libre de demander",
+            "Donner du temps pour s'entraider",
+            "Que chacun sache plus facilement à qui demander",
+            "Que chacun se sente libre de demander",
             "Que la charge soit mieux répartie",
             "Qu'on prenne des moments pour s'entraider"
           ]
@@ -740,7 +738,7 @@
             "Mieux voir à quoi sert notre travail",
             "Avoir plus de retours de nos clients",
             "Voir davantage les fruits de nos efforts",
-            "Mieux comprendre les décisions",
+            "Mieux expliquer les décisions",
             "Qu'on parle plus souvent de ce qui compte vraiment"
           ]
         },
@@ -830,7 +828,7 @@
             "Me fixer des objectifs plus clairs",
             "Suivre mes résultats plus simplement",
             "Trouver de nouveaux clients",
-            "Être accompagné pour développer mon activité",
+            "Être aidé pour développer mon activité",
             "Prendre du recul sur ce qui marche"
           ],
           "a_valider": true
@@ -970,6 +968,12 @@
           "une parole qui compte davantage",
           "plus de proximité avec la hiérarchie",
           "des relations plus apaisées"
+        ],
+        "manager": [
+          "une équipe qui ose vous contredire",
+          "l'avis de l'équipe demandé avant de trancher",
+          "des moments où chacun parle librement",
+          "des désaccords accueillis plus sereinement"
         ]
       },
       "12": {
@@ -995,6 +999,13 @@
           "plus de liberté pour demander de l'aide",
           "une charge mieux répartie",
           "des moments pour vous entraider"
+        ],
+        "manager": [
+          "du temps donné pour s'entraider",
+          "des interlocuteurs plus faciles à identifier",
+          "plus de liberté pour demander de l'aide",
+          "une charge mieux répartie",
+          "des moments pour s'entraider"
         ]
       },
       "14": {
@@ -1003,6 +1014,13 @@
           "plus de retours de vos clients",
           "des efforts dont on voit davantage les fruits",
           "des décisions mieux comprises",
+          "plus de place pour ce qui compte vraiment"
+        ],
+        "manager": [
+          "une vision plus claire de l'utilité de votre travail",
+          "plus de retours de vos clients",
+          "des efforts dont on voit davantage les fruits",
+          "des décisions mieux expliquées",
           "plus de place pour ce qui compte vraiment"
         ]
       },
@@ -1185,13 +1203,13 @@
   "engagement": {
     "pourquoi_prefixe": "Pourquoi on s'y intéresse",
     "pourquoi": {
-      "Ce qu'on vise ensemble": "On se demande si les équipes partagent vraiment le même cap, ou si chaque métier avance surtout avec le sien. C'est souvent là que tout commence.",
-      "Ce qu'on sait les uns des autres": "On veut comprendre à quel point on connaît le travail de ses collègues. Les recherches de Jody Hoffer Gittell montrent que c'est ce qui permet d'anticiper plutôt que de subir.",
-      "La place de chacun": "On cherche à savoir si chaque métier se sent reconnu et écouté, ou si certaines voix comptent plus que d'autres.",
-      "Comment l'info circule": "On s'interroge sur ce qui fait qu'une info arrive au bon moment, ou trop tard. C'est l'un des sujets qui revient le plus quand on parle de travail ensemble.",
-      "Quand ça accroche": "On veut savoir ce qui se passe quand quelque chose coince : cherche-t-on une solution ensemble, ou chacun de son côté ?",
+      "Ce qu'on vise ensemble": "On regarde si l'équipe partage le même cap. C'est souvent là que tout commence.",
+      "Ce qu'on sait les uns des autres": "On regarde ce qu'on sait du travail de ses collègues. Les recherches de Jody Hoffer Gittell montrent que c'est ce qui permet d'anticiper ensemble.",
+      "La place de chacun": "On regarde si chaque métier se sent reconnu et écouté.",
+      "Comment l'info circule": "On regarde ce qui aide une info à arriver au bon moment. C'est l'un des sujets qui reviennent le plus quand on parle de travail ensemble.",
+      "Quand ça accroche": "On regarde comment l'équipe trouve une solution quand quelque chose coince.",
       "Le soutien du manager": "On se demande quel rôle joue le manager pour aider les métiers à travailler ensemble, au-delà du suivi des objectifs.",
-      "La confiance et le soutien": "On cherche à comprendre si l'on peut parler franchement et compter sur les autres. La confiance est au cœur de l'accompagnement Greatly.",
+      "La confiance et le soutien": "On cherche à comprendre si l'on peut parler franchement et compter sur les autres. La confiance est au cœur de ce que fait Greatly.",
       "Le sens et les résultats": "On veut vérifier une idée qui nous tient à cœur : les équipes qui voient le sens de leur travail atteignent-elles plus facilement leurs résultats ?"
     },
     "cadre": {
@@ -1199,11 +1217,11 @@
       "lignes": [
         {
           "debut": "Ce qu'on étudie :",
-          "suite": " comment les équipes travaillent ensemble, au quotidien."
+          "suite": " comment on travaille ensemble au quotidien, en équipe ou à son compte."
         },
         {
           "debut": "Pourquoi :",
-          "suite": " préparer des accompagnements au plus près de ce que vivent les équipes."
+          "suite": " préparer des ateliers au plus près de ce que vivent les équipes et les indépendants."
         },
         {
           "debut": "Ce que vous y gagnez :",
@@ -1217,7 +1235,7 @@
     },
     "avant_resultat": {
       "promesse": "Dans un instant : votre état des lieux en couleurs, et vos idées pour faire évoluer.",
-      "mention": "Vos réponses rejoignent l'étude, de façon anonyme. Elles aident nos intervenants à préparer des ateliers au plus près de ce que vivent les équipes."
+      "mention": "Vos réponses rejoignent l'étude, de façon anonyme. Elles aident nos intervenants à préparer des ateliers au plus près de ce que vivent les équipes et les indépendants."
     },
     "progression": {
       "etiquette": "Votre avancée dans le questionnaire",
@@ -1501,11 +1519,11 @@
     "pied_rh": "Greatly n'est ni un cabinet RH, ni un organisme de formation. Pour aller plus loin avec votre équipe, votre service RH ou le cabinet qui vous accompagne sera le mieux placé."
   },
   "pourquoi_solo": {
-    "Votre collectif pro": "On se demande si vous avancez seul ou avec un collectif d'indépendants, et avec vos partenaires. Travailler à son compte ne veut pas dire travailler sans collectif.",
-    "Ce qu'on sait de vous": "On veut comprendre si vos clients et d'autres indépendants savent ce que vous faites. C'est ce qui permet d'anticiper plutôt que de subir.",
+    "Votre collectif pro": "On regarde avec qui vous avancez : un collectif d'indépendants, vos partenaires. Travailler à son compte, c'est aussi réussir à plusieurs.",
+    "Ce qu'on sait de vous": "On veut comprendre si vos clients et d'autres indépendants savent ce que vous faites. C'est ce qui permet d'anticiper.",
     "Votre place": "On cherche à savoir si votre travail est reconnu à sa juste valeur, et si votre avis compte dans votre collectif.",
     "Votre organisation": "On s'interroge sur ce qui vous donne de la visibilité : vos priorités, votre agenda, votre trésorerie, et du temps pour piloter votre activité.",
-    "Quand ça accroche": "On regarde comment se règlent les tensions avec un client ou un partenaire : vite et ensemble, ou plus lentement.",
+    "Quand ça accroche": "On regarde comment se règlent les tensions avec un client ou un partenaire.",
     "Qui vous épaule": "On se demande si vous avez quelqu'un de confiance avec qui parler avant une décision importante.",
     "La confiance et le soutien": "On cherche à savoir si vous pouvez dire les choses franchement, parler d'un doute ou d'une erreur, et sur qui compter quand ça déborde.",
     "Le sens et les résultats": "On regarde ce qui donne du sens à votre activité, et les résultats qu'elle obtient. Pour nous, les résultats sont une conséquence, pas un point de départ."
