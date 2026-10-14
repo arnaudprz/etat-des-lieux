@@ -10,12 +10,12 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu } from '../contenu.js?v=67';
-import { relancesAEnvoyer } from '../calcul.js?v=67';
-import { lienResultat } from '../lien.js?v=67';
-import { envoyerReponse, compteur } from '../api.js?v=67';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=67';
-import { evenement } from './commun.js?v=67';
+import { chargerContenu } from '../contenu.js?v=69';
+import { relancesAEnvoyer } from '../calcul.js?v=69';
+import { lienResultat } from '../lien.js?v=69';
+import { envoyerReponse, compteur } from '../api.js?v=69';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=69';
+import { evenement } from './commun.js?v=69';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -29,10 +29,11 @@ const norm = (t) => t.replace(/[’]/g, "'").replace(/\s+/g, ' ').trim();
 const TEXTES = {
   // Le grand titre porte la phrase de Greatly ; « La confiance, le soutien, la cohésion : ce qui engage. » passe dessous, en petit
   // (Arnaud, 14 octobre 2026 : « tu mets en gros dans la même forme Greatly éclaire…, et en dessous comme avant la confiance… »).
-  // Le mantra de Greatly (Arnaud, 14 octobre 2026), dans la forme d'origine du titre : une ligne fine, deux lignes grasses.
-  'Ce qui vous aide': 'Nous posons les fondations.',
-  'à bien travailler': 'Vous construisez',
-  'ensemble': 'votre réussite',
+  // Le titre de l'accueil (Arnaud, 14 octobre 2026 : « je voudrais faire évoluer le header »), dans la forme d'origine : une
+  // ligne fine, deux lignes grasses, la dernière surlignée.
+  'Ce qui vous aide': 'Votre réussite se construit à plusieurs.',
+  'à bien travailler': 'Nous en posons',
+  'ensemble': 'les fondations',
   "En 2 minutes, voyez ce qui fonctionne déjà entre vous et ce qui peut encore évoluer. De quoi mettre des mots justes sur ce que vous vivez.":
     "Regardez votre équipe telle que vous la voyez : la confiance, le soutien, la cohésion, l’engagement. Puis découvrez ce que montrent toutes les réponses.", // sans dévoiler le résultat (Arnaud)
   // « Ce que vous y gagnez » parle aux équipes comme aux solos : on le lit avant de choisir son profil (Arnaud, 13 octobre 2026).
@@ -160,7 +161,7 @@ const nombre = () => {
   if (h1 && !(h1.nextElementSibling && h1.nextElementSibling.classList.contains('edl-signature'))) {
     hero.querySelectorAll('.edl-signature').forEach((x) => x.remove());
     const sg = document.createElement('p'); sg.className = 'edl-signature';
-    sg.textContent = 'Greatly éclaire celles et ceux qui font rayonner leur entreprise.';
+    sg.textContent = 'Greatly éclaire celles et ceux qui, ensemble, font rayonner leur entreprise.';
     h1.after(sg);
   }
   // Une petite frise des trois étapes, sous le haut de page, dans la même DA que la carte du nombre (Arnaud, 13 octobre 2026).
@@ -341,6 +342,8 @@ style.textContent = [
   '.edl-pas--mobile .edl-pas__m1 { font-size: 24px; } .edl-pas--mobile .edl-pas__m2 { font-size: 28px; } .edl-pas--mobile .edl-pas__droite { margin-top: 24px; gap: 24px; } .edl-pas--mobile .edl-pas__bouton { min-height: 3.5rem; font-size: 1rem; padding-left: 1.375rem; white-space: normal; }',
 
   '[data-maquette="EDL-Accueil"] .edl-signature { max-width: 40rem; }',
+  // Des lignes équilibrées : pas de mot seul en fin de phrase (« entreprise. », « plusieurs. »).
+  '.edl-signature, html[data-edl="accueil"] [data-maquette] section:first-of-type h1 > span:first-child { text-wrap: balance; }',
   '.edl-signature { margin: 0.25rem 0 0; font-family: "Bricolage Grotesque", sans-serif; font-weight: 500; font-size: 1.25rem; line-height: 1.35; color: #23545B; max-width: 34rem; }',
   '[data-maquette="MEtatDesLieux"] .edl-signature { font-size: 1.0625rem; margin: 12px 0 0; }',
   '.edl-frise { flex: 1 1 100%; list-style: none; margin: 0.5rem 0 0; padding: 1.75rem 2rem; border-radius: 1.5rem; background: #FFFFFF; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; position: relative; animation: edlMonte .8s .15s cubic-bezier(.2,.7,.2,1) both; }',
