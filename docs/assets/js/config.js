@@ -15,7 +15,7 @@ export const SUPABASE_CLE = 'sb_publishable_uEyhTVQfjBecgO5wZiwtzw_BPxuktUH';
 export const VERSION_QUESTIONNAIRE = 'v1';
 
 /** Cache-buster des imports. À incrémenter à chaque déploiement. */
-export const V = 48;
+export const V = 49;
 
 /** Valeur affichée par le compteur si l'API ne répond pas. */
 export const COMPTEUR_REPLI = 255;
