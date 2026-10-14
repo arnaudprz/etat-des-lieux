@@ -10,12 +10,12 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu } from '../contenu.js?v=49';
-import { relancesAEnvoyer } from '../calcul.js?v=49';
-import { lienResultat } from '../lien.js?v=49';
-import { envoyerReponse, compteur } from '../api.js?v=49';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=49';
-import { evenement } from './commun.js?v=49';
+import { chargerContenu } from '../contenu.js?v=50';
+import { relancesAEnvoyer } from '../calcul.js?v=50';
+import { lienResultat } from '../lien.js?v=50';
+import { envoyerReponse, compteur } from '../api.js?v=50';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=50';
+import { evenement } from './commun.js?v=50';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -27,9 +27,12 @@ const norm = (t) => t.replace(/[’]/g, "'").replace(/\s+/g, ' ').trim();
 // Les textes de l'accueil, réécrits dans notre thèse (Arnaud, 13 octobre 2026) : la confiance, le soutien et la cohésion
 // engagent une équipe ; la performance n'est pas un objectif, elle en est la conséquence. Pas de note, pas de jugement.
 const TEXTES = {
-  'Ce qui vous aide': 'La confiance, le soutien,',
-  'à bien travailler': 'la cohésion :',
-  'ensemble': 'ce qui engage',
+  // Le grand titre porte la phrase de Greatly ; « La confiance, le soutien, la cohésion : ce qui engage. » passe dessous, en petit
+  // (Arnaud, 14 octobre 2026 : « tu mets en gros dans la même forme Greatly éclaire…, et en dessous comme avant la confiance… »).
+  // Le mantra de Greatly (Arnaud, 14 octobre 2026), dans la forme d'origine du titre : une ligne fine, deux lignes grasses.
+  'Ce qui vous aide': 'Nous posons les fondations.',
+  'à bien travailler': 'Vous construisez',
+  'ensemble': 'votre réussite',
   "En 2 minutes, voyez ce qui fonctionne déjà entre vous et ce qui peut encore évoluer. De quoi mettre des mots justes sur ce que vous vivez.":
     "Regardez votre équipe telle que vous la voyez : la confiance, le soutien, la cohésion, l’engagement. Puis découvrez ce que montrent toutes les réponses.", // sans dévoiler le résultat (Arnaud)
   // « Ce que vous y gagnez » parle aux équipes comme aux solos : on le lit avant de choisir son profil (Arnaud, 13 octobre 2026).
@@ -135,14 +138,13 @@ const nombre = () => {
     }
     if (anime) peindre(b, total);
   }
-  // La signature de Greatly (Arnaud, 13 octobre 2026), au-dessus du titre depuis le 14 octobre (« inverser : le premier monte, le
-  // deuxième descend, garde la DA ») : chacun garde son style.
+  // Sous le titre, en petit : la fin du mantra (Arnaud, 14 octobre 2026). Le titre en porte le début (TEXTES).
   const h1 = hero.querySelector('h1');
-  if (h1 && !(h1.previousElementSibling && h1.previousElementSibling.classList.contains('edl-signature'))) {
+  if (h1 && !(h1.nextElementSibling && h1.nextElementSibling.classList.contains('edl-signature'))) {
     hero.querySelectorAll('.edl-signature').forEach((x) => x.remove());
     const sg = document.createElement('p'); sg.className = 'edl-signature';
-    sg.textContent = 'Greatly éclaire les dirigeants, les talents clés et les équipes qui font rayonner l’entreprise.';
-    h1.before(sg);
+    sg.textContent = 'Greatly éclaire celles et ceux qui font rayonner leur entreprise.';
+    h1.after(sg);
   }
   // Une petite frise des trois étapes, sous le haut de page, dans la même DA que la carte du nombre (Arnaud, 13 octobre 2026).
   if (!hero.querySelector('.edl-frise')) {
@@ -250,8 +252,12 @@ style.textContent = [
     + ' }',
   '[data-edl-cache] { display: none !important; }',
   '.edl-hero { flex-wrap: wrap; }',
-  '.edl-signature { margin: 0 0 0.25rem; font-family: "Bricolage Grotesque", sans-serif; font-weight: 500; font-size: 1.25rem; line-height: 1.35; color: #23545B; max-width: 34rem; }',
-  '[data-maquette="MEtatDesLieux"] .edl-signature { font-size: 1.0625rem; margin: 0 0 12px; }',
+  // Avec le mantra, la ligne grasse « Vous construisez » est plus large : la carte de l'étude compte ses marges dans sa largeur
+  // pour rester à droite (14 octobre 2026).
+  '[data-maquette="EDL-Accueil"] .edl-nombre { box-sizing: border-box; }',
+  '[data-maquette="EDL-Accueil"] .edl-signature { max-width: 40rem; }',
+  '.edl-signature { margin: 0.25rem 0 0; font-family: "Bricolage Grotesque", sans-serif; font-weight: 500; font-size: 1.25rem; line-height: 1.35; color: #23545B; max-width: 34rem; }',
+  '[data-maquette="MEtatDesLieux"] .edl-signature { font-size: 1.0625rem; margin: 12px 0 0; }',
   '.edl-frise { flex: 1 1 100%; list-style: none; margin: 0.5rem 0 0; padding: 1.75rem 2rem; border-radius: 1.5rem; background: #FFFFFF; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; position: relative; animation: edlMonte .8s .15s cubic-bezier(.2,.7,.2,1) both; }',
   '.edl-frise li { position: relative; display: flex; flex-direction: column; gap: 0.375rem; }',
   '.edl-frise li:not(:last-child)::after { content: ""; position: absolute; top: 1rem; left: 2.75rem; right: -1.25rem; height: 2px; background: #DCE8EA; }',
