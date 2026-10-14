@@ -10,12 +10,12 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu } from '../contenu.js?v=65';
-import { relancesAEnvoyer } from '../calcul.js?v=65';
-import { lienResultat } from '../lien.js?v=65';
-import { envoyerReponse, compteur } from '../api.js?v=65';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=65';
-import { evenement } from './commun.js?v=65';
+import { chargerContenu } from '../contenu.js?v=67';
+import { relancesAEnvoyer } from '../calcul.js?v=67';
+import { lienResultat } from '../lien.js?v=67';
+import { envoyerReponse, compteur } from '../api.js?v=67';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=67';
+import { evenement } from './commun.js?v=67';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -87,7 +87,22 @@ const TEXTES = {
     "Anonyme et sans compte : personne ne sait qui a répondu. Votre résultat s'affiche tout de suite. Vos réponses, regroupées avec les autres, nourrissent l'étude.",
   // Confidentialité : « Vos chiffres par mail » envoie désormais un mail, à la demande (Arnaud, 13 octobre 2026 : « go »).
   "Aucun e-mail automatique n'est envoyé par cet outil.":
-    "Si vous demandez vos chiffres par mail, nous gardons votre prénom, votre nom, votre e-mail et le lien de votre résultat, pour vous l'envoyer. Ils ne servent à rien d'autre. Vous pouvez demander leur effacement à arnaud@greatly.club.",
+    "Si vous demandez vos chiffres par mail, nous gardons votre prénom, votre nom, votre e-mail et le lien de votre résultat, pour vous l'envoyer. Ce lien contient vos réponses : dans ce cas, et seulement dans ce cas, vos coordonnées sont reliées à ce que vous avez répondu. Nous savons aussi si le mail a été ouvert, grâce à notre service d'envoi. Ces informations ne servent à rien d'autre. Vous pouvez demander leur effacement à tout moment à arnaud@greatly.club.",
+  // Confidentialité mise à jour avec les évolutions (Arnaud, 14 octobre 2026) : base Supabase au lieu du tableur Google,
+  // chiffres par mail (lien relié aux coordonnées, mesure d'ouverture, prestataires), rôle solo, durée de conservation.
+  "État des lieux d'équipe": 'État des lieux',
+  "Les éléments de profil que vous indiquez : rôle dans l'équipe, genre si vous le souhaitez, taille de l'entreprise, secteur d'activité, taille de l'équipe.":
+    "Les éléments de profil que vous indiquez : votre façon de travailler (en encadrant une équipe, au sein d'une équipe, ou en solo), genre si vous le souhaitez, taille de l'entreprise et de l'équipe (pas pour un solo), secteur d'activité.",
+  "Aucun cookie publicitaire, aucun traceur d'audience tierce.":
+    "Aucun cookie publicitaire, aucun traceur d'audience tierce. Seul le mail de résultat, si vous le demandez, indique s'il a été ouvert.",
+  "Votre lien personnel contient vos réponses, sous forme abrégée, directement dans l'adresse. Il reste dans votre navigateur et n'est jamais envoyé à nos serveurs. Personne ne peut s'en servir pour retrouver votre nom.":
+    "Votre lien personnel contient vos réponses, sous forme abrégée, directement dans l'adresse. Il reste dans votre navigateur et ne nous est pas envoyé, sauf si vous demandez vos chiffres par mail (voir plus bas). Personne ne peut s'en servir pour retrouver votre nom.",
+  "Si vous laissez votre prénom, votre nom, votre entreprise et votre e-mail professionnel pour recevoir l'étude complète, ces informations sont enregistrées dans un fichier séparé. Elles ne portent aucun identifiant de réponse ni de visite : il n'existe aucun moyen, même technique, de les relier à ce que vous avez répondu.":
+    "Si vous laissez votre prénom, votre nom, votre entreprise et votre e-mail professionnel pour recevoir l'étude complète, ces informations sont enregistrées à part. Elles ne portent aucun identifiant de réponse ni de visite : il n'existe aucun moyen, même technique, de les relier à ce que vous avez répondu.",
+  "Les réponses anonymes et les coordonnées sont stockées dans deux feuilles distinctes d'un tableur Google appartenant à Greatly, accessible aux seules personnes de Greatly qui en ont besoin.":
+    "Les réponses anonymes et les coordonnées sont stockées séparément dans une base de données hébergée en Allemagne par Supabase, accessible aux seules personnes de Greatly qui en ont besoin. Si vous demandez vos chiffres par mail, deux prestataires interviennent pour notre compte, uniquement pour cet envoi et sur des serveurs en Europe : Browserless, qui fabrique le PDF à partir du lien de votre résultat et de votre prénom, et Brevo, qui envoie le mail.",
+  "Les coordonnées laissées pour recevoir l'étude sont conservées jusqu'à l'envoi de l'étude, puis trois ans au maximum.":
+    "Les coordonnées laissées pour recevoir l'étude sont conservées jusqu'à l'envoi de l'étude, puis cinq ans au maximum. Celles laissées pour recevoir vos chiffres par mail sont conservées cinq ans au plus après l'envoi.",
 };
 const TEXTES_N = Object.fromEntries(Object.entries(TEXTES).map(([k, v]) => [norm(k), v]));
 
