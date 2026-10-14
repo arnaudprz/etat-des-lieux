@@ -10,12 +10,12 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu } from '../contenu.js?v=50';
-import { relancesAEnvoyer } from '../calcul.js?v=50';
-import { lienResultat } from '../lien.js?v=50';
-import { envoyerReponse, compteur } from '../api.js?v=50';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=50';
-import { evenement } from './commun.js?v=50';
+import { chargerContenu } from '../contenu.js?v=64';
+import { relancesAEnvoyer } from '../calcul.js?v=64';
+import { lienResultat } from '../lien.js?v=64';
+import { envoyerReponse, compteur } from '../api.js?v=64';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=64';
+import { evenement } from './commun.js?v=64';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -66,7 +66,9 @@ const TEXTES = {
     "Vos réponses restent anonymes. Regroupées, elles servent une étude qui vérifie une idée simple : quand la confiance, le soutien et la cohésion sont là, on s'engage davantage, et les résultats suivent. En équipe comme à son compte. L'étude complète est partagée avec ceux qui le souhaitent.", // la même phrase sur téléphone
   // L'introduction du profil (Arnaud, 13 octobre 2026 : « ce texte n'est pas top »).
   "Pour lire vos réponses à côté de celles d'équipes qui vous ressemblent, quand elles seront assez nombreuses. Rien ne permet de vous identifier.":
-    'Quelques mots pour vous situer parmi toutes les réponses, en équipe ou à votre compte. Rien ne permet de vous identifier.',
+    'Pour vous situer parmi toutes les réponses, en équipe ou à votre compte. Rien ne permet de vous identifier.',
+  // Le titre de l'étape 1 parle aussi aux solos, et ne répète plus « Quelques mots » (Arnaud, 14 octobre 2026 : « ici soucis »).
+  'sur votre équipe.': 'sur vous.',
   // Le rôle devient « Vous travaillez », avec trois choix (le troisième vient de window.__edlSolo).
   'Dans votre équipe, vous êtes': 'Vous travaillez',
   'Gardez votre résultat en favoris et retrouvez-le quand vous voulez. Sans compte, sans e-mail.':
@@ -161,6 +163,37 @@ const nombre = () => {
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); lancer(b); } }); io.observe(b);
   } else if (!anime) lancer(b);
 };
+// « Greatly, ce n'est pas… » (Arnaud, 14 octobre 2026) : sous « Ce que vous y gagnez », un bloc qui pose le concept, et un
+// bouton vers la page qui reprend les dix phrases (/greatly-ce-n-est-pas.html). Mêmes composants que l'accueil.
+const FLECHE = '<span class="edl-pas__rond" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#0C1011" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>';
+const blocPas = () => {
+  const m = [...document.querySelectorAll('[data-maquette]')].find((x) => x.getClientRects().length); if (!m) return;
+  const gagnez = [...m.querySelectorAll('section')].find((x) => /^Ce que vous y gagnez/.test(norm(x.textContent || ''))); if (!gagnez) return;
+  // Dans la section, tout en bas, et non entre deux sections : la maquette réutiliserait le bloc pour redessiner les siennes.
+  if (gagnez.querySelector(':scope > .edl-pas')) return;
+  m.querySelectorAll('.edl-pas').forEach((x) => x.remove());
+  const b = document.createElement('section'); b.className = 'edl-pas' + (m.dataset.maquette === 'MEtatDesLieux' ? ' edl-pas--mobile' : '');
+  // À gauche le titre et le bouton ; à droite, une carte de points dans la DA de « L'étude en cours » (Arnaud, 14 octobre 2026 :
+  // « l'idée du bloc au-dessus avec les points ») : en bas, les fondations (bleu-vert) ; dessus, des colonnes vert vif qui montent,
+  // la réussite qu'on construit. Les fondations se posent d'abord, puis les colonnes montent.
+  const COL = 30, FOND = 3, HAUT = [3, 5, 4, 6, 8, 7, 5, 6, 9, 8, 6, 7, 10, 9, 7, 8, 11, 10, 8, 9, 12, 11, 9, 10, 13, 12, 11, 12, 14, 13];
+  const RANGS = FOND + Math.max(...HAUT); let pts = '';
+  for (let r = RANGS - 1; r >= 0; r--) for (let c = 0; c < COL; c++) {
+    const t = r < FOND ? 'f' : r - FOND < HAUT[c] ? 'r' : '';
+    pts += '<i' + (t ? ' class="' + t + '" style="--d:' + (t === 'f' ? c * 12 : 500 + c * 45 + (r - FOND) * 55) + 'ms"' : '') + '></i>'; }
+  b.innerHTML = '<div class="edl-pas__texte"><span class="edl-pas__sur">Notre approche</span>'
+    + '<h2><span class="edl-pas__leger">Greatly,</span><span class="edl-pas__gras">ce n’est pas…</span></h2>'
+    + '<a class="edl-pas__bouton" href="/greatly-ce-n-est-pas.html">Découvrir notre approche' + FLECHE + '</a></div>'
+    + '<div class="edl-pas__carte"><span class="edl-pas__carte-sur">Notre façon de faire</span>'
+    + '<span class="edl-pas__points" aria-hidden="true" style="--col:' + COL + '">' + pts + '</span>'
+    + '<span class="edl-pas__legende"><span><i class="r"></i>Votre réussite, que vous construisez</span><span><i class="f"></i>Les fondations, que nous posons avec vous</span></span></div>';
+  const lancerPoints = () => b.classList.add('edl-pas--anime');
+  if (calme() || !('IntersectionObserver' in window)) lancerPoints();
+  else { const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); lancerPoints(); } }, { threshold: 0.3 }); io.observe(b); }
+  // Sans la liste à droite (Arnaud, 14 octobre 2026 : « je mettrais pas à droite les infos ») : elles sont sur la page.
+  gagnez.appendChild(b);
+};
+
 const retoucher = () => {
   const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   for (let n = tw.nextNode(); n; n = tw.nextNode()) {
@@ -179,7 +212,11 @@ const retoucher = () => {
   if (page === 'accueil') document.querySelectorAll('[data-maquette] section:first-of-type p').forEach((x) => {
     if (/^(En 2 minutes|Regardez votre équipe|Votre équipe telle que vous la voyez)/.test(norm(x.textContent || '')) && x.style.display !== 'none') x.style.display = 'none';
   });
-  if (page === 'accueil') nombre();
+  if (page === 'accueil') { nombre(); blocPas(); }
+  // « vous » surligné en vert vif dans le titre de l'étape 1, comme le titre de l'accueil (Arnaud, 14 octobre 2026).
+  if (page === 'questionnaire') document.querySelectorAll('[data-maquette] h1 span, [data-maquette] h2 span').forEach((x) => {
+    if (x.children.length === 0 && norm(x.textContent || '') === 'sur vous.') x.innerHTML = 'sur <span class="g-peps edl-vous">vous</span>.';
+  });
   if (page === 'questionnaire') {
     // Un solo ne répond pas à la taille de l'équipe : le bloc disparaît tant que « À votre compte » est choisi.
     const t = [...document.querySelectorAll('[data-maquette] *')].filter((x) => x.children.length === 0 && /^Taille de votre équipe/.test(norm(x.textContent || '')));
@@ -255,6 +292,39 @@ style.textContent = [
   // Avec le mantra, la ligne grasse « Vous construisez » est plus large : la carte de l'étude compte ses marges dans sa largeur
   // pour rester à droite (14 octobre 2026).
   '[data-maquette="EDL-Accueil"] .edl-nombre { box-sizing: border-box; }',
+  // Le bloc « Greatly, ce n'est pas… » : aplat bleu-vert, titre en deux temps, la liste des dix, le mantra, la pilule à flèche.
+  '.edl-pas { display: grid !important; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 3.5rem; align-items: stretch; overflow: hidden; margin: 4.5rem calc(-1 * max(3.5rem, 50vw - 35rem)) -4.5rem; padding: 4.5rem max(3.5rem, calc(50vw - 35rem)); background: #23545B; color: #FFFFFF; box-sizing: border-box; }',
+  '.edl-pas__texte { display: flex; flex-direction: column; gap: 1.25rem; align-items: flex-start; }',
+  '.edl-pas__sur { font-family: "DM Sans", sans-serif; font-size: 0.8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #B4F25C; }',
+  '.edl-pas h2 { margin: 0; letter-spacing: -.04em; }',
+  '.edl-pas__leger { display: block; font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; font-size: 3rem; line-height: 1.08; letter-spacing: -.01em; color: #C7D9DC; }',
+  '.edl-pas__gras { display: block; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 4.5rem; line-height: 1; color: #FFFFFF; }',
+  '.edl-pas__texte { justify-content: center; }',
+  '.edl-pas__carte { align-self: center; justify-self: end; width: 100%; max-width: 32rem; display: flex; flex-direction: column; gap: 1.25rem; padding: 2rem 2rem 1.75rem; border-radius: 1.5rem; background: #FFFFFF; color: #0C1011; box-sizing: border-box; }',
+  '.edl-pas__carte-sur { font-family: "DM Sans", sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #23545B; }',
+  '.edl-pas__points { display: grid; grid-template-columns: repeat(var(--col), minmax(0, 1fr)); gap: 4px; }',
+  '.edl-pas__points i { display: block; aspect-ratio: 1; border-radius: 999px; background: #EEF4F5; transition: background-color .35s ease, transform .35s ease; transition-delay: var(--d, 0ms); transform: scale(.85); }',
+  '.edl-pas--anime .edl-pas__points i.f { background: #23545B; transform: none; }',
+  '.edl-pas--anime .edl-pas__points i.r { background: #B4F25C; transform: none; }',
+  '.edl-pas__legende { display: flex; flex-direction: column; gap: 0.5rem; font-family: "DM Sans", sans-serif; font-size: 0.875rem; color: #455051; }',
+  '.edl-pas__legende span { display: inline-flex; align-items: center; gap: 0.625rem; }',
+  '.edl-pas__legende i { width: 0.625rem; height: 0.625rem; border-radius: 999px; flex-shrink: 0; } .edl-pas__legende i.f { background: #23545B; } .edl-pas__legende i.r { background: #B4F25C; }',
+  '@media (prefers-reduced-motion: reduce) { .edl-pas__points i { transition: none !important; } }',
+  '.edl-pas__mantra { margin: 0; line-height: 1.04; }',
+  '.edl-pas__m1 { display: block; font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; font-size: 2.75rem; letter-spacing: -.01em; color: #C7D9DC; }',
+  '.edl-pas__m2 { display: block; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 3.25rem; letter-spacing: -.04em; color: #FFFFFF; }',
+  '.edl-pas__surligne { background: linear-gradient(transparent 62%, #B4F25C 62%, #B4F25C 92%, transparent 92%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }',
+  '@media (max-width: 1100px) { .edl-pas { grid-template-columns: 1fr; gap: 2rem; } }',
+  '.edl-pas__bouton { display: inline-flex; align-items: center; gap: 0.875rem; min-height: 4.25rem; padding: 0 0.6875rem 0 1.875rem; border-radius: 62.4375rem; background: #F4F2EA; color: #0C1011; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 1.125rem; letter-spacing: -.01em; text-decoration: none; white-space: nowrap; box-sizing: border-box; }',
+  '.edl-pas__rond { display: inline-flex; align-items: center; justify-content: center; width: 2.875rem; height: 2.875rem; border-radius: 62.4375rem; background: #B4F25C; flex-shrink: 0; transition: transform .2s ease; }',
+  '.edl-pas__rond svg { width: 1.3125rem; height: 1.3125rem; display: block; }',
+  '.edl-pas__bouton:hover .edl-pas__rond { transform: translateX(3px); }',
+  '.edl-pas--mobile { display: block !important; margin: 40px -20px -48px; padding: 48px 20px; }',
+  '.edl-pas--mobile .edl-pas__carte { margin-top: 28px; padding: 22px 20px 20px; } .edl-pas--mobile .edl-pas__points { gap: 3px; }',
+  '@media (max-width: 1100px) { .edl-pas__carte { justify-self: start; } }',
+  '.edl-pas--mobile .edl-pas__leger { font-size: 28px; } .edl-pas--mobile .edl-pas__gras { font-size: 34px; letter-spacing: -.045em; }',
+  '.edl-pas--mobile .edl-pas__m1 { font-size: 24px; } .edl-pas--mobile .edl-pas__m2 { font-size: 28px; } .edl-pas--mobile .edl-pas__droite { margin-top: 24px; gap: 24px; } .edl-pas--mobile .edl-pas__bouton { min-height: 3.5rem; font-size: 1rem; padding-left: 1.375rem; white-space: normal; }',
+
   '[data-maquette="EDL-Accueil"] .edl-signature { max-width: 40rem; }',
   '.edl-signature { margin: 0.25rem 0 0; font-family: "Bricolage Grotesque", sans-serif; font-weight: 500; font-size: 1.25rem; line-height: 1.35; color: #23545B; max-width: 34rem; }',
   '[data-maquette="MEtatDesLieux"] .edl-signature { font-size: 1.0625rem; margin: 12px 0 0; }',
