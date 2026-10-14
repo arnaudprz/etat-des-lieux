@@ -10,12 +10,12 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu } from '../contenu.js?v=71';
-import { relancesAEnvoyer } from '../calcul.js?v=71';
-import { lienResultat } from '../lien.js?v=71';
-import { envoyerReponse, compteur } from '../api.js?v=71';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=71';
-import { evenement } from './commun.js?v=71';
+import { chargerContenu } from '../contenu.js?v=73';
+import { relancesAEnvoyer } from '../calcul.js?v=73';
+import { lienResultat } from '../lien.js?v=73';
+import { envoyerReponse, compteur } from '../api.js?v=73';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=73';
+import { evenement } from './commun.js?v=73';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -92,6 +92,8 @@ const TEXTES = {
   // Confidentialité mise à jour avec les évolutions (Arnaud, 14 octobre 2026) : base Supabase au lieu du tableur Google,
   // chiffres par mail (lien relié aux coordonnées, mesure d'ouverture, prestataires), rôle solo, durée de conservation.
   "État des lieux d'équipe": 'État des lieux',
+  "Vos réponses aux 16 affirmations, et les choix des questions de relance.":
+    "Vos réponses aux 16 affirmations, et les choix des questions de relance. Si vous cochez « Autre », les quelques mots que vous écrivez (sans nom, s'il vous plaît).",
   "Les éléments de profil que vous indiquez : rôle dans l'équipe, genre si vous le souhaitez, taille de l'entreprise, secteur d'activité, taille de l'équipe.":
     "Les éléments de profil que vous indiquez : votre façon de travailler (en encadrant une équipe, au sein d'une équipe, ou en solo), genre si vous le souhaitez, taille de l'entreprise et de l'équipe (pas pour un solo), secteur d'activité.",
   "Aucun cookie publicitaire, aucun traceur d'audience tierce.":
@@ -210,6 +212,29 @@ const blocPas = () => {
   gagnez.appendChild(b);
 };
 
+// « Autre » : quelques mots (Arnaud, 14 octobre 2026, retour d'une répondante : « je ne pouvais pas compléter avec du
+// texte »). Quand « Autre » est coché, un champ s'ouvre juste dessous ; ce qu'on y écrit est gardé (même si la maquette se
+// redessine, même après un rechargement) et part avec les réponses (edl_repondre, migration 34). 140 caractères, sans nom.
+const AUTRES = (() => { try { return JSON.parse(sessionStorage.getItem('edl_autres') || '{}') || {}; } catch (e) { return {}; } })();
+const garderAutres = () => { try { sessionStorage.setItem('edl_autres', JSON.stringify(AUTRES)); } catch (e) { /* rien */ } };
+const champsAutre = () => {
+  document.querySelectorAll('[data-maquette] [id^="a"]').forEach((q) => {
+    const n = (q.id.match(/^a(\d+)$/) || [])[1]; if (!n) return;
+    const b = [...q.querySelectorAll('button[role="checkbox"]')].find((x) => norm(x.textContent || '') === 'Autre');
+    const champ = q.querySelector('.edl-autre');
+    if (!b || b.getAttribute('aria-checked') !== 'true') { if (champ) champ.remove(); return; }
+    if (champ && champ.previousElementSibling === b) return;
+    if (champ) champ.remove();
+    const i = document.createElement('input');
+    i.className = 'edl-autre'; i.type = 'text'; i.maxLength = 140; i.autocomplete = 'off';
+    i.placeholder = 'En quelques mots, sans nom s’il vous plaît'; i.setAttribute('aria-label', 'Précisez votre idée');
+    i.value = AUTRES[n] || '';
+    i.addEventListener('input', () => { AUTRES[n] = i.value; garderAutres(); });
+    ['click', 'keydown', 'keyup', 'pointerdown'].forEach((t) => i.addEventListener(t, (e) => e.stopPropagation()));
+    b.after(i);
+  });
+};
+
 const retoucher = () => {
   const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   for (let n = tw.nextNode(); n; n = tw.nextNode()) {
@@ -233,6 +258,7 @@ const retoucher = () => {
   if (page === 'questionnaire') document.querySelectorAll('[data-maquette] h1 span, [data-maquette] h2 span').forEach((x) => {
     if (x.children.length === 0 && norm(x.textContent || '') === 'sur vous.') x.innerHTML = 'sur <span class="g-peps edl-vous">vous</span>.';
   });
+  if (page === 'questionnaire') champsAutre();
   if (page === 'questionnaire') {
     // Un solo ne répond pas à la taille de l'équipe : le bloc disparaît tant que « À votre compte » est choisi.
     const t = [...document.querySelectorAll('[data-maquette] *')].filter((x) => x.children.length === 0 && /^Taille de votre équipe/.test(norm(x.textContent || '')));
@@ -308,6 +334,11 @@ style.textContent = [
   // Avec le mantra, la ligne grasse « Vous construisez » est plus large : la carte de l'étude compte ses marges dans sa largeur
   // pour rester à droite (14 octobre 2026).
   '[data-maquette="EDL-Accueil"] .edl-nombre { box-sizing: border-box; }',
+  // Le champ « Autre » : dans la DA des réponses, aligné sur le texte des idées.
+  '.edl-autre { display: block; width: calc(100% - 2.25rem); box-sizing: border-box; margin: 0.25rem 0 0.5rem 2.25rem; min-height: 3rem; padding: 0.75rem 1rem !important; border: 1.5px solid #A0BFC3 !important; border-radius: 0.75rem !important; background: #FFFFFF !important; font: inherit; font-size: 1rem; color: #0C1011; }',
+  '.edl-autre::placeholder { color: #697374; }',
+  '.edl-autre:focus { outline: none; border-color: #23545B !important; box-shadow: 0 0 0 3px rgba(35,84,91,.15); }',
+  '@media (max-width: 1023px) { .edl-autre { width: 100%; margin-left: 0; font-size: 1.0625rem; } }',
   // Le bloc « Greatly, ce n'est pas… » : aplat bleu-vert, titre en deux temps, la liste des dix, le mantra, la pilule à flèche.
   '.edl-pas { display: grid !important; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 3.5rem; align-items: stretch; overflow: hidden; margin: 4.5rem calc(-1 * max(3.5rem, 50vw - 35rem)) -4.5rem; padding: 4.5rem max(3.5rem, calc(50vw - 35rem)); background: #23545B; color: #FFFFFF; box-sizing: border-box; }',
   '.edl-pas__texte { display: flex; flex-direction: column; gap: 1.25rem; align-items: flex-start; }',
@@ -453,9 +484,13 @@ if (page === 'questionnaire') {
     const relances = relancesAEnvoyer(reponses, st.rel || {}, contenu);
     ecrire({ role, profil });
 
-    const envoi = { version: 'v1', role, profil, reponses, relances };
+    // Les mots écrits après « Autre », seulement là où « Autre » est encore coché.
+    const autres = {};
+    Object.keys(relances).forEach((n) => { const t = String(AUTRES[n] || '').trim().slice(0, 140); if (t && (relances[n] || []).includes('autre')) autres[n] = t; });
+    const envoi = { version: 'v1', role, profil, reponses, relances, ...(Object.keys(autres).length ? { autres } : {}) };
     const empreinte = JSON.stringify(envoi);
     if (!dejaEnvoye(empreinte)) { envoyerReponse(envoi); retenirEnvoi(empreinte); }
+    try { sessionStorage.removeItem('edl_autres'); } catch (e) { /* rien */ }
     evenement('termine');
     // En démonstration (?demo=1), on le reste jusqu'au résultat.
     const demo = new URLSearchParams(location.search).get('demo') === '1' ? '?demo=1' : '';

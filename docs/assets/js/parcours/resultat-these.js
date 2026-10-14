@@ -6,12 +6,12 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu } from '../contenu.js?v=71';
-import { decoder } from '../lien.js?v=71';
-import { envoyerContact, compteur } from '../api.js?v=71';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=71';
-import { memoriserResultat } from '../session.js?v=71';
-import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=71';
+import { chargerContenu } from '../contenu.js?v=73';
+import { decoder } from '../lien.js?v=73';
+import { envoyerContact, compteur } from '../api.js?v=73';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=73';
+import { memoriserResultat } from '../session.js?v=73';
+import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=73';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };

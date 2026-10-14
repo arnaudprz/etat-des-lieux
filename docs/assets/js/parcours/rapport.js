@@ -6,11 +6,11 @@
  * page met data-pret sur <body> : c'est le signal qu'attend Browserless avant d'imprimer. Tout le texte en textContent.
  * Paramètres : ?prenom=… (pour la couverture), ?demo=1 (chiffres de la maquette).
  */
-import { chargerContenu } from '../contenu.js?v=71';
-import { decoder } from '../lien.js?v=71';
-import { compteur } from '../api.js?v=71';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=71';
-import { chiffresPourSolo } from '../seuil-solo.js?v=71';
+import { chargerContenu } from '../contenu.js?v=73';
+import { decoder } from '../lien.js?v=73';
+import { compteur } from '../api.js?v=73';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=73';
+import { chiffresPourSolo } from '../seuil-solo.js?v=73';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];

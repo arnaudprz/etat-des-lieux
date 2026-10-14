@@ -315,7 +315,7 @@
     {
       "n": 4,
       "groupe": "Ce qu'on sait les uns des autres",
-      "membre": "Mes collègues des autres métiers savent ce que je fais et ce que ça implique pour eux.",
+      "membre": "Dans mon équipe, les autres métiers savent ce que je fais et ce que ça implique pour eux.",
       "manager": "Les membres de mon équipe savent ce que j'attends d'eux, et pourquoi.",
       "relance": {
         "membre": {
@@ -476,7 +476,7 @@
     {
       "n": 8,
       "groupe": "Comment l'info circule",
-      "membre": "Quand je reçois une info d'un collègue, je peux agir dessus directement.",
+      "membre": "Quand je reçois une info d'un membre de mon équipe, je peux agir dessus directement.",
       "manager": "Les infos que les membres de mon équipe se transmettent sont utilisables telles quelles.",
       "relance": {
         "membre": {
@@ -678,7 +678,7 @@
     {
       "n": 13,
       "groupe": "La confiance et le soutien",
-      "membre": "Quand j'ai besoin d'aide, je peux compter sur mes collègues.",
+      "membre": "Quand j'ai besoin d'aide, je peux compter sur les membres de mon équipe.",
       "manager": "Dans mon équipe, chacun peut compter sur les autres quand il a besoin d'aide.",
       "relance": {
         "membre": {
