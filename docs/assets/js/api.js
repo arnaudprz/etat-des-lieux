@@ -9,7 +9,7 @@
  * permet de parcourir tout le site en local, sans backend.
  */
 
-import { SUPABASE_URL, SUPABASE_CLE, COMPTEUR_REPLI, modeDemo } from './config.js?v=77';
+import { SUPABASE_URL, SUPABASE_CLE, COMPTEUR_REPLI, modeDemo } from './config.js?v=96';
 
 const ENTETES = () => ({ apikey: SUPABASE_CLE, Authorization: 'Bearer ' + SUPABASE_CLE, 'Content-Type': 'application/json' });
 const adresse = (fonction) => SUPABASE_URL + '/rest/v1/rpc/' + fonction;

@@ -1,0 +1,256 @@
+/* La page « Un an dans un groupe » pour les indépendants (15 octobre 2026, maquette). Couleurs et titres en deux temps :
+   these.css (système de composants du site). Une page épurée (Arnaud : « la DA épurée et classe ») : peu d'aplats, des filets
+   fins, beaucoup d'air, et les points de l'état des lieux comme fil conducteur. */
+body { background: #FFFFFF; }
+.gr { max-width: 72rem; margin: 0 auto; padding: 4.5rem clamp(1rem, 4vw, 3rem) 0; display: flex; flex-direction: column; gap: 7rem; }
+.gr .surtitre { margin-bottom: 0.25rem; }
+
+/* Les boutons du système : pilule pleine, rond vert vif et flèche. */
+.gr-bouton { display: inline-flex; align-items: center; gap: 0.875rem; min-height: 3.75rem; padding: 0 0.5rem 0 1.625rem; border: 0; border-radius: 999px; background: var(--bv); color: #FFFFFF; font: 800 1.0625rem 'Bricolage Grotesque', sans-serif; letter-spacing: -.01em; text-decoration: none; cursor: pointer; }
+.gr-bouton--creme { background: #F4F2EA; color: var(--texte); }
+.gr-bouton--petit { min-height: 2.75rem; font-size: 0.9375rem; padding-left: 1.125rem; gap: 0.625rem; }
+.gr-rond { display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; border-radius: 999px; background: var(--vif); flex-shrink: 0; transition: transform .2s ease; }
+.gr-bouton--petit .gr-rond { width: 2rem; height: 2rem; }
+.gr-rond svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: var(--texte); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.gr-bouton:hover .gr-rond { transform: translateX(3px); }
+.gr-lien { border: 0; background: none; padding: 0; font: 700 1rem 'DM Sans', sans-serif; color: var(--bv); text-decoration: underline; text-underline-offset: .25em; cursor: pointer; }
+.gr-surligne { background: linear-gradient(transparent 62%, var(--vif) 62%, var(--vif) 92%, transparent 92%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.surtitre--clair { color: var(--vif); }
+
+/* 1. L'arrivée. */
+.gr-tete { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 4rem; align-items: center; }
+.gr-tete__texte { display: flex; flex-direction: column; gap: 1rem; }
+.gr-tete h1 .leger { display: block; font-size: clamp(2.25rem, 5vw, 3.5rem); }
+.gr-tete h1 .gras { display: block; font-size: clamp(2.75rem, 7vw, 5.25rem); line-height: 0.98; }
+.gr-chapo { margin: 0.75rem 0 0; max-width: 36rem; font: 300 clamp(1.1875rem, 2vw, 1.375rem)/1.5 'Bricolage Grotesque', sans-serif; color: var(--second); }
+.gr-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; margin-top: 1.25rem; }
+.gr-merci { align-self: flex-start; display: inline-flex; align-items: center; gap: 0.5rem; margin: 0 0 1rem; padding: 0.4375rem 1rem 0.4375rem 0.4375rem; border: 1px solid var(--ciel); border-radius: 999px; font-size: 0.9375rem; font-weight: 500; color: var(--bv); }
+.gr-merci > span:first-child { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: var(--vif); color: var(--texte); font-weight: 800; font-size: 0.8125rem; }
+.gr-carte { display: flex; flex-direction: column; gap: 0.5rem; padding: clamp(2rem, 3.5vw, 2.75rem); border-radius: 1.5rem; background: var(--fond); }
+.gr-carte__chiffre { font: 800 clamp(4.5rem, 9vw, 6.5rem)/0.95 'Bricolage Grotesque', sans-serif; letter-spacing: -.05em; color: var(--texte); }
+.gr-carte__texte { max-width: 18rem; font-size: 1.0625rem; line-height: 1.45; color: var(--second); }
+.gr-carte__points { display: grid; grid-template-columns: repeat(5, 2.5rem); gap: 0.875rem; margin: 1.75rem 0 0.75rem; }
+.gr-carte__points i, .gr-fin__points i { display: block; width: 2.5rem; height: 2.5rem; border-radius: 999px; background: var(--bv); }
+.gr-carte__points i.vous, .gr-carte__legende i.vous, .gr-fin__points i.vous { background: var(--vif); }
+.gr-carte__legende { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: var(--discret); }
+.gr-carte__legende i { width: 0.625rem; height: 0.625rem; border-radius: 999px; background: var(--bv); }
+.gr-carte__legende i.vous { margin-left: 0.875rem; }
+
+/* Les faits : une ligne, des filets fins, pas de cartes. */
+.gr-faits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: -4rem 0 0; border-top: 1px solid var(--teinte); border-bottom: 1px solid var(--teinte); }
+.gr-faits > div { padding: 1.5rem 1.5rem 1.5rem 0; }
+.gr-faits > div + div { padding-left: 1.5rem; border-left: 1px solid var(--ciel); }
+.gr-faits dt { font-size: 0.6875rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--rubans); }
+.gr-faits dd { margin: 0.5rem 0 0; font-size: 1rem; line-height: 1.45; color: var(--texte); }
+
+/* Les sections : un titre en deux temps, puis le contenu, sans fond. */
+.gr-section { display: flex; flex-direction: column; gap: 2.75rem; }
+.gr-section__tete { display: flex; flex-direction: column; gap: 0.5rem; max-width: 44rem; }
+.gr-section h2 .leger, .gr-maison h2 .leger, .gr-deux h2 .leger { display: block; font-size: clamp(1.75rem, 3vw, 2.25rem); }
+.gr-section h2 .gras, .gr-maison h2 .gras, .gr-deux h2 .gras { display: block; font-size: clamp(2rem, 3.8vw, 2.875rem); }
+.gr-section__texte { margin: 0.5rem 0 0; max-width: 38rem; font-size: 1.0625rem; line-height: 1.6; color: var(--second); }
+
+/* 2. Les gains : une liste en deux colonnes, filets fins, comme « Greatly, ce n'est pas… ». */
+.gr-liste { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 4rem; counter-reset: gain; }
+.gr-liste li { display: grid; grid-template-columns: 2.5rem 1fr; column-gap: 0.75rem; row-gap: 0.375rem; padding: 1.75rem 0; border-top: 1px solid var(--ciel); counter-increment: gain; }
+.gr-liste li::before { content: "0" counter(gain); grid-row: span 3; padding-top: 0.25rem; font: 800 0.875rem 'Bricolage Grotesque', sans-serif; color: var(--sol); }
+.gr-liste__theme { font-size: 0.6875rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--rubans); }
+.gr-liste h3 { font: 400 italic 1.75rem/1.12 'Instrument Serif', serif; letter-spacing: -.01em; color: var(--texte); }
+.gr-liste p { margin: 0; font-size: 1rem; line-height: 1.55; color: var(--second); }
+
+/* 2. Le fil : trois temps, comme la chaîne du résultat. Les points s'ajoutent d'un temps à l'autre. */
+.gr-chaine { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3rem; }
+.gr-chaine li { display: flex; flex-direction: column; gap: 0.75rem; padding-top: 1.75rem; border-top: 2px solid var(--bv); }
+.gr-chaine__points { display: flex; align-items: center; gap: 0.3125rem; height: 1.25rem; margin-bottom: 0.5rem; }
+.gr-chaine__points i { width: 0.875rem; height: 0.875rem; border-radius: 999px; background: var(--bv); }
+.gr-chaine__points i.vif { background: var(--vif); }
+.gr-chaine__points i.fleche { width: 1.25rem; height: 2px; margin: 0 0.25rem; border-radius: 0; background: var(--sol); }
+.gr-chaine__points i.cible { width: 1.125rem; height: 1.125rem; background: none; border: 2px solid var(--bv); box-shadow: inset 0 0 0 3px #FFFFFF, inset 0 0 0 10px var(--bv); }
+.gr-chaine__temps { font-size: 0.6875rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--rubans); }
+.gr-chaine h3 { font: 400 italic 1.875rem/1.1 'Instrument Serif', serif; letter-spacing: -.01em; color: var(--texte); }
+.gr-chaine p { margin: 0; font-size: 1rem; line-height: 1.55; color: var(--second); }
+.gr-chaine p strong { color: var(--texte); font-weight: 700; }
+.gr-chaine li { position: relative; }
+.gr-chaine__fait { align-self: flex-start; margin-top: auto; padding: 0.375rem 0.875rem; border-radius: 999px; background: var(--fond); font-size: 0.8125rem; font-weight: 700; color: var(--bv); }
+.gr-chaine__fait--vif { background: var(--vif); color: var(--texte); }
+.gr-chaine p { flex: 0 0 auto; }
+.gr-chaine li > p:last-of-type { margin-bottom: 0.75rem; }
+@media (max-width: 820px) { .gr-chaine { grid-template-columns: 1fr; gap: 2rem; } }
+
+/* 3. Les trois activités : un dessin de points chacune, sans fond. */
+.gr-trois { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3rem; }
+.gr-trois li { display: flex; flex-direction: column; gap: 0.625rem; padding-top: 1.75rem; border-top: 2px solid var(--bv); }
+.gr-motif { width: 7.5rem; height: 4rem; margin-bottom: 0.75rem; }
+.gr-motif circle { fill: var(--bv); }
+.gr-motif circle.vif { fill: var(--vif); }
+.gr-trois h3 { font: 800 1.375rem/1.15 'Bricolage Grotesque', sans-serif; letter-spacing: -.02em; color: var(--texte); }
+.gr-trois p { margin: 0; font-size: 1rem; line-height: 1.55; color: var(--second); }
+
+/* 4. L'année : sans aplat, des filets fins ; les dix thèmes en liste numérotée, les saisons en ligne. */
+.gr-themes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 4rem; counter-reset: theme; }
+.gr-themes li { display: flex; align-items: baseline; gap: 1rem; padding: 0.875rem 0; border-top: 1px solid var(--ciel); font: 400 italic 1.625rem/1.2 'Instrument Serif', serif; color: var(--texte); counter-increment: theme; }
+.gr-themes li::before { content: counter(theme, decimal-leading-zero); min-width: 1.75rem; font: 800 0.8125rem 'Bricolage Grotesque', sans-serif; font-style: normal; color: var(--sol); }
+.gr-saisons { list-style: none; margin: 0.5rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 2px solid var(--bv); }
+.gr-saisons li { display: flex; flex-direction: column; gap: 0.375rem; padding: 1.5rem 1.25rem 0 0; font: 800 1.375rem/1.15 'Bricolage Grotesque', sans-serif; letter-spacing: -.02em; color: var(--texte); }
+.gr-saisons li + li { padding-left: 1.25rem; border-left: 1px solid var(--ciel); }
+.gr-saisons__points { display: flex; gap: 0.3125rem; margin-bottom: 0.5rem; }
+.gr-saisons__points i { width: 0.625rem; height: 0.625rem; border-radius: 999px; background: var(--ciel); }
+.gr-saisons__points i.on { background: var(--bv); }
+.gr-saisons li:last-child .gr-saisons__points i.on { background: var(--vif); }
+.gr-saisons__num { font: 700 0.6875rem 'DM Sans', sans-serif; letter-spacing: .16em; text-transform: uppercase; color: var(--rubans); }
+.gr-annee__fin { margin: 0; font-size: 1rem; color: var(--second); }
+
+/* 5. Les membres : la citation en grand, les notes en pastilles comme le résultat. */
+.gr-avis { gap: 2rem; }
+.gr-avis blockquote { margin: 0; max-width: 54rem; font: 400 italic clamp(1.625rem, 3vw, 2.375rem)/1.25 'Instrument Serif', serif; letter-spacing: -.01em; color: var(--texte); }
+.gr-avis cite { display: block; margin-top: 1rem; font: 700 0.6875rem 'DM Sans', sans-serif; letter-spacing: .16em; text-transform: uppercase; font-style: normal; color: var(--discret); }
+.gr-notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 1rem; border-top: 1px solid var(--teinte); }
+.gr-notes > div { display: flex; flex-direction: column; gap: 0.75rem; padding: 1.75rem 1.75rem 0 0; }
+.gr-notes > div + div { padding-left: 1.75rem; border-left: 1px solid var(--ciel); }
+.gr-notes strong { font: 800 3.25rem/1 'Bricolage Grotesque', sans-serif; letter-spacing: -.04em; color: var(--texte); }
+.gr-notes small { font-size: 1.125rem; font-weight: 500; color: var(--sol); }
+.gr-pastilles { display: flex; gap: 0.3125rem; }
+.gr-pastilles i { position: relative; width: 0.875rem; height: 0.875rem; border-radius: 999px; background: var(--ciel); overflow: hidden; }
+.gr-pastilles i b { position: absolute; inset: 0; border-radius: 999px; background: var(--bv); transform-origin: center; }
+.gr-notes p { margin: 0; font-size: 0.9375rem; line-height: 1.5; color: var(--second); }
+
+/* 6. La maison : le texte au-dessus, puis une mosaïque de photos sans filtre, la façade en grand. */
+.gr-maison { display: flex; flex-direction: column; gap: 2.5rem; }
+.gr-maison__tete { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4rem; align-items: end; }
+.gr-maison__tete > div { display: flex; flex-direction: column; gap: 0.5rem; }
+.gr-maison__tete p { margin: 0; font-size: 1.0625rem; line-height: 1.65; color: var(--second); }
+.gr-mosaique { display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr); grid-template-rows: 1fr 1fr; gap: 1rem; height: clamp(32rem, 52vw, 42rem); }
+.gr-mosaique figure { position: relative; margin: 0; border-radius: 1.25rem; overflow: hidden; background: var(--fond); }
+.gr-mosaique__grande { grid-row: span 2; }
+.gr-mosaique img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .8s cubic-bezier(.22, 1, .36, 1); }
+.gr-mosaique figure:hover img { transform: scale(1.03); }
+.gr-mosaique figcaption { position: absolute; left: 1rem; bottom: 1rem; padding: 0.375rem 0.75rem; border-radius: 999px; background: rgba(255, 255, 255, .92); font-size: 0.8125rem; font-weight: 700; color: var(--bv); }
+@media (prefers-reduced-motion: reduce) { .gr-mosaique img { transition: none; } }
+
+/* 7. Règles et étapes. */
+.gr-deux { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4rem; }
+.gr-deux > div { display: flex; flex-direction: column; gap: 0.5rem; }
+.gr-regles, .gr-etapes { list-style: none; margin: 1.5rem 0 0; padding: 0; display: flex; flex-direction: column; }
+.gr-regles li { position: relative; padding: 1rem 0 1rem 1.5rem; border-top: 1px solid var(--ciel); font-size: 1.0625rem; color: var(--second); }
+.gr-regles li::before { content: ""; position: absolute; left: 0; top: 1.55rem; width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--bv); }
+.gr-etapes li { display: grid; grid-template-columns: 4rem 1fr; column-gap: 0.75rem; padding: 1.125rem 0; border-top: 1px solid var(--ciel); font-size: 1rem; line-height: 1.5; color: var(--second); }
+.gr-etapes__points { grid-row: span 2; display: flex; gap: 0.25rem; padding-top: 0.375rem; }
+.gr-etapes__points i { width: 0.625rem; height: 0.625rem; border-radius: 999px; background: var(--bv); }
+.gr-etapes__points i.vif { background: var(--vif); }
+.gr-etapes strong { color: var(--texte); font-size: 1.0625rem; }
+.gr-tarif { margin: 1rem 0 0; font-size: 0.9375rem; color: var(--discret); }
+
+/* 8. La fin. */
+.gr-fin { display: flex; flex-direction: column; align-items: flex-start; gap: 1.75rem; margin: 0 calc(-1 * clamp(1rem, 4vw, 3rem)); padding: 4.5rem clamp(1rem, 4vw, 3rem); border-radius: 1.5rem 1.5rem 0 0; background: var(--bv); color: #FFFFFF; }
+.gr-fin__points { display: flex; gap: 0.5rem; }
+.gr-fin__points i { width: 1rem; height: 1rem; background: var(--strate); }
+.gr-fin__titre { margin: 0; line-height: 1.04; }
+.gr-fin__titre .leger { display: block; font-size: clamp(2rem, 4.5vw, 3.25rem); color: var(--teinte); }
+.gr-fin__titre .gras { display: block; font-size: clamp(2.5rem, 6.5vw, 4.75rem); }
+.gr-fin__texte { margin: 0; max-width: 34rem; font-size: 1.125rem; line-height: 1.55; color: var(--ciel); }
+.gr-pied { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem 1.5rem; margin: 0; padding: 1.5rem clamp(1rem, 4vw, 3rem); background: var(--bv-fonce); color: var(--teinte); font-size: 0.875rem; }
+.gr-pied span:first-child { letter-spacing: .26em; font-weight: 500; color: #FFFFFF; }
+.gr-pied a { color: var(--teinte); }
+
+/* La fenêtre de rendez-vous : même arrivée douce que « Par mail ». */
+.rdv { width: min(44rem, calc(100% - 2rem)); max-height: calc(100% - 2rem); padding: clamp(1.75rem, 4vw, 2.5rem); border: 0; border-radius: 1.5rem; background: #FFFFFF; color: var(--texte); overflow: auto; box-shadow: 0 1.5rem 4rem rgba(12, 16, 17, .25); }
+.rdv::backdrop { background: rgba(35, 84, 91, .55); }
+.rdv[open] { animation: fenetre-entre .55s cubic-bezier(.22, 1, .36, 1) .05s both; }
+.rdv[open]::backdrop { animation: voile-entre .45s ease both; }
+.rdv--sort[open] { animation: fenetre-sort .26s ease-in both; }
+.rdv--sort[open]::backdrop { animation: voile-sort .26s ease-in both; }
+.rdv__fermer { position: absolute; top: 1rem; right: 1rem; width: 2.5rem; height: 2.5rem; border: 0; border-radius: 999px; background: var(--fond); color: var(--texte); font: 800 1.5rem/1 'Bricolage Grotesque', sans-serif; cursor: pointer; }
+.rdv__vue { display: flex; flex-direction: column; gap: 1rem; }
+.rdv__vue[hidden] { display: none; }
+.rdv h2 .leger { display: block; font-size: clamp(1.75rem, 3vw, 2.25rem); }
+.rdv h2 .gras { display: block; font-size: clamp(1.875rem, 3.4vw, 2.5rem); }
+.rdv__label { margin: 0.5rem 0 0; font-size: 0.875rem; font-weight: 700; color: var(--bv); }
+.rdv__choix { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.rdv__choix button, .rdv__creneau { padding: 0.625rem 1rem; border: 0; border-radius: 999px; background: var(--fond); color: var(--texte); font: 500 0.9375rem 'DM Sans', sans-serif; cursor: pointer; }
+.rdv__choix button[aria-checked="true"], .rdv__creneau[aria-pressed="true"] { background: var(--bv); color: #FFFFFF; }
+.rdv__semaine { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 0.5rem; }
+.rdv__semaine p { margin: 0; font-weight: 700; }
+.rdv__semaine button { width: 2.5rem; height: 2.5rem; border: 0; border-radius: 999px; background: var(--fond); font-size: 1.125rem; cursor: pointer; }
+.rdv__jours { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.5rem; }
+.rdv__jour { display: flex; flex-direction: column; gap: 0.375rem; }
+.rdv__jour p { margin: 0 0 0.25rem; font-size: 0.8125rem; font-weight: 700; text-align: center; color: var(--second); }
+.rdv__creneau { padding: 0.5rem 0; border-radius: 0.75rem; text-align: center; }
+.rdv__creneau:disabled { background: none; color: var(--sol); text-decoration: line-through; cursor: default; }
+.rdv__message { margin: 0; min-height: 1.5rem; font-size: 0.9375rem; color: var(--bv); }
+.rdv__adresse { margin: -0.25rem 0 0; font-size: 0.9375rem; color: var(--discret); }
+.rdv__champs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; }
+.rdv__champs label { display: flex; flex-direction: column; gap: 0.375rem; font-size: 0.875rem; font-weight: 700; color: var(--bv); }
+.rdv__champs input { font: 400 1.0625rem 'DM Sans', sans-serif; color: var(--texte); padding: 0.875rem 1rem; border: 1.5px solid var(--ciel); border-radius: 0.875rem; background: var(--fond); }
+.rdv__champs input:focus { outline: none; border-color: var(--bv); background: #FFFFFF; }
+.rdv__bas { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+.rdv__vue--fin { padding: 2rem; border-radius: 1.25rem; background: var(--bv); color: #FFFFFF; }
+.rdv__vue--fin .leger { color: var(--teinte); }
+.rdv__vue--fin p { margin: 0; font-size: 1.0625rem; line-height: 1.55; color: var(--ciel); }
+@keyframes fenetre-entre { from { opacity: 0; transform: translateY(2.5rem) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes fenetre-sort { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(1.25rem) scale(.98); } }
+@keyframes voile-entre { from { opacity: 0; } to { opacity: 1; } }
+@keyframes voile-sort { from { opacity: 1; } to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .rdv[open], .rdv[open]::backdrop { animation: none; } }
+
+@media (max-width: 820px) {
+  .gr { padding: 2.5rem 1.25rem 0; gap: 4.5rem; }
+  .gr-tete, .gr-deux, .gr-maison__tete { grid-template-columns: 1fr; gap: 2rem; }
+  .gr-mosaique { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; height: auto; gap: 0.625rem; }
+  .gr-mosaique__grande { grid-row: auto; grid-column: span 2; aspect-ratio: 4 / 3.6; }
+  .gr-mosaique figure:not(.gr-mosaique__grande) { aspect-ratio: 1; }
+  .gr-carte__points { grid-template-columns: repeat(10, 1fr); gap: 0.375rem; }
+  .gr-carte__points i { width: 100%; height: auto; aspect-ratio: 1; }
+  .gr-faits { grid-template-columns: 1fr 1fr; margin-top: -2.5rem; }
+  .gr-faits > div, .gr-faits > div + div { padding: 1.125rem 1rem 1.125rem 0; border-left: 0; }
+  .gr-faits > div:nth-child(even) { padding-left: 1rem; border-left: 1px solid var(--ciel); }
+  .gr-faits > div:nth-child(n+3) { border-top: 1px solid var(--ciel); }
+  .gr-liste, .gr-trois, .gr-notes { grid-template-columns: 1fr; }
+  .gr-trois { gap: 2rem; }
+  .gr-notes > div, .gr-notes > div + div { padding: 1.5rem 0; border-left: 0; }
+  .gr-notes > div + div { border-top: 1px solid var(--ciel); }
+  .gr-saisons { grid-template-columns: 1fr 1fr; }
+  .gr-themes { grid-template-columns: 1fr; }
+  .gr-saisons li, .gr-saisons li + li { padding: 1.25rem 1rem 1rem 0; border-left: 0; }
+  .gr-saisons li:nth-child(even) { padding-left: 1rem; border-left: 1px solid var(--ciel); }
+  .gr-actions .gr-bouton { align-self: stretch; justify-content: space-between; }
+  .gr-fin { margin: 0; border-radius: 1.25rem; padding: 3rem 1.25rem; }
+  .gr-fin .gr-bouton { align-self: stretch; justify-content: space-between; }
+  .haut .gr-bouton--petit { padding-left: 0.875rem; font-size: 0.875rem; }
+  .rdv { width: 100%; max-width: 100%; max-height: 94%; margin: auto 0 0; border-radius: 1.25rem 1.25rem 0 0; padding: 1.75rem 1rem; }
+  .rdv__jours { grid-template-columns: repeat(5, minmax(3.5rem, 1fr)); overflow-x: auto; }
+  .rdv__champs { grid-template-columns: 1fr; }
+  .rdv__bas .gr-bouton { width: 100%; justify-content: space-between; }
+  .rdv__vue > .gr-bouton { align-self: stretch; justify-content: space-between; }
+  @keyframes fenetre-entre { from { opacity: 0; transform: translateY(40%); } to { opacity: 1; transform: none; } }
+  @keyframes fenetre-sort { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(30%); } }
+}
+@media (max-width: 400px) { .haut .gr-bouton--petit { font-size: 0; gap: 0; padding: 0.375rem; } }
+
+/* Son état des lieux, sous le titre de « Ce qui évolue » : une bande comme les notes des membres. */
+.gr-sien { display: flex; flex-direction: column; gap: 1.25rem; }
+.gr-sien[hidden] { display: none; }
+.gr-sien__tete { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1rem; margin: 0; font-size: 0.9375rem; color: var(--second); }
+.gr-sien__tete .surtitre { margin: 0; }
+.gr-sien__themes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--teinte); border-bottom: 1px solid var(--teinte); }
+.gr-sien__theme { display: flex; flex-direction: column; gap: 0.625rem; padding: 1.5rem 1.75rem 1.5rem 0; }
+.gr-sien__theme + .gr-sien__theme { padding-left: 1.75rem; border-left: 1px solid var(--ciel); }
+.gr-sien__nom { font-size: 0.6875rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--rubans); }
+.gr-sien__val { font: 800 2.75rem/1 'Bricolage Grotesque', sans-serif; letter-spacing: -.04em; color: var(--texte); }
+.gr-sien__val small { font-size: 1rem; font-weight: 500; color: var(--sol); }
+@media (max-width: 820px) {
+  .gr-sien__themes { grid-template-columns: 1fr; }
+  .gr-sien__theme, .gr-sien__theme + .gr-sien__theme { padding: 1.125rem 0; border-left: 0; display: grid; grid-template-columns: 1fr auto; align-items: center; }
+  .gr-sien__theme + .gr-sien__theme { border-top: 1px solid var(--ciel); }
+  .gr-sien__nom { grid-column: 1 / -1; }
+  .gr-sien__val { font-size: 2rem; }
+}
+/* Ses chiffres, juste sous le haut de page : on resserre avec le haut et avec les faits. */
+.gr-tete + .gr-sien { margin-top: -3.5rem; }
+@media (max-width: 820px) { .gr-tete + .gr-sien { margin-top: -2rem; } }
+
+/* L'engagement, au bout de la bande : ce que les trois autres font grandir. */
+.gr-sien__theme:last-child .gr-sien__nom { color: var(--bv); }
+.gr-sien__theme:last-child .gr-pastilles i b { background: var(--vif); }
+/* En pratique : les faits, sans marge négative. */
+.gr-pratique { gap: 1.25rem; }
+.gr-pratique .gr-faits { margin: 0; }

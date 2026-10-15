@@ -23,7 +23,7 @@
  * résultat, sans les idées, plutôt que de refuser tout le lien.
  */
 
-import { NB_AFFIRMATIONS, VALEUR_MAX, reponsesValides } from './calcul.js?v=77';
+import { NB_AFFIRMATIONS, VALEUR_MAX, reponsesValides } from './calcul.js?v=96';
 
 /** Version produite par ce code. */
 export const VERSION = 'v2';

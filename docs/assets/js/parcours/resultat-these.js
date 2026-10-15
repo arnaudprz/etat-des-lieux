@@ -6,12 +6,12 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu, ideeActive } from '../contenu.js?v=77';
-import { decoder } from '../lien.js?v=77';
-import { envoyerContact, compteur } from '../api.js?v=77';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=77';
-import { memoriserResultat } from '../session.js?v=77';
-import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=77';
+import { chargerContenu, ideeActive } from '../contenu.js?v=96';
+import { decoder } from '../lien.js?v=96';
+import { envoyerContact, compteur } from '../api.js?v=96';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=96';
+import { memoriserResultat } from '../session.js?v=96';
+import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=96';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -423,6 +423,12 @@ function carteRegard(rep) {
 // En démonstration, rien ne part : on montre seulement le message de réussite.
 function brancherRecevoir() {
   const f = $('[data-recevoir-form]'); const msg = $('[data-recevoir-message]'); if (!f) return;
+  // Pour un solo, l'envoi ouvre aussi ce que Greatly propose aux indépendants (Arnaud, 15 octobre 2026, maquette) : le bouton
+  // le dit, et la page « Un an dans un groupe » s'ouvre une fois la demande partie.
+  const solo = /^#v\d+-s/.test(location.hash);
+  if (solo) { const b = f.querySelector('.recevoir__bouton span'); if (b) b.textContent = 'Recevoir mon état des lieux et découvrir les solutions'; }
+  // Le prénom passe par l'onglet, jamais par l'adresse.
+  const ouvrir = (prenom) => { if (!solo) return; try { sessionStorage.setItem('edl_prenom', prenom); } catch (e) { /* sans stockage : merci sans prénom */ } location.href = '/groupe-independants.html?envoye'; };
   f.addEventListener('submit', async (ev) => {
     ev.preventDefault(); const d = new FormData(f);
     const prenom = String(d.get('prenom') || '').trim(), nom = String(d.get('nom') || '').trim(), email = String(d.get('email') || '').trim();
@@ -430,7 +436,7 @@ function brancherRecevoir() {
     if (d.get('accord') !== 'on') { msg.textContent = 'Cochez la case pour que nous puissions vous écrire.'; return; }
     if (String(d.get('site') || '')) return; // un robot
     // Le PDF se prépare après la réponse (Arnaud, 13 octobre 2026 : « on prépare le pdf et vous allez le recevoir dans quelques minutes »).
-    const merci = () => f.replaceChildren(el('p', 'recevoir__merci', 'Merci ' + prenom + '. Nous préparons votre PDF : vous le recevrez dans votre boîte mail d’ici quelques minutes.'));
+    const merci = () => { f.replaceChildren(el('p', 'recevoir__merci', 'Merci ' + prenom + '. Nous préparons votre PDF : vous le recevrez dans votre boîte mail d’ici quelques minutes.')); if (solo) setTimeout(() => ouvrir(prenom), 1200); };
     if (modeDemo()) { merci(); return; }
     const bouton = f.querySelector('button'); bouton.disabled = true; msg.textContent = 'Nous préparons votre PDF…';
     try {

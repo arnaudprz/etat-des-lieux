@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Un an dans un groupe · Greatly</title>
+<meta name="description" content="Pour les indépendants et les professions libérales : un an dans un groupe de dix, à la Greatly House, pour prendre du recul et garder son énergie.">
+<!-- La page qui s'ouvre après « Recevoir mon état des lieux et découvrir les solutions » (Arnaud, 15 octobre 2026, maquette) :
+     ce que Greatly propose aux indépendants, à partir des textes de la page « Immersion individuelle en groupe » du site.
+     DA du système de composants (Systeme.dc.html). Se termine par la prise de rendez-vous, dans une fenêtre. -->
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,800&family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="assets/css/these.css?v=96">
+<link rel="stylesheet" href="assets/css/groupe.css?v=96">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=2"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+</head>
+<body>
+<header class="haut">
+  <a class="logo" href="/" aria-label="Greatly, retour à l’accueil">GREATLY
+    <svg viewBox="0 0 24 24" aria-hidden="true"><g stroke="#23545B" stroke-width="1.4" stroke-linecap="round"><line x1="12" y1="4" x2="12" y2="1.4"/><line x1="17.66" y1="6.34" x2="19.5" y2="4.5"/><line x1="20" y1="12" x2="22.6" y2="12"/><line x1="17.66" y1="17.66" x2="19.5" y2="19.5"/><line x1="12" y1="20" x2="12" y2="22.6"/><line x1="6.34" y1="17.66" x2="4.5" y2="19.5"/><line x1="4" y1="12" x2="1.4" y2="12"/><line x1="6.34" y1="6.34" x2="4.5" y2="4.5"/></g><circle cx="12" cy="12" r="5.4" fill="#B4F25C"/></svg>
+  </a>
+  <button class="gr-bouton gr-bouton--petit" type="button" data-rdv>Visiter la maison<span class="gr-rond" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+</header>
+
+<main class="gr">
+  <!-- Une page épurée (Arnaud, 15 octobre 2026 : « on peut faire mieux dans la DA épurée et classe, j'adore ton illustration ») :
+       peu d'aplats, des filets fins, beaucoup d'air, et les points de l'état des lieux comme fil conducteur. -->
+
+  <!-- 1. L'arrivée : le merci, la proposition, et le groupe en dix points. -->
+  <section class="gr-tete">
+    <div class="gr-tete__texte">
+      <p class="gr-merci" data-merci hidden><span aria-hidden="true">✓</span> <span data-merci-texte>Votre état des lieux arrive dans votre boîte mail.</span></p>
+      <span class="surtitre">La suite de votre état des lieux</span>
+      <h1><span class="leger">Travailler à son compte,</span> <span class="gras">sans avancer en <span class="gr-surligne">solo.</span></span></h1>
+      <p class="gr-chapo">À son compte aussi, la réussite se construit à plusieurs. Avec des personnes de confiance qui vous soutiennent, on s’engage davantage, et les objectifs suivent. Nous vous proposons ce groupe : dix personnes, pendant un an.</p>
+      <div class="gr-actions">
+        <button class="gr-bouton" type="button" data-rdv>Visiter la maison<span class="gr-rond" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+      </div>
+    </div>
+    <!-- Pas de paysage (Arnaud, 15 octobre 2026 : « pas fan des montagnes ») : dix points, le groupe ; le vert vif, vous. -->
+    <div class="gr-carte" aria-label="Un groupe de dix personnes, dont vous">
+      <span class="surtitre">Votre groupe</span>
+      <span class="gr-carte__chiffre">10</span>
+      <span class="gr-carte__texte">personnes qui avancent ensemble, toute l’année.</span>
+      <span class="gr-carte__points" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="vous"></i></span>
+      <span class="gr-carte__legende"><i></i>Le groupe <i class="vous"></i>Vous</span>
+    </div>
+  </section>
+
+  <!-- Son propre état des lieux, juste sous le haut de page pour faire le lien (Arnaud, 15 octobre 2026 : « j'ai du mal à faire
+       le lien entre son état des lieux et pourquoi il arrive sur cette page ») : ses trois thèmes en pastilles, comme sur son résultat.
+       Lu dans son navigateur (le dernier résultat gardé par la page de résultat), jamais envoyé. Caché s'il n'y en a pas. -->
+  <aside class="gr-sien" data-sien hidden>
+    <p class="gr-sien__tete"><span class="surtitre">Votre état des lieux, aujourd’hui</span> <span>Quand la confiance, le soutien et la cohésion sont là, on s’engage davantage. C’est ce que le groupe fait grandir.</span></p>
+    <div class="gr-sien__themes" data-sien-lignes></div>
+  </aside>
+
+  <!-- Titre : la phrase de Greatly, choisie par Arnaud le 15 octobre 2026 ; les trois temps deviennent les fondations, l'engagement,
+       la réussite. Partir de la personne (Arnaud, 15 octobre 2026 : « en rejoignant le groupe, voilà ce qui va évoluer ; là on pose les trucs
+       sans en expliquer le pourquoi ») : trois temps, chacun avec son pourquoi, et le thème de l'état des lieux qu'il fait grandir. Relu avec « Greatly, ce
+       n'est pas… » : une évolution, pas une transformation ; on part de ce qui va bien ; chacun trouve sa propre réponse. -->
+  <section class="gr-section">
+    <div class="gr-section__tete">
+      <span class="surtitre">Ce que vous y gagnez</span>
+      <h2><span class="leger">Votre réussite se construit à plusieurs.</span> <span class="gras">Nous en posons les fondations.</span></h2>
+      <p class="gr-section__texte">Pas une transformation : une évolution, à votre rythme. Voici ce que vous y gagnez, étape par étape, et pourquoi.</p>
+    </div>
+    <ol class="gr-chaine">
+      <li>
+        <span class="gr-chaine__temps">Les fondations</span>
+        <h3>Vous avancez à plusieurs.</h3>
+        <p><strong>Pourquoi :</strong> chaque semaine, ce sont les mêmes dix personnes, dans un cadre qui tient. Des relations vraies se construisent, et avec elles la confiance, le soutien et la cohésion.</p>
+        <span class="gr-chaine__fait">La confiance, le soutien, la cohésion</span>
+      </li>
+      <li>
+        <span class="gr-chaine__temps">L’engagement</span>
+        <h3>Vous voyez mieux vos atouts.</h3>
+        <p><strong>Pourquoi :</strong> chaque semaine, vous sortez du quotidien, au vert, et d’autres horizons éclairent le vôtre. Le recul vient, les décisions deviennent plus nettes, et l’énergie grandit.</p>
+        <span class="gr-chaine__fait">L’énergie et la lucidité : votre engagement</span>
+      </li>
+      <li>
+        <span class="gr-chaine__temps">La réussite</span>
+        <h3>Vos objectifs suivent.</h3>
+        <p><strong>Pourquoi :</strong> ils ne sont pas notre point de départ, ils sont une conséquence. Quand la confiance, le soutien et l’énergie sont là, on avance mieux vers ce qu’on se fixe. C’est ce que montrent les réponses à l’état des lieux.</p>
+        <span class="gr-chaine__fait gr-chaine__fait--vif">La performance, en conséquence</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- 5. Ce qu'en disent les membres (notes de juin à octobre 2026, page du site), en pastilles comme le résultat. -->
+  <section class="gr-section gr-avis">
+    <span class="surtitre">Ce qu’en disent les membres</span>
+    <blockquote>« Pour moi, la lucidité ne naît pas de la réflexion ou de l’accumulation d’informations, mais de ces espaces de silence où les choses se déposent naturellement. »<cite>Un membre, après un atelier, juillet 2026</cite></blockquote>
+    <div class="gr-notes">
+      <div><strong>8,7<small> /10</small></strong><span class="gr-pastilles" data-note="8.7" aria-hidden="true"></span><p>L’énergie en repartant d’une séance, contre 6,3 en arrivant.</p></div>
+      <div><strong>10<small> /10</small></strong><span class="gr-pastilles" data-note="10" aria-hidden="true"></span><p>La recommandation, pour les ateliers.</p></div>
+      <div><strong>9,7<small> /10</small></strong><span class="gr-pastilles" data-note="9.7" aria-hidden="true"></span><p>La qualité de l’accompagnement des coachs, pour les ateliers énergie.</p></div>
+    </div>
+  </section>
+
+  <!-- Comme « Ce qui évolue » (Arnaud, 15 octobre 2026 : « idem pour les activités ») : pour chacune, ce qu'elle change, pourquoi,
+       et ce qu'elle fait grandir. Dans les mots de « Greatly, ce n'est pas… » : pas une thérapie, on part de ce qui va bien
+       (Arnaud, 15 octobre 2026 : « ce n'est pas un groupe de thérapie »). -->
+  <section class="gr-section">
+    <div class="gr-section__tete">
+      <span class="surtitre">Chaque semaine</span>
+      <h2><span class="leger">Une activité par semaine,</span> <span class="gras">et ce qu’elle vous apporte.</span></h2>
+      <p class="gr-section__texte">Deux heures et demie, toujours le même jour, à la même heure, avec votre groupe. Trois façons de se retrouver, qui se relaient au fil des semaines.</p>
+    </div>
+    <ol class="gr-chaine">
+      <li>
+        <span class="gr-chaine__temps">Entre nous</span>
+        <h3>Vous trouvez vos propres réponses.</h3>
+        <p><strong>Pourquoi :</strong> la parole circule entre dix parcours différents, et chacun repart avec ce qui lui parle.</p>
+        <span class="gr-chaine__fait">La confiance, le soutien</span>
+      </li>
+      <li>
+        <span class="gr-chaine__temps">Activité physique douce</span>
+        <h3>Vous voyez plus clair.</h3>
+        <p><strong>Pourquoi :</strong> on bouge, on respire, on prend l’air dans le parc. Ici, le corps n’est pas une performance : c’est un chemin vers la lucidité.</p>
+        <span class="gr-chaine__fait">Le recul, la lucidité</span>
+      </li>
+      <li>
+        <span class="gr-chaine__temps">Activité physique plus dynamique</span>
+        <h3>Vous gagnez en énergie.</h3>
+        <p><strong>Pourquoi :</strong> se dépenser ensemble, chacun à son rythme, et le groupe est témoin du chemin. On repart avec de l’élan.</p>
+        <span class="gr-chaine__fait">L’énergie, la cohésion</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- Sans le grand aplat (Arnaud, 15 octobre 2026 : « j'aime pas le gros bloc vert, on ne sait pas en intro pourquoi on explore
+       ces thèmes ») : filets fins comme le reste, et l'introduction dit pourquoi ces thèmes. -->
+  <section class="gr-section gr-annee" id="annee">
+    <div class="gr-section__tete">
+      <span class="surtitre">Chaque mois</span>
+      <h2><span class="leger">Un atelier par mois,</span> <span class="gras">un thème à explorer ensemble.</span></h2>
+      <p class="gr-section__texte">Des thèmes qui comptent quand on travaille à son compte : décider, tenir son temps, garder son énergie, avancer avec les autres. On les explore à plusieurs, et chacun repart avec ce qui lui parle.</p>
+    </div>
+    <ol class="gr-themes">
+      <li>La confiance</li><li>L’énergie</li><li>Le temps</li><li>Les décisions et le silence</li><li>Les émotions</li>
+      <li>L’intuition</li><li>L’attention</li><li>Les relations et le parler vrai</li><li>Le collectif</li><li>L’incertitude</li>
+    </ol>
+    <ol class="gr-saisons">
+      <li><span class="gr-saisons__points" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></span><span class="gr-saisons__num">Saison 1</span>Se poser</li>
+      <li><span class="gr-saisons__points" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i></span><span class="gr-saisons__num">Saison 2</span>S’écouter</li>
+      <li><span class="gr-saisons__points" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span><span class="gr-saisons__num">Saison 3</span>S’ouvrir</li>
+      <li><span class="gr-saisons__points" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="gr-saisons__num">Saison 4</span>Incarner</li>
+    </ol>
+    <p class="gr-annee__fin">L’année se clôt par une célébration.</p>
+  </section>
+
+  <!-- 6. La Greatly House : le texte au-dessus, puis une mosaïque de trois photos sans filtre (Arnaud, 15 octobre 2026 : « les
+       photos sont pas dingues dans la mise en page ») : la façade, le grand salon, le parc vu de l'étage. -->
+  <section class="gr-maison">
+    <div class="gr-maison__tete">
+      <div>
+        <span class="surtitre">La Greatly House</span>
+        <h2><span class="leger">Une maison au vert,</span> <span class="gras">à 10 min de Lille.</span></h2>
+      </div>
+      <p>Un lieu ressourçant, propice au recul et aux échanges. Une maison, un parc, plusieurs salons. En membre, elle vous est ouverte chaque après-midi, du lundi au vendredi : pour travailler au calme, respirer, ou changer de cadre.</p>
+    </div>
+    <div class="gr-mosaique">
+      <figure class="gr-mosaique__grande"><img src="images/facade-couleur.jpg" alt="La façade de la Greatly House, sous un ciel bleu" loading="lazy"><figcaption>La maison</figcaption></figure>
+      <figure><img src="images/maison-grand-salon.jpg" alt="Le grand salon, ouvert sur le parc" loading="lazy"><figcaption>Le grand salon</figcaption></figure>
+      <figure><img src="images/maison-parc-etage.jpg" alt="Le parc vu de l’étage, les champs au loin" loading="lazy"><figcaption>Le parc</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- En pratique : les faits, plus en haut sous ses chiffres (Arnaud, 15 octobre 2026 : « bloc sur bloc »). -->
+  <section class="gr-section gr-pratique">
+    <span class="surtitre">En pratique</span>
+    <dl class="gr-faits">
+      <div><dt>Le groupe</dt><dd>Dix personnes, fermé une fois constitué</dd></div>
+      <div><dt>Le rythme</dt><dd>Une activité par semaine, un atelier par mois</dd></div>
+      <div><dt>Quand</dt><dd>Dès janvier 2027, en semaine, en journée</dd></div>
+      <div><dt>Où</dt><dd>La Greatly House, à 10 min de Lille</dd></div>
+    </dl>
+  </section>
+
+  <!-- 7. Les règles, puis comment ça se passe. -->
+  <section class="gr-deux">
+    <div>
+      <span class="surtitre">Le groupe</span>
+      <h2><span class="leger">Le groupe,</span> <span class="gras">quelques règles simples.</span></h2>
+      <ul class="gr-regles">
+        <li>On s’appelle par les prénoms. On vient comme on est.</li>
+        <li>Pendant les ateliers, le téléphone passe en mode avion.</li>
+        <li>Des places sont ouvertes à des professionnels du monde associatif.</li>
+      </ul>
+    </div>
+    <div>
+      <span class="surtitre">Comment ça se passe</span>
+      <h2><span class="leger">Trois étapes,</span> <span class="gras">et vous démarrez.</span></h2>
+      <ol class="gr-etapes">
+        <li><span class="gr-etapes__points" aria-hidden="true"><i></i></span><strong>Vous visitez la maison</strong>Trente minutes autour d’un café, pour parler de vous et de votre activité, et choisir la formule.</li>
+        <li><span class="gr-etapes__points" aria-hidden="true"><i></i><i></i></span><strong>Vous recevez le programme</strong>Le déroulé et les thèmes, envoyés à votre adresse.</li>
+        <li><span class="gr-etapes__points" aria-hidden="true"><i></i><i></i><i class="vif"></i></span><strong>Vous démarrez</strong>Le prochain groupe démarre en janvier 2027.</li>
+      </ol>
+      <p class="gr-tarif">Le tarif dépend de la formule. Nous vous le donnons pendant la visite.</p>
+    </div>
+  </section>
+
+  <!-- 8. La fin : la visite de la maison (Arnaud, 15 octobre 2026 : « venez visiter la maison, pas de téléphone ni visio »). -->
+  <section class="gr-fin">
+    <span class="gr-fin__points" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="vous"></i></span>
+    <p class="gr-fin__titre"><span class="leger">Venez visiter</span> <span class="gras">la <span class="gr-surligne">maison.</span></span></p>
+    <p class="gr-fin__texte">Trente minutes autour d’un café, à la Greatly House : pour découvrir le lieu, parler de vous et de votre activité, et choisir la formule. Sans engagement.</p>
+    <button class="gr-bouton gr-bouton--creme" type="button" data-rdv>Visiter la maison<span class="gr-rond" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+  </section>
+</main>
+
+<footer class="pas-pied gr-pied"><span>GREATLY</span><span>Greatly éclaire celles et ceux qui, ensemble, font rayonner leur entreprise.</span><a href="/etat-des-lieux/confidentialite/">Confidentialité</a></footer>
+
+<!-- La visite, en deux étapes comme la page « Prendre rendez-vous » du site : le créneau, puis les coordonnées. Toujours à la
+     Greatly House, jamais au téléphone ni en visio (Arnaud, 15 octobre 2026). Première version : la demande part par mail, Arnaud confirme. Avant :
+     les créneaux sont fictifs et rien ne part (à brancher sur l'agenda Greatly.club). -->
+<dialog class="rdv" aria-label="Visiter la Greatly House" data-rdv-fenetre>
+  <button class="rdv__fermer" type="button" aria-label="Fermer" data-rdv-fermer>×</button>
+  <div class="rdv__vue" data-vue="1">
+    <span class="surtitre">Visiter la maison · Étape 1 sur 2</span>
+    <h2><span class="leger">Trente minutes,</span> <span class="gras">autour d’un café.</span></h2>
+    <p class="rdv__adresse">À la Greatly House, 10 rue de Lambersart, 59237 Verlinghem. À 10 min de Lille, au vert.</p>
+    <div class="rdv__semaine"><button type="button" aria-label="Semaine précédente" data-semaine="-1">←</button><p data-semaine-titre>Semaine du …</p><button type="button" aria-label="Semaine suivante" data-semaine="1">→</button></div>
+    <div class="rdv__jours" data-jours></div>
+    <p class="rdv__message" data-rdv-message1 role="status">Choisissez un créneau.</p>
+    <button class="gr-bouton" type="button" data-continuer>Continuer<span class="gr-rond" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+  </div>
+  <form class="rdv__vue" data-vue="2" hidden novalidate>
+    <span class="surtitre">Votre visite · Étape 2 sur 2</span>
+    <h2><span class="leger" data-recap-jour>Jeudi 15 octobre</span> <span class="gras" data-recap-heure>à 14 h, à la Greatly House.</span></h2>
+    <p class="rdv__adresse" data-recap-adresse>10 rue de Lambersart, 59237 Verlinghem · À 10 min de Lille, au vert.</p>
+    <div class="rdv__champs">
+      <label>Prénom et nom<input name="nom" autocomplete="name" required></label>
+      <label>Votre activité<input name="activite" autocomplete="organization"></label>
+      <label>E-mail<input name="email" type="email" autocomplete="email" required></label>
+      <label>Téléphone<input name="tel" type="tel" autocomplete="tel"></label>
+    </div>
+    <p class="rdv__message" data-rdv-message2 role="status">Trente minutes, sans engagement.</p>
+    <div class="rdv__bas">
+      <button class="gr-lien" type="button" data-retour>← Changer de créneau</button>
+      <button class="gr-bouton" type="submit">Demander cette visite<span class="gr-rond" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+    </div>
+  </form>
+  <div class="rdv__vue rdv__vue--fin" data-vue="3" hidden>
+    <span class="surtitre surtitre--clair">Presque fini</span>
+    <h2><span class="leger">Votre demande</span> <span class="gras">est prête.</span></h2>
+    <p data-fin-texte>Jeudi 15 octobre à 14 h, à la Greatly House. Vous recevez une confirmation par e-mail. À très vite.</p>
+  </div>
+</dialog>
+<script type="module" src="assets/js/parcours/groupe.js?v=96"></script>
+</body>
+</html>
