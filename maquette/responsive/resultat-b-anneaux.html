@@ -1,0 +1,40 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#EEF4F5"><title>Piste B · Anneaux</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,800&family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="fondations.css"><link rel="stylesheet" href="commun.css"><style>
+.haut { display: flex; align-items: center; justify-content: space-between; height: 3.5rem; padding: 0 var(--gouttiere); }
+.logo { font: 500 1rem 'DM Sans', sans-serif; letter-spacing: .28em; }
+.partager { display: inline-flex; align-items: center; gap: .5rem; min-height: var(--cible); padding: 0 1rem; border: 0; border-radius: 999px; background: var(--fond); font: 600 var(--pas-m1) 'DM Sans', sans-serif; color: var(--texte); cursor: pointer; }
+.zone { padding: 0 var(--gouttiere); max-width: 30rem; margin: 0 auto; }
+h1 { font-size: var(--pas-5); margin-top: .75rem; }
+h1 .leger { font-size: .78em; color: var(--bv); }
+.mots { opacity: 0; transform: translateY(10px); transition: opacity var(--mvt-long) var(--courbe-douce), transform var(--mvt-long) var(--courbe-douce); }
+.revele .mots { opacity: 1; transform: none; }
+.chapo { margin: 1rem 0 0; font: 300 var(--pas-1)/1.45 'Bricolage Grotesque', sans-serif; color: var(--second); }
+.etude { margin: 2rem 0 0; padding: 1.5rem 1.25rem; border-radius: 1.5rem; background: var(--fond); }
+.etude p { margin: .5rem 0 0; font: 400 italic var(--pas-2)/1.2 'Instrument Serif', serif; }
+.grand { margin-top: .5rem; font: 800 var(--pas-6)/.9 'Bricolage Grotesque', sans-serif; letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
+.grand small { font: 500 var(--pas-0) 'DM Sans', sans-serif; letter-spacing: 0; color: var(--second); }
+.theme-carte { margin-top: 1rem; padding: 1.25rem; border-radius: 1.25rem; border: 1px solid var(--ciel); }
+.theme-carte b { font: 800 var(--pas-2) 'Bricolage Grotesque', sans-serif; font-variant-numeric: tabular-nums; }
+.feuille-mail { position: fixed; left: 0; right: 0; bottom: 0; padding: 1rem var(--gouttiere) max(env(safe-area-inset-bottom), 1rem); background: #FFFFFF; border-radius: 1.5rem 1.5rem 0 0; box-shadow: 0 -1rem 3rem rgba(14,42,47,.14); transform: translateY(110%); transition: transform var(--mvt-long) var(--courbe-douce); }
+.feuille-mail.ouvert { transform: none; }
+.pied { height: 6rem; }
+
+.anneaux { margin-top: 1.75rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem .75rem; }
+.anneau { position: relative; display: flex; flex-direction: column; align-items: center; gap: .375rem; }
+.anneau svg { width: 100%; max-width: 6.5rem; transform: rotate(-90deg); }
+.anneau .fond { fill: none; stroke: var(--ciel); stroke-width: 7; }
+.anneau .trait { fill: none; stroke: var(--bv); stroke-width: 7; stroke-linecap: round; stroke-dasharray: 264; stroke-dashoffset: 264; }
+.anneau:nth-child(n+4) .trait { stroke: var(--rubans); }
+.dessine .anneau .trait { transition: stroke-dashoffset 900ms var(--courbe-douce); transition-delay: calc(300ms + var(--i) * 180ms); stroke-dashoffset: calc(264 - 264 * var(--v) / 100); }
+.anneau b { position: absolute; top: calc(50% - 1.25rem); left: 0; right: 0; transform: translateY(-50%); text-align: center; font: 800 var(--pas-3)/1 'Bricolage Grotesque', sans-serif; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.anneau span { font: 600 var(--pas-m1) 'DM Sans', sans-serif; text-align: center; }
+</style></head><body><header class="haut"><span class="logo">GREATLY</span><button class="partager" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>Partager</button></header><main class="zone"><span class="sur">Votre état des lieux</span><h1><span class="leger">Votre activité,</span> <span class="gras">telle que vous la voyez.</span></h1><div class="anneaux"><div class="anneau" style="--i:0;--v:83"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" class="fond"/><circle cx="50" cy="50" r="42" class="trait"/></svg><b data-compte="83">0</b><span>La confiance</span></div><div class="anneau" style="--i:1;--v:83"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" class="fond"/><circle cx="50" cy="50" r="42" class="trait"/></svg><b data-compte="83">0</b><span>Le soutien</span></div><div class="anneau" style="--i:2;--v:75"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" class="fond"/><circle cx="50" cy="50" r="42" class="trait"/></svg><b data-compte="75">0</b><span>La cohésion</span></div><div class="anneau" style="--i:3;--v:67"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" class="fond"/><circle cx="50" cy="50" r="42" class="trait"/></svg><b data-compte="67">0</b><span>L’engagement</span></div><div class="anneau" style="--i:4;--v:67"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" class="fond"/><circle cx="50" cy="50" r="42" class="trait"/></svg><b data-compte="67">0</b><span>La performance</span></div></div><p class="chapo mots">Vos réponses, thème par thème. C’est votre regard, pas une note.</p><section class="etude mots"><span class="sur">Ce que montrent les indépendants</span><p>Là où la confiance, le soutien et la cohésion sont réunis,</p><div class="grand">100 %<small> sont engagées</small></div></section>
+<div class="theme-carte mots"><span class="sur">La confiance · votre regard</span><b>83</b> sur 100 · chez les indépendants, là où elle est là, 97 % sont engagés.</div><div class="pied"></div></main><script>
+const calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const compter = (el, cible, d) => { if (calme) { el.textContent = cible; return; } const t0 = performance.now() + d; const pas = (t) => { const x = Math.max(0, Math.min(1, (t - t0) / 700)); const e = 1 - Math.pow(1 - x, 3); el.textContent = Math.round(cible * e); if (x < 1) requestAnimationFrame(pas); }; requestAnimationFrame(pas); };
+addEventListener('load', () => { document.querySelectorAll('[data-compte]').forEach((el, i) => compter(el, Number(el.dataset.compte), 300 + i * 180));
+  document.body.classList.add('dessine'); setTimeout(() => document.body.classList.add('revele'), calme ? 0 : 300 + 5 * 180 + 500);
+  const p = document.querySelector('.partager'); if (p) p.addEventListener('click', async () => { try { if (navigator.share) await navigator.share({ title: 'Mon état des lieux', url: location.href }); else { await navigator.clipboard.writeText(location.href); p.textContent = 'Lien copié'; } } catch (e) { /* annulé */ } });
+});
+</script><span class="etiquette">Piste B · Anneaux</span></body></html>

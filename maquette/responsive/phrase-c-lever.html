@@ -1,0 +1,45 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#FFFFFF"><title>Piste C · Lever du jour</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,800&family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="fondations.css"><link rel="stylesheet" href="commun.css"><style>
+[data-ecran].entre [data-anim] { animation: entre var(--mvt-long) var(--courbe-douce) both; animation-delay: calc(var(--d, 0) * var(--decalage)); }
+[data-ecran].entre .carte-rep { animation: entre var(--mvt-long) var(--courbe-douce) both; animation-delay: calc((3 + var(--i)) * var(--decalage)); }
+[data-ecran].sort { animation: sort var(--mvt-moyen) var(--courbe-sortie) both; }
+@keyframes entre { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes sort { to { opacity: 0; transform: translateY(-16px); } }
+.carte-rep { transition: transform var(--mvt-court) var(--courbe-douce), background var(--mvt-moyen) var(--courbe-douce), border-color var(--mvt-moyen), color var(--mvt-moyen); }
+.carte-rep:active { transform: scale(.975); }
+.carte-rep__coche { display: inline-flex; width: 0; overflow: hidden; transition: width var(--mvt-moyen) var(--courbe-douce); }
+.carte-rep__coche svg { width: 1.125rem; height: 1.125rem; flex-shrink: 0; }
+.carte-rep.choisie .carte-rep__coche { width: 1.5rem; }
+.a-repondu .carte-rep:not(.choisie) { opacity: .45; }
+.idee { display: flex; align-items: center; gap: .875rem; min-height: var(--cible); width: 100%; padding: .375rem 0; border: 0; background: none; text-align: left; font: 500 var(--pas-0)/1.3 'DM Sans', sans-serif; color: var(--texte); cursor: pointer; animation: entre var(--mvt-long) var(--courbe-douce) both; animation-delay: calc(var(--i) * 40ms); }
+.idee__case { flex-shrink: 0; width: 1.375rem; height: 1.375rem; border: 1.5px solid var(--sol); border-radius: .4375rem; background: #FFFFFF; transition: background var(--mvt-court), border-color var(--mvt-court); }
+.idee[aria-checked="true"] .idee__case { background: var(--bv); border-color: var(--bv); box-shadow: inset 0 0 0 3px #FFFFFF; }
+
+.feuille { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; max-width: 30rem; margin: 0 auto; padding: .625rem var(--gouttiere) max(env(safe-area-inset-bottom), 1rem); border-radius: 1.5rem 1.5rem 0 0; background: #FFFFFF; box-shadow: 0 -1rem 3rem rgba(14,42,47,.16); transform: translateY(100%); transition: transform var(--mvt-long) var(--courbe-douce); }
+.feuille.ouvert { transform: none; }
+.feuille__poignee { width: 2.5rem; height: 4px; margin: 0 auto .875rem; border-radius: 999px; background: var(--teinte); }
+.feuille__titre { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin: 0 0 .5rem; }
+.feuille__titre strong { font: 800 var(--pas-1) 'Bricolage Grotesque', sans-serif; }
+.feuille__titre span { font-size: var(--pas-m1); color: var(--discret); }
+.feuille__suite { width: 100%; margin-top: .75rem; }
+body.idees-ouvertes::after { content: ""; position: fixed; inset: 0; z-index: 10; background: rgba(14,42,47,.18); animation: voile var(--mvt-moyen) both; }
+@keyframes voile { from { opacity: 0; } }
+
+body { background: linear-gradient(180deg, color-mix(in srgb, var(--fond) calc(100% - var(--avance, 0) * 100%), #FFFFFF) 0%, #FFFFFF 70%); transition: background var(--mvt-long); }
+.haut { display: flex; align-items: center; justify-content: space-between; height: 3.5rem; }
+.ciel { position: fixed; left: 0; right: 0; bottom: 0; height: 9rem; pointer-events: none; z-index: 0; }
+.ciel svg { width: 100%; height: 100%; display: block; }
+.soleil { transition: transform 900ms var(--courbe-douce); transform: translateY(calc((1 - var(--avance, 0)) * 60px)); }
+[data-ecran] { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; padding-top: clamp(1rem, 4svh, 2.5rem); padding-bottom: 7rem; }
+.theme { font: 400 italic var(--pas-2)/1.1 'Instrument Serif', serif; color: var(--bv); }
+.phrase { margin-top: .5rem; font: 800 var(--pas-3)/1.15 'Bricolage Grotesque', sans-serif; letter-spacing: -.025em; outline: none; }
+.reponses { margin-top: auto; padding-top: 1.5rem; display: flex; flex-direction: column; gap: .5rem; }
+.carte-rep { display: flex; align-items: center; justify-content: center; gap: .5rem; min-height: 3.5rem; border: 0; border-radius: 999px; background: rgba(255,255,255,.92); box-shadow: inset 0 0 0 1.5px var(--teinte); font: 600 var(--pas-0) 'DM Sans', sans-serif; color: var(--texte); cursor: pointer; }
+.carte-rep.choisie { background: var(--vif); box-shadow: none; }
+.pas { font: 600 var(--pas-m1) 'DM Sans', sans-serif; color: var(--discret); }
+</style><script src="flux.js" defer></script></head><body data-mode="feuille"><div class="ciel" aria-hidden="true"><svg viewBox="0 0 390 144" preserveAspectRatio="none"><g class="soleil"><circle cx="300" cy="70" r="16" fill="#B4F25C" opacity=".9"/></g><path d="M0 110 L70 70 L130 98 L210 52 L290 92 L390 62 L390 144 L0 144Z" fill="#C7D9DC"/><path d="M0 126 L90 96 L170 118 L260 88 L390 112 L390 144 L0 144Z" fill="#A0BFC3"/><path d="M0 138 L120 120 L240 134 L390 122 L390 144 L0 144Z" fill="#6E979C"/></svg></div>
+<div class="cadre-tel"><header class="haut"><button class="retour" data-retour aria-label="Phrase précédente" style="background:rgba(255,255,255,.9)"><svg viewBox="0 0 24 24" fill="none" stroke="#0C1011" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><span class="pas">Votre regard, à votre rythme</span></header>
+<main data-ecran><p class="theme" data-anim style="--d:0" data-theme></p><h1 class="phrase" data-anim style="--d:1" tabindex="-1" data-phrase></h1><div class="reponses" data-reponses role="group" aria-label="Votre réponse"></div></main></div><div class="feuille" data-idees hidden role="dialog" aria-label="J'aimerais"><div class="feuille__poignee" aria-hidden="true"></div>
+<p class="feuille__titre"><strong>J’aimerais…</strong><span>Deux au plus, si vous le souhaitez</span></p><div class="feuille__liste" data-idees-liste></div>
+<button type="button" class="pilule feuille__suite" data-suivante>Question suivante<i><svg viewBox="0 0 24 24" fill="none" stroke="#0C1011" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></button></div><span class="etiquette">Piste C · Lever du jour</span></body></html>

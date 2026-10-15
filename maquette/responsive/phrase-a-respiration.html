@@ -1,0 +1,45 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#FFFFFF"><title>Piste A · Respiration</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,800&family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="fondations.css"><link rel="stylesheet" href="commun.css"><style>
+[data-ecran].entre [data-anim] { animation: entre var(--mvt-long) var(--courbe-douce) both; animation-delay: calc(var(--d, 0) * var(--decalage)); }
+[data-ecran].entre .carte-rep { animation: entre var(--mvt-long) var(--courbe-douce) both; animation-delay: calc((3 + var(--i)) * var(--decalage)); }
+[data-ecran].sort { animation: sort var(--mvt-moyen) var(--courbe-sortie) both; }
+@keyframes entre { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes sort { to { opacity: 0; transform: translateY(-16px); } }
+.carte-rep { transition: transform var(--mvt-court) var(--courbe-douce), background var(--mvt-moyen) var(--courbe-douce), border-color var(--mvt-moyen), color var(--mvt-moyen); }
+.carte-rep:active { transform: scale(.975); }
+.carte-rep__coche { display: inline-flex; width: 0; overflow: hidden; transition: width var(--mvt-moyen) var(--courbe-douce); }
+.carte-rep__coche svg { width: 1.125rem; height: 1.125rem; flex-shrink: 0; }
+.carte-rep.choisie .carte-rep__coche { width: 1.5rem; }
+.a-repondu .carte-rep:not(.choisie) { opacity: .45; }
+.idee { display: flex; align-items: center; gap: .875rem; min-height: var(--cible); width: 100%; padding: .375rem 0; border: 0; background: none; text-align: left; font: 500 var(--pas-0)/1.3 'DM Sans', sans-serif; color: var(--texte); cursor: pointer; animation: entre var(--mvt-long) var(--courbe-douce) both; animation-delay: calc(var(--i) * 40ms); }
+.idee__case { flex-shrink: 0; width: 1.375rem; height: 1.375rem; border: 1.5px solid var(--sol); border-radius: .4375rem; background: #FFFFFF; transition: background var(--mvt-court), border-color var(--mvt-court); }
+.idee[aria-checked="true"] .idee__case { background: var(--bv); border-color: var(--bv); box-shadow: inset 0 0 0 3px #FFFFFF; }
+
+.feuille { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; max-width: 30rem; margin: 0 auto; padding: .625rem var(--gouttiere) max(env(safe-area-inset-bottom), 1rem); border-radius: 1.5rem 1.5rem 0 0; background: #FFFFFF; box-shadow: 0 -1rem 3rem rgba(14,42,47,.16); transform: translateY(100%); transition: transform var(--mvt-long) var(--courbe-douce); }
+.feuille.ouvert { transform: none; }
+.feuille__poignee { width: 2.5rem; height: 4px; margin: 0 auto .875rem; border-radius: 999px; background: var(--teinte); }
+.feuille__titre { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin: 0 0 .5rem; }
+.feuille__titre strong { font: 800 var(--pas-1) 'Bricolage Grotesque', sans-serif; }
+.feuille__titre span { font-size: var(--pas-m1); color: var(--discret); }
+.feuille__suite { width: 100%; margin-top: .75rem; }
+body.idees-ouvertes::after { content: ""; position: fixed; inset: 0; z-index: 10; background: rgba(14,42,47,.18); animation: voile var(--mvt-moyen) both; }
+@keyframes voile { from { opacity: 0; } }
+
+.haut { display: flex; align-items: center; gap: .875rem; height: 3.5rem; }
+.progres { flex: 1; display: flex; gap: 4px; }
+.progres i { flex: var(--n); height: 4px; border-radius: 999px; background: var(--ciel); overflow: hidden; }
+.progres b { display: block; height: 100%; width: calc(var(--p) * 100%); background: var(--bv); border-radius: inherit; transition: width var(--mvt-long) var(--courbe-douce); }
+.progres i.en-cours { background: var(--teinte); }
+[data-ecran] { flex: 1; display: flex; flex-direction: column; padding-top: clamp(1.5rem, 6svh, 3.5rem); }
+.phrase:focus, .phrase:focus-visible { outline: none; }
+.phrase { margin-top: .75rem; font: 800 var(--pas-3)/1.15 'Bricolage Grotesque', sans-serif; letter-spacing: -.025em; outline: none; }
+.reponses { margin-top: auto; padding-top: 2rem; display: flex; flex-direction: column; gap: .625rem; }
+.carte-rep { display: flex; align-items: center; justify-content: center; gap: .5rem; min-height: 3.5rem; padding: 0 1.25rem; border: 1.5px solid var(--teinte); border-radius: 1.125rem; background: #FFFFFF; font: 600 var(--pas-0) 'DM Sans', sans-serif; color: var(--texte); cursor: pointer; }
+.carte-rep.choisie { background: var(--bv); border-color: var(--bv); color: #FFFFFF; }
+.mot-doux { margin: 1rem 0 0; text-align: center; font-size: var(--pas-m1); color: var(--discret); }
+</style><script src="flux.js" defer></script></head><body data-mode="feuille"><div class="cadre-tel"><header class="haut"><button class="retour" data-retour aria-label="Phrase précédente"><svg viewBox="0 0 24 24" fill="none" stroke="#0C1011" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><div class="progres" aria-hidden="true"><i data-segment style="--n:2"><b></b></i><i data-segment style="--n:2"><b></b></i><i data-segment style="--n:2"><b></b></i><i data-segment style="--n:2"><b></b></i><i data-segment style="--n:1"><b></b></i><i data-segment style="--n:1"><b></b></i><i data-segment style="--n:3"><b></b></i><i data-segment style="--n:3"><b></b></i></div></header>
+<main data-ecran><span class="sur" data-anim style="--d:0" data-theme></span><h1 class="phrase" data-anim style="--d:1" tabindex="-1" data-phrase></h1>
+<div class="reponses" data-reponses role="group" aria-label="Votre réponse"></div><p class="mot-doux" data-anim style="--d:8">Il n’y a pas de bonne réponse : la vôtre suffit.</p></main></div><div class="feuille" data-idees hidden role="dialog" aria-label="J'aimerais"><div class="feuille__poignee" aria-hidden="true"></div>
+<p class="feuille__titre"><strong>J’aimerais…</strong><span>Deux au plus, si vous le souhaitez</span></p><div class="feuille__liste" data-idees-liste></div>
+<button type="button" class="pilule feuille__suite" data-suivante>Question suivante<i><svg viewBox="0 0 24 24" fill="none" stroke="#0C1011" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></button></div><span class="etiquette">Piste A · Respiration</span></body></html>

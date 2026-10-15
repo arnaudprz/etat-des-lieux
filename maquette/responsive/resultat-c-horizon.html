@@ -1,0 +1,43 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#EEF4F5"><title>Piste C · Horizon</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,800&family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="fondations.css"><link rel="stylesheet" href="commun.css"><style>
+.haut { display: flex; align-items: center; justify-content: space-between; height: 3.5rem; padding: 0 var(--gouttiere); }
+.logo { font: 500 1rem 'DM Sans', sans-serif; letter-spacing: .28em; }
+.partager { display: inline-flex; align-items: center; gap: .5rem; min-height: var(--cible); padding: 0 1rem; border: 0; border-radius: 999px; background: var(--fond); font: 600 var(--pas-m1) 'DM Sans', sans-serif; color: var(--texte); cursor: pointer; }
+.zone { padding: 0 var(--gouttiere); max-width: 30rem; margin: 0 auto; }
+h1 { font-size: var(--pas-5); margin-top: .75rem; }
+h1 .leger { font-size: .78em; color: var(--bv); }
+.mots { opacity: 0; transform: translateY(10px); transition: opacity var(--mvt-long) var(--courbe-douce), transform var(--mvt-long) var(--courbe-douce); }
+.revele .mots { opacity: 1; transform: none; }
+.chapo { margin: 1rem 0 0; font: 300 var(--pas-1)/1.45 'Bricolage Grotesque', sans-serif; color: var(--second); }
+.etude { margin: 2rem 0 0; padding: 1.5rem 1.25rem; border-radius: 1.5rem; background: var(--fond); }
+.etude p { margin: .5rem 0 0; font: 400 italic var(--pas-2)/1.2 'Instrument Serif', serif; }
+.grand { margin-top: .5rem; font: 800 var(--pas-6)/.9 'Bricolage Grotesque', sans-serif; letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
+.grand small { font: 500 var(--pas-0) 'DM Sans', sans-serif; letter-spacing: 0; color: var(--second); }
+.theme-carte { margin-top: 1rem; padding: 1.25rem; border-radius: 1.25rem; border: 1px solid var(--ciel); }
+.theme-carte b { font: 800 var(--pas-2) 'Bricolage Grotesque', sans-serif; font-variant-numeric: tabular-nums; }
+.feuille-mail { position: fixed; left: 0; right: 0; bottom: 0; padding: 1rem var(--gouttiere) max(env(safe-area-inset-bottom), 1rem); background: #FFFFFF; border-radius: 1.5rem 1.5rem 0 0; box-shadow: 0 -1rem 3rem rgba(14,42,47,.14); transform: translateY(110%); transition: transform var(--mvt-long) var(--courbe-douce); }
+.feuille-mail.ouvert { transform: none; }
+.pied { height: 6rem; }
+
+body { background: linear-gradient(180deg, var(--fond), #FFFFFF 60%); }
+.horizon { margin-top: 1.5rem; }
+.horizon svg { width: 100%; height: auto; overflow: visible; }
+.ligne { fill: none; stroke: var(--bv); stroke-width: 2.5; stroke-linejoin: round; stroke-dasharray: 700; stroke-dashoffset: 700; }
+.remplissage { fill: var(--ciel); opacity: 0; }
+.dessine .ligne { transition: stroke-dashoffset 1400ms var(--courbe-douce) 200ms; stroke-dashoffset: 0; }
+.dessine .remplissage { transition: opacity 900ms ease 900ms; opacity: .7; }
+.sommet circle { fill: #FFFFFF; stroke: var(--bv); stroke-width: 2.5; opacity: 0; transform-box: fill-box; transform-origin: center; transform: scale(.4); }
+.sommet text { font: 800 15px 'Bricolage Grotesque', sans-serif; fill: var(--texte); opacity: 0; }
+.dessine .sommet circle, .dessine .sommet text { transition: opacity var(--mvt-moyen), transform var(--mvt-long) var(--courbe-ressort); transition-delay: calc(400ms + var(--i) * 200ms); opacity: 1; transform: none; }
+.sommet:nth-of-type(n+4) circle { fill: var(--vif); }
+.noms { display: grid; grid-template-columns: repeat(5, 1fr); margin-top: .25rem; font: 600 var(--pas-m2) 'DM Sans', sans-serif; text-align: center; color: var(--second); }
+</style></head><body><header class="haut"><span class="logo">GREATLY</span><button class="partager" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>Partager</button></header><main class="zone"><span class="sur">Votre état des lieux</span><h1><span class="leger">Votre activité,</span> <span class="gras">telle que vous la voyez.</span></h1><div class="horizon"><svg viewBox="0 0 320 170" role="img" aria-label="Vos cinq chiffres : confiance 83, soutien 83, cohésion 75, engagement 67, performance 67 sur 100"><path class="remplissage" d="M0 160 L30 42 L95 42 L160 52 L225 63 L290 63 L320 160 Z"/><path class="ligne" d="M0 160 L30 42 L95 42 L160 52 L225 63 L290 63 L320 160"/><g class="sommet" style="--i:0"><circle cx="30" cy="42" r="6"/><text x="30" y="28" text-anchor="middle">83</text></g><g class="sommet" style="--i:1"><circle cx="95" cy="42" r="6"/><text x="95" y="28" text-anchor="middle">83</text></g><g class="sommet" style="--i:2"><circle cx="160" cy="52" r="6"/><text x="160" y="38" text-anchor="middle">75</text></g><g class="sommet" style="--i:3"><circle cx="225" cy="63" r="6"/><text x="225" y="49" text-anchor="middle">67</text></g><g class="sommet" style="--i:4"><circle cx="290" cy="63" r="6"/><text x="290" y="49" text-anchor="middle">67</text></g></svg><div class="noms" aria-hidden="true"><span>Confiance</span><span>Soutien</span><span>Cohésion</span><span>Engagement</span><span>Performance</span></div></div><p class="chapo mots">Vos cinq sommets : la confiance, le soutien et la cohésion, puis ce qui va avec. C’est votre regard, pas une note.</p><section class="etude mots"><span class="sur">Ce que montrent les indépendants</span><p>Là où la confiance, le soutien et la cohésion sont réunis,</p><div class="grand">100 %<small> sont engagées</small></div></section>
+<div class="theme-carte mots"><span class="sur">La confiance · votre regard</span><b>83</b> sur 100 · chez les indépendants, là où elle est là, 97 % sont engagés.</div><div class="pied"></div></main><script>
+const calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const compter = (el, cible, d) => { if (calme) { el.textContent = cible; return; } const t0 = performance.now() + d; const pas = (t) => { const x = Math.max(0, Math.min(1, (t - t0) / 700)); const e = 1 - Math.pow(1 - x, 3); el.textContent = Math.round(cible * e); if (x < 1) requestAnimationFrame(pas); }; requestAnimationFrame(pas); };
+addEventListener('load', () => { document.querySelectorAll('[data-compte]').forEach((el, i) => compter(el, Number(el.dataset.compte), 300 + i * 180));
+  document.body.classList.add('dessine'); setTimeout(() => document.body.classList.add('revele'), calme ? 0 : 300 + 5 * 180 + 500);
+  const p = document.querySelector('.partager'); if (p) p.addEventListener('click', async () => { try { if (navigator.share) await navigator.share({ title: 'Mon état des lieux', url: location.href }); else { await navigator.clipboard.writeText(location.href); p.textContent = 'Lien copié'; } } catch (e) { /* annulé */ } });
+});
+</script><span class="etiquette">Piste C · Horizon</span></body></html>
