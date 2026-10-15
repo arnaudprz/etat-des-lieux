@@ -10,12 +10,12 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu, codesActifs } from '../contenu.js?v=135';
-import { relancesAEnvoyer } from '../calcul.js?v=135';
-import { lienResultat } from '../lien.js?v=135';
-import { envoyerReponse, compteur } from '../api.js?v=135';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=135';
-import { evenement } from './commun.js?v=135';
+import { chargerContenu, codesActifs } from '../contenu.js?v=210';
+import { relancesAEnvoyer } from '../calcul.js?v=210';
+import { lienResultat } from '../lien.js?v=210';
+import { envoyerReponse, compteur } from '../api.js?v=210';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=210';
+import { evenement } from './commun.js?v=210';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -169,7 +169,7 @@ const nombre = () => {
     h1.after(sg);
   }
   // Une petite frise des trois étapes, sous le haut de page, dans la même DA que la carte du nombre (Arnaud, 13 octobre 2026).
-  if (!hero.querySelector('.edl-frise')) {
+  if (!m.querySelector('.edl-frise')) {
     const f = document.createElement('ol'); f.className = 'edl-frise';
     f.innerHTML = [
       ['Votre façon de travailler', 'En équipe ou à votre compte, la taille de l’entreprise, le secteur.'],
@@ -177,7 +177,29 @@ const nombre = () => {
       ['Votre état des lieux', 'Votre regard, comparé à des centaines de réponses.'],
     ].map(([t, d], k) => '<li><span class="edl-frise__num">' + (k + 1) + '</span><span class="edl-frise__titre">' + t + '</span><span class="edl-frise__texte">' + d + '</span></li>').join('');
     const nb = hero.querySelector('.edl-nombre');
-    if (m.dataset.maquette === 'MEtatDesLieux') { f.classList.add('edl-frise--mobile'); nb.after(f); } else nb.parentElement.appendChild(f);
+    if (m.dataset.maquette === 'MEtatDesLieux') f.classList.add('edl-frise--mobile');
+    // Juste sous le titre « Ce que vous y gagnez, ce que nous y gagnons » (Arnaud, 15 octobre 2026) : on sait d'abord ce qu'on y gagne, puis
+    // comment ça se passe. Sinon, à l'ancienne place, sous le haut de page.
+    const gains = [...m.querySelectorAll('h2')].find((h) => /ce que nous y gagnons/i.test(h.textContent || ''));
+    if (gains) {
+      f.classList.add('edl-frise--gains');
+      // Une seule rangée en tête (Arnaud, 15 octobre 2026 : « une superposition de blocs ») : le titre à gauche, les trois étapes
+      // en colonne à droite ; dessous, l'échange « pour vous / pour nous » sur la même grille.
+      if (m.dataset.maquette !== 'MEtatDesLieux') {
+        const tete = document.createElement('div'); tete.className = 'edl-pour-tete';
+        gains.before(tete); tete.append(gains, f); f.classList.add('edl-frise--colonne');
+        const sec = tete.closest('section'); if (sec) sec.classList.add('edl-pour');
+        // Les deux colonnes se répondent : « Pour vous » reçoit, comme « Pour Greatly », sa phrase en titre.
+        const cols = sec && sec.querySelector(':scope > div:not(.edl-pour-tete)');
+        const [g, d] = cols ? [...cols.children] : [];
+        const modele = d && d.children[1];
+        if (g && modele && !g.querySelector('.edl-pour-titre')) {
+          const t = modele.cloneNode(false); t.classList.add('edl-pour-titre'); t.textContent = 'Votre état des lieux, en deux minutes';
+          g.children[0].after(t);
+        }
+      } else gains.after(f);
+    }
+    else if (m.dataset.maquette === 'MEtatDesLieux') nb.after(f); else nb.parentElement.appendChild(f);
   }
   if ('IntersectionObserver' in window && !anime) {
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); lancer(b); } }); io.observe(b);
@@ -263,6 +285,25 @@ const retoucher = () => {
     if (x.children.length === 0 && norm(x.textContent || '') === 'sur vous.') x.innerHTML = 'sur <span class="g-peps edl-vous">vous</span>.';
   });
   if (page === 'questionnaire') champsAutre();
+  if (page === 'questionnaire' && typeof etapesProfil === 'function') etapesProfil();
+  // Le pied du questionnaire sur une ligne, sans la politique de confidentialité (Arnaud, 15 octobre 2026 : « pas utile à cette étape »).
+  if (page === 'questionnaire') document.querySelectorAll('footer.g-pied2 a[href*="confidentialite"]').forEach((a) => {
+    // Les « · » qui précédaient les liens retirés disparaissent avec eux.
+    let n = a.previousSibling;
+    while (n && (n.nodeType === 3 || (n.nodeType === 1 && n.tagName === 'A'))) {
+      if (n.nodeType === 3 && /·\s*$/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/\s*·\s*$/, '');
+      n = n.previousSibling;
+    }
+    const br = a.parentElement && a.parentElement.querySelector('br'); if (br && br.previousSibling && br.previousSibling.nodeType === 3 && !/·\s*$/.test(br.previousSibling.nodeValue)) br.previousSibling.nodeValue += ' · ';
+  });
+
+  if (page === 'questionnaire' && typeof etapesPhrases === 'function') etapesPhrases();
+  if (page === 'questionnaire' && typeof friseEtapes === 'function') friseEtapes();
+  // « Retour » plus discret (Arnaud, 15 octobre 2026 : « trop gros ») : un lien secondaire, pas un second bouton.
+  if (page === 'questionnaire') document.querySelectorAll('[data-maquette] a, [data-maquette] button').forEach((x) => {
+    if (!x.classList.contains('edl-retour') && /^Retour$/.test(norm(x.textContent || ''))) x.classList.add('edl-retour');
+    if (!x.classList.contains('edl-cta-tourne') && /^Continuer/.test(norm(x.textContent || '')) && x.querySelector('svg')) x.classList.add('edl-cta-tourne');
+  });
   if (page === 'questionnaire') {
     // Un solo ne répond pas à la taille de l'équipe : le bloc disparaît tant que « À votre compte » est choisi.
     const t = [...document.querySelectorAll('[data-maquette] *')].filter((x) => x.children.length === 0 && /^Taille de votre équipe/.test(norm(x.textContent || '')));
@@ -352,6 +393,16 @@ style.textContent = [
   '.edl-pas__gras { display: block; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 4.5rem; line-height: 1; color: #FFFFFF; }',
   '.edl-pas__texte { justify-content: center; }',
   '.edl-pas__carte { align-self: center; justify-self: end; width: 100%; max-width: 32rem; display: flex; flex-direction: column; gap: 1.25rem; padding: 2rem 2rem 1.75rem; border-radius: 1.5rem; background: #FFFFFF; color: #0C1011; box-sizing: border-box; }',
+  // Le bloc « Greatly, ce n'est pas… » au ratio du haut de page (Arnaud, 15 octobre 2026 : « fais pareil ») : il remplit l'écran,
+  // le texte domine à gauche, la carte reste compacte à droite.
+  '@media (min-width: 1101px) {'
+    + ' .edl-pas { grid-template-columns: minmax(0, 1fr) minmax(0, 36rem); gap: 3rem; align-items: center; min-height: calc(100svh - 69px); }'
+    + ' .edl-pas__texte { gap: 1.5rem; }'
+    + ' .edl-pas__leger { font-size: clamp(3.5rem, 5vw, 4.75rem); line-height: 1.02; }'
+    + ' .edl-pas__gras { font-size: clamp(3.75rem, 5.6vw, 5.5rem); }'
+    + ' .edl-pas__bouton { min-height: 4.75rem !important; font-size: 1.25rem !important; padding-left: 2.25rem !important; }'
+    + ' .edl-pas__carte { max-width: 36rem; padding: 1.75rem 2rem 1.5rem; gap: 1rem; }'
+    + ' }',
   '.edl-pas__carte-sur { font-family: "DM Sans", sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #23545B; }',
   '.edl-pas__points { display: grid; grid-template-columns: repeat(var(--col), minmax(0, 1fr)); gap: 4px; }',
   '.edl-pas__points i { display: block; aspect-ratio: 1; border-radius: 999px; background: #EEF4F5; transition: background-color .35s ease, transform .35s ease; transition-delay: var(--d, 0ms); transform: scale(.85); }',
@@ -388,6 +439,185 @@ style.textContent = [
   '.edl-frise li:last-child .edl-frise__num { background: #B4F25C; color: #0C1011; }',
   '.edl-frise__titre { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 1.25rem; letter-spacing: -0.02em; color: #0C1011; }',
   '.edl-frise__texte { font-size: 1rem; line-height: 1.45; color: #455051; }',
+  // Sous le titre, la frise ne fait plus « posée » (Arnaud, 15 octobre 2026) : sans cadre ni fond, elle se lit comme la suite du
+  // titre ; un trait continu relie les trois étapes, les numéros sont de grands chiffres légers.
+  '.edl-frise--gains { margin-top: 2.5rem; padding: 0 !important; border-radius: 0; background: none; animation: none; gap: 2.5rem; }',
+  '.edl-frise--gains::before { content: ""; position: absolute; top: 1.75rem; left: 0; right: 0; height: 2px; background: #DCE8EA; }',
+  '.edl-frise--gains li:not(:last-child)::after { display: none; }',
+  '.edl-frise--gains .edl-frise__num { position: relative; width: 3.5rem; height: 3.5rem; margin-bottom: 1rem; font-size: 1.375rem; box-shadow: 0 0 0 0.5rem #FFFFFF; }',
+  '.edl-frise--gains .edl-frise__titre { font-size: 1.5rem; }',
+  '.edl-frise--gains .edl-frise__texte { font-size: 1.0625rem; max-width: 20rem; }',
+  '.edl-frise--gains.edl-frise--mobile { gap: 1.5rem; }',
+  // Le pied de page : le bouton passe sous le texte, à gauche, pour laisser voir la montagne à droite (Arnaud, 15 octobre 2026).
+  '#rdv > div:not([style*="position:absolute"]) { flex-direction: column; align-items: flex-start !important; justify-content: flex-start !important; gap: 2rem !important; }',
+  '#rdv > div:not([style*="position:absolute"]) > div:last-child { padding-bottom: 4.5rem !important; }',
+  // La phrase sur l'anonymat, retirée du pied (Arnaud, 15 octobre 2026 : « pas utile ») ; la politique de confidentialité reste dans la barre du bas.
+  '#rdv h2 + p { display: none !important; }',
+  // Le logo GREATLY du pied, retiré aussi (Arnaud, 15 octobre 2026) : l'en-tête le porte déjà.
+  '.g-pied2 :has(> span[style*="letter-spacing:.28em"]) { display: none !important; }',
+  // « Vos réponses sont anonymes… » sous le questionnaire, retiré (Arnaud, 15 octobre 2026 : « déjà dans le footer »).
+  'html[data-edl="questionnaire"] main + section:has(a[href*="confidentialite"]) { display: none !important; }',
+  // Le profil en étapes (ordinateur) : l'introduction à gauche, une question à la fois à droite, sans défilement en 1200 × 800.
+  'html.edl-pas-a-pas [data-maquette] div[style*="min-height:114.375rem"] { min-height: 100svh !important; }',
+  'html.edl-pas-a-pas .edl-profil { max-width: 70rem !important; display: grid !important; grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr); column-gap: 3.5rem; align-items: start; padding: 1.75rem 0 1.5rem !important; }',
+  'html.edl-pas-a-pas .edl-profil > div:first-child { grid-column: 1; grid-row: 1; align-self: stretch; min-height: 21rem; }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) { grid-column: 2; grid-row: 1; align-self: stretch; margin-top: 0 !important; justify-content: flex-start; }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(n+3) { grid-column: 2; grid-row: 2; margin-top: 1.5rem !important; }',
+  'html.edl-pas-a-pas .edl-etape-cachee { display: none !important; }',
+  // La mention « Facultatif » disparaît : chaque question est obligatoire.
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) h2 + span { display: none !important; }',
+  // Plus de « Continuer » pendant les questions : le passage est automatique (Arnaud, 15 octobre 2026). Il reste « Retour ».
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(n+3) .edl-cta-tourne { display: none !important; }',
+  '.edl-merci[hidden], .edl-passer[hidden] { display: none !important; }',
+  '.edl-merci { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; animation: edlEtape .5s cubic-bezier(.2,.7,.2,1) both; }',
+  '.edl-merci__titre { margin: 0; line-height: 1.05; }',
+  '.edl-merci__titre .leger { display: block; font-family: "Instrument Serif", serif; font-style: italic; font-size: 2.5rem; color: #0C1011; }',
+  '.edl-merci__titre .gras { display: block; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 2.25rem; letter-spacing: -.03em; color: #0C1011; }',
+  '.edl-merci__texte { margin: 0; font-size: 1.0625rem; line-height: 1.55; color: #455051; max-width: 28rem; }',
+  '.edl-merci__cta { display: inline-flex; align-items: center; gap: 0.875rem; min-height: 4rem; margin-top: 0.75rem; padding: 0 0.625rem 0 1.75rem; border: 0; border-radius: 999px; background: #23545B; color: #FFFFFF; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 1.125rem; cursor: pointer; }',
+  '.edl-merci__rond { display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; border-radius: 999px; background: #B4F25C; }',
+  '.edl-merci__rond svg { width: 1.25rem; height: 1.25rem; transform-origin: 50% 50%; animation: edlTourne 4s ease-in-out 1.5s infinite; }',
+  '.edl-passer { align-self: flex-start; margin-top: 0.5rem; padding: 0; border: 0; background: none; font: 500 0.9375rem "DM Sans", sans-serif; color: #455051; text-decoration: underline; text-underline-offset: 0.25rem; cursor: pointer; }',
+  // Des colonnes égales selon la question, le texte aligné pareil partout, jamais sur deux lignes ; la question en plus grand
+  // (Arnaud, 15 octobre 2026 : « aligner les textes, hauteur, largeur »).
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) h2 { font-family: "Bricolage Grotesque", sans-serif !important; font-size: 1.625rem !important; font-weight: 800 !important; letter-spacing: -.02em; }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div > div:has(> h2) { margin-bottom: 0.5rem; }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) div[style*="display:grid"] { gap: 0.625rem !important; }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) div[style*="display:grid"] > button { position: relative; justify-content: center !important; text-align: center !important; white-space: nowrap; min-height: 3.25rem !important; padding: 0.375rem 1.75rem !important; }',
+  // Le texte des réponses centré en hauteur et en largeur ; le point de sélection se place à gauche sans le décaler.
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) div[style*="display:grid"] > button > span[aria-hidden="true"] { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:first-child div[style*="display:grid"] { grid-template-columns: 1fr !important; }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:not(:first-child):not(:has(input)) div[style*="display:grid"]:has(> :nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) div[style*="display:grid"]:has(> :nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) div[style*="display:grid"]:has(> :nth-child(6):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }',
+  // Des pastilles à la largeur de leur texte, jamais sur deux lignes (Arnaud, 15 octobre 2026), et une carte plus serrée pour
+  // que le secteur tienne aussi sans défiler.
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) { padding: 2rem 2.25rem !important; }',
+  // Le secteur garde ses deux colonnes (des intitulés longs), en un peu plus petit pour tenir sur une ligne.
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) div[style*="display:grid"] { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) div[style*="display:grid"] > button { font-size: 0.8125rem !important; min-height: 2.625rem !important; padding: 0 1.5rem !important; }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) div[style*="display:grid"] { gap: 0.5rem !important; }',
+  // « Voir tous les secteurs » : la liste complète défile dans la carte, à la même hauteur, au lieu d'allonger la page (Arnaud,
+  // 15 octobre 2026 : « quand on clique sur tous les secteurs, c'est étrange »).
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) div[style*="display:grid"]:has(> :nth-child(9)) { max-height: 13.25rem; overflow-y: auto; overscroll-behavior: contain; padding-right: 0.5rem; mask-image: linear-gradient(#000 85%, transparent); -webkit-mask-image: linear-gradient(#000 85%, transparent); }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) div[style*="display:grid"]:has(> :nth-child(9)) > button { font-size: 0.8125rem !important; }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:not(.edl-etape-cachee) { animation: edlEtape .5s cubic-bezier(.2,.7,.2,1) both; }',
+  'html.edl-pas-a-pas .edl-etape-sortie { opacity: 0; transform: translateX(-10px); transition: opacity .28s ease, transform .28s ease; }',
+  '@keyframes edlEtape { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: none; } }',
+  '.edl-etape-manque { animation: edlSecoue .4s ease !important; }',
+  '@keyframes edlSecoue { 0%, 100% { transform: none; } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }',
+  '.edl-progres { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }',
+  '.edl-progres__texte { font-family: "DM Sans", sans-serif; font-size: 0.8125rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #23545B; }',
+  '.edl-progres__points { display: flex; gap: 0.5rem; }',
+  '.edl-progres__points i { width: 2.5rem; height: 0.375rem; border-radius: 999px; background: #DCE8EA; transition: background .25s ease; }',
+  '.edl-progres__points i.fait { background: #23545B; }',
+  '.edl-progres__points i.actif { background: #B4F25C; }',
+  '@media (prefers-reduced-motion: reduce) { html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div, .edl-etape-manque { animation: none !important; } }',
+  // Le pied du questionnaire, ramené aux trois quarts puis encore de moitié (Arnaud, 15 octobre 2026).
+  'html[data-edl="questionnaire"] footer.g-pied2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }',
+  'html[data-edl="questionnaire"] footer.g-pied2 br, html[data-edl="questionnaire"] footer.g-pied2 a[href*="confidentialite"] { display: none !important; }',
+  'html[data-edl="questionnaire"] footer.g-pied2 > div:last-child { margin-top: 0 !important; }',
+  '.edl-retour { font-size: 0.9375rem !important; font-weight: 500 !important; color: #455051 !important; min-height: 0 !important; text-decoration-thickness: 1px !important; }',
+  // La flèche de « Continuer » tourne légèrement, de temps en temps, et au survol (Arnaud, 15 octobre 2026).
+  '.edl-cta-tourne svg { transform-origin: 50% 50%; animation: edlTourne 4s ease-in-out 1.5s infinite; }',
+  '.edl-cta-tourne:hover svg { animation: none; transform: rotate(-10deg); transition: transform .25s ease; }',
+  '@keyframes edlTourne { 0%, 82%, 100% { transform: rotate(0); } 88% { transform: rotate(-10deg); } 94% { transform: rotate(3deg); } }',
+  '@media (prefers-reduced-motion: reduce) { .edl-cta-tourne svg { animation: none; } }',
+  // Les 16 phrases en étapes (ordinateur) : la colonne « Votre avancée » laisse la place ; à gauche l'étape, le thème et son
+  // « pourquoi » ; à droite la phrase et ses réponses ; le reste se cache.
+  'html.edl-phrases [data-maquette] div[style*="min-height:114.375rem"] { min-height: 100svh !important; }',
+  'html.edl-phrases [data-maquette] div[style*="grid-template-columns:16.75rem"] { display: block !important; padding: 1.75rem 0 1.5rem !important; }',
+  'html.edl-phrases [data-maquette] div[style*="grid-template-columns:16.75rem"] > aside { display: none !important; }',
+  'html.edl-phrases .edl-ph { display: grid !important; grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr); grid-template-rows: auto auto 1fr auto; column-gap: 3.5rem; align-items: start; }',
+  // Les idées « J'aimerais… » s'ouvrent sous les réponses, en fondu ; la carte se resserre pour que tout tienne à l'écran,
+  // sans défiler, quelle que soit la hauteur de la fenêtre (Arnaud, 15 octobre 2026).
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open { animation: edlOuvre .45s ease both; }',
+  '@keyframes edlOuvre { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) { gap: 1.25rem; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) .e-opt { min-height: clamp(2.5rem, 6vh, 3.25rem) !important; }',
+  // Les réponses passent de la colonne à une ligne de quatre quand les idées s'ouvrent (Arnaud, 15 octobre 2026 : « le passage de vertical à horizontal était top »).
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) > [role="group"]:not(.e-open) { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 0.5rem !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open { margin-top: 0 !important; padding: clamp(1rem, 2.6vh, 1.5rem) 1.75rem clamp(0.875rem, 2.2vh, 1.25rem) !important; gap: clamp(0.5rem, 1.6vh, 0.875rem) !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > div:first-of-type { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: clamp(0.125rem, 0.8vh, 0.375rem) 2rem !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open .e-row { min-height: clamp(2.25rem, 6vh, 3rem) !important; margin: 0 !important; padding: 0.25rem 0 !important; gap: 0.75rem !important; font-size: 0.9375rem !important; line-height: 1.3 !important; align-items: center !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > p { display: flex !important; justify-content: space-between; align-items: baseline; margin: 0 !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > div:last-child { display: flex !important; justify-content: flex-end; }',
+  '@media (prefers-reduced-motion: reduce) { html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open { animation: none; } }',
+  'html.edl-phrases .edl-ph > div:not(:first-child):not(.edl-merci2):not(.edl-ph-nav):not(.edl-progres) { display: contents !important; }',
+  'html.edl-phrases .edl-ph > div:not(:first-child):not(.edl-merci2):not(.edl-ph-nav):not(.edl-progres) > :not(.edl-ph-carte):not(.edl-ph-tete) { display: none !important; }',
+  'html.edl-phrases .edl-ph > div:first-child, html.edl-phrases .edl-ph > .edl-ph-nav, html.edl-phrases .edl-ph > .edl-merci2:not([hidden]) { display: flex !important; }',
+  'html.edl-phrases .edl-ph > div:first-child { grid-column: 1; grid-row: 1; flex-direction: column; gap: 0.5rem; }',
+  'html.edl-phrases .edl-ph > div:first-child > * { display: revert !important; }',
+  'html.edl-phrases .edl-ph > div:first-child > :not(:first-child) { display: none !important; }',
+  'html.edl-phrases.edl-phrases-fin .edl-ph > div:first-child > h1 { display: revert !important; margin-top: 0.75rem !important; }',
+  // Plus de « Phrase X sur 16 » : les ronds des thèmes suffisent (Arnaud, 15 octobre 2026).
+  'html.edl-phrases .edl-ph > .edl-progres { display: none !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-tete { display: flex !important; grid-column: 1; grid-row: 2; margin-top: 1.25rem; animation: edlEtape .5s cubic-bezier(.2,.7,.2,1) both; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-tete h2 { font-size: clamp(2.25rem, 3.4vw, 3rem) !important; line-height: 1.02 !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte { display: flex !important; flex-direction: column; justify-content: flex-start; gap: 1.5rem; grid-column: 2; grid-row: 1 / span 3; align-self: stretch; min-height: 22rem; padding: 2.25rem 2.5rem !important; scroll-margin-top: 0 !important; animation: edlEtape .5s cubic-bezier(.2,.7,.2,1) both; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { font-family: "Bricolage Grotesque", sans-serif !important; font-size: 1.625rem !important; font-weight: 800 !important; line-height: 1.2 !important; letter-spacing: -.02em; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte > [role="group"]:not(.e-open) { display: grid !important; grid-template-columns: 1fr !important; gap: 0.5rem !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt { position: relative; justify-content: center !important; text-align: center !important; white-space: nowrap; min-height: 2.875rem !important; padding: 0.375rem 1.75rem !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt > svg { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); }',
+  // En ligne, les pastilles sont étroites : la couleur suffit à montrer la réponse choisie, la coche se retire.
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) .e-opt > svg { display: none !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) .e-opt { padding: 0.375rem 0.5rem !important; font-size: 0.9375rem !important; }',
+  // Fenêtres très basses : tout se resserre encore, toujours sans défiler.
+  '@media (max-height: 590px) { html.edl-phrases .edl-ph > div > .edl-ph-carte { padding-top: 1.25rem !important; padding-bottom: 1.25rem !important; gap: 0.875rem !important; } html.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { font-size: 1.375rem !important; } html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open .e-row { min-height: 2rem !important; } html.edl-phrases [data-maquette] div[style*="grid-template-columns:16.75rem"] { padding-top: 1rem !important; } }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > div:first-of-type { display: grid !important; }',
+  'html.edl-phrases .edl-ph > .edl-ph-nav { grid-column: 2; grid-row: 4; margin-top: 1.25rem; padding: 0 !important; border: 0 !important; justify-content: flex-start !important; }',
+  'html.edl-phrases .edl-ph > .edl-ph-nav :is(a, button):not(.edl-retour) { display: none !important; }',
+  'html.edl-phrases .edl-ph > .edl-ph-nav .edl-retour { display: inline-flex !important; }',
+  'html.edl-phrases .edl-ph > .edl-merci2 { grid-column: 2; grid-row: 1 / span 3; flex-direction: column; align-items: flex-start; gap: 1rem; min-height: 22rem; padding: 2.25rem 2.5rem; border-radius: 1.5rem; border: 1px solid #DCE8EA; background: #FFFFFF; box-sizing: border-box; animation: edlEtape .5s cubic-bezier(.2,.7,.2,1) both; }',
+  'html.edl-phrases .edl-ph > .edl-merci2[hidden] { display: none !important; }',
+  '.edl-progres--phrases .edl-progres__points { gap: 0.25rem; }',
+  '.edl-progres--phrases .edl-progres__points i { width: 1rem; }',
+  '.edl-frise3 { display: flex; align-items: flex-start; margin-bottom: 0.25rem; }',
+  '.edl-frise3__pas { position: relative; display: flex; flex: 1; max-width: 3.25rem; }',
+  '.edl-frise3__pas i { position: relative; z-index: 1; width: 0.875rem; height: 0.875rem; border-radius: 999px; background: #DCE8EA; box-shadow: 0 0 0 4px #FFFFFF; }',
+  '.edl-frise3__pas:not(:last-child)::after { content: ""; position: absolute; top: 0.375rem; left: 0.875rem; right: 0; height: 2px; background: #DCE8EA; }',
+  '.edl-frise3__pas.fait i, .edl-frise3__pas.fait::after { background: #23545B !important; }',
+  '.edl-frise3__pas.actif i { background: #B4F25C; box-shadow: 0 0 0 4px #FFFFFF, 0 0 0 5.5px #23545B; }',
+  '.edl-frise3__pas:last-child { flex: 0 0 auto; }',
+  'html.edl-phrases .edl-ph > div:first-child > .edl-frise3 { display: flex !important; order: -1; margin-bottom: 0.75rem; }',
+  'html.edl-phrases .edl-ph > div:first-child > :first-child:not(.edl-frise3) { display: none !important; }',
+  // Les 16 phrases dans la DA de l'accueil (proposition du 15 octobre 2026) : l'écran entier sur le fond bleu-vert clair, le texte
+  // qui domine à gauche (les ronds des thèmes, le thème en titre en deux temps, son « pourquoi » en chapô), la carte blanche à
+  // droite avec la phrase en grand.
+  'html.edl-phrases main > section:has(.edl-ph) { background: #EEF4F5; min-height: calc(100svh - var(--edl-reste, 105px)); display: flex; align-items: center; box-sizing: border-box; }',
+  'html.edl-phrases main > section:has(.edl-ph) > div { width: 100%; padding: clamp(1rem, 3vh, 2rem) 0 !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) { padding-top: clamp(1.25rem, 3vh, 2rem) !important; padding-bottom: clamp(1.25rem, 3vh, 2rem) !important; gap: clamp(0.75rem, 2vh, 1.25rem) !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) > p:first-child { font-size: clamp(1.375rem, 3.2vh, 2rem) !important; }',
+  'html.edl-phrases .edl-ph { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr) !important; column-gap: 3.5rem !important; align-items: center !important; grid-template-rows: auto auto auto !important; }',
+  'html.edl-phrases .edl-frise3__pas i { box-shadow: 0 0 0 4px #EEF4F5; background: #C7D9DC; }',
+  'html.edl-phrases .edl-frise3__pas:not(:last-child)::after { background: #C7D9DC; }',
+  'html.edl-phrases .edl-frise3__pas.actif i { box-shadow: 0 0 0 4px #EEF4F5, 0 0 0 5.5px #23545B; background: #B4F25C; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-tete { align-self: start; gap: 1.25rem !important; margin-top: 1.5rem !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-tete h2 { margin: 0 !important; font-size: clamp(2.75rem, 4.4vw, 4rem) !important; line-height: 1 !important; letter-spacing: -.04em !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-tete h2::before { content: attr(data-edl-theme); display: block; margin-bottom: 0.25rem; font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; font-size: clamp(1.75rem, 2.6vw, 2.5rem); letter-spacing: -.01em; color: #23545B; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-tete p { font-family: "Bricolage Grotesque", sans-serif !important; font-weight: 300 !important; font-size: clamp(1.0625rem, 1.5vw, 1.3125rem) !important; line-height: 1.5 !important; color: #455051 !important; max-width: 30rem; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-tete p strong, html.edl-phrases .edl-ph > div > .edl-ph-tete p > span:first-child { display: block; margin-bottom: 0.5rem; font-family: "DM Sans", sans-serif; font-weight: 700; font-size: 0.75rem; letter-spacing: .14em; text-transform: uppercase; color: #23545B; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte, html.edl-phrases .edl-ph > .edl-merci2 { border: 0 !important; border-radius: 1.75rem !important; background: #FFFFFF !important; box-shadow: none !important; padding: clamp(1.75rem, 4vh, 2.75rem) clamp(2rem, 3vw, 2.75rem) !important; min-height: 0 !important; align-self: center !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { font-size: clamp(1.625rem, 2.4vw, 2rem) !important; line-height: 1.15 !important; letter-spacing: -.025em !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt { min-height: 3.25rem !important; font-size: 1.0625rem !important; border-color: #C7D9DC !important; }',
+  'html.edl-phrases .edl-ph > .edl-ph-nav { align-self: start; }',
+  '.edl-pour-tete { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 3rem 5rem; align-items: center; }',
+  '.edl-frise--colonne { margin: 0 !important; grid-template-columns: 1fr !important; gap: 1.25rem !important; }',
+  '.edl-frise--colonne::before { top: 0.5rem; bottom: 3rem; left: 1.375rem; right: auto; width: 2px; height: auto; }',
+  '.edl-frise--colonne li { display: grid !important; grid-template-columns: 2.75rem 1fr; column-gap: 1.25rem; row-gap: 0.125rem; align-items: start; }',
+  '.edl-frise--colonne .edl-frise__num { grid-row: span 2; width: 2.75rem !important; height: 2.75rem !important; margin: 0 !important; font-size: 1.125rem !important; }',
+  '.edl-frise--colonne .edl-frise__titre { font-size: 1.25rem !important; padding-top: 0.375rem; }',
+  '.edl-frise--colonne .edl-frise__texte { font-size: 1rem !important; max-width: none !important; }',
+  // L'échange : un seul filet en haut, un trait entre les deux colonnes, la liste sans séparateurs.
+  '.edl-pour > div:not(.edl-pour-tete) { margin-top: 4rem !important; padding-top: 2.5rem; border-top: 2px solid #23545B; gap: 0 !important; }',
+  '.edl-pour > div:not(.edl-pour-tete) > div { border-top: 0 !important; padding-top: 0 !important; }',
+  '.edl-pour > div:not(.edl-pour-tete) > div + div { padding-left: 3.5rem !important; border-left: 1px solid #C7D9DC; }',
+  '.edl-pour > div:not(.edl-pour-tete) > div:first-child { padding-right: 3.5rem !important; }',
+  '.edl-pour-titre { display: block; margin: 0.75rem 0 1rem; }',
+  '.edl-pour > div:not(.edl-pour-tete) > div:first-child > div > div { border: 0 !important; padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }',
+  '@media (max-width: 1100px) { .edl-pour-tete { grid-template-columns: 1fr; } }',
+  '.edl-frise--gains.edl-frise--mobile::before { top: 0; bottom: 4rem; left: 1.75rem; right: auto; width: 2px; height: auto; }',
+  '.edl-frise--gains.edl-frise--mobile li { padding-left: 5rem; min-height: 3.5rem; }',
   '.edl-frise--mobile { grid-template-columns: 1fr; gap: 1.25rem; margin: 12px 0 6px; padding: 22px 20px; }',
   '.edl-frise--mobile li { padding-left: 3rem; }',
   '.edl-frise--mobile .edl-frise__num { position: absolute; left: 0; top: 0; margin: 0; }',
@@ -395,6 +625,42 @@ style.textContent = [
   // La carte du nombre : à droite du texte, à sa hauteur, sans flotter.
   '.edl-hero-section { min-height: 0 !important; }',
   '.edl-hero { display: flex; align-items: stretch; justify-content: space-between; gap: 3rem; padding-bottom: 4.5rem !important; }',
+  // La première phrase du titre, agrandie (retour d'entretien, 15 octobre 2026), passe sur deux lignes : la colonne du titre
+  // se partage la largeur au lieu de pousser la carte de l'étude sous elle.
+  '.edl-hero > div:first-child { flex: 1 1 0; min-width: 0; }',
+  // Le texte de gauche passe devant la carte (Arnaud, 15 octobre 2026 : « le texte de gauche doit être plus mis en avant que
+  // l'illustration à droite ») : la colonne du titre prend la place, la carte reste compacte et centrée.
+  '@media (min-width: 1101px) {'
+    + ' .edl-hero > div:first-child { flex: 1 1 0 !important; max-width: 46rem !important; }'
+    + ' [data-maquette] .edl-hero h1 > span:first-child { font-size: clamp(3.5rem, 5vw, 4.75rem) !important; line-height: 1.02 !important; }'
+    + ' [data-maquette] .edl-hero h1 > span:not(:first-child) { font-size: clamp(3.75rem, 5.6vw, 5.5rem) !important; }'
+    + ' .edl-nombre { flex: 0 1 29rem !important; max-width: 30rem !important; align-self: center !important; padding: 1.75rem 2rem 1.5rem !important; gap: 0.5rem !important; }'
+    + ' .edl-nombre__chiffre { font-size: clamp(4.25rem, 6vw, 5.75rem) !important; }'
+    + ' .edl-nombre__texte { font-size: 1.0625rem !important; }'
+    + ' .edl-nombre__points { flex: 0 0 auto; grid-template-columns: repeat(auto-fill, minmax(8px, 1fr)) !important; gap: 4px !important; margin-top: 0.5rem !important; }'
+    + ' }',
+  // La colonne de gauche, à la mesure de la carte (Arnaud, 15 octobre 2026 : « idem pour le gauche, faut optimiser ») : centrée
+  // en hauteur, un titre plus grand, la phrase et le bouton plus présents.
+  '@media (min-width: 1101px) {'
+    + ' .edl-hero > div:first-child { justify-content: center; gap: 1.5rem !important; }'
+    + ' .edl-hero .edl-signature { font-size: 1.375rem !important; line-height: 1.45 !important; }'
+    + ' .edl-hero .g-cta { min-height: 4.75rem !important; font-size: 1.25rem !important; padding-left: 2.25rem !important; }'
+    + ' }',
+  // Le haut de page remplit exactement la fenêtre, sous l'en-tête (Arnaud, 15 octobre 2026 : « y'a une coupure ») : la section
+  // suivante commence pile au bord de l'écran, au lieu d'y être coupée en deux.
+  '@media (min-width: 1024px) { .edl-hero-section { min-height: calc(100svh - 69px) !important; display: flex; flex-direction: column; justify-content: center; } .edl-hero-section > .edl-hero { flex: 0 0 auto; width: 100%; box-sizing: border-box; padding-top: 1.5rem !important; padding-bottom: 2.5rem !important; } }',
+  // Moins de vide entre le titre et la carte (Arnaud, 15 octobre 2026) : la carte prend la place qui reste, jusqu'à 32 rem.
+  '@media (min-width: 1101px) { .edl-hero { gap: 3rem; } .edl-hero > div:first-child { flex: 1 1 26rem !important; max-width: 40rem !important; } .edl-nombre { flex: 1 1 22rem !important; max-width: 30rem; } }',
+  // Écran d'ordinateur peu haut (1200 × 800, Arnaud, 15 octobre 2026) : le haut de page, la carte de l'étude et les trois étapes
+  // tiennent ensemble dans la fenêtre, avec de l'air sous les étapes.
+  '@media (min-width: 1024px) and (max-height: 860px) {'
+    + ' .edl-hero { padding-top: 2rem !important; padding-bottom: 2.5rem !important; }'
+    + ' .edl-hero > div:first-child { gap: 1rem !important; }'
+    + ' .edl-nombre { padding: 1.5rem 1.75rem 1.25rem; }'
+    + ' .edl-nombre__chiffre { font-size: 4.5rem; }'
+    + ' .edl-nombre__texte { font-size: 1.125rem; }'
+    + ' .edl-nombre__points { gap: 3px; margin-top: 0.5rem; }'
+    + ' }',
   '.edl-nombre { flex: 0 1 25rem; align-self: center; display: flex; flex-direction: column; gap: 0.5rem; padding: 2rem 2rem 1.75rem; border-radius: 1.5rem; background: #FFFFFF; color: #0C1011; animation: edlMonte .8s cubic-bezier(.2,.7,.2,1) both; }',
   '@keyframes edlMonte { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }',
   '@media (prefers-reduced-motion: reduce) { .edl-nombre { animation: none; } .edl-nombre__points i { transition: none !important; } }',
@@ -411,6 +677,220 @@ style.textContent = [
   '.edl-nombre--mobile .edl-nombre__texte { font-size: 1.0625rem; }',
 ].join('\n');
 document.head.appendChild(style);
+
+
+// ------------------------------------------------------------- le profil en étapes, sur ordinateur
+// Arnaud, 15 octobre 2026 : « éviter les blocs les uns au-dessus des autres, faire des étapes sur desktop, pas sur mobile,
+// en 5 étapes max, et ça doit tenir dans 1200 × 800 sans scroll ». Une question à la fois à droite, l'introduction et la
+// progression à gauche ; un choix fait passer à la question suivante, « Retour » revient à la précédente. Les blocs cachés
+// pour un solo (taille d'entreprise, d'équipe) ne comptent pas : 3 étapes pour un solo, 5 sinon.
+let etapeProfil = 0;
+const PHRASES_PROFIL = {
+  'Vous travaillez': 'Commençons par votre façon de travailler, telle que vous la vivez au quotidien.',
+  'Vous êtes': 'Dites-nous en un peu plus sur vous. Vos réponses restent anonymes.',
+  'Taille de votre entreprise': 'Grande ou petite structure, chaque contexte a ses atouts.',
+  "Secteur d'activité": 'Votre secteur nous aide à mettre votre regard à côté de celui de personnes qui travaillent comme vous.',
+  'Taille de votre équipe': 'Dernière question sur vous : la taille de votre équipe.',
+  fin: 'Ces repères permettent de mettre votre regard à côté de celui de personnes qui vous ressemblent.',
+};
+const ORDI = () => matchMedia('(min-width: 1101px)').matches;
+const carteProfil = () => {
+  const m = [...document.querySelectorAll('[data-maquette]')].find((x) => x.getClientRects().length); if (!m) return null;
+  return [...m.querySelectorAll('div[style*="padding:2.5rem 2.75rem"]')].find((c) => /^\s*Vous travaillez/.test(c.textContent || '')) || null;
+};
+const groupesProfil = (carte) => [...carte.children].filter((g) => !g.classList.contains('edl-merci') && !g.classList.contains('edl-passer') && !g.hasAttribute('data-edl-cache') && !/display:\s*none/.test(g.getAttribute('style') || ''));
+// Changer de question : un léger fondu en sortie, puis la suivante arrive en fondu (Arnaud, 15 octobre 2026).
+const allerEtape = (n) => {
+  const carte = carteProfil(); const g = carte && (groupesProfil(carte)[etapeProfil] || carte.querySelector(':scope > .edl-merci'));
+  if (!g || calme()) { etapeProfil = n; etapesProfil(); return; }
+  g.classList.add('edl-etape-sortie');
+  setTimeout(() => { g.classList.remove('edl-etape-sortie'); etapeProfil = n; etapesProfil(); }, 280);
+};
+const etapesProfil = () => {
+  const racine = document.documentElement;
+  const carte = page === 'questionnaire' && ORDI() ? carteProfil() : null;
+  racine.classList.toggle('edl-pas-a-pas', Boolean(carte));
+  if (!carte) return;
+  const groupes = groupesProfil(carte); const nb = groupes.length; if (!nb) return;
+  // Après la dernière question, une étape « Merci » dans la carte, avec son bouton (Arnaud, 15 octobre 2026).
+  if (etapeProfil > nb) etapeProfil = nb;
+  // Jamais l'étape « Merci » avec une réponse obligatoire manquante (un rôle décoché en revenant en arrière, par exemple) :
+  // on revient à la première question sans réponse. À l'arrivée, on ouvre aussi sur la première question à remplir.
+  // Chaque question est obligatoire (Arnaud, 15 octobre 2026) ; « Vous êtes » garde « Je préfère ne pas répondre ».
+  const manque = groupes.findIndex((g) => !g.querySelector('[aria-pressed="true"], [aria-selected="true"]'));
+  if (!etapesProfil.vu) { etapesProfil.vu = true; const premiere = groupes.findIndex((g) => !g.querySelector('[aria-pressed="true"], [aria-selected="true"]')); etapeProfil = premiere < 0 ? nb : premiere; }
+  if (etapeProfil === nb && manque >= 0) etapeProfil = manque;
+  const fin = etapeProfil === nb;
+  [...carte.children].forEach((g) => { if (groupes.includes(g)) g.classList.toggle('edl-etape-cachee', groupes.indexOf(g) !== etapeProfil); });
+  let merci = carte.querySelector(':scope > .edl-merci');
+  if (!merci) {
+    merci = document.createElement('div'); merci.className = 'edl-merci';
+    merci.innerHTML = '<p class="edl-merci__titre"><span class="leger">Merci,</span> <span class="gras">place à vos 16 phrases.</span></p>'
+      + '<p class="edl-merci__texte">Environ 2 minutes, à votre rythme, pour obtenir votre état des lieux.</p>'
+      + '<button type="button" class="edl-merci__cta">Commencer les 16 phrases<span class="edl-merci__rond" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#0C1011" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>';
+    carte.appendChild(merci);
+  }
+  merci.hidden = !fin;
+  // « Vous êtes » est facultatif : un lien discret pour passer, puisque « Continuer » n'apparaît plus.
+  let passer = carte.querySelector(':scope > .edl-passer');
+  if (!passer) { passer = document.createElement('button'); passer.type = 'button'; passer.className = 'edl-passer'; passer.textContent = 'Passer cette question'; carte.appendChild(passer); }
+  passer.hidden = true;
+  const enveloppe = carte.parentElement; enveloppe.classList.add('edl-profil');
+  const intro = enveloppe.firstElementChild;
+  let prog = intro.querySelector(':scope > .edl-progres');
+  if (!prog) { prog = document.createElement('div'); prog.className = 'edl-progres'; intro.appendChild(prog); }
+  const html = '<span class="edl-progres__texte">' + (fin ? 'C’est prêt' : 'Question ' + (etapeProfil + 1) + ' sur ' + nb) + '</span><span class="edl-progres__points">'
+    + groupes.map((_, k) => '<i class="' + (k < etapeProfil ? 'fait' : k === etapeProfil ? 'actif' : '') + '"></i>').join('') + '</span>';
+  if (prog.innerHTML !== html) prog.innerHTML = html;
+  // Une phrase par question, empathique, positive, sans négation (Arnaud, 15 octobre 2026), relue avec « Greatly, ce n'est pas… ».
+  const q = fin ? 'fin' : norm((groupes[etapeProfil].querySelector('h2') || {}).textContent || '');
+  const cle = Object.keys(PHRASES_PROFIL).find((k) => q.startsWith(k));
+  const phrase = cle && PHRASES_PROFIL[cle];
+  const para = intro.querySelector('p');
+  if (para && phrase && para.textContent !== phrase) para.textContent = phrase;
+};
+if (page === 'questionnaire') {
+  document.addEventListener('click', (e) => {
+    if (!document.documentElement.classList.contains('edl-pas-a-pas')) return;
+    const carte = carteProfil(); if (!carte) return;
+    const b = e.target.closest('button, a'); if (!b) return;
+    const groupes = groupesProfil(carte); const g = groupes[etapeProfil]; const nb = groupes.length;
+    const t = norm(b.textContent || '');
+    if (/^Voir tous les secteurs/.test(t)) { const y = scrollY; requestAnimationFrame(() => requestAnimationFrame(() => scrollTo(0, y))); return; }
+    if (b.classList.contains('edl-merci__cta')) {
+      // Le bouton de la carte lance la suite : le « Continuer » de la maquette, caché, fait le reste.
+      const vrai = [...document.querySelectorAll('.edl-profil button, .edl-profil a')].find((x) => /^Continuer/.test(norm(x.textContent || '')));
+      if (vrai) vrai.click();
+      return;
+    }
+    if (b.classList.contains('edl-passer')) { allerEtape(etapeProfil + 1); return; }
+    if (carte.contains(b)) {
+      if (b.getAttribute('aria-pressed') === 'true' && g && g.contains(b)) { e.preventDefault(); e.stopImmediatePropagation(); if (etapeProfil < nb) allerEtape(etapeProfil + 1); return; }
+      // Un choix fait passer à la question suivante, après un temps pour le voir coché (650 ms, Arnaud, 15 octobre 2026 : « trop rapide »).
+      if (b.hasAttribute('aria-pressed') && g && g.contains(b) && etapeProfil < nb) {
+        setTimeout(() => { if (b.getAttribute('aria-pressed') === 'true' && etapeProfil < groupesProfil(carte).length) allerEtape(etapeProfil + 1); }, 650);
+      }
+      return;
+    }
+    if (/^Continuer/.test(t) && etapeProfil < nb) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      if (g.querySelector('[aria-pressed="true"]')) allerEtape(etapeProfil + 1);
+      else { g.classList.remove('edl-etape-manque'); void g.offsetWidth; g.classList.add('edl-etape-manque'); }
+    } else if (/^Retour/.test(t) && etapeProfil > 0) {
+      e.preventDefault(); e.stopImmediatePropagation(); allerEtape(etapeProfil - 1);
+    }
+  }, true);
+  addEventListener('resize', () => etapesProfil());
+}
+
+
+// ------------------------------------------------------------- les 16 phrases en étapes, sur ordinateur
+// Arnaud, 15 octobre 2026 : « le même principe sur desktop pour toutes les questions de Comment voyez-vous votre travail ?,
+// étape par étape, avec le petit texte à gauche de chaque question et les réponses à droite ». À gauche, le thème de la phrase
+// et son « pourquoi », avec la progression ; à droite, la phrase et ses réponses. Une réponse fait passer à la suivante, sauf
+// quand les idées « J'aimerais… » s'ouvrent : on les choisit, puis « Question suivante ». À la fin, une étape « Merci ».
+let etapePhrase = 0;
+const zonePhrases = () => {
+  const m = [...document.querySelectorAll('[data-maquette]')].find((x) => x.getClientRects().length || x.querySelector('#a1')); if (!m) return null;
+  const a1 = m.querySelector('#a1'); return a1 ? a1.parentElement.parentElement : null;
+};
+const cartesPhrases = (w) => [...w.querySelectorAll(':scope > div > [id^="a"]')].filter((x) => /^a\d+$/.test(x.id) && !x.hasAttribute('data-edl-cache'));
+const repondue = (c) => Boolean(c.querySelector('[role="group"]:not(.e-open) [aria-pressed="true"]') || c.querySelector(':scope > div > button[aria-pressed="true"]'));
+const etapesPhrases = () => {
+  const racine = document.documentElement;
+  const w = page === 'questionnaire' && ORDI() ? zonePhrases() : null;
+  const actif = Boolean(w && w.getClientRects().length);
+  racine.classList.toggle('edl-phrases', actif);
+  if (!actif) return;
+  w.classList.add('edl-ph');
+  // La hauteur de l'en-tête et du pied, pour que le fond remplisse l'écran sans le dépasser, à toutes les tailles.
+  { const m = w.closest('[data-maquette]'); const h = m && m.querySelector('header'); const f = m && m.querySelector('footer.g-pied2'); const v = ((h ? h.offsetHeight : 69) + (f ? f.offsetHeight : 36)) + 'px'; if (document.documentElement.style.getPropertyValue('--edl-reste') !== v) document.documentElement.style.setProperty('--edl-reste', v); }
+  // La barre « Retour / Voir mon résultat » : le dernier bloc de la maquette, repéré une fois pour toutes.
+  [...w.children].forEach((x) => x.classList.toggle('edl-ph-nav', !x.classList.contains('edl-merci2') && !x.classList.contains('edl-progres') && Boolean(x.querySelector('.edl-retour, a, button')) && /Retour/.test(x.textContent || '') && !x.querySelector('[id^="a"]')));
+  const cartes = cartesPhrases(w); const nb = cartes.length; if (!nb) return;
+  if (!etapesPhrases.vu) { etapesPhrases.vu = true; const k = cartes.findIndex((c) => !repondue(c)); etapePhrase = k < 0 ? nb : k; }
+  if (etapePhrase > nb) etapePhrase = nb;
+  const manque = cartes.findIndex((c) => !repondue(c));
+  if (etapePhrase === nb && manque >= 0) etapePhrase = manque;
+  const fin = etapePhrase === nb;
+  const courante = cartes[etapePhrase];
+  const tete = courante ? courante.parentElement.firstElementChild : null;
+  w.querySelectorAll(':scope > div > *').forEach((x) => {
+    x.classList.toggle('edl-ph-carte', x === courante);
+    x.classList.toggle('edl-ph-tete', x === tete);
+  });
+  // L'étape « Merci » : dans la zone, à la place de la carte.
+  let merci = w.querySelector(':scope > .edl-merci2');
+  if (!merci) {
+    merci = document.createElement('div'); merci.className = 'edl-merci2';
+    merci.innerHTML = '<p class="edl-merci__titre"><span class="leger">Merci,</span> <span class="gras">votre état des lieux est prêt.</span></p>'
+      + '<p class="edl-merci__texte">Vos réponses rejoignent l’étude, de façon anonyme. Découvrez votre regard, à côté de celui de personnes qui travaillent comme vous.</p>'
+      + '<button type="button" class="edl-merci__cta edl-merci2__cta">Voir mon résultat<span class="edl-merci__rond" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#0C1011" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>';
+    w.appendChild(merci);
+  }
+  merci.hidden = !fin;
+  // La progression, sous l'étape.
+  // La progression sous le thème, comme sur le profil : un bloc à elle, en fin de zone.
+  let prog = w.querySelector(':scope > .edl-progres');
+  if (!prog) { prog = document.createElement('div'); prog.className = 'edl-progres edl-progres--phrases'; w.appendChild(prog); }
+  const html = '<span class="edl-progres__texte">' + (fin ? 'C’est prêt' : 'Phrase ' + (etapePhrase + 1) + ' sur ' + nb) + '</span><span class="edl-progres__points">'
+    + cartes.map((_, k) => '<i class="' + (k < etapePhrase ? 'fait' : k === etapePhrase ? 'actif' : '') + '"></i>').join('') + '</span>';
+  if (prog.innerHTML !== html) prog.innerHTML = html;
+  racine.classList.toggle('edl-phrases-fin', fin);
+};
+const allerPhrase = (n) => {
+  const w = zonePhrases(); const c = w && (w.querySelector('.edl-ph-carte') || w.querySelector(':scope > .edl-merci2'));
+  const poser = () => { etapePhrase = n; etapesPhrases(); scrollTo(0, 0); };
+  if (!c || calme()) { poser(); return; }
+  c.classList.add('edl-etape-sortie');
+  setTimeout(() => { c.classList.remove('edl-etape-sortie'); poser(); }, 280);
+};
+if (page === 'questionnaire') {
+  document.addEventListener('click', (e) => {
+    if (!document.documentElement.classList.contains('edl-phrases')) return;
+    const w = zonePhrases(); if (!w) return;
+    const b = e.target.closest('button, a'); if (!b) return;
+    const cartes = cartesPhrases(w); const nb = cartes.length; const c = cartes[etapePhrase];
+    const t = norm(b.textContent || '');
+    if (b.classList.contains('edl-merci2__cta')) {
+      const vrai = [...document.querySelectorAll('[data-maquette] button, [data-maquette] a')].find((x) => x.getClientRects().length === 0 && /^Voir mon résultat/.test(norm(x.textContent || ''))) ||
+        [...document.querySelectorAll('[data-maquette] button, [data-maquette] a')].find((x) => /^Voir mon résultat/.test(norm(x.textContent || '')) && !x.classList.contains('edl-merci2__cta'));
+      if (vrai) vrai.click();
+      return;
+    }
+    if (c && c.contains(b)) {
+      const reponse = b.classList.contains('e-opt') || (b.hasAttribute('aria-pressed') && !b.closest('.e-open'));
+      if (reponse && b.getAttribute('aria-pressed') === 'true') { e.preventDefault(); e.stopImmediatePropagation(); if (!c.querySelector('.e-open')) allerPhrase(etapePhrase + 1); return; }
+      if (reponse) {
+        setTimeout(() => { scrollTo(0, 0); if (b.getAttribute('aria-pressed') === 'true' && !c.querySelector('.e-open') && etapePhrase < nb) allerPhrase(etapePhrase + 1); }, 650);
+        setTimeout(() => scrollTo(0, 0), 60);
+        return;
+      }
+      if (/^Question suivante/.test(t)) { e.preventDefault(); e.stopImmediatePropagation(); allerPhrase(etapePhrase + 1); return; }
+      return;
+    }
+    if (/^Retour$/.test(t) && etapePhrase > 0) { e.preventDefault(); e.stopImmediatePropagation(); allerPhrase(etapePhrase - 1); }
+  }, true);
+  addEventListener('resize', () => etapesPhrases());
+}
+
+
+// ------------------------------------------------------------- la frise des thèmes (ordinateur, 16 phrases)
+// En haut des 16 phrases, un petit rond par thème, reliés par un trait : on voit où l'on en est (Arnaud, 15 octobre 2026 :
+// « la frise en haut seulement dans le questionnaire, avec les thèmes des questions »). Le profil garde « Étape 1 sur 3 ».
+const friseEtapes = () => {
+  if (page !== 'questionnaire' || !document.documentElement.classList.contains('edl-phrases')) return;
+  const w = zonePhrases(); if (!w) return;
+  const cartes = cartesPhrases(w);
+  const themes = []; cartes.forEach((c) => { const h = c.parentElement.querySelector('h2'); const t = norm((h && h.textContent) || ''); if (t && !themes.includes(t)) themes.push(t); });
+  const cour = w.querySelector('.edl-ph-tete h2'); const k = cour ? themes.indexOf(norm(cour.textContent || '')) : themes.length;
+  if (cour) { const v = 'Thème ' + (k + 1) + ' sur ' + themes.length + ','; if (cour.dataset.edlTheme !== v) cour.dataset.edlTheme = v; }
+  const intro = w.firstElementChild;
+  let f = intro.querySelector(':scope > .edl-frise3');
+  if (!f) { f = document.createElement('div'); f.className = 'edl-frise3'; f.setAttribute('aria-hidden', 'true'); intro.prepend(f); }
+  const html = themes.map((t, n) => '<span class="edl-frise3__pas' + (n < k ? ' fait' : n === k ? ' actif' : '') + '" title="' + t.replace(/"/g, '&quot;') + '"><i></i></span>').join('');
+  if (f.innerHTML !== html) f.innerHTML = html;
+};
 
 let attente = null;
 new MutationObserver(() => { if (attente) return; attente = requestAnimationFrame(() => { attente = null; retoucher(); }); })

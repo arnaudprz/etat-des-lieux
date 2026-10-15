@@ -72,3 +72,8 @@ body { background: #FFFFFF; }
   .pas-fin { padding: 2.5rem 1.25rem; margin: 0 0 1.5rem; border-radius: 1.25rem; }
   .pas-bouton { min-height: 3.75rem; font-size: 1.0625rem; padding-left: 1.375rem; }
 }
+/* Le titre de la liste, sur toute la largeur du bloc, au-dessus de 01 (retour d'entretien, 15 octobre 2026). */
+.pas-intertitre { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 0.875rem; margin: 1rem 0 -1.5rem; }
+.pas-intertitre .leger { font: 400 italic clamp(2.25rem, 5vw, 3.75rem)/1 'Instrument Serif', serif; color: var(--texte); }
+.pas-intertitre .gras { font: 800 clamp(2.5rem, 6vw, 4.5rem)/1 'Bricolage Grotesque', sans-serif; letter-spacing: -.04em; color: var(--texte); }
+.pas-ni { font: 800 0.8em 'Bricolage Grotesque', sans-serif; font-style: normal; letter-spacing: -.01em; color: var(--bv); }
