@@ -6,12 +6,12 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu, ideeActive } from '../contenu.js?v=210';
-import { decoder } from '../lien.js?v=210';
-import { envoyerContact, compteur } from '../api.js?v=210';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=210';
-import { memoriserResultat } from '../session.js?v=210';
-import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=210';
+import { chargerContenu, ideeActive } from '../contenu.js?v=217';
+import { decoder } from '../lien.js?v=217';
+import { envoyerContact, compteur } from '../api.js?v=217';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=217';
+import { memoriserResultat } from '../session.js?v=217';
+import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=217';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -228,6 +228,8 @@ function afficher(lu, contenu, these) {
       tous: () => (G.toutes && G.manque && G.toutes.perf != null && G.manque.perf != null ? 'Là où les trois sont réunis, ' + G.toutes.perf + '\u00a0% atteignent leurs objectifs, contre ' + G.manque.perf + '\u00a0% ailleurs.' : '') },
   ];
   const hote = $('[data-rangees]'); hote.textContent = '';
+  const vue = []; // la même matière, pour la présentation de la maquette (15 octobre 2026)
+  afficher.chiffres = vue;
   LIGNES.forEach((l) => {
     if (l.fleche) { const f = el('div', 'fleche'); f.append(el('span', '', '↓ Ce qui va avec'), el('span', '', '↓ Ce qui va avec')); hote.appendChild(f); return; } // (Arnaud, 15 octobre 2026, audit des wordings)
     // Pour lui aussi, un pourcentage (Arnaud, 13 octobre 2026) : ses réponses sur 3, ramenées à 100.
@@ -294,6 +296,11 @@ function afficher(lu, contenu, these) {
       droite.appendChild(bloc);
     }
     hote.appendChild(rangee(gauche, droite));
+    let dTitre = null, dTexte = null;
+    if (solo) { const l3 = SW.filter((x) => x.role === 'solo' && l.affs.includes(x.n) && x.choisis >= 3).sort((a, b) => b.p - a.p || b.choisis - a.choisis)[0];
+      const rel = l3 && contenu.affirmations[l3.n - 1].relance.solo; const t3 = rel && rel.choix[l3.choix]; if (t3) { dTitre = 'Ce que demandent les autres indépendants'; dTexte = t3; } }
+    else if (mien) { dTitre = lu.role === 'manager' ? 'Ce que demandent les autres managers' : 'Ce que demandent les autres membres d’équipe'; dTexte = mien.voeu; }
+    vue.push({ nom: l.nom, lui: l.lui_p, a: l.a, b: l.b, a_nom: l.a_nom, b_nom: l.b_nom, phrase: l.a != null && l.b != null && l.phrase ? l.phrase(l.a, l.b) : '', attente, miens, dTitre, dTexte, suite: l.affs.includes(14) || l.affs.includes(16) });
   });
   // La thèse, en une phrase sous le schéma de droite.
   const t = G.toutes, mq = G.manque;
@@ -346,6 +353,7 @@ function afficher(lu, contenu, these) {
     envies.forEach((e) => { const c = el('div', 'envie'); const tt = el('div', ''); tt.append(el('p', 'envie__voeu', e.voeu), el('p', 'envie__phrase', e.phrase)); c.append(el('span', 'guillemet', '“'), tt); l.appendChild(c); });
     $('[data-envies]').hidden = false;
   }
+  if (!document.documentElement.classList.contains('mode-pdf')) vueNouvelle({ solo, role: lu.role, D_SUR, vue, t, mq });
 }
 
 function brancherGarder() {
@@ -429,7 +437,7 @@ function brancherRecevoir() {
   // Et pour un manager : sa page « Pour vous / Pour votre équipe » (Arnaud, 15 octobre 2026 : « la même chose pour un manager »).
   const manager = /^#v\d+-g/.test(location.hash);
   const suite = solo ? '/groupe-independants.html?envoye' : manager ? '/groupe-managers.html?envoye' : null;
-  if (suite) { const b = f.querySelector('.recevoir__bouton span'); if (b) b.textContent = 'Recevoir mon état des lieux et découvrir les solutions'; }
+  // « et découvrir les solutions » retiré du bouton (Arnaud, 15 octobre 2026) : la proposition vient après l'envoi, dans la carte.
   // Le prénom passe par l'onglet, jamais par l'adresse.
   const ouvrir = (prenom) => { if (!suite) return; try { sessionStorage.setItem('edl_prenom', prenom); } catch (e) { /* sans stockage : merci sans prénom */ } location.href = suite; };
   f.addEventListener('submit', async (ev) => {
@@ -439,7 +447,36 @@ function brancherRecevoir() {
     if (d.get('accord') !== 'on') { msg.textContent = 'Cochez la case pour que nous puissions vous écrire.'; return; }
     if (String(d.get('site') || '')) return; // un robot
     // Le PDF se prépare après la réponse (Arnaud, 13 octobre 2026 : « on prépare le pdf et vous allez le recevoir dans quelques minutes »).
-    const merci = () => { f.replaceChildren(el('p', 'recevoir__merci', 'Merci ' + prenom + '. Nous préparons votre PDF : vous le recevrez dans votre boîte mail d’ici quelques minutes.')); if (suite) setTimeout(() => ouvrir(prenom), 1200); };
+    // Après l'envoi, la carte se transforme (Arnaud, 15 octobre 2026 : « que l'intérieur de la carte évolue, pour demander s'il
+    // veut voir les solutions qu'on peut lui proposer en fonction de ses chiffres, et renvoyer sur la landing ») : le merci, puis
+    // la proposition, avec ses chiffres en rappel. Plus de redirection automatique : c'est la personne qui choisit.
+    const merci = () => {
+      const bloc = f.closest('[data-recevoir]') || f.parentElement;
+      const fin = el('div', 'recevoir-suite');
+      const gauche = el('div', 'recevoir-suite__merci');
+      gauche.appendChild(el('span', 'etude-cours__sur', 'C’est envoyé'));
+      const h = el('h2'); h.append(el('span', 'leger', 'Merci ' + prenom + ','), ' ', el('span', 'gras', 'votre PDF arrive.')); gauche.appendChild(h);
+      gauche.appendChild(el('p', 'recevoir-suite__texte', 'Vous le recevrez dans votre boîte mail d’ici quelques minutes.'));
+      fin.appendChild(gauche);
+      if (suite) {
+        const c = el('div', 'recevoir-suite__carte');
+        c.appendChild(el('span', 'etude-cours__sur', 'Pour aller plus loin'));
+        const h2 = el('h3'); h2.append(el('span', 'leger', 'Ce que nous pouvons'), ' ', el('span', 'gras', 'vous proposer.')); c.appendChild(h2);
+        c.appendChild(el('p', 'recevoir-suite__texte', 'À partir de vos chiffres, des pistes pensées pour vous, à vivre à plusieurs à la Greatly House.'));
+        const ch = el('div', 'recevoir-suite__chiffres');
+        (afficher.chiffres || []).slice(0, 3).forEach((v) => { const x = el('div'); x.append(el('span', '', v.nom), el('b', '', v.lui == null ? '—' : String(v.lui))); x.lastChild.appendChild(el('small', '', ' /100')); ch.appendChild(x); });
+        if (ch.children.length) c.appendChild(ch);
+        const actions = el('div', 'recevoir-suite__actions');
+        const go = el('button', 'recevoir-suite__cta'); go.type = 'button';
+        go.innerHTML = '<span>Découvrir les solutions</span><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#0C1011" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i>';
+        go.addEventListener('click', () => ouvrir(prenom));
+        const tard = el('button', 'recevoir-suite__tard', 'Plus tard'); tard.type = 'button';
+        tard.addEventListener('click', () => { const x = document.querySelector('.fenetre-mail__fermer'); if (x) x.click(); });
+        actions.append(go, tard); c.appendChild(actions);
+        fin.appendChild(c);
+      }
+      bloc.replaceChildren(fin); bloc.classList.add('recevoir--envoye');
+    };
     if (modeDemo()) { merci(); return; }
     const bouton = f.querySelector('button'); bouton.disabled = true; msg.textContent = 'Nous préparons votre PDF…';
     try {
@@ -485,12 +522,109 @@ function fenetreMail() {
   // plus du tout une fois les chiffres demandés.
   let dernierY = scrollY, descend = true;
   addEventListener('scroll', () => { if (scrollY !== dernierY) descend = scrollY > dernierY; dernierY = scrollY; }, { passive: true });
-  new IntersectionObserver((entrees) => {
+  const surVue = (entrees) => {
     const e = entrees.find((x) => x.isIntersecting); if (!e || ouverte) return;
     if (!descend) return; // on remonte : rien
     if (visible(bloc) || !bloc.querySelector('[data-recevoir-form] input') || $('[data-sans-resultat]:not([hidden])')) return;
     ouvrir();
-  }, { threshold: 0, rootMargin: '0px 0px -30% 0px' }).observe(note);
+  };
+  new IntersectionObserver(surVue, { threshold: 0, rootMargin: '0px 0px -30% 0px' }).observe(note);
+  // En bas de page, « Comment lire » n'atteint jamais le seuil ci-dessus : il déclenche dès qu'il est à moitié à l'écran.
+  fenetreIO = new IntersectionObserver(surVue, { threshold: 0.5 });
+  // Avec la nouvelle présentation, « Comment lire » est replié en bas des thèmes : c'est lui qui déclenche la fenêtre, en arrivant
+  // en bas (Arnaud, 15 octobre 2026 : « quand j'arrive en bas, je veux toujours la pop-up pour le mail »).
+  if ($('.nv-lire')) fenetreIO.observe($('.nv-lire'));
+}
+let fenetreIO = null;
+
+
+// ------------------------------------------------------------- la présentation de la maquette (15 octobre 2026)
+// Dans la lignée de l'accueil et du questionnaire (maquette _maquette-resultat-solo.html, validée par Arnaud, « pour toutes les
+// catégories ») : un premier écran plein (son regard et ses cinq chiffres à gauche, ce que montre l'étude à droite), puis un thème
+// par rangée avec les thèmes en colonne à gauche, « Comment lire » replié. À l'écran seulement : le PDF garde sa mise en page.
+const FLECHE_BAS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>';
+function points10(p, classe) {
+  const z = el('span', classe || 'nv-points'); const n = p == null ? 0 : p / 10;
+  for (let k = 0; k < 10; k++) { const i = el('i', k < Math.floor(n) ? 'on' : (k < n ? 'demi' : '')); z.appendChild(i); }
+  return z;
+}
+function nvRangs(v) {
+  const rs = el('div', 'nv-rangs');
+  [[v.a, v.a_nom, 'nv-rang--avec'], [v.b, v.b_nom, 'nv-rang--sans']].forEach(([p, nom, c]) => {
+    const r = el('div', 'nv-rang ' + c); r.append(el('span', 'nv-rang__nom', nom), points10(p), el('b', '', pc(p))); rs.appendChild(r); });
+  return rs;
+}
+function vueNouvelle({ solo, role, D_SUR, vue, t, mq }) {
+  const racine = $('[data-resultat]'); if (!racine || !vue.length) return;
+  // La note « Comment lire » est gardée avant de refaire la vue : afficher() passe deux fois (sans puis avec les chiffres de l'étude).
+  const note = $('[data-note]');
+  racine.querySelectorAll(':scope > .nv').forEach((x) => x.remove());
+  document.documentElement.classList.add('nv-actif');
+  const CINQ = ['Confiance', 'Soutien', 'Cohésion', 'Engagement', 'Performance'];
+  const ids = ['confiance', 'soutien', 'cohesion', 'engagement', 'performance'];
+  // 1. Le premier écran.
+  const une = el('section', 'nv nv-une'); const cadre = el('div', 'nv-cadre nv-une__grille');
+  const g = el('div', 'nv-une__texte');
+  g.appendChild(el('span', 'nv-sur', 'Votre état des lieux'));
+  const h = el('h1', 'nv-h1'); h.append(el('span', 'leger', solo ? 'Votre activité,' : 'Votre équipe,'));
+  const gr = el('span', 'gras', 'telle que vous la '); gr.appendChild(el('span', 'nv-surligne', 'voyez.')); h.append(' ', gr); g.appendChild(h);
+  const chapo = el('p', 'nv-chapo', 'Vos 16 réponses, thème par thème, à côté de celles des autres personnes qui ont répondu. C’est votre regard, pas une note.'); g.appendChild(chapo);
+  compteur().then((n) => { if (n) chapo.textContent = 'Vos 16 réponses, thème par thème, à côté de celles de ' + n + ' personnes. C’est votre regard, pas une note.'; }).catch(() => {});
+  const cinq = el('div', 'nv-cinq');
+  vue.forEach((v, k) => { const c = el('a', 'nv-cinq__case'); c.href = '#nv-' + ids[k];
+    const val = el('span', 'nv-cinq__val', v.lui == null ? '—' : String(v.lui)); val.appendChild(el('small', '', ' /100'));
+    const tr = el('span', 'nv-cinq__trait'); const i = el('i'); i.style.width = (v.lui || 0) + '%'; tr.appendChild(i);
+    c.append(el('span', 'nv-cinq__nom', CINQ[k] || v.nom), val, tr); cinq.appendChild(c); });
+  g.appendChild(cinq);
+  // Pas de lien « par mail » : la fenêtre s'ouvre d'elle-même en bas de page (Arnaud, 15 octobre 2026).
+  const d = el('aside', 'nv-etude');
+  d.appendChild(el('span', 'nv-sur nv-sur--bv', solo ? 'Ce que montrent les indépendants' : 'Ce que montre l’étude'));
+  d.appendChild(el('p', 'nv-etude__phrase', 'Là où la confiance, le soutien et la cohésion sont réunis,'));
+  if (t && mq && t.engages != null && mq.engages != null) {
+    const gd = el('div', 'nv-etude__grand', pc(t.engages)); gd.appendChild(el('small', '', ' sont engagées')); d.appendChild(gd);
+    d.appendChild(nvRangs({ a: t.engages, b: mq.engages, a_nom: 'Avec les trois réunis', b_nom: 'Avec un ou deux des trois' }));
+    if (t.perf != null && mq.perf != null) d.appendChild(el('p', 'nv-etude__pied', 'Et elles atteignent plus souvent leurs objectifs : ' + pc(t.perf) + ' contre ' + pc(mq.perf) + '.'));
+  } else d.appendChild(el('p', 'nv-etude__pied', solo ? 'Le chiffre des indépendants s’affiche ici dès que 3 d’entre eux au moins sont de chaque côté.' : 'Les chiffres de l’étude s’affichent ici dès qu’ils sont assez nombreux.'));
+  cadre.append(g, d); une.appendChild(cadre);
+  const desc = el('a', 'nv-descendre'); desc.href = '#nv-themes'; desc.innerHTML = '<span class="nv-descendre__fleche">' + FLECHE_BAS + '</span><span>Voir le détail</span>';
+  une.appendChild(desc);
+  // 2. Un thème par rangée, les thèmes en colonne à gauche.
+  const th = el('section', 'nv nv-themes'); th.id = 'nv-themes';
+  const grille = el('div', 'nv-cadre nv-themes__grille');
+  const frise = el('nav', 'nv-frise'); frise.setAttribute('aria-label', 'Les thèmes');
+  const contenu = el('div', 'nv-themes__contenu');
+  const bt = el('h2', 'nv-bloc-titre'); bt.append(el('span', 'leger', 'Ce qui fonde'), ' ', el('span', 'gras', 'votre engagement.')); contenu.appendChild(bt);
+  vue.forEach((v, k) => {
+    const a = el('a', ''); a.href = '#nv-' + ids[k]; a.append(el('i'), document.createTextNode(v.nom)); frise.appendChild(a);
+    if (v.suite && !vue[k - 1].suite) contenu.appendChild(el('p', 'nv-suite', 'Ce qui va avec'));
+    const art = el('article', 'nv-theme'); art.id = 'nv-' + ids[k];
+    const gauche = el('div', 'nv-theme__lui');
+    gauche.append(el('span', 'nv-sur', 'Votre regard'), el('h3', 'nv-theme__nom', v.nom));
+    const sc = el('div', 'nv-score'); sc.append(el('b', '', v.lui == null ? '—' : String(v.lui)), el('span', '', 'sur 100')); gauche.append(sc, points10(v.lui, 'nv-grandes'));
+    if (k === 3) gauche.appendChild(el('p', 'nv-theme__note', 'Il grandit avec la confiance, le soutien et la cohésion.'));
+    if (k === 4) gauche.appendChild(el('p', 'nv-theme__note', 'Elle suit quand les trois sont réunis.'));
+    if (v.miens.length) { const m = el('div', 'nv-demande nv-demande--moi'); m.appendChild(el('span', 'nv-sur', 'Ce que vous demandez')); v.miens.forEach((x) => m.appendChild(el('p', '', '« ' + x + ' »'))); gauche.appendChild(m); }
+    const droite = el('div', 'nv-carte');
+    const tete = el('div', 'nv-carte__tete'); tete.appendChild(el('span', 'nv-sur', D_SUR));
+    if (v.a != null && v.b != null) tete.appendChild(el('span', 'nv-ecart', (v.a - v.b >= 0 ? '+' : '') + (v.a - v.b) + ' points'));
+    droite.appendChild(tete);
+    if (v.phrase) droite.appendChild(el('p', 'nv-carte__phrase', v.phrase));
+    if (v.attente) droite.appendChild(el('p', 'nv-carte__phrase', 'Le chiffre des indépendants s’affiche ici dès que 3 d’entre eux au moins sont de chaque côté.'));
+    else if (v.a != null || v.b != null) droite.appendChild(nvRangs(v));
+    if (v.dTexte) { const m = el('div', 'nv-demande'); m.appendChild(el('span', 'nv-sur', v.dTitre)); m.appendChild(el('p', '', '« ' + v.dTexte + ' »')); droite.appendChild(m); }
+    art.append(gauche, droite); contenu.appendChild(art);
+  });
+  // « Comment lire ces chiffres », replié : la note de la page, déplacée telle quelle.
+  if (note) { const det = el('details', 'nv-lire'); const sum = el('summary');
+    const t2 = el('span'); t2.append(el('span', 'leger', 'Comment lire'), ' ', el('span', 'gras', 'ces chiffres')); sum.append(t2, el('span', 'nv-lire__plus', '+'));
+    det.append(sum, note); contenu.appendChild(det); if (fenetreIO) fenetreIO.observe(det); }
+  grille.append(frise, contenu); th.appendChild(grille);
+  racine.prepend(une, th);
+  const recevoir = $('[data-recevoir]'); if (recevoir) recevoir.id = 'nv-recevoir';
+  // La colonne suit la lecture.
+  const liens = [...frise.querySelectorAll('a')]; const arts = [...contenu.querySelectorAll('.nv-theme')];
+  const suivre = () => { let k = 0; arts.forEach((x, i) => { if (x.getBoundingClientRect().top < innerHeight * 0.45) k = i; }); liens.forEach((x, i) => { x.classList.toggle('actif', i === k); x.classList.toggle('fait', i < k); }); };
+  addEventListener('scroll', suivre, { passive: true }); suivre();
 }
 
 async function demarrer() {

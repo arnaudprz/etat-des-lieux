@@ -5,10 +5,10 @@
  *
  * La visite se pose dans l'agenda d'Arnaud du tableau de bord (créneaux libres, notification) et la personne reçoit un mail.
  */
-import { resultatMemorise } from '../session.js?v=210';
-import { decoder } from '../lien.js?v=210';
-import { chargerContenu } from '../contenu.js?v=210';
-import { SUPABASE_URL, SUPABASE_CLE } from '../config.js?v=210';
+import { resultatMemorise } from '../session.js?v=217';
+import { decoder } from '../lien.js?v=217';
+import { chargerContenu } from '../contenu.js?v=217';
+import { SUPABASE_URL, SUPABASE_CLE } from '../config.js?v=217';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
