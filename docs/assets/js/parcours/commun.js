@@ -3,10 +3,10 @@
  * Pas de framework : des fonctions courtes autour du DOM.
  */
 
-import { typo } from '../typo.js?v=73';
-import { modeDemo } from '../config.js?v=73';
-import { envoyerEvenement } from '../api.js?v=73';
-import { idVisite } from '../session.js?v=73';
+import { typo } from '../typo.js?v=74';
+import { modeDemo } from '../config.js?v=74';
+import { envoyerEvenement } from '../api.js?v=74';
+import { idVisite } from '../session.js?v=74';
 
 /** Raccourcis de sélection. */
 export const $ = (sel, racine = document) => racine.querySelector(sel);

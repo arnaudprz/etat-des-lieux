@@ -142,10 +142,10 @@ h2 .leger{font-size:30pt} h2 .gras{font-size:30pt}
 .dos__phrase{margin-top:14mm;line-height:1}
 .dos__phrase .leger{display:block;font-size:34pt;color:var(--teinte)}
 .dos__phrase .gras{display:block;font-size:46pt}
-.dos__suite{margin-top:6mm;font-family:'Bricolage Grotesque',sans-serif;font-weight:300;font-size:16pt;color:var(--ciel)}
+.dos__suite{margin-top:6mm;font-family:'Bricolage Grotesque',sans-serif;font-weight:300;font-size:16pt;color:var(--ciel);max-width:150mm;line-height:1.35;text-wrap:balance}
 .dos__bas{position:absolute;left:24mm;right:24mm;bottom:22mm;display:flex;flex-direction:column;gap:2mm;padding-top:6mm;border-top:.3mm solid rgba(255,255,255,.3)}
 .marque--claire{color:#FFFFFF}.marque--claire svg{color:#FFFFFF}
-.dos__site{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:28pt;letter-spacing:-.03em;color:var(--vif)}
+.dos__site{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:28pt;letter-spacing:-.03em;color:var(--vif);text-decoration:none}
 .dos__adresse{font-size:8pt;color:var(--teinte)}
 
 .sans-resultat{padding:20mm;font-size:14pt}

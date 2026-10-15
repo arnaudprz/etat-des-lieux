@@ -10,12 +10,12 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu } from '../contenu.js?v=73';
-import { relancesAEnvoyer } from '../calcul.js?v=73';
-import { lienResultat } from '../lien.js?v=73';
-import { envoyerReponse, compteur } from '../api.js?v=73';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=73';
-import { evenement } from './commun.js?v=73';
+import { chargerContenu } from '../contenu.js?v=74';
+import { relancesAEnvoyer } from '../calcul.js?v=74';
+import { lienResultat } from '../lien.js?v=74';
+import { envoyerReponse, compteur } from '../api.js?v=74';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=74';
+import { evenement } from './commun.js?v=74';
 
 const page = document.documentElement.dataset.edl || '';
 

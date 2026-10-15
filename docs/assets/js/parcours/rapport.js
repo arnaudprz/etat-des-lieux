@@ -6,11 +6,11 @@
  * page met data-pret sur <body> : c'est le signal qu'attend Browserless avant d'imprimer. Tout le texte en textContent.
  * Paramètres : ?prenom=… (pour la couverture), ?demo=1 (chiffres de la maquette).
  */
-import { chargerContenu } from '../contenu.js?v=73';
-import { decoder } from '../lien.js?v=73';
-import { compteur } from '../api.js?v=73';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=73';
-import { chiffresPourSolo } from '../seuil-solo.js?v=73';
+import { chargerContenu } from '../contenu.js?v=74';
+import { decoder } from '../lien.js?v=74';
+import { compteur } from '../api.js?v=74';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=74';
+import { chiffresPourSolo } from '../seuil-solo.js?v=74';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -23,20 +23,20 @@ const MOTS = [
   { cle: 'soutien', nom: 'Le soutien', aff: [10, 13], avec: 'Avec du soutien', sans: 'Sans assez de soutien', la: 'Là où on se sent soutenu, ', manque: 'Là où il manque, ' },
   { cle: 'cohesion', nom: 'La cohésion', aff: [1, 2, 5, 6], avec: 'Avec la cohésion', sans: 'Sans assez de cohésion', la: 'Là où l’équipe est soudée, ', manque: 'Là où elle manque, ' },
 ];
-// Les mots de chaque rôle : couverture, pages, et qui « demande » quoi (un manager lit d'abord ce que demandent les équipes).
+// Les mots de chaque rôle : couverture, pages, et qui « demande » quoi : chacun ne lit que son propre profil (15 octobre 2026).
 const MOTS_ROLE = {
   manager: { leger: 'Votre équipe,', role: 'En encadrant une équipe', regardSur: 'L’équipe que vous encadrez', regardLeger: 'Telle que vous la voyez,', regardGras: 'votre équipe.',
     chapo: 'Votre regard de manager sur votre équipe, thème par thème, ramené à 100. Ce n’est pas une note : c’est ce que vous voyez.',
     themesSur: 'Votre équipe, et toute l’étude', ideeTetiere: 'Ce que montre l’étude', suite: ['des personnes', 'sont engagées.'],
     envies: 'Ce que vous aimeriez voir grandir dans votre équipe,', regard: 'C’est votre regard de manager, pas une note.',
     compte: 'Ce sont les réponses des managers et des équipes qui ont répondu, sans les indépendants. Un groupe de moins de 3 personnes n’affiche pas de chiffre. Ces chiffres montrent un lien entre les thèmes et l’engagement : à eux seuls, ils ne prouvent pas une cause.',
-    demandesTitre: 'Ce que demandent les autres', demandes: [['membre', 'Les équipes'], ['manager', 'Les autres managers']] },
+    demandesTitre: 'Ce que demandent les autres managers', demandes: [['manager', null]] },
   membre: { leger: 'Votre équipe,', role: 'Au sein d’une équipe', regardSur: 'Votre équipe', regardLeger: 'Telle que vous la voyez,', regardGras: 'votre équipe.',
     chapo: 'Votre regard sur votre équipe, thème par thème, ramené à 100. Ce n’est pas une note : c’est ce que vous vivez.',
     themesSur: 'Votre équipe, et toute l’étude', ideeTetiere: 'Ce que montre l’étude', suite: ['des personnes', 'sont engagées.'],
     envies: 'Ce que vous aimeriez voir grandir dans votre équipe,', regard: 'C’est votre regard sur votre équipe, pas une note.',
     compte: 'Ce sont les réponses des équipes et des managers qui ont répondu, sans les indépendants, et jamais les vôtres seules. Un groupe de moins de 3 personnes n’affiche pas de chiffre. Ces chiffres montrent un lien entre les thèmes et l’engagement : à eux seuls, ils ne prouvent pas une cause.',
-    demandesTitre: 'Ce que demandent les autres', demandes: [['membre', 'Les autres équipes'], ['manager', 'Les managers']] },
+    demandesTitre: 'Ce que demandent les autres membres d’équipe', demandes: [['membre', null]] },
   solo: { leger: 'Votre activité,', role: 'En solo ou en profession libérale', regardSur: 'Votre regard', regardLeger: 'Votre activité,', regardGras: 'telle que vous la voyez.',
     chapo: 'Votre regard sur votre activité et vos partenaires, thème par thème, ramené à 100. Ce n’est pas une note : c’est ce que vous vivez.',
     themesSur: 'Vous, et les autres indépendants', ideeTetiere: 'Ce que montrent les indépendants', suite: ['des indépendants', 'sont engagés.'],

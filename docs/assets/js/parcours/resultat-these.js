@@ -6,12 +6,12 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu } from '../contenu.js?v=73';
-import { decoder } from '../lien.js?v=73';
-import { envoyerContact, compteur } from '../api.js?v=73';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=73';
-import { memoriserResultat } from '../session.js?v=73';
-import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=73';
+import { chargerContenu } from '../contenu.js?v=74';
+import { decoder } from '../lien.js?v=74';
+import { envoyerContact, compteur } from '../api.js?v=74';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=74';
+import { memoriserResultat } from '../session.js?v=74';
+import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=74';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -272,11 +272,13 @@ function afficher(lu, contenu, these) {
       if (t3) { const bloc = el('div', 'demandes'); bloc.appendChild(el('span', 'demandes__titre', 'Ce que demandent les autres indépendants'));
         bloc.appendChild(el('p', 'demande', '« ' + t3 + ' »')); droite.appendChild(bloc); }
     }
-    const dm = solo ? null : demande('manager'), de = solo ? null : demande('membre'), ds = null;
-    if (dm || de || ds) {
-      const bloc = el('div', 'demandes'); bloc.appendChild(el('span', 'demandes__titre', 'Ce qu’ils demandent'));
-      [[dm, 'Les managers'], [de, 'Les équipes'], [ds, 'Les indépendants']].forEach(([x, qui]) => { if (!x) return; const ln = el('p', 'demande');
-        ln.append(el('strong', '', qui + ' : '), el('span', '', '« ' + x.voeu + ' »')); bloc.appendChild(ln); }); // sans chiffre (Arnaud)
+    // Chacun ne voit que ce que demandent les personnes de son profil (Arnaud, 15 octobre 2026 : « si équipe, seulement les
+    // messages des équipes ; idem pour toutes les catégories ») : un membre, les membres ; un manager, les managers.
+    const mien = solo ? null : demande(lu.role);
+    if (mien) {
+      const bloc = el('div', 'demandes');
+      bloc.appendChild(el('span', 'demandes__titre', lu.role === 'manager' ? 'Ce que demandent les autres managers' : 'Ce que demandent les autres membres d’équipe'));
+      bloc.appendChild(el('p', 'demande', '« ' + mien.voeu + ' »')); // sans chiffre (Arnaud)
       droite.appendChild(bloc);
     }
     hote.appendChild(rangee(gauche, droite));
