@@ -12,8 +12,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,800&family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap">
-<link rel="stylesheet" href="assets/css/these.css?v=103">
-<link rel="stylesheet" href="assets/css/groupe.css?v=103">
+<link rel="stylesheet" href="assets/css/these.css?v=135">
+<link rel="stylesheet" href="assets/css/groupe.css?v=135">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=2"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 </head>
 <body>
@@ -143,32 +143,31 @@
     </div>
   </section>
 
-  <!-- 6. La Greatly House : le texte au-dessus, puis une mosaïque de trois photos sans filtre (Arnaud, 15 octobre 2026 : « les
-       photos sont pas dingues dans la mise en page ») : la façade, le grand salon, le parc vu de l'étage. -->
-  <section class="gr-maison">
+  <!-- La maison rattachée au parcours (Arnaud, 15 octobre 2026 : « fais pareil pour le Pour vous, et faire le lien vers la maison ») :
+       chaque photo dit quel moment de l'année s'y vit. Le déjeuner se prend sur place les jours d’atelier (Arnaud, 15 octobre 2026 : « le mardi, c’est pas le déjeuner, c’est quand on a un atelier »). -->
+  <section class="gr-maison gr-maison--programme">
     <div class="gr-maison__tete">
       <div>
-        <span class="surtitre">La Greatly House</span>
-        <h2><span class="leger">Une maison au vert,</span> <span class="gras">à 10 min de Lille.</span></h2>
+        <span class="surtitre">Où ça se passe</span>
+        <h2><span class="leger">Votre année se vit</span> <span class="gras">à la Greatly House.</span></h2>
       </div>
-      <p>Un lieu ressourçant, propice au recul et aux échanges. Une maison, un parc, plusieurs salons. En membre, elle vous est ouverte chaque après-midi, du lundi au vendredi : pour travailler au calme, respirer, ou changer de cadre.</p>
     </div>
-    <div class="gr-mosaique">
-      <figure class="gr-mosaique__grande"><img src="images/facade-couleur.jpg" alt="La façade de la Greatly House, sous un ciel bleu" loading="lazy"><figcaption>La maison</figcaption></figure>
-      <figure><img src="images/maison-grand-salon.jpg" alt="Le grand salon, ouvert sur le parc" loading="lazy"><figcaption>Le grand salon</figcaption></figure>
-      <figure><img src="images/maison-parc-etage.jpg" alt="Le parc vu de l’étage, les champs au loin" loading="lazy"><figcaption>Le parc</figcaption></figure>
+    <div class="gr-mosaique gr-mosaique--quatre">
+      <figure class="gr-mosaique__grande"><img src="images/facade-couleur.jpg" alt="La façade de la Greatly House, sous un ciel bleu" loading="lazy"><figcaption>Vos après-midis · ouverte aux membres</figcaption></figure>
+      <figure class="gr-mosaique__large"><img src="images/maison-grand-salon.jpg" alt="Le grand salon, ouvert sur le parc" loading="lazy"><figcaption>Les ateliers du mois · le grand salon</figcaption></figure>
+      <figure><img src="images/maison-parc-etage.jpg" alt="Le parc vu de l’étage" loading="lazy"><figcaption>Le temps ensemble · le parc</figcaption></figure>
+      <figure><img src="images/maison-dejeuner.jpg" alt="Une salade de saison aux fleurs, servie à la grande table" loading="lazy"><figcaption>Les jours d’atelier · déjeuner sur place</figcaption></figure>
     </div>
-  </section>
-
-  <!-- En pratique : les faits, plus en haut sous ses chiffres (Arnaud, 15 octobre 2026 : « bloc sur bloc »). -->
-  <section class="gr-section gr-pratique">
-    <span class="surtitre">En pratique</span>
-    <dl class="gr-faits">
-      <div><dt>Le groupe</dt><dd>Dix personnes aux parcours différents, fermé une fois constitué</dd></div>
-      <div><dt>Le rythme</dt><dd>Une activité par semaine, un atelier par mois</dd></div>
-      <div><dt>Quand</dt><dd>Dès janvier 2027, en semaine, en journée</dd></div>
-      <div><dt>Où</dt><dd>La Greatly House, à 10 min de Lille</dd></div>
-    </dl>
+    <!-- En pratique, à la suite de la maison (Arnaud, 15 octobre 2026 : « pas de lien entre la Greatly House et En pratique »). -->
+    <div class="gr-maison__pratique">
+      <span class="surtitre">En pratique</span>
+      <dl class="gr-faits">
+        <div><dt>Le groupe</dt><dd>Dix personnes aux parcours différents, fermé une fois constitué</dd></div>
+        <div><dt>Le rythme</dt><dd>Une activité par semaine, un atelier par mois</dd></div>
+        <div><dt>Quand</dt><dd>Dès janvier 2027, en semaine, en journée</dd></div>
+        <div><dt>Où</dt><dd>La Greatly House, à 10 min de Lille</dd></div>
+      </dl>
+    </div>
   </section>
 
   <!-- 7. Les règles, puis comment ça se passe. -->
@@ -247,6 +246,6 @@
     <p data-fin-texte>Jeudi 15 octobre à 14 h, à la Greatly House. Vous recevez une confirmation par e-mail. À très vite.</p>
   </div>
 </dialog>
-<script type="module" src="assets/js/parcours/groupe.js?v=103"></script>
+<script type="module" src="assets/js/parcours/groupe.js?v=135"></script>
 </body>
 </html>

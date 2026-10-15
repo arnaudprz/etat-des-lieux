@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pour votre équipe · Greatly</title>
+<meta name="description" content="Deux jours à la Greatly House pour que votre équipe voie ce qu’elle a déjà : la confiance, le soutien, la cohésion. L’engagement suit.">
+<!-- La page « Pour votre équipe » d'un manager (15 octobre 2026) : les deux jours à la Greatly House, autour du pourquoi. -->
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,800&family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="assets/css/these.css?v=135">
+<link rel="stylesheet" href="assets/css/groupe.css?v=135">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=2"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+</head>
+<body>
+<header class="haut">
+  <a class="logo" href="/" aria-label="Greatly, retour à l’accueil">GREATLY
+    <svg viewBox="0 0 24 24" aria-hidden="true"><g stroke="#23545B" stroke-width="1.4" stroke-linecap="round"><line x1="12" y1="4" x2="12" y2="1.4"/><line x1="17.66" y1="6.34" x2="19.5" y2="4.5"/><line x1="20" y1="12" x2="22.6" y2="12"/><line x1="17.66" y1="17.66" x2="19.5" y2="19.5"/><line x1="12" y1="20" x2="12" y2="22.6"/><line x1="6.34" y1="17.66" x2="4.5" y2="19.5"/><line x1="4" y1="12" x2="1.4" y2="12"/><line x1="6.34" y1="6.34" x2="4.5" y2="4.5"/></g><circle cx="12" cy="12" r="5.4" fill="#B4F25C"/></svg>
+  </a>
+  <button class="gr-bouton gr-bouton--petit" type="button" data-rdv>Visiter la maison<span class="gr-rond" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+</header>
+
+<main class="gr gr--large">
+  <!-- La page « Pour votre équipe » d'un manager (Arnaud, 15 octobre 2026 : « quand il choisit pour son équipe, une page qui parle de
+       nos séminaires de deux jours ; les pages de séminaires doivent être autour du pourquoi cela est utile »). Textes tirés de
+       la page « Immersion d'équipe » du site et de « Greatly, ce n'est pas… ». Même DA que la page groupe, même visite. -->
+  <section class="gr-tete">
+    <div class="gr-tete__texte">
+      <p class="gr-merci" data-merci hidden><span aria-hidden="true">✓</span> <span data-merci-texte>Votre état des lieux arrive dans votre boîte mail.</span></p>
+      <span class="surtitre">La suite de votre état des lieux</span>
+      <h1><span class="leger">Les bonnes conditions</span> <span class="gras">pour travailler <span class="gr-surligne">ensemble.</span></span></h1>
+      <p class="gr-chapo">Deux jours à la Greatly House pour donner à votre équipe les clés de la confiance, du soutien et de la cohésion, et créer les conditions pour que chacun s’engage davantage.</p>
+      <!-- Le choix en interrupteur (Arnaud, 15 octobre 2026 : « les mots à gauche et à droite, et un bouton poussoir dans notre DA
+           qui les fait aller de gauche à droite ») : le rond vert vif glisse sur la piste bleu-vert, puis la page change. -->
+      <div class="gr-bascule gr-bascule--equipe" role="group" aria-label="Pour qui">
+        <a class="gr-bascule__mot" href="/groupe-managers.html"><span>Pour vous</span><small>Un an dans un groupe</small></a>
+        <a class="gr-bascule__piste" href="/groupe-managers.html" aria-label="Voir Pour vous"><span class="gr-bascule__bouton" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+        <a class="gr-bascule__mot" href="/seminaire-equipe.html" aria-current="page"><span>Pour votre équipe</span><small>Deux jours à la Greatly House</small></a>
+      </div>
+    </div>
+    <div class="gr-carte" aria-label="Deux jours, votre équipe jusqu’à dix personnes">
+      <span class="surtitre">Votre immersion</span>
+      <span class="gr-carte__chiffre">2</span>
+      <span class="gr-carte__texte">jours à la Greatly House, privatisée pour votre équipe.</span>
+      <span class="gr-carte__points" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+      <span class="gr-carte__legende"><i></i>Votre équipe, jusqu’à dix personnes</span>
+    </div>
+  </section>
+
+  <!-- Ses chiffres d'équipe, lus dans son navigateur (le dernier résultat gardé par la page de résultat), jamais envoyés. -->
+  <aside class="gr-sien" data-sien hidden>
+    <p class="gr-sien__tete"><span class="surtitre">Votre équipe, telle que vous la voyez</span> <span>C’est de là que partent les deux jours.</span></p>
+    <div class="gr-sien__themes" data-sien-lignes></div>
+  </aside>
+
+  <p class="gr-pont"><span aria-hidden="true"></span>Ce que les deux jours font grandir</p>
+
+  <!-- Les trois clés reprennent « se faire confiance, se soutenir, avancer ensemble » de « Greatly, ce n'est pas… » (Arnaud :
+       « la confiance, c'est pas forcément oser se dire les choses »). Le message de la page (Arnaud, 15 octobre 2026 : « les équipes ont besoin des bonnes conditions pour vivre et travailler ensemble ;
+       nous donnons les clés pour renforcer la confiance, le soutien, la cohésion, et un sentiment de cohésion qui génère la
+       performance »). Le pourquoi, en approche relationnelle (Arnaud, 15 octobre 2026 : « on donne les clés pour que l'équipe trouve les réponses,
+       on n'est pas un cabinet RH, plus dans le pourquoi et les approches relationnelles ») ; l'engagement en conséquence. -->
+  <section class="gr-section gr-section--cote">
+    <div class="gr-section__tete">
+      <h2><span class="leger">Les clés pour renforcer</span> <span class="gras">ce qui vous relie.</span></h2>
+      <p class="gr-section__texte">Nous créons les conditions, et nous donnons les clés. Les réponses, c’est l’équipe qui les trouve.</p>
+    </div>
+    <ol class="gr-chaine">
+      <li><span class="gr-chaine__temps">La confiance</span><h3>Se faire confiance.</h3><p>Chacun peut être lui-même, dire ce qu’il pense, parler d’une erreur.</p></li>
+      <li><span class="gr-chaine__temps">Le soutien</span><h3>Se soutenir.</h3><p>On voit ce que chacun apporte, et on sait sur qui compter.</p></li>
+      <li><span class="gr-chaine__temps">La cohésion</span><h3>Avancer ensemble.</h3><p>Un même cap, le travail de chacun reconnu, une réussite commune.</p></li>
+    </ol>
+    <p class="gr-lecon"><strong>Et la performance ?</strong> Elle naît de ce sentiment de cohésion.</p>
+  </section>
+
+  <p class="gr-pont"><span aria-hidden="true"></span>Comment : deux jours, au fil des moments</p>
+
+  <!-- Une journée en frise (Arnaud, 15 octobre 2026 : « pas super bien structuré en ergonomie, beaucoup de texte ») : remplace « Ce que
+       l'immersion apporte », « Les deux jours » et « Ce qui se passe ». Une ligne de points, un moment par point, une phrase chacun. -->
+  <section class="gr-section" id="annee">
+    <div class="gr-section__tete">
+      <h2><span class="leger">Deux jours,</span> <span class="gras">au fil des moments.</span></h2>
+      <p class="gr-section__texte">Ce déroulé est pensé pour donner à votre équipe les clés de la confiance, du soutien et de la cohésion, et créer les conditions pour que chacun s’engage davantage. Le premier jour ouvre, le second ancre, et une facilitatrice tient le fil.</p>
+    </div>
+    <!-- Deux frises, une par jour (Arnaud, 15 octobre 2026 : « le deuxième jour, en définissant les ateliers en fonction des objectifs » ;
+         « je veux voir le pourquoi et pas le comment ») : chaque moment dit pourquoi ; chaque atelier apporte des clés, l'équipe trouve ses réponses (Arnaud : « pas une démarche
+         académique »). -->
+    <!-- Les deux jours côte à côte (Arnaud, 15 octobre 2026 : « montre celle que tu trouves la plus adaptée à notre outil ; plutôt la
+         question du thème et de l'équipe sur les cards ») : les ateliers en cartes, avec la question du thème et « l'équipe y gagne »,
+         depuis la page « Immersion d'équipe » du site ; « Les clés » plutôt que « L'équipe y gagne », relu avec « Greatly, ce n'est pas… »
+         (on part de ce qui va déjà bien, l'équipe trouve ses réponses) ; pas un constat, une co-construction des besoins de chacun, puis du collectif, en positif (Arnaud : « pas un règlement de comptes »). Le déroulé ne s'ajuste pas : c'est celui qui mène aux objectifs du haut de page (Arnaud, 15 octobre 2026). -->
+    <div class="gr-jj">
+      <div class="gr-jj__jour"><p class="gr-jj__titre"><span>Jour 1</span>Se poser</p><ol>
+        <li class="gr-jj__ligne"><span class="gr-jj__quand">9 h 30</span><b>Accueil et activité douce</b></li>
+        <li class="gr-jj__atelier"><span class="gr-jj__quand">Le matin · atelier</span><span class="gr-jj__theme">La confiance</span><p class="gr-jj__question">« De quoi avez-vous besoin pour vous engager pleinement ? »</p><p class="gr-jj__gain"><strong>Les clés :</strong> chacun partage ce qui l’aide à s’engager ; ensemble, l’équipe construit ce dont le collectif a besoin pour se faire confiance.</p></li>
+        <li class="gr-jj__ligne"><span class="gr-jj__quand">Midi</span><b>Le déjeuner, ensemble</b></li>
+        <li class="gr-jj__atelier"><span class="gr-jj__quand">L’après-midi · atelier</span><span class="gr-jj__theme">Les relations et le parler vrai</span><p class="gr-jj__question">« Comment faire du dialogue un vrai levier de confiance ? »</p><p class="gr-jj__gain"><strong>Les clés :</strong> chacun partage ce qui l’aide à bien échanger ; ensemble, l’équipe construit sa façon de se parler.</p></li>
+        <li class="gr-jj__ligne"><span class="gr-jj__quand">17 h 30</span><b>Entre nous</b></li>
+      </ol></div>
+      <div class="gr-jj__fleche" aria-hidden="true"><span>→</span><small>Le jour 2 prolonge ce que le jour 1 a ouvert</small></div>
+      <div class="gr-jj__jour"><p class="gr-jj__titre"><span>Jour 2</span>Se relier</p><ol>
+        <li class="gr-jj__ligne"><span class="gr-jj__quand">9 h 30</span><b>Activité physique dynamique</b></li>
+        <li class="gr-jj__atelier"><span class="gr-jj__quand">Le matin · atelier</span><span class="gr-jj__theme">Le collectif</span><p class="gr-jj__question">« Comment faire du collectif votre meilleur levier de croissance ? »</p><p class="gr-jj__gain"><strong>Les clés :</strong> chacun partage ce qu’il apporte au groupe ; ensemble, l’équipe construit les appuis dont le collectif a besoin.</p></li>
+        <li class="gr-jj__ligne"><span class="gr-jj__quand">Midi</span><b>Le déjeuner, ensemble</b></li>
+        <li class="gr-jj__atelier"><span class="gr-jj__quand">L’après-midi · atelier</span><span class="gr-jj__theme">L’énergie</span><p class="gr-jj__question">« Qu’est-ce qui nourrit votre énergie, et comment la cultiver dans la durée ? »</p><p class="gr-jj__gain"><strong>Les clés :</strong> chacun partage ce qui le recharge ; ensemble, l’équipe construit le rythme dont le collectif a besoin.</p></li>
+        <li class="gr-jj__ligne gr-jj__fin"><span class="gr-jj__quand">17 h 30</span><b>La clôture</b></li>
+      </ol></div>
+    </div>
+  </section>
+
+  <!-- 6. La Greatly House : le texte au-dessus, puis une mosaïque de trois photos sans filtre (Arnaud, 15 octobre 2026 : « les
+       photos sont pas dingues dans la mise en page ») : la façade, le grand salon, le parc vu de l'étage. -->
+  <p class="gr-pont"><span aria-hidden="true"></span>Où ils se vivent</p>
+
+  <!-- La maison rattachée au programme (Arnaud, 15 octobre 2026 : « du mal à faire le lien graphique entre le programme et la maison,
+       on dirait un bloc posé en dessous ») : chaque photo dit quel moment des deux jours s'y vit. -->
+  <section class="gr-maison gr-maison--programme">
+    <div class="gr-maison__tete">
+      <div>
+        <h2><span class="leger">Les deux jours se vivent</span> <span class="gras">à la Greatly House.</span></h2>
+      </div>
+    </div>
+    <div class="gr-mosaique gr-mosaique--quatre">
+      <figure class="gr-mosaique__grande"><img src="images/facade-couleur.jpg" alt="La façade de la Greatly House, sous un ciel bleu" loading="lazy"><figcaption>L’accueil · la maison</figcaption></figure>
+      <figure class="gr-mosaique__large"><img src="images/maison-grand-salon.jpg" alt="Le grand salon, ouvert sur le parc" loading="lazy"><figcaption>Les ateliers · le grand salon</figcaption></figure>
+      <figure><img src="images/maison-dejeuner.jpg" alt="Une salade de saison aux fleurs, servie à la grande table" loading="lazy"><figcaption>Le déjeuner · des chefs locaux</figcaption></figure>
+      <figure><img src="images/maison-parc-etage.jpg" alt="Le parc vu de l’étage" loading="lazy"><figcaption>L’activité physique · le parc</figcaption></figure>
+    </div>
+    <!-- En pratique, à la suite de la maison (Arnaud, 15 octobre 2026 : « pas de lien entre la Greatly House et En pratique »). -->
+    <div class="gr-maison__pratique">
+      <span class="surtitre">En pratique</span>
+      <dl class="gr-faits">
+        <div><dt>Qui</dt><dd>Votre équipe, jusqu’à dix personnes</dd></div>
+        <div><dt>Combien de temps</dt><dd>Un ou deux jours, de 9 h 30 à 17 h 30, déjeuner compris</dd></div>
+        <div><dt>Où</dt><dd>La Greatly House, privatisée, à 10 min de Lille</dd></div>
+        <div><dt>Le déroulé</dt><dd>Pensé pour la confiance, le soutien et la cohésion</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <p class="gr-pont"><span aria-hidden="true"></span>Comment venir</p>
+
+  <section class="gr-deux">
+    <div>
+      <span class="surtitre">Et après</span>
+      <h2><span class="leger">Deux jours pour poser,</span> <span class="gras">un an pour faire vivre.</span></h2>
+      <p class="gr-deux__texte">L’immersion d’équipe annuelle, dès janvier 2027, fait vivre dans la durée ce que les deux jours ont posé.</p>
+    </div>
+    <div>
+      <span class="surtitre">Comment ça se passe</span>
+      <h2><span class="leger">Trois étapes,</span> <span class="gras">et vous venez.</span></h2>
+      <ol class="gr-etapes">
+        <li><span class="gr-etapes__points" aria-hidden="true"><i></i></span><strong>Vous visitez la maison</strong>1 h 30 autour d’un café, pour parler de votre équipe, de ce que vous voulez pour elle, et des prochaines dates.</li>
+        <li><span class="gr-etapes__points" aria-hidden="true"><i></i><i></i></span><strong>Vous recevez le programme</strong>Le déroulé des deux jours, envoyé à votre adresse.</li>
+        <li><span class="gr-etapes__points" aria-hidden="true"><i></i><i></i><i class="vif"></i></span><strong>Vous venez avec votre équipe</strong>Un jour ou deux, à la Greatly House.</li>
+      </ol>
+      <p class="gr-tarif">Le tarif vous est donné pendant la visite.</p>
+    </div>
+  </section>
+
+  <section class="gr-fin">
+    <span class="gr-fin__points" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="vous"></i></span>
+    <p class="gr-fin__titre"><span class="leger">Venez visiter</span> <span class="gras">la <span class="gr-surligne">maison.</span></span></p>
+    <p class="gr-fin__texte">1 h 30 autour d’un café, à la Greatly House : pour découvrir le lieu, parler de votre équipe et des deux jours que nous pouvons construire ensemble. Sans engagement.</p>
+    <button class="gr-bouton gr-bouton--creme" type="button" data-rdv>Visiter la maison<span class="gr-rond" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+  </section>
+</main>
+
+<footer class="pas-pied gr-pied"><span>GREATLY</span><span>Greatly éclaire celles et ceux qui, ensemble, font rayonner leur entreprise.</span><a href="/etat-des-lieux/confidentialite/">Confidentialité</a></footer>
+
+<!-- La visite, en deux étapes comme la page « Prendre rendez-vous » du site : le créneau, puis les coordonnées. Toujours à la
+     Greatly House, jamais au téléphone ni en visio (Arnaud, 15 octobre 2026). Les créneaux viennent de l'agenda du tableau de bord ; la visite s'y pose, et un mail part par Brevo. Avant :
+     les créneaux sont fictifs et rien ne part (à brancher sur l'agenda Greatly.club). -->
+<dialog class="rdv" aria-label="Visiter la Greatly House" data-rdv-fenetre data-sujet="seminaire">
+  <button class="rdv__fermer" type="button" aria-label="Fermer" data-rdv-fermer>×</button>
+  <div class="rdv__vue" data-vue="1">
+    <span class="surtitre">Visiter la maison · Étape 1 sur 2</span>
+    <h2><span class="leger">1 h 30 autour d’un café,</span> <span class="gras">pour parler de votre équipe.</span></h2>
+    <p class="rdv__adresse">À la Greatly House, 10 rue de Lambersart, 59237 Verlinghem. À 10 min de Lille, au vert.</p>
+    <div class="rdv__semaine"><button type="button" aria-label="Semaine précédente" data-semaine="-1">←</button><p data-semaine-titre>Semaine du …</p><button type="button" aria-label="Semaine suivante" data-semaine="1">→</button></div>
+    <div class="rdv__jours" data-jours></div>
+    <p class="rdv__message" data-rdv-message1 role="status">Choisissez un créneau.</p>
+    <button class="gr-bouton" type="button" data-continuer>Continuer<span class="gr-rond" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+  </div>
+  <form class="rdv__vue" data-vue="2" hidden novalidate>
+    <span class="surtitre">Votre visite · Étape 2 sur 2</span>
+    <h2><span class="leger" data-recap-jour>Jeudi 15 octobre</span> <span class="gras" data-recap-heure>à 14 h, à la Greatly House.</span></h2>
+    <p class="rdv__adresse" data-recap-adresse>10 rue de Lambersart, 59237 Verlinghem · À 10 min de Lille, au vert.</p>
+    <div class="rdv__champs">
+      <label>Prénom et nom<input name="nom" autocomplete="name" required></label>
+      <label>Votre activité<input name="activite" autocomplete="organization"></label>
+      <label>E-mail<input name="email" type="email" autocomplete="email" required></label>
+      <label>Téléphone<input name="tel" type="tel" autocomplete="tel"></label>
+    </div>
+    <div class="piege" aria-hidden="true"><label>Site<input name="site" type="text" tabindex="-1" autocomplete="off"></label></div>
+    <p class="rdv__message" data-rdv-message2 role="status">1 h 30, sans engagement.</p>
+    <div class="rdv__bas">
+      <button class="gr-lien" type="button" data-retour>← Changer de créneau</button>
+      <button class="gr-bouton" type="submit">Confirmer la visite<span class="gr-rond" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+    </div>
+  </form>
+  <div class="rdv__vue rdv__vue--fin" data-vue="3" hidden>
+    <span class="surtitre surtitre--clair">C’est noté</span>
+    <h2><span class="leger">Votre visite</span> <span class="gras">est posée.</span></h2>
+    <p data-fin-texte>Jeudi 15 octobre à 14 h, à la Greatly House. Vous recevez une confirmation par e-mail. À très vite.</p>
+  </div>
+</dialog>
+<script type="module" src="assets/js/parcours/groupe.js?v=135"></script>
+</body>
+</html>

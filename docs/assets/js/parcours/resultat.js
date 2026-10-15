@@ -6,19 +6,19 @@
  * envoyé. Aucun chiffre n'apparaît : ni note, ni pourcentage, ni moyenne.
  */
 
-import { chargerContenu } from '../contenu.js?v=103';
-import { typo } from '../typo.js?v=103';
-import { calculer } from '../calcul.js?v=103';
-import { decoder } from '../lien.js?v=103';
-import { medaillon, icone, chemin } from '../illustration-niveau.js?v=103';
-import { parDimension, pourLesResultats, auMoinsUneIdee } from '../envies.js?v=103';
-import { envoyerContact, agregatsPublics } from '../api.js?v=103';
-import { lire as lireSession, ecrire as ecrireSession, memoriserResultat, profilMemorise } from '../session.js?v=103';
-import { phrases as phrasesComparaison, comparaisonActive } from '../comparaison.js?v=103';
+import { chargerContenu } from '../contenu.js?v=135';
+import { typo } from '../typo.js?v=135';
+import { calculer } from '../calcul.js?v=135';
+import { decoder } from '../lien.js?v=135';
+import { medaillon, icone, chemin } from '../illustration-niveau.js?v=135';
+import { parDimension, pourLesResultats, auMoinsUneIdee } from '../envies.js?v=135';
+import { envoyerContact, agregatsPublics } from '../api.js?v=135';
+import { lire as lireSession, ecrire as ecrireSession, memoriserResultat, profilMemorise } from '../session.js?v=135';
+import { phrases as phrasesComparaison, comparaisonActive } from '../comparaison.js?v=135';
 import {
   $, el, texte, vider, signalerModeDemo, typographierPage,
   messageErreur, installerEtapes, annoncer, evenement,
-} from './commun.js?v=103';
+} from './commun.js?v=135';
 
 function afficherEnsemble(resultat) {
   // Le médaillon suit le niveau de la carte calculée par calcul.js.

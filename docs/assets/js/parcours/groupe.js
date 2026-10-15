@@ -5,10 +5,10 @@
  *
  * La visite se pose dans l'agenda d'Arnaud du tableau de bord (créneaux libres, notification) et la personne reçoit un mail.
  */
-import { resultatMemorise } from '../session.js?v=103';
-import { decoder } from '../lien.js?v=103';
-import { chargerContenu } from '../contenu.js?v=103';
-import { SUPABASE_URL, SUPABASE_CLE } from '../config.js?v=103';
+import { resultatMemorise } from '../session.js?v=135';
+import { decoder } from '../lien.js?v=135';
+import { chargerContenu } from '../contenu.js?v=135';
+import { SUPABASE_URL, SUPABASE_CLE } from '../config.js?v=135';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -91,7 +91,7 @@ d.querySelector('form').addEventListener('submit', async (ev) => {
   if (!nom || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { m.textContent = 'Indiquez votre nom et votre e-mail pour confirmer.'; return; }
   const c = etat.creneau; bouton.disabled = true; m.textContent = 'Nous posons votre visite…';
   try {
-    const { statut, j } = await appel('/functions/v1/visite', { nom, email, activite: String(f.get('activite') || '').trim(), tel: String(f.get('tel') || '').trim(), jour: c.jour, heure: c.heure, site: String(f.get('site') || '') });
+    const { statut, j } = await appel('/functions/v1/visite', { nom, email, activite: String(f.get('activite') || '').trim(), tel: String(f.get('tel') || '').trim(), jour: c.jour, heure: c.heure, sujet: d.dataset.sujet || 'groupe', site: String(f.get('site') || '') }); // pour lui, ou pour un séminaire
     if (j && j.ok) {
       $('[data-fin-texte]').textContent = majuscule(j.quand || dire(c.date, c.heure)) + ', ' + LIEU + '. Vous recevez une confirmation par e-mail. Un empêchement ? Répondez simplement à ce mail.';
       vue(3); bouton.disabled = false; return;
@@ -144,3 +144,27 @@ const THEMES = [['La confiance', [11, 12]], ['Le soutien', [10, 13]], ['La cohé
     $('[data-sien]').hidden = false;
   } catch (e) { /* sans résultat lisible, le bloc reste caché */ }
 })();
+
+// Le sélecteur « Pour vous / Pour votre équipe » en interrupteur (Arnaud, 15 octobre 2026 : « en mode bouton on off ») : la pastille
+// glisse vers l'option choisie, puis la page change.
+document.querySelectorAll('.gr-choix').forEach((nav) => {
+  const liens = [...nav.querySelectorAll('.gr-choix__lien')]; const actif = liens.find((a) => a.getAttribute('aria-current') === 'page'); if (!actif) return;
+  const g = document.createElement('span'); g.className = 'gr-choix__glisse'; g.setAttribute('aria-hidden', 'true'); nav.prepend(g); nav.classList.add('gr-choix--js');
+  const poser = (a) => { g.style.left = a.offsetLeft + 'px'; g.style.width = a.offsetWidth + 'px'; liens.forEach((x) => { x.style.color = x === a ? '#FFFFFF' : ''; x.querySelector('small') && (x.querySelector('small').style.color = x === a ? 'var(--teinte)' : ''); }); };
+  poser(actif); addEventListener('resize', () => poser(liens.find((a) => a.getAttribute('aria-current') === 'page') || actif));
+  liens.forEach((a) => a.addEventListener('click', (ev) => {
+    if (a === actif || ev.metaKey || ev.ctrlKey) return; ev.preventDefault(); poser(a);
+    const envoye = location.search.includes('envoye') ? '?envoye' : '';
+    setTimeout(() => { location.href = a.getAttribute('href') + envoye; }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 300);
+  }));
+});
+
+// L'interrupteur « Pour vous / Pour votre équipe » : le rond glisse de l'autre côté, puis la page change.
+document.querySelectorAll('.gr-bascule').forEach((g) => {
+  g.querySelectorAll('a').forEach((a) => a.addEventListener('click', (ev) => {
+    if (a.getAttribute('aria-current') === 'page' || ev.metaKey || ev.ctrlKey) { if (a.getAttribute('aria-current') === 'page') ev.preventDefault(); return; }
+    ev.preventDefault(); g.classList.add('gr-bascule--va');
+    const envoye = location.search.includes('envoye') ? '?envoye' : '';
+    setTimeout(() => { location.href = a.getAttribute('href') + envoye; }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 340);
+  }));
+});
