@@ -291,7 +291,7 @@ const retoucher = () => {
   if (page === 'questionnaire') champsAutre();
   // Un titre dont un mot est plus large que l'écran (« confidentialité » sur téléphone) se réduit jusqu'à ce que le mot tienne
   // entier, sans césure (responsive, 16 octobre 2026).
-  document.querySelectorAll('[data-maquette] :is(h1, h2) > span').forEach((x) => {
+  if (matchMedia('(max-width: 600px)').matches) document.querySelectorAll('[data-maquette] :is(h1, h2) > span').forEach((x) => {
     if (!x.getClientRects().length || x.dataset.edlAjuste === String(innerWidth)) return;
     const boite = x.closest('h1, h2'); const large = boite.clientWidth; if (!large) return;
     x.style.removeProperty('font-size'); x.style.setProperty('overflow-wrap', 'normal'); x.style.setProperty('word-break', 'normal');
@@ -622,8 +622,9 @@ style.textContent = [
   'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt { min-height: 3.25rem !important; font-size: 1.0625rem !important; border-color: #C7D9DC !important; }',
   'html.edl-phrases .edl-ph > .edl-ph-nav { align-self: start; }',
   // Pas de césure dans les titres, les boutons et les réponses (Bringhurst ; Lexique IN) ; titres équilibrés, paragraphes soignés.
-  '[data-maquette] :is(h1, h2, h3, button, .e-opt) { hyphens: manual !important; -webkit-hyphens: manual !important; text-wrap: balance; }',
-  '[data-maquette] p { text-wrap: pretty; }',
+  '[data-maquette] :is(h1, h2, h3, button, .e-opt) { hyphens: manual !important; -webkit-hyphens: manual !important; }',
+  // L'équilibrage des lignes seulement sur téléphone et tablette : l'ordinateur validé garde ses coupures.
+  '@media (max-width: 1100px) { [data-maquette] :is(h1, h2, h3, button, .e-opt) { text-wrap: balance; } [data-maquette] p { text-wrap: pretty; } }',
   // ----------------------------------------------------------- téléphone et tablette (responsive, 16 octobre 2026)
   // Piste A « Respiration », retenue par le relecteur, avec la lumière de la piste C : une phrase posée au tiers supérieur, les
   // réponses en grandes cartes dans la zone du pouce (Steven Hoober), la progression en segments égaux (un par thème), le thème
