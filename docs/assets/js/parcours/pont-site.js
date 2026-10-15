@@ -10,12 +10,12 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu, codesActifs } from '../contenu.js?v=225';
-import { relancesAEnvoyer } from '../calcul.js?v=225';
-import { lienResultat } from '../lien.js?v=225';
-import { envoyerReponse, compteur } from '../api.js?v=225';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=225';
-import { evenement } from './commun.js?v=225';
+import { chargerContenu, codesActifs } from '../contenu.js?v=227';
+import { relancesAEnvoyer } from '../calcul.js?v=227';
+import { lienResultat } from '../lien.js?v=227';
+import { envoyerReponse, compteur } from '../api.js?v=227';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=227';
+import { evenement } from './commun.js?v=227';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -262,6 +262,9 @@ const champsAutre = () => {
 const retoucher = () => {
   const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+    // Typographie française (responsive, 16 octobre 2026) : espace insécable avant ? ! : ; » et après «, pour qu'aucun signe ne
+    // passe seul à la ligne (Lexique des règles typographiques de l'Imprimerie nationale). Seulement les espaces ordinaires.
+    if (n.nodeValue && /[ ][?!:;»]|«[ ]/.test(n.nodeValue) && !(n.parentElement && n.parentElement.closest('script, style, textarea, input'))) n.nodeValue = n.nodeValue.replace(/ ([?!:;»])/g, '\u00a0$1').replace(/« /g, '«\u00a0');
     const t = norm(n.nodeValue || ''); if (!t) continue;
     if (TEXTES_N[t]) { const v = n.nodeValue.match(/^\s*/)[0] + TEXTES_N[t] + n.nodeValue.match(/\s*$/)[0]; if (n.nodeValue !== v) n.nodeValue = v; }
     else if (total != null && t === '255' && n.parentElement && /participé/.test(n.parentElement.parentElement?.textContent || '')) n.nodeValue = String(total);
@@ -280,11 +283,22 @@ const retoucher = () => {
     if (/^(En 2 minutes|Regardez votre équipe|Votre équipe telle que vous la voyez)/.test(norm(x.textContent || '')) && x.style.display !== 'none') x.style.display = 'none';
   });
   if (page === 'accueil') { nombre(); blocPas(); }
+  if (page === 'accueil' && document.querySelector('[data-maquette] .edl-nombre')) document.documentElement.classList.add('edl-pret');
   // « vous » surligné en vert vif dans le titre de l'étape 1, comme le titre de l'accueil (Arnaud, 14 octobre 2026).
   if (page === 'questionnaire') document.querySelectorAll('[data-maquette] h1 span, [data-maquette] h2 span').forEach((x) => {
     if (x.children.length === 0 && norm(x.textContent || '') === 'sur vous.') x.innerHTML = 'sur <span class="g-peps edl-vous">vous</span>.';
   });
   if (page === 'questionnaire') champsAutre();
+  // Un titre dont un mot est plus large que l'écran (« confidentialité » sur téléphone) se réduit jusqu'à ce que le mot tienne
+  // entier, sans césure (responsive, 16 octobre 2026).
+  if (matchMedia('(max-width: 600px)').matches) document.querySelectorAll('[data-maquette] :is(h1, h2) > span').forEach((x) => {
+    if (!x.getClientRects().length || x.dataset.edlAjuste === String(innerWidth)) return;
+    const boite = x.closest('h1, h2'); const large = boite.clientWidth; if (!large) return;
+    x.style.removeProperty('font-size'); x.style.setProperty('overflow-wrap', 'normal'); x.style.setProperty('word-break', 'normal'); x.style.setProperty('white-space', 'normal');
+    let t = parseFloat(getComputedStyle(x).fontSize); let n = 0;
+    while (x.scrollWidth > large + 1 && n < 30) { t *= 0.95; x.style.setProperty('font-size', t + 'px', 'important'); n += 1; }
+    x.dataset.edlAjuste = String(innerWidth);
+  });
   if (page === 'questionnaire' && typeof etapesProfil === 'function') etapesProfil();
   // Le pied du questionnaire sur une ligne, sans la politique de confidentialité (Arnaud, 15 octobre 2026 : « pas utile à cette étape »).
   if (page === 'questionnaire') document.querySelectorAll('footer.g-pied2 a[href*="confidentialite"]').forEach((a) => {
@@ -299,6 +313,7 @@ const retoucher = () => {
 
   if (page === 'questionnaire' && typeof etapesPhrases === 'function') etapesPhrases();
   if (page === 'questionnaire' && typeof friseEtapes === 'function') friseEtapes();
+  if (page === 'questionnaire') document.documentElement.classList.add('edl-pret');
   // « Retour » plus discret (Arnaud, 15 octobre 2026 : « trop gros ») : un lien secondaire, pas un second bouton.
   if (page === 'questionnaire') document.querySelectorAll('[data-maquette] a, [data-maquette] button').forEach((x) => {
     if (!x.classList.contains('edl-retour') && /^Retour$/.test(norm(x.textContent || ''))) x.classList.add('edl-retour');
@@ -606,6 +621,135 @@ style.textContent = [
   'html.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { font-size: clamp(1.625rem, 2.4vw, 2rem) !important; line-height: 1.15 !important; letter-spacing: -.025em !important; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt { min-height: 3.25rem !important; font-size: 1.0625rem !important; border-color: #C7D9DC !important; }',
   'html.edl-phrases .edl-ph > .edl-ph-nav { align-self: start; }',
+  // Pas de césure dans les titres, les boutons et les réponses (Bringhurst ; Lexique IN) ; titres équilibrés, paragraphes soignés.
+  '[data-maquette] :is(h1, h2, h3, button, .e-opt) { hyphens: manual !important; -webkit-hyphens: manual !important; }',
+  // L'équilibrage des lignes seulement sur téléphone et tablette : l'ordinateur validé garde ses coupures.
+  '@media (max-width: 1100px) { [data-maquette] :is(h1, h2, h3, button, .e-opt) { text-wrap: balance; } [data-maquette] p { text-wrap: pretty; } }',
+  // ----------------------------------------------------------- téléphone et tablette (responsive, 16 octobre 2026)
+  // Piste A « Respiration », retenue par le relecteur, avec la lumière de la piste C : une phrase posée au tiers supérieur, les
+  // réponses en grandes cartes dans la zone du pouce (Steven Hoober), la progression en segments égaux (un par thème), le thème
+  // en italique, le fond qui s'éclaircit à mesure qu'on avance ; les idées « J'aimerais… » dans un panneau qui monte du bas.
+  '@media (max-width: 1100px) {'
+    // Les 16 phrases.
+    + ' html.edl-tel.edl-phrases main > section:has(.edl-ph) { display: block; padding: 0 var(--gouttiere, 1rem) !important; min-height: calc(100svh - var(--edl-reste, 105px)); background: linear-gradient(180deg, color-mix(in srgb, #EEF4F5 calc((1 - var(--avance, 0)) * 100%), #FFFFFF) 0%, #FFFFFF 55%) !important; }'
+    + ' html.edl-tel.edl-phrases main > section:has(.edl-ph) > div { padding: 0 !important; max-width: 34rem !important; margin: 0 auto !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph { align-items: stretch !important; display: flex !important; flex-direction: column !important; min-height: calc(100svh - var(--edl-reste, 105px)); padding: .75rem 0 max(env(safe-area-inset-bottom), 1.25rem) !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > .edl-ph-nav { order: -2; margin: 0 0 .5rem !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div:first-child { order: -1; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete { order: 1; height: auto !important; margin-top: 1rem !important; gap: .5rem !important; animation: edlEtape var(--mvt-long, .4s) var(--courbe-douce, ease) both; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte { order: 2; flex: 1; display: flex !important; flex-direction: column; gap: 0 !important; min-height: 0 !important; margin-top: .75rem; padding: 0 !important; border: 0 !important; background: transparent !important; animation: edlEtape var(--mvt-long, .4s) var(--courbe-douce, ease) both; animation-delay: var(--decalage, 60ms); }'
+    + ' html.edl-tel.edl-phrases .edl-ph > .edl-merci2:not([hidden]) { order: 2; flex: 1; margin-top: clamp(1rem, 6svh, 3rem); border: 0 !important; padding: 0 !important; background: transparent !important; }'
+    // La frise devient huit segments égaux.
+    + ' html.edl-tel.edl-phrases .edl-frise3 { display: flex !important; gap: 4px; width: 100%; margin: 0 !important; }'
+    + ' html.edl-tel.edl-phrases .edl-frise3__pas { flex: 1 !important; max-width: none !important; height: 4px; border-radius: 999px; background: #DCE8EA; overflow: hidden; }'
+    + ' html.edl-tel.edl-phrases .edl-frise3__pas::after, html.edl-tel.edl-phrases .edl-frise3__pas::before { display: none !important; }'
+    + ' html.edl-tel.edl-phrases .edl-frise3__pas i { display: block; width: 0 !important; height: 100% !important; border-radius: inherit; box-shadow: none !important; background: #23545B !important; transition: width var(--mvt-long, .4s) var(--courbe-douce, ease); }'
+    + ' html.edl-tel.edl-phrases .edl-frise3__pas.fait i { width: 100% !important; }'
+    + ' html.edl-tel.edl-phrases .edl-frise3__pas.actif i { width: calc(var(--p-theme, 0) * 100%) !important; min-width: 6px; }'
+    // Le thème en italique, le « pourquoi » en petit.
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete h2 { height: auto !important; font-family: "Instrument Serif", serif !important; font-style: italic !important; font-weight: 400 !important; font-size: var(--pas-2, 1.5rem) !important; line-height: 1.15 !important; letter-spacing: -.01em !important; color: #23545B !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete h2::before { display: none !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete p { max-height: none !important; font-family: "DM Sans", sans-serif !important; font-weight: 400 !important; font-size: var(--pas-m1, .875rem) !important; line-height: 1.5 !important; color: #455051 !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete p > span:first-child, html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete p strong { display: none !important; }'
+    // La phrase, puis les réponses en bas, dans la zone du pouce.
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { margin: 0 !important; font-family: "Bricolage Grotesque", sans-serif !important; font-weight: 800 !important; font-size: var(--pas-3, 1.75rem) !important; line-height: 1.15 !important; letter-spacing: -.025em !important; text-wrap: balance; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte > [role="group"]:not(.e-open) { margin-top: auto !important; padding-top: .5rem; display: grid !important; grid-template-columns: 1fr !important; gap: .5rem !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) > [role="group"]:not(.e-open) { grid-template-columns: 1fr !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt { order: 0 !important; min-height: 3.25rem !important; padding: .375rem 1.25rem !important; border: 1.5px solid #6E979C !important; border-radius: 1.125rem !important; background: #FFFFFF !important; font-size: var(--pas-0, 1rem) !important; transition: transform var(--mvt-court, .15s) var(--courbe-douce, ease), background var(--mvt-moyen, .25s), color var(--mvt-moyen, .25s); }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt:active { transform: scale(.975); }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt[aria-pressed="true"] { background: #23545B !important; border-color: #23545B !important; color: #FFFFFF !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt[aria-pressed="true"] svg { stroke: #FFFFFF !important; display: block !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt[aria-pressed="false"] { opacity: 1; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-opt[aria-pressed="true"]) .e-opt[aria-pressed="false"] { opacity: .5; }'
+    // Les idées « J'aimerais… » : un panneau qui monte du bas, sur un voile clair.
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open { position: fixed !important; left: 0; right: 0; bottom: 0; z-index: 60; max-height: 78svh; overflow: auto; margin: 0 !important; padding: 1.25rem var(--gouttiere, 1rem) max(env(safe-area-inset-bottom), 1rem) !important; border: 0 !important; border-radius: 1.5rem 1.5rem 0 0 !important; background: #FFFFFF !important; box-shadow: 0 0 0 100vmax rgba(238, 244, 245, .78), 0 -1rem 3rem rgba(14, 42, 47, .14); animation: edlFeuille var(--mvt-long, .4s) var(--courbe-douce, ease) both !important; }'
+
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > p { display: flex !important; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .25rem 1rem; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > p::before { content: attr(data-choix); flex-basis: 100%; font: 700 .75rem "DM Sans", sans-serif; letter-spacing: .12em; text-transform: uppercase; color: #23545B; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > p strong { font-family: "Bricolage Grotesque", sans-serif; font-size: var(--pas-1, 1.25rem); }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > p span { font-size: var(--pas-m1, .875rem) !important; color: #455051 !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > div:first-of-type { display: flex !important; flex-direction: column; gap: 0 !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open .e-row { min-height: 2.75rem !important; padding: .375rem 0 !important; margin: 0 !important; font-size: var(--pas-0, 1rem) !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open .e-row > span:first-child { border-color: #6E979C !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > div:last-child { display: block !important; margin-top: .75rem; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open .e-lien { display: flex !important; align-items: center; justify-content: center; width: 100%; min-height: 3.5rem; border-radius: 999px !important; background: #23545B !important; color: #FFFFFF !important; text-decoration: none !important; font: 800 var(--pas-0, 1rem) "Bricolage Grotesque", sans-serif !important; }'
+    // « Retour » en haut à gauche.
+    + ' html.edl-tel.edl-phrases .edl-ph > .edl-ph-nav .edl-retour { font-size: .875rem !important; }'
+    // Le profil, même principe.
+    + ' html.edl-tel.edl-pas-a-pas [data-maquette] div[style*="min-height:114.375rem"] { min-height: 0 !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil { display: flex !important; flex-direction: column !important; min-height: calc(100svh - var(--edl-reste, 105px)); padding: .75rem 0 max(env(safe-area-inset-bottom), 1.25rem) !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:first-child { min-height: 0 !important; gap: .5rem !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:first-child h1 { font-size: var(--pas-4, 2rem) !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:first-child h1 span { font-size: 1em !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:first-child > p { font-size: var(--pas-0, 1rem) !important; margin: 0 !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-progres { order: -1; margin: 0 0 .75rem !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-progres__texte { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-progres__points { gap: 4px; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-progres__points i { flex: 1; width: auto !important; height: 4px !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-progres__points i.actif { background: #23545B !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) { flex: 1; display: flex !important; flex-direction: column; margin-top: clamp(1.25rem, 5svh, 2.5rem) !important; padding: 0 !important; border: 0 !important; background: transparent !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:not(.edl-etape-cachee):not(.edl-merci):not(.edl-passer) { flex: 1; display: flex !important; flex-direction: column; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) h2 { font-size: var(--pas-3, 1.75rem) !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) div[style*="display:grid"] { margin-top: auto; padding-top: 1.5rem; grid-template-columns: 1fr !important; gap: .625rem !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) div[style*="display:grid"] { margin-top: 1rem; padding-top: 0; grid-template-columns: 1fr !important; gap: .5rem !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) div[style*="display:grid"] > button { min-height: 3.5rem !important; border: 1.5px solid #6E979C !important; border-radius: 1.125rem !important; white-space: normal !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) div[style*="display:grid"] > button { min-height: 2.875rem !important; font-size: .9375rem !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(n+3) { margin-top: 1rem !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-merci { flex: 1; justify-content: center; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-merci__cta { width: 100%; justify-content: space-between; }'
+    + ' }',
+  // Écrans bas (petit téléphone, paysage) : tout se resserre pour que la phrase et ses réponses tiennent.
+  '@media (max-width: 1100px) and (max-height: 720px) {'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete p { display: -webkit-box !important; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete { margin-top: .75rem !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { font-size: var(--pas-2, 1.5rem) !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt { min-height: 3rem !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte > [role="group"]:not(.e-open) { gap: .5rem !important; padding-top: 1rem; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) div[style*="display:grid"] > button { min-height: 3rem !important; }'
+    + ' }',
+  '@media (max-width: 1100px) and (max-height: 500px) {'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete p { display: none !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte > [role="group"]:not(.e-open) { grid-template-columns: 1fr 1fr !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:first-child > p, html.edl-tel.edl-pas-a-pas .edl-profil > div:first-child h1 { display: none !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) div[style*="display:grid"] { grid-template-columns: 1fr 1fr !important; }'
+    + ' }',
+  '.e-lien, .e-lien * { text-decoration-line: none !important; }',
+  '.e-lien:focus:not(:focus-visible) { outline: none; }',
+  // Mention légale du pied, sur téléphone : 4,44:1 et 11,5 px → plus claire et à 13 px (WCAG 1.4.3, responsive 16 octobre 2026).
+  '[data-maquette] footer p[style*="rgba(244,242,234,.5)"] { color: rgba(244, 242, 234, .74) !important; font-size: .8125rem !important; }',
+  // Second tour (relecteur, 16 octobre 2026) : le pied ne dépasse plus dans l'écran, la phrase posée au centre optique de l'espace
+  // libre, le texte d'aide à 16 px, « Retour » en haut partout, une seule façon de compter, la tablette et le paysage à part.
+  '@media (max-width: 1100px) {'
+    + ' html.edl-tel.edl-phrases main > section:has(.edl-ph), html.edl-tel.edl-phrases .edl-ph { min-height: calc(100svh - var(--edl-entete, 69px)) !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph, html.edl-tel.edl-pas-a-pas .edl-profil { box-sizing: border-box !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil { min-height: calc(100svh - var(--edl-entete, 69px)) !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { margin: auto 0 !important; padding: .75rem 0 1rem; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte > [role="group"]:not(.e-open) { margin-top: 0 !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete p { font-size: var(--pas-0, 1rem) !important; color: #455051 !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(n+3) { order: -2; margin: 0 0 .5rem !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:first-child > :first-child:not(h1):not(.edl-progres) { display: none !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) h2 { margin: auto 0 !important; padding: 1.5rem 0; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) div[style*="display:grid"] { margin-top: 0 !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) h2 { margin: 0 !important; padding: 0 0 .75rem; }'
+    + ' html.edl-tel :is(.edl-retour) { min-height: 2.75rem; display: inline-flex !important; align-items: center; }'
+    + ' }',
+  '@media (max-width: 1100px) and (max-height: 720px) { html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { padding: .5rem 0 1rem; } html.edl-tel.edl-phrases .edl-ph { padding-bottom: max(env(safe-area-inset-bottom), .75rem) !important; } }',
+  '@media (max-width: 1100px) and (max-height: 500px) { html.edl-tel.edl-phrases .edl-ph { padding-top: .25rem !important; } html.edl-tel.edl-phrases .edl-ph > .edl-ph-nav { margin-bottom: 0 !important; } html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete { margin-top: .25rem !important; } html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { padding: .25rem 0 .75rem; } html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt { min-height: 2.75rem !important; } }',
+  // Paysage : les quatre réponses sur une ligne, dans l'ordre de l'échelle (Nielsen n° 2).
+  '@media (max-width: 1100px) and (max-height: 500px) { html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte > [role="group"]:not(.e-open), html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) div[style*="display:grid"]:not(:has(> :nth-child(5))) { grid-template-columns: repeat(4, 1fr) !important; } }',
+  // Tablette : la colonne centrée en hauteur, la phrase près de ses réponses (on la tient par les côtés, Hoober).
+  '@media (min-width: 700px) and (max-width: 1100px) and (min-height: 700px) {'
+    + ' html.edl-tel.edl-phrases .edl-ph { justify-content: center; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte { flex: 0 0 auto; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { margin: 0 !important; padding: 1.5rem 0 2rem; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil { justify-content: center; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) { flex: 0 0 auto; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:not(.edl-etape-cachee) { flex: 0 0 auto !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) h2 { margin: 0 !important; }'
+    + ' }',
+  '@keyframes edlFeuille { from { transform: translateY(100%); } to { transform: none; } }',
+  '@keyframes edlVoile { from { opacity: 0; } }',
+  '[data-maquette] [tabindex="-1"]:focus:not(:focus-visible), [data-maquette] p:focus:not(:focus-visible) { outline: none; }',
   '.edl-pour-tete { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 3rem 5rem; align-items: center; }',
   '.edl-frise--colonne { margin: 0 !important; grid-template-columns: 1fr !important; gap: 1.25rem !important; }',
   '.edl-frise--colonne::before { top: 0.5rem; bottom: 3rem; left: 1.375rem; right: auto; width: 2px; height: auto; }',
@@ -689,6 +833,12 @@ document.head.appendChild(style);
 // en 5 étapes max, et ça doit tenir dans 1200 × 800 sans scroll ». Une question à la fois à droite, l'introduction et la
 // progression à gauche ; un choix fait passer à la question suivante, « Retour » revient à la précédente. Les blocs cachés
 // pour un solo (taille d'entreprise, d'équipe) ne comptent pas : 3 étapes pour un solo, 5 sinon.
+// Toucher une réponse : une vibration très légère sur Android (jamais sur iPhone, où l'API n'existe pas), pour sentir qu'on a été
+// entendu (responsive, 16 octobre 2026).
+const vibrer = () => { try { if (TEL && TEL() && navigator.vibrate && !/iPhone|iPad|iPod/.test(navigator.userAgent)) navigator.vibrate(8); } catch (e) { /* rien */ } };
+// Le retour du navigateur et le geste retour du téléphone reviennent à la question précédente sans rien perdre : chaque pas en
+// avant ajoute une entrée d'historique, et revenir en arrière la consomme.
+const pousserPas = (genre, n) => { try { history.pushState({ edl: genre, n }, ''); } catch (e) { /* rien */ } };
 let etapeProfil = 0;
 const PHRASES_PROFIL = {
   'Vous travaillez': 'Commençons par votre façon de travailler, telle que vous la vivez au quotidien.',
@@ -698,14 +848,18 @@ const PHRASES_PROFIL = {
   'Taille de votre équipe': 'Dernière question sur vous : la taille de votre équipe.',
   fin: 'Ces repères permettent de mettre votre regard à côté de celui de personnes qui vous ressemblent.',
 };
-const ORDI = () => matchMedia('(min-width: 1101px)').matches;
+// Depuis le travail responsive (16 octobre 2026), le pas-à-pas vaut aussi sur téléphone et tablette, avec sa propre mise en scène
+// (html.edl-tel) : une question, une phrase à la fois, les réponses dans la zone du pouce (piste A « Respiration »).
+const ORDI = () => true;
+const TEL = () => matchMedia('(max-width: 1100px)').matches;
 const carteProfil = () => {
   const m = [...document.querySelectorAll('[data-maquette]')].find((x) => x.getClientRects().length); if (!m) return null;
   return [...m.querySelectorAll('div[style*="padding:2.5rem 2.75rem"]')].find((c) => /^\s*Vous travaillez/.test(c.textContent || '')) || null;
 };
 const groupesProfil = (carte) => [...carte.children].filter((g) => !g.classList.contains('edl-merci') && !g.classList.contains('edl-passer') && !g.hasAttribute('data-edl-cache') && !/display:\s*none/.test(g.getAttribute('style') || ''));
 // Changer de question : un léger fondu en sortie, puis la suivante arrive en fondu (Arnaud, 15 octobre 2026).
-const allerEtape = (n) => {
+const allerEtape = (n, sansHistorique) => {
+  if (!sansHistorique && n > etapeProfil) pousserPas('profil', n);
   const carte = carteProfil(); const g = carte && (groupesProfil(carte)[etapeProfil] || carte.querySelector(':scope > .edl-merci'));
   if (!g || calme()) { etapeProfil = n; etapesProfil(); return; }
   g.classList.add('edl-etape-sortie');
@@ -715,6 +869,8 @@ const etapesProfil = () => {
   const racine = document.documentElement;
   const carte = page === 'questionnaire' && ORDI() ? carteProfil() : null;
   racine.classList.toggle('edl-pas-a-pas', Boolean(carte));
+  racine.classList.toggle('edl-tel', TEL());
+  if (carte) { const m = carte.closest('[data-maquette]'); const h = m && m.querySelector('header'); if (h) racine.style.setProperty('--edl-entete', h.offsetHeight + 'px'); }
   if (!carte) return;
   const groupes = groupesProfil(carte); const nb = groupes.length; if (!nb) return;
   // Après la dernière question, une étape « Merci » dans la carte, avec son bouton (Arnaud, 15 octobre 2026).
@@ -772,6 +928,7 @@ if (page === 'questionnaire') {
     if (carte.contains(b)) {
       if (b.getAttribute('aria-pressed') === 'true' && g && g.contains(b)) { e.preventDefault(); e.stopImmediatePropagation(); if (etapeProfil < nb) allerEtape(etapeProfil + 1); return; }
       // Un choix fait passer à la question suivante, après un temps pour le voir coché (650 ms, Arnaud, 15 octobre 2026 : « trop rapide »).
+      if (b.hasAttribute('aria-pressed') && g && g.contains(b)) vibrer();
       if (b.hasAttribute('aria-pressed') && g && g.contains(b) && etapeProfil < nb) {
         setTimeout(() => { if (b.getAttribute('aria-pressed') === 'true' && etapeProfil < groupesProfil(carte).length) allerEtape(etapeProfil + 1); }, 650);
       }
@@ -782,7 +939,7 @@ if (page === 'questionnaire') {
       if (g.querySelector('[aria-pressed="true"]')) allerEtape(etapeProfil + 1);
       else { g.classList.remove('edl-etape-manque'); void g.offsetWidth; g.classList.add('edl-etape-manque'); }
     } else if (/^Retour/.test(t) && etapeProfil > 0) {
-      e.preventDefault(); e.stopImmediatePropagation(); allerEtape(etapeProfil - 1);
+      e.preventDefault(); e.stopImmediatePropagation(); if (history.state && history.state.edl === 'profil') history.back(); else allerEtape(etapeProfil - 1, true);
     }
   }, true);
   addEventListener('resize', () => etapesProfil());
@@ -809,7 +966,7 @@ const etapesPhrases = () => {
   if (!actif) return;
   w.classList.add('edl-ph');
   // La hauteur de l'en-tête et du pied, pour que le fond remplisse l'écran sans le dépasser, à toutes les tailles.
-  { const m = w.closest('[data-maquette]'); const h = m && m.querySelector('header'); const f = m && m.querySelector('footer.g-pied2'); const v = ((h ? h.offsetHeight : 69) + (f ? f.offsetHeight : 36)) + 'px'; if (document.documentElement.style.getPropertyValue('--edl-reste') !== v) document.documentElement.style.setProperty('--edl-reste', v); }
+  { const m = w.closest('[data-maquette]'); const h = m && m.querySelector('header'); const f = m && m.querySelector('footer.g-pied2'); const v = ((h ? h.offsetHeight : 69) + (f ? f.offsetHeight : 36)) + 'px'; if (document.documentElement.style.getPropertyValue('--edl-reste') !== v) document.documentElement.style.setProperty('--edl-reste', v);  const e = (h ? h.offsetHeight : 69) + 'px'; if (document.documentElement.style.getPropertyValue('--edl-entete') !== e) document.documentElement.style.setProperty('--edl-entete', e); }
   // La barre « Retour / Voir mon résultat » : le dernier bloc de la maquette, repéré une fois pour toutes.
   [...w.children].forEach((x) => x.classList.toggle('edl-ph-nav', !x.classList.contains('edl-merci2') && !x.classList.contains('edl-progres') && Boolean(x.querySelector('.edl-retour, a, button')) && /Retour/.test(x.textContent || '') && !x.querySelector('[id^="a"]')));
   const cartes = cartesPhrases(w); const nb = cartes.length; if (!nb) return;
@@ -842,9 +999,15 @@ const etapesPhrases = () => {
     + cartes.map((_, k) => '<i class="' + (k < etapePhrase ? 'fait' : k === etapePhrase ? 'actif' : '') + '"></i>').join('') + '</span>';
   if (prog.innerHTML !== html) prog.innerHTML = html;
   racine.classList.toggle('edl-phrases-fin', fin);
+  racine.style.setProperty('--avance', String(nb ? etapePhrase / nb : 0));
+  // Le thème en cours se remplit phrase après phrase dans la frise du téléphone.
+  if (courante) { const memes = cartes.filter((c) => c.parentElement === courante.parentElement); racine.style.setProperty('--p-theme', String(memes.indexOf(courante) / memes.length)); }
+  // Le panneau des idées rappelle la réponse choisie (Nielsen n° 6 : reconnaître plutôt que se souvenir).
+  if (courante) { const ch = courante.querySelector('.e-opt[aria-pressed="true"]'); const tete = courante.querySelector('.e-open > p'); if (tete && ch) { const v = norm(ch.textContent || ''); if (tete.dataset.choix !== v) tete.dataset.choix = v; } }
   // Le bloc de gauche ne bouge plus d'un thème à l'autre (Arnaud, 15 octobre 2026) : le titre a une hauteur fixe, et sa taille
   // s'ajuste s'il est plus long ; le « pourquoi » dessous aussi. Rien ne dépend de la longueur des textes.
-  if (tete) requestAnimationFrame(() => {
+  if (tete && TEL()) { tete.querySelectorAll('h2, p').forEach((x) => x.style.removeProperty('font-size')); }
+  if (tete && !TEL()) requestAnimationFrame(() => {
     const ajuster = (x, max, min) => { if (!x) return; let t = max; x.style.setProperty('font-size', t + 'px', 'important');
       while (x.scrollHeight > x.clientHeight + 1 && t > min) { t -= 2; x.style.setProperty('font-size', t + 'px', 'important'); } };
     const h = tete.querySelector('h2'); const base = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
@@ -853,7 +1016,8 @@ const etapesPhrases = () => {
     void base;
   });
 };
-const allerPhrase = (n) => {
+const allerPhrase = (n, sansHistorique) => {
+  if (!sansHistorique && n > etapePhrase) pousserPas('phrase', n);
   const w = zonePhrases(); const c = w && (w.querySelector('.edl-ph-carte') || w.querySelector(':scope > .edl-merci2'));
   const poser = () => { etapePhrase = n; etapesPhrases(); scrollTo(0, 0); };
   if (!c || calme()) { poser(); return; }
@@ -877,6 +1041,7 @@ if (page === 'questionnaire') {
       const reponse = b.classList.contains('e-opt') || (b.hasAttribute('aria-pressed') && !b.closest('.e-open'));
       if (reponse && b.getAttribute('aria-pressed') === 'true') { e.preventDefault(); e.stopImmediatePropagation(); if (!c.querySelector('.e-open')) allerPhrase(etapePhrase + 1); return; }
       if (reponse) {
+        vibrer();
         setTimeout(() => { scrollTo(0, 0); if (b.getAttribute('aria-pressed') === 'true' && !c.querySelector('.e-open') && etapePhrase < nb) allerPhrase(etapePhrase + 1); }, 650);
         setTimeout(() => scrollTo(0, 0), 60);
         return;
@@ -884,7 +1049,7 @@ if (page === 'questionnaire') {
       if (/^Question suivante/.test(t)) { e.preventDefault(); e.stopImmediatePropagation(); allerPhrase(etapePhrase + 1); return; }
       return;
     }
-    if (/^Retour$/.test(t) && etapePhrase > 0) { e.preventDefault(); e.stopImmediatePropagation(); allerPhrase(etapePhrase - 1); }
+    if (/^Retour$/.test(t) && etapePhrase > 0) { e.preventDefault(); e.stopImmediatePropagation(); if (history.state && history.state.edl === 'phrase') history.back(); else allerPhrase(etapePhrase - 1, true); }
   }, true);
   addEventListener('resize', () => etapesPhrases());
 }
@@ -906,6 +1071,12 @@ const friseEtapes = () => {
   const html = themes.map((t, n) => '<span class="edl-frise3__pas' + (n < k ? ' fait' : n === k ? ' actif' : '') + '" title="' + t.replace(/"/g, '&quot;') + '"><i></i></span>').join('');
   if (f.innerHTML !== html) f.innerHTML = html;
 };
+
+if (page === 'questionnaire') addEventListener('popstate', (e) => {
+  const st = e.state || {};
+  if (document.documentElement.classList.contains('edl-phrases')) { const n = st.edl === 'phrase' ? st.n : 0; if (n !== etapePhrase) allerPhrase(n, true); }
+  else if (document.documentElement.classList.contains('edl-pas-a-pas')) { const n = st.edl === 'profil' ? st.n : 0; if (n !== etapeProfil) allerEtape(n, true); }
+});
 
 let attente = null;
 new MutationObserver(() => { if (attente) return; attente = requestAnimationFrame(() => { attente = null; retoucher(); }); })

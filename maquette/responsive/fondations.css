@@ -1,0 +1,45 @@
+/* Fondations responsive (nuit du 15 au 16 octobre 2026) : une échelle fluide de polices et d'espacements (méthode Utopia,
+   utopia.fyi, James Gilyead et Trys Mudford : de 320 px, base 16 px et rapport 1,2, à 1440 px, base 18 px et rapport 1,25) et les
+   variables de mouvement (Val Head : durées courtes, courbes douces, jamais de rebond appuyé). Des variables seulement : rien ne
+   change tant qu'un élément ne les utilise pas. */
+:root {
+  /* Polices : --pas-0 est le texte courant, --pas-m1 et --pas-m2 les petites mentions, --pas-1 à --pas-6 les titres. */
+  --pas-m2: clamp(0.6944rem, 0.6871rem + 0.0365vw, 0.7200rem);
+  --pas-m1: clamp(0.8333rem, 0.8143rem + 0.0952vw, 0.9000rem);
+  --pas-0: clamp(1.0000rem, 0.9643rem + 0.1786vw, 1.1250rem);
+  --pas-1: clamp(1.2000rem, 1.1411rem + 0.2946vw, 1.4062rem);
+  --pas-2: clamp(1.4400rem, 1.3492rem + 0.4540vw, 1.7578rem);
+  --pas-3: clamp(1.7280rem, 1.5939rem + 0.6704vw, 2.1973rem);
+  --pas-4: clamp(2.0736rem, 1.8813rem + 0.9614vw, 2.7466rem);
+  --pas-5: clamp(2.4883rem, 2.2183rem + 1.3499vw, 3.4332rem);
+  --pas-6: clamp(2.9860rem, 2.6130rem + 1.8651vw, 4.2915rem);
+  /* Espacements, sur une base de 8 px (de 4 à 96 px à 320 px de large). */
+  --esp-3xs: clamp(0.2500rem, 0.2411rem + 0.0446vw, 0.2812rem);
+  --esp-2xs: clamp(0.5000rem, 0.4821rem + 0.0893vw, 0.5625rem);
+  --esp-xs: clamp(0.7500rem, 0.7232rem + 0.1339vw, 0.8438rem);
+  --esp-s: clamp(1.0000rem, 0.9643rem + 0.1786vw, 1.1250rem);
+  --esp-m: clamp(1.5000rem, 1.4464rem + 0.2679vw, 1.6875rem);
+  --esp-l: clamp(2.0000rem, 1.9286rem + 0.3571vw, 2.2500rem);
+  --esp-xl: clamp(3.0000rem, 2.8929rem + 0.5357vw, 3.3750rem);
+  --esp-2xl: clamp(4.0000rem, 3.8571rem + 0.7143vw, 4.5000rem);
+  --esp-3xl: clamp(6.0000rem, 5.7857rem + 1.0714vw, 6.7500rem);
+  /* Marges latérales : 16 px sur téléphone, 24 px sur tablette, puis proportionnelles. */
+  --gouttiere: max(1rem, min(4vw, 3rem));
+  /* Mouvement. */
+  --mvt-court: 150ms;
+  --mvt-moyen: 250ms;
+  --mvt-long: 400ms;
+  --decalage: 60ms;
+  --courbe-douce: cubic-bezier(.2, .7, .2, 1);
+  --courbe-sortie: cubic-bezier(.4, 0, 1, 1);
+  --courbe-ressort: cubic-bezier(.34, 1.3, .64, 1);
+  /* Zone du pouce et cibles tactiles (Apple HIG : 44 pt ; Material 3 : 48 dp). */
+  --cible: 2.75rem;
+  /* Arrondis et filets, tirés de ce que le site utilise déjà. */
+  --rayon-s: .75rem; --rayon-m: 1.25rem; --rayon-l: 1.75rem; --rayon-pilule: 999px;
+  --filet: 1px solid #DCE8EA;
+  color-scheme: light;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --mvt-court: 1ms; --mvt-moyen: 1ms; --mvt-long: 1ms; --decalage: 0ms; }
+}

@@ -1,0 +1,18 @@
+/* Maquettes responsive (nuit du 15 au 16 octobre 2026) : base commune, DA du site. */
+:root { --bv:#23545B; --bv-fonce:#16393F; --nuit:#0E2A2F; --vif:#B4F25C; --fond:#EEF4F5; --pale:#E4EEEF; --ciel:#DCE8EA; --teinte:#C7D9DC; --sol:#A0BFC3; --rubans:#6E979C; --texte:#0C1011; --second:#455051; --discret:#697374; --creme:#F4F2EA; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; }
+body { min-height: 100svh; background: #FFFFFF; color: var(--texte); font: 400 var(--pas-0)/1.5 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; font-kerning: normal; }
+.leger { display: block; font: 400 italic 1em/1.08 'Instrument Serif', serif; letter-spacing: -.01em; }
+.gras { display: block; font: 800 1em/1.05 'Bricolage Grotesque', sans-serif; letter-spacing: -.035em; }
+.sur { display: block; font: 700 var(--pas-m2) 'DM Sans', sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--bv); }
+h1, h2, h3, .phrase { text-wrap: balance; hyphens: manual; margin: 0; }
+p { text-wrap: pretty; }
+.pilule { display: inline-flex; align-items: center; justify-content: space-between; gap: .875rem; min-height: 3.5rem; padding: 0 .5rem 0 1.5rem; border: 0; border-radius: 999px; background: var(--bv); color: #FFFFFF; font: 800 var(--pas-0) 'Bricolage Grotesque', sans-serif; cursor: pointer; }
+.pilule i { display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 999px; background: var(--vif); }
+.pilule svg { width: 1.125rem; height: 1.125rem; }
+.retour { display: inline-flex; align-items: center; justify-content: center; width: var(--cible); height: var(--cible); border: 0; border-radius: 999px; background: var(--fond); cursor: pointer; }
+.retour svg { width: 1.125rem; height: 1.125rem; }
+.cadre-tel { max-width: 30rem; margin: 0 auto; min-height: 100svh; padding: max(env(safe-area-inset-top), .75rem) var(--gouttiere) max(env(safe-area-inset-bottom), 1rem); display: flex; flex-direction: column; }
+.etiquette { position: fixed; right: .5rem; bottom: .5rem; z-index: 99; padding: .25rem .625rem; border-radius: 999px; background: var(--nuit); color: #FFFFFF; font: 600 .6875rem 'DM Sans', sans-serif; opacity: .7; }
+@media (hover: hover) { .carte-rep:hover { border-color: var(--rubans); } }
