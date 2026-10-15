@@ -6,12 +6,12 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu, ideeActive } from '../contenu.js?v=225';
-import { decoder } from '../lien.js?v=225';
-import { envoyerContact, compteur } from '../api.js?v=225';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=225';
-import { memoriserResultat } from '../session.js?v=225';
-import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=225';
+import { chargerContenu, ideeActive } from '../contenu.js?v=226';
+import { decoder } from '../lien.js?v=226';
+import { envoyerContact, compteur } from '../api.js?v=226';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=226';
+import { memoriserResultat } from '../session.js?v=226';
+import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=226';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -584,6 +584,15 @@ function vueNouvelle({ solo, role, D_SUR, vue, t, mq }) {
     d.appendChild(nvRangs({ a: t.engages, b: mq.engages, a_nom: 'Avec les trois réunis', b_nom: 'Avec un ou deux des trois' }));
     if (t.perf != null && mq.perf != null) d.appendChild(el('p', 'nv-etude__pied', 'Et elles atteignent plus souvent leurs objectifs : ' + pc(t.perf) + ' contre ' + pc(mq.perf) + '.'));
   } else d.appendChild(el('p', 'nv-etude__pied', solo ? 'Le chiffre des indépendants s’affiche ici dès que 3 d’entre eux au moins sont de chaque côté.' : 'Les chiffres de l’étude s’affichent ici dès qu’ils sont assez nombreux.'));
+  // Partager son résultat (responsive, 16 octobre 2026) : le partage natif du téléphone quand il existe, sinon « Copier le lien ».
+  const part = el('button', 'nv-partager'); part.type = 'button';
+  part.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg><span>' + (navigator.share ? 'Partager mon état des lieux' : 'Copier le lien de mon état des lieux') + '</span>';
+  part.addEventListener('click', async () => {
+    const lien = location.href.replace(/[?&]demo=1/, '');
+    try { if (navigator.share) { await navigator.share({ title: 'Mon état des lieux · Greatly', url: lien }); return; }
+      await navigator.clipboard.writeText(lien); part.querySelector('span').textContent = 'Lien copié'; setTimeout(() => { part.querySelector('span').textContent = 'Copier le lien de mon état des lieux'; }, 2400);
+    } catch (e) { /* partage annulé */ } });
+  g.appendChild(part);
   cadre.append(g, d); une.appendChild(cadre);
   const desc = el('a', 'nv-descendre'); desc.href = '#nv-themes'; desc.innerHTML = '<span class="nv-descendre__fleche">' + FLECHE_BAS + '</span><span>Voir le détail</span>';
   une.appendChild(desc);
@@ -624,6 +633,16 @@ function vueNouvelle({ solo, role, D_SUR, vue, t, mq }) {
   const liens = [...frise.querySelectorAll('a')]; const arts = [...contenu.querySelectorAll('.nv-theme')];
   const suivre = () => { let k = 0; arts.forEach((x, i) => { if (x.getBoundingClientRect().top < innerHeight * 0.45) k = i; }); liens.forEach((x, i) => { x.classList.toggle('actif', i === k); x.classList.toggle('fait', i < k); }); };
   addEventListener('scroll', suivre, { passive: true }); suivre();
+  // Découvrir son résultat (téléphone) : les chiffres se dessinent l'un après l'autre, puis les mots arrivent (Val Head ; socle,
+  // « trois moments »). Une seule fois par page ; rien si l'on préfère moins de mouvement.
+  if (matchMedia('(max-width: 1100px)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches && !vueNouvelle.anime) {
+    vueNouvelle.anime = true; document.documentElement.classList.add('nv-anime');
+    cinq.querySelectorAll('.nv-cinq__val').forEach((v, i) => { const t = v.firstChild; const cible = Number(t.nodeValue); if (!Number.isFinite(cible)) return;
+      const t0 = performance.now() + 250 + i * 160; t.nodeValue = '0';
+      const pas = (now) => { const x = Math.max(0, Math.min(1, (now - t0) / 700)); t.nodeValue = String(Math.round(cible * (1 - Math.pow(1 - x, 3)))); if (x < 1) requestAnimationFrame(pas); };
+      requestAnimationFrame(pas); });
+    requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.add('nv-anime--go')));
+  }
 }
 
 async function demarrer() {

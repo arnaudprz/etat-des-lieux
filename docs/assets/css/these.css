@@ -479,3 +479,54 @@ html.nv-actif [data-resultat]{width:100%}
 .recevoir-suite__tard{padding:0;border:0;background:none;font-family:'DM Sans',sans-serif;font-size:.9375rem;font-weight:500;color:#455051;text-decoration:underline;text-underline-offset:.25rem;cursor:pointer}
 @media (max-width:820px){.recevoir-suite{grid-template-columns:1fr;gap:1.5rem}.recevoir-suite__carte{padding:1.5rem 1.25rem}}
 @media (prefers-reduced-motion:reduce){.recevoir-suite{animation:none}}
+
+/* Responsive (16 octobre 2026) : le résultat sur téléphone, piste A « Cinq chiffres » retenue par le relecteur, adoucie : les
+   chiffres en bleu-vert, à peine plus grands que leur nom, sur un rail très léger (« toujours en gain ») ; ils se dessinent l'un
+   après l'autre, puis les mots arrivent. Partage natif. La page ne défile plus derrière la fenêtre e-mail. */
+.nv-cinq__val,.nv-score b,.nv-etude__grand,.nv-rang b{font-variant-numeric:tabular-nums}
+.nv-partager{display:none;align-items:center;gap:.5rem;min-height:2.75rem;margin-top:1.25rem;padding:0 1.125rem;border:0;border-radius:999px;background:#FFFFFF;color:#0C1011;font:600 .9375rem 'DM Sans',sans-serif;cursor:pointer}
+.nv-partager svg{width:1rem;height:1rem}
+html:has(dialog.fenetre-mail[open]){overflow:hidden}
+@media (max-width:1100px){
+  .nv-partager{display:inline-flex}
+  .nv-une{padding-top:1.5rem!important}
+  .nv-une .nv-sur:first-child{margin-bottom:.25rem}
+  .nv-h1{margin-top:.25rem}
+  .nv-cinq{display:flex!important;flex-direction:column;gap:1rem!important;max-width:none}
+  .nv-cinq__case{display:grid;grid-template-columns:1fr auto;align-items:baseline;row-gap:.5rem}
+  .nv-cinq__nom{font-size:var(--pas-0,1rem)!important;font-weight:600!important;letter-spacing:0!important;text-transform:none!important;color:#0C1011!important}
+  .nv-cinq__val{margin:0!important;font-size:var(--pas-2,1.5rem)!important;color:#23545B}
+  .nv-cinq__val small{font-size:.8125rem!important}
+  .nv-cinq__trait{grid-column:1/-1;height:6px!important;margin:0!important;background:#E4EEEF!important}
+  .nv-cinq__trait i{border-radius:inherit}
+  .nv-etude,.nv-carte{border-radius:1.5rem!important}
+  .nv-etude__grand small{display:inline-block;vertical-align:baseline}
+  html.nv-anime .nv-cinq__trait i{transform:scaleX(0);transform-origin:left}
+  html.nv-anime .nv-cinq__case{opacity:0;transform:translateY(8px)}
+  html.nv-anime--go .nv-cinq__case{opacity:1;transform:none;transition:opacity .4s cubic-bezier(.2,.7,.2,1),transform .4s cubic-bezier(.2,.7,.2,1)}
+  html.nv-anime--go .nv-cinq__trait i{transform:scaleX(1);transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+  html.nv-anime--go .nv-cinq__case:nth-child(1),html.nv-anime--go .nv-cinq__case:nth-child(1) .nv-cinq__trait i{transition-delay:.25s}
+  html.nv-anime--go .nv-cinq__case:nth-child(2),html.nv-anime--go .nv-cinq__case:nth-child(2) .nv-cinq__trait i{transition-delay:.41s}
+  html.nv-anime--go .nv-cinq__case:nth-child(3),html.nv-anime--go .nv-cinq__case:nth-child(3) .nv-cinq__trait i{transition-delay:.57s}
+  html.nv-anime--go .nv-cinq__case:nth-child(4),html.nv-anime--go .nv-cinq__case:nth-child(4) .nv-cinq__trait i{transition-delay:.73s}
+  html.nv-anime--go .nv-cinq__case:nth-child(5),html.nv-anime--go .nv-cinq__case:nth-child(5) .nv-cinq__trait i{transition-delay:.89s}
+  html.nv-anime .nv-chapo,html.nv-anime .nv-etude,html.nv-anime .nv-partager{opacity:0;transform:translateY(10px)}
+  html.nv-anime--go .nv-chapo,html.nv-anime--go .nv-etude,html.nv-anime--go .nv-partager{opacity:1;transform:none;transition:opacity .5s ease 1.4s,transform .5s cubic-bezier(.2,.7,.2,1) 1.4s}
+  .fenetre-mail{padding-bottom:env(safe-area-inset-bottom)}
+}
+@media (max-width:1100px){
+  /* Pleine largeur sans 100vw (qui compte la barre de défilement) : on annule simplement la marge de la page. */
+  html.nv-actif main{padding-inline:0!important}
+  .nv-une{margin-inline:0!important;padding-inline:var(--gouttiere,1rem)!important}
+  .nv-themes{padding-inline:var(--gouttiere,1rem)}
+}
+@media (max-width:1100px){
+  /* Thème par thème : le score en bleu-vert, à peine plus grand que le nom du thème (pas une note). */
+  .nv-score{margin-top:.75rem!important}
+  .nv-score b{font-size:var(--pas-4,2.25rem)!important;color:#23545B}
+  .nv-grandes{gap:5px!important;margin-top:.625rem!important}
+  .nv-grandes i{width:.875rem!important;height:.875rem!important}
+  .nv-theme__nom{font-size:var(--pas-3,1.75rem)!important}
+  .nv-theme{padding:2rem 0!important}
+  .nv-lire{margin-bottom:2rem!important}
+}
