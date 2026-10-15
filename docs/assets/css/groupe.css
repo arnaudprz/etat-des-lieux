@@ -633,3 +633,5 @@ body:has(.gr--da) { overflow-x: clip; }
 @media (max-width: 1000px) { .gr-ans { grid-template-columns: 1fr; } .gr-ans__fleche { padding-top: 0; justify-self: start; } .gr-ans__fleche span { transform: rotate(90deg); } .gr-ans__gain { min-height: 0; } }
 /* « Pour votre équipe » aussi sur toute la largeur (Arnaud, 15 octobre 2026). */
 .gr.gr--large { max-width: 96rem; }
+/* Le parcours de « Pour vous » repris sur la page des indépendants : l'enveloppe ne fait que porter les styles (.gr--da). */
+.gr-an-hote { display: contents; }

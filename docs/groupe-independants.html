@@ -12,8 +12,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,800&family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap">
-<link rel="stylesheet" href="assets/css/these.css?v=217">
-<link rel="stylesheet" href="assets/css/groupe.css?v=217">
+<link rel="stylesheet" href="assets/css/these.css?v=225">
+<link rel="stylesheet" href="assets/css/groupe.css?v=225">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=2"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 </head>
 <body>
@@ -99,49 +99,57 @@
       <p class="gr-section__texte">Depuis juin 2026, un premier groupe de dirigeants vit ce parcours à la Greatly House. Séance après séance, leurs retours nous ont appris ce qui fait vraiment grandir l’énergie et la lucidité.</p>
     </div>
     <blockquote>« Pour moi, la lucidité ne naît pas de la réflexion ou de l’accumulation d’informations, mais de ces espaces de silence où les choses se déposent naturellement. »<cite>Un membre du premier groupe, après un atelier, juillet 2026</cite></blockquote>
-    <p class="gr-lecon">Ce qui change vraiment prend du temps. <strong>L’atelier du mois ouvre un thème ; le temps ensemble de chaque semaine le fait vivre</strong>, jusqu’à ce qu’il reste. C’est ce rythme, tenu sur un an, qui fait grandir l’énergie et la lucidité. Nous l’ouvrons aujourd’hui à des groupes mêlés : dirigeants, cadres, indépendants, professions libérales.</p>
+    <!-- Un second retour de membre, présenté comme le premier (Arnaud, 15 octobre 2026). La dernière phrase est la nôtre : elle reste hors des guillemets. -->
+    <blockquote>« Ce qui change vraiment prend du temps. L’atelier du mois ouvre un thème ; le temps ensemble de chaque semaine le fait vivre, jusqu’à ce qu’il reste. C’est ce rythme, tenu sur un an, qui fait grandir l’énergie et la lucidité. »<cite>Un membre du premier groupe</cite></blockquote>
+    <p class="gr-lecon">Nous l’ouvrons aujourd’hui à des groupes mêlés : dirigeants, cadres, indépendants, professions libérales.</p>
   </section>
 
-  <section class="gr-section gr-annee" id="annee">
+  <!-- Les saisons reliées au parcours, comme sur « Pour vous » (Arnaud, 15 octobre 2026 : « relier les saisons et le parcours de ce
+       qu'on vit en dessous ») : chaque saison avec ses ateliers, puis ce qui court toute l'année, chaque ligne avec sa note. -->
+  <div class="gr--da gr-an-hote">
+  <section class="gr-section gr-annee gr-an" id="annee">
     <div class="gr-section__tete">
-      <span class="surtitre">Le parcours</span>
+      <span class="surtitre">Un parcours d’un an</span>
       <h2><span class="leger">Un an,</span> <span class="gras">quatre saisons.</span></h2>
+      <p class="gr-an__chapo">Pas une transformation, une évolution : chaque saison s’appuie sur la précédente, avec le même groupe.</p>
     </div>
-    <ol class="gr-saisons">
-      <li><span class="gr-saisons__points" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></span><span class="gr-saisons__num">Saison 1</span>Se poser</li>
-      <li><span class="gr-saisons__points" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i></span><span class="gr-saisons__num">Saison 2</span>S’écouter</li>
-      <li><span class="gr-saisons__points" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span><span class="gr-saisons__num">Saison 3</span>S’ouvrir</li>
-      <li><span class="gr-saisons__points" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="gr-saisons__num">Saison 4</span>Incarner</li>
-    </ol>
-    <div class="gr-formats">
-      <div class="gr-format">
-        <span class="gr-format__quand">Chaque mois</span>
-        <h3>L’atelier, pour ouvrir un thème.</h3>
-        <p>Un thème qui compte dans sa vie professionnelle, exploré à plusieurs, en partant de ce qui va déjà bien.</p>
-        <ol class="gr-themes">
-          <li>La confiance</li><li>L’énergie</li><li>Le temps</li><li>Les décisions et le silence</li><li>Les émotions</li>
-          <li>L’intuition</li><li>L’attention</li><li>Les relations et le parler vrai</li><li>Le collectif</li><li>L’incertitude</li>
-        </ol>
+    <div class="gr-an__corps">
+      <!-- Le schéma des « Deux jours » (Arnaud, 15 octobre 2026 : « le schéma est top là ») appliqué à l’année : les quatre saisons côte à côte,
+           reliées par une flèche, chacune avec ses ateliers ; dessous, ce qui court toute l’année. -->
+      <div class="gr-ans">
+        <div class="gr-ans__saison"><p class="gr-jj__titre"><span>Saison 1</span>Se poser</p><p class="gr-ans__gain">Faire le point, en confiance.</p>
+          <div class="gr-jj__atelier"><span class="gr-jj__quand">Les ateliers</span><ul><li class="gr-jj__theme">La confiance</li><li class="gr-jj__theme">L’énergie</li><li class="gr-jj__theme">Le temps</li></ul></div></div>
+        <div class="gr-jj__fleche gr-ans__fleche" aria-hidden="true"><span>→</span></div>
+        <div class="gr-ans__saison"><p class="gr-jj__titre"><span>Saison 2</span>S’écouter</p><p class="gr-ans__gain">Mieux voir ce qui vous donne de l’énergie.</p>
+          <div class="gr-jj__atelier"><span class="gr-jj__quand">Les ateliers</span><ul><li class="gr-jj__theme">Les décisions et le silence</li><li class="gr-jj__theme">Les émotions</li><li class="gr-jj__theme">L’intuition</li></ul></div></div>
+        <div class="gr-jj__fleche gr-ans__fleche" aria-hidden="true"><span>→</span></div>
+        <div class="gr-ans__saison"><p class="gr-jj__titre"><span>Saison 3</span>S’ouvrir</p><p class="gr-ans__gain">Partager, et avancer avec les autres.</p>
+          <div class="gr-jj__atelier"><span class="gr-jj__quand">Les ateliers</span><ul><li class="gr-jj__theme">L’attention</li><li class="gr-jj__theme">Les relations et le parler vrai</li><li class="gr-jj__theme">Le collectif</li></ul></div></div>
+        <div class="gr-jj__fleche gr-ans__fleche" aria-hidden="true"><span>→</span></div>
+        <div class="gr-ans__saison"><p class="gr-jj__titre"><span>Saison 4</span>Incarner</p><p class="gr-ans__gain">Le vivre au quotidien, dans votre activité.</p>
+          <div class="gr-jj__atelier"><span class="gr-jj__quand">Les ateliers</span><ul><li class="gr-jj__theme">L’incertitude</li></ul></div></div>
       </div>
-      <div class="gr-format">
-        <span class="gr-format__quand">Chaque semaine</span>
-        <h3>Le temps ensemble, pour le faire vivre.</h3>
-        <p>2 h 30 entre deux ateliers, même jour, même heure. Trois façons de se retrouver, qui se relaient :</p>
-        <ul class="gr-facons">
-          <li><strong>Entre nous.</strong> La parole circule, et chacun trouve sa propre réponse.</li>
-          <li><strong>Activité physique douce.</strong> On bouge, on respire, on prend l’air dans le parc : le corps comme chemin vers la lucidité.</li>
-          <li><strong>Activité physique plus dynamique.</strong> Se dépenser ensemble, chacun à son rythme, pour repartir avec de l’élan.</li>
-        </ul>
+      <div class="gr-notes gr-an__rangs">
+        <div class="gr-an__rang">
+          <span class="gr-an__quand">Chaque mois</span>
+          <div><h3>L’atelier ouvre un thème.</h3><p>La parole circule, et chacun repart avec ce qui lui parle.</p></div>
+          <div class="gr-an__note"><strong>10<small> /10</small></strong><span class="gr-pastilles" data-note="10" aria-hidden="true"></span><p>Recommandation</p></div>
+        </div>
+        <div class="gr-an__rang">
+          <span class="gr-an__quand">Chaque semaine</span>
+          <div><h3>Le temps ensemble le fait vivre.</h3><p>Entre deux ateliers, vous l’essayez dans votre semaine, et le groupe en est témoin. 2 h 30, même jour, même heure.</p>
+            <ul class="gr-an__themes"><li>Entre nous</li><li>Activité physique douce</li><li>Activité physique plus dynamique</li></ul></div>
+          <div class="gr-an__note"><strong>8,7<small> /10</small></strong><span class="gr-pastilles" data-note="8.7" aria-hidden="true"></span><p>Énergie en repartant, contre 6,3 en arrivant</p></div>
+        </div>
+        <div class="gr-an__rang">
+          <span class="gr-an__quand">Toute l’année</span>
+          <div><h3>Le même groupe, accompagné.</h3><p>Les mêmes dix personnes et des coachs à vos côtés : la confiance grandit d’une saison à l’autre.</p></div>
+          <div class="gr-an__note"><strong>9,7<small> /10</small></strong><span class="gr-pastilles" data-note="9.7" aria-hidden="true"></span><p>Qualité de l’accompagnement</p></div>
+        </div>
       </div>
-    </div>
-    <!-- Les notes du premier groupe en une bande, sous les deux colonnes, chacune avec ce qu'elle mesure (Arnaud, 15 octobre 2026 :
-         « pas fan de la disposition et de la DA des trois blocs, mais l'idée est bonne »). -->
-    <div class="gr-notes">
-      <div><span class="gr-notes__lien">L’atelier du mois</span><strong>10<small> /10</small></strong><span class="gr-pastilles" data-note="10" aria-hidden="true"></span><p>La recommandation des ateliers.</p></div>
-      <div><span class="gr-notes__lien">Le temps ensemble</span><strong>8,7<small> /10</small></strong><span class="gr-pastilles" data-note="8.7" aria-hidden="true"></span><p>L’énergie en repartant d’une séance, contre 6,3 en arrivant.</p></div>
-      <div><span class="gr-notes__lien">L’accompagnement</span><strong>9,7<small> /10</small></strong><span class="gr-pastilles" data-note="9.7" aria-hidden="true"></span><p>La qualité de l’accompagnement des coachs.</p></div>
     </div>
   </section>
+  </div>
 
   <!-- La maison rattachée au parcours (Arnaud, 15 octobre 2026 : « fais pareil pour le Pour vous, et faire le lien vers la maison ») :
        chaque photo dit quel moment de l'année s'y vit. Le déjeuner se prend sur place les jours d’atelier (Arnaud, 15 octobre 2026 : « le mardi, c’est pas le déjeuner, c’est quand on a un atelier »). -->
@@ -246,6 +254,6 @@
     <p data-fin-texte>Jeudi 15 octobre à 14 h, à la Greatly House. Vous recevez une confirmation par e-mail. À très vite.</p>
   </div>
 </dialog>
-<script type="module" src="assets/js/parcours/groupe.js?v=217"></script>
+<script type="module" src="assets/js/parcours/groupe.js?v=225"></script>
 </body>
 </html>

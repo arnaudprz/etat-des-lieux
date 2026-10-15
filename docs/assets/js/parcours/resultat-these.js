@@ -6,12 +6,12 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu, ideeActive } from '../contenu.js?v=217';
-import { decoder } from '../lien.js?v=217';
-import { envoyerContact, compteur } from '../api.js?v=217';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=217';
-import { memoriserResultat } from '../session.js?v=217';
-import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=217';
+import { chargerContenu, ideeActive } from '../contenu.js?v=225';
+import { decoder } from '../lien.js?v=225';
+import { envoyerContact, compteur } from '../api.js?v=225';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=225';
+import { memoriserResultat } from '../session.js?v=225';
+import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=225';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -470,9 +470,8 @@ function brancherRecevoir() {
         const go = el('button', 'recevoir-suite__cta'); go.type = 'button';
         go.innerHTML = '<span>Découvrir les solutions</span><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#0C1011" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i>';
         go.addEventListener('click', () => ouvrir(prenom));
-        const tard = el('button', 'recevoir-suite__tard', 'Plus tard'); tard.type = 'button';
-        tard.addEventListener('click', () => { const x = document.querySelector('.fenetre-mail__fermer'); if (x) x.click(); });
-        actions.append(go, tard); c.appendChild(actions);
+        // Pas de « Plus tard » (Arnaud, 15 octobre 2026) : la croix de la fenêtre suffit pour fermer.
+        actions.append(go); c.appendChild(actions);
         fin.appendChild(c);
       }
       bloc.replaceChildren(fin); bloc.classList.add('recevoir--envoye');

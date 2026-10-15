@@ -10,12 +10,12 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu, codesActifs } from '../contenu.js?v=217';
-import { relancesAEnvoyer } from '../calcul.js?v=217';
-import { lienResultat } from '../lien.js?v=217';
-import { envoyerReponse, compteur } from '../api.js?v=217';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=217';
-import { evenement } from './commun.js?v=217';
+import { chargerContenu, codesActifs } from '../contenu.js?v=225';
+import { relancesAEnvoyer } from '../calcul.js?v=225';
+import { lienResultat } from '../lien.js?v=225';
+import { envoyerReponse, compteur } from '../api.js?v=225';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=225';
+import { evenement } from './commun.js?v=225';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -581,23 +581,28 @@ style.textContent = [
   '.edl-frise3__pas:last-child { flex: 0 0 auto; }',
   'html.edl-phrases .edl-ph > div:first-child > .edl-frise3 { display: flex !important; order: -1; margin-bottom: 0.75rem; }',
   'html.edl-phrases .edl-ph > div:first-child > :first-child:not(.edl-frise3) { display: none !important; }',
-  // Les 16 phrases dans la DA de l'accueil (proposition du 15 octobre 2026) : l'écran entier sur le fond bleu-vert clair, le texte
+  // Les 16 phrases dans la DA de l'accueil (proposition du 15 octobre 2026), sur fond blanc (Arnaud : « je n'aime pas le fond gris, mais j'adore le fonctionnement ») ; le texte
   // qui domine à gauche (les ronds des thèmes, le thème en titre en deux temps, son « pourquoi » en chapô), la carte blanche à
   // droite avec la phrase en grand.
-  'html.edl-phrases main > section:has(.edl-ph) { background: #EEF4F5; min-height: calc(100svh - var(--edl-reste, 105px)); display: flex; align-items: center; box-sizing: border-box; }',
-  'html.edl-phrases main > section:has(.edl-ph) > div { width: 100%; padding: clamp(1rem, 3vh, 2rem) 0 !important; }',
+  'html.edl-phrases main > section:has(.edl-ph) { background: #FFFFFF; min-height: calc(100svh - var(--edl-reste, 105px)); display: flex; align-items: flex-start; box-sizing: border-box; }',
+  'html.edl-phrases main > section:has(.edl-ph) > div { width: 100%; padding: clamp(1.25rem, 4vh, 2.5rem) 0 !important; }',
+  // Tout reste fixe d'une question à l'autre (Arnaud, 15 octobre 2026) : la frise, le thème et le haut de la carte ne bougent plus
+  // quand la carte s'allonge ; elle grandit vers le bas.
   'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) { padding-top: clamp(1.25rem, 3vh, 2rem) !important; padding-bottom: clamp(1.25rem, 3vh, 2rem) !important; gap: clamp(0.75rem, 2vh, 1.25rem) !important; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) > p:first-child { font-size: clamp(1.375rem, 3.2vh, 2rem) !important; }',
-  'html.edl-phrases .edl-ph { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr) !important; column-gap: 3.5rem !important; align-items: center !important; grid-template-rows: auto auto auto !important; }',
-  'html.edl-phrases .edl-frise3__pas i { box-shadow: 0 0 0 4px #EEF4F5; background: #C7D9DC; }',
+  'html.edl-phrases .edl-ph { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr) !important; column-gap: 3.5rem !important; align-items: start !important; grid-template-rows: auto auto auto !important; }',
+  'html.edl-phrases .edl-frise3__pas i { box-shadow: 0 0 0 4px #FFFFFF; background: #C7D9DC; }',
   'html.edl-phrases .edl-frise3__pas:not(:last-child)::after { background: #C7D9DC; }',
-  'html.edl-phrases .edl-frise3__pas.actif i { box-shadow: 0 0 0 4px #EEF4F5, 0 0 0 5.5px #23545B; background: #B4F25C; }',
+  'html.edl-phrases .edl-frise3__pas.actif i { box-shadow: 0 0 0 4px #FFFFFF, 0 0 0 5.5px #23545B; background: #B4F25C; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-tete { align-self: start; gap: 1.25rem !important; margin-top: 1.5rem !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-tete { height: 19rem; overflow: hidden; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-tete h2 { height: 9.75rem; overflow: hidden; flex-shrink: 0; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-tete p { max-height: 7.5rem; overflow: hidden; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-tete h2 { margin: 0 !important; font-size: clamp(2.75rem, 4.4vw, 4rem) !important; line-height: 1 !important; letter-spacing: -.04em !important; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-tete h2::before { content: attr(data-edl-theme); display: block; margin-bottom: 0.25rem; font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; font-size: clamp(1.75rem, 2.6vw, 2.5rem); letter-spacing: -.01em; color: #23545B; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-tete p { font-family: "Bricolage Grotesque", sans-serif !important; font-weight: 300 !important; font-size: clamp(1.0625rem, 1.5vw, 1.3125rem) !important; line-height: 1.5 !important; color: #455051 !important; max-width: 30rem; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-tete p strong, html.edl-phrases .edl-ph > div > .edl-ph-tete p > span:first-child { display: block; margin-bottom: 0.5rem; font-family: "DM Sans", sans-serif; font-weight: 700; font-size: 0.75rem; letter-spacing: .14em; text-transform: uppercase; color: #23545B; }',
-  'html.edl-phrases .edl-ph > div > .edl-ph-carte, html.edl-phrases .edl-ph > .edl-merci2 { border: 0 !important; border-radius: 1.75rem !important; background: #FFFFFF !important; box-shadow: none !important; padding: clamp(1.75rem, 4vh, 2.75rem) clamp(2rem, 3vw, 2.75rem) !important; min-height: 0 !important; align-self: center !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte, html.edl-phrases .edl-ph > .edl-merci2 { border: 1px solid #DCE8EA !important; border-radius: 1.75rem !important; background: #FFFFFF !important; box-shadow: none !important; padding: clamp(1.75rem, 4vh, 2.75rem) clamp(2rem, 3vw, 2.75rem) !important; min-height: 0 !important; align-self: start !important; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { font-size: clamp(1.625rem, 2.4vw, 2rem) !important; line-height: 1.15 !important; letter-spacing: -.025em !important; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt { min-height: 3.25rem !important; font-size: 1.0625rem !important; border-color: #C7D9DC !important; }',
   'html.edl-phrases .edl-ph > .edl-ph-nav { align-self: start; }',
@@ -725,9 +730,9 @@ const etapesProfil = () => {
   let merci = carte.querySelector(':scope > .edl-merci');
   if (!merci) {
     merci = document.createElement('div'); merci.className = 'edl-merci';
-    merci.innerHTML = '<p class="edl-merci__titre"><span class="leger">Merci,</span> <span class="gras">place à vos 16 phrases.</span></p>'
+    merci.innerHTML = '<p class="edl-merci__titre"><span class="leger">Merci,</span> <span class="gras">place à vos 16 questions.</span></p>'
       + '<p class="edl-merci__texte">Environ 2 minutes, à votre rythme, pour obtenir votre état des lieux.</p>'
-      + '<button type="button" class="edl-merci__cta">Commencer les 16 phrases<span class="edl-merci__rond" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#0C1011" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>';
+      + '<button type="button" class="edl-merci__cta">Commencer les 16 questions<span class="edl-merci__rond" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#0C1011" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>';
     carte.appendChild(merci);
   }
   merci.hidden = !fin;
@@ -837,6 +842,16 @@ const etapesPhrases = () => {
     + cartes.map((_, k) => '<i class="' + (k < etapePhrase ? 'fait' : k === etapePhrase ? 'actif' : '') + '"></i>').join('') + '</span>';
   if (prog.innerHTML !== html) prog.innerHTML = html;
   racine.classList.toggle('edl-phrases-fin', fin);
+  // Le bloc de gauche ne bouge plus d'un thème à l'autre (Arnaud, 15 octobre 2026) : le titre a une hauteur fixe, et sa taille
+  // s'ajuste s'il est plus long ; le « pourquoi » dessous aussi. Rien ne dépend de la longueur des textes.
+  if (tete) requestAnimationFrame(() => {
+    const ajuster = (x, max, min) => { if (!x) return; let t = max; x.style.setProperty('font-size', t + 'px', 'important');
+      while (x.scrollHeight > x.clientHeight + 1 && t > min) { t -= 2; x.style.setProperty('font-size', t + 'px', 'important'); } };
+    const h = tete.querySelector('h2'); const base = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    ajuster(h, Math.min(64, Math.max(44, innerWidth * 0.044)), 28);
+    ajuster(tete.querySelector('p'), Math.min(21, Math.max(17, innerWidth * 0.015)), 14);
+    void base;
+  });
 };
 const allerPhrase = (n) => {
   const w = zonePhrases(); const c = w && (w.querySelector('.edl-ph-carte') || w.querySelector(':scope > .edl-merci2'));

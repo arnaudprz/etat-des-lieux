@@ -6,13 +6,13 @@
  * « Continuer » reste inactif tant qu'un champ obligatoire manque.
  */
 
-import { chargerContenu } from '../contenu.js?v=217';
-import { compteur } from '../api.js?v=217';
-import { lire, ecrire, memoriserProfil } from '../session.js?v=217';
+import { chargerContenu } from '../contenu.js?v=225';
+import { compteur } from '../api.js?v=225';
+import { lire, ecrire, memoriserProfil } from '../session.js?v=225';
 import {
   $, el, texte, vider, signalerModeDemo, typographierPage,
   messageErreur, installerEtapes, normaliser,
-} from './commun.js?v=217';
+} from './commun.js?v=225';
 
 /** Les champs obligatoires, dans l'ordre d'affichage. */
 const OBLIGATOIRES = ['role', 'taille_entreprise', 'secteur', 'taille_equipe'];
