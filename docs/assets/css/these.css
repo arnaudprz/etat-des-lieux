@@ -530,3 +530,6 @@ html:has(dialog.fenetre-mail[open]){overflow:hidden}
   .nv-theme{padding:2rem 0!important}
   .nv-lire{margin-bottom:2rem!important}
 }
+/* Contraste (WCAG 1.4.3, responsive 16 octobre 2026) : les « /100 » et petites mentions sur fond clair passent de #697374 à #455051. */
+.nv-cinq__val small,.nv-score span,.nv-cinq__nom,.nv-sur{color:#455051}
+.nv-une .nv-sur:first-child,.nv-sur--bv{color:#23545B}

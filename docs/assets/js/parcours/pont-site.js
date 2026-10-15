@@ -283,6 +283,7 @@ const retoucher = () => {
     if (/^(En 2 minutes|Regardez votre équipe|Votre équipe telle que vous la voyez)/.test(norm(x.textContent || '')) && x.style.display !== 'none') x.style.display = 'none';
   });
   if (page === 'accueil') { nombre(); blocPas(); }
+  if (page === 'accueil' && document.querySelector('[data-maquette] .edl-nombre')) document.documentElement.classList.add('edl-pret');
   // « vous » surligné en vert vif dans le titre de l'étape 1, comme le titre de l'accueil (Arnaud, 14 octobre 2026).
   if (page === 'questionnaire') document.querySelectorAll('[data-maquette] h1 span, [data-maquette] h2 span').forEach((x) => {
     if (x.children.length === 0 && norm(x.textContent || '') === 'sur vous.') x.innerHTML = 'sur <span class="g-peps edl-vous">vous</span>.';
@@ -312,6 +313,7 @@ const retoucher = () => {
 
   if (page === 'questionnaire' && typeof etapesPhrases === 'function') etapesPhrases();
   if (page === 'questionnaire' && typeof friseEtapes === 'function') friseEtapes();
+  if (page === 'questionnaire') document.documentElement.classList.add('edl-pret');
   // « Retour » plus discret (Arnaud, 15 octobre 2026 : « trop gros ») : un lien secondaire, pas un second bouton.
   if (page === 'questionnaire') document.querySelectorAll('[data-maquette] a, [data-maquette] button').forEach((x) => {
     if (!x.classList.contains('edl-retour') && /^Retour$/.test(norm(x.textContent || ''))) x.classList.add('edl-retour');
@@ -712,6 +714,8 @@ style.textContent = [
     + ' }',
   '.e-lien, .e-lien * { text-decoration-line: none; }',
   '.e-lien:focus:not(:focus-visible) { outline: none; }',
+  // Mention légale du pied, sur téléphone : 4,44:1 et 11,5 px → plus claire et à 13 px (WCAG 1.4.3, responsive 16 octobre 2026).
+  '[data-maquette] footer p[style*="rgba(244,242,234,.5)"] { color: rgba(244, 242, 234, .74) !important; font-size: .8125rem !important; }',
   '@keyframes edlFeuille { from { transform: translateY(100%); } to { transform: none; } }',
   '@keyframes edlVoile { from { opacity: 0; } }',
   '[data-maquette] [tabindex="-1"]:focus:not(:focus-visible), [data-maquette] p:focus:not(:focus-visible) { outline: none; }',
