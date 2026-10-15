@@ -1,5 +1,5 @@
 /**
- * Les 16 affirmations, chacune avec sa question « J'aimerais… ».
+ * Les 16 phrases, chacune avec sa question « J'aimerais… ».
  *
  * Règle : toute réponse « Pas encore » ou « Un peu » ouvre immédiatement, sous
  * les boutons de la même carte, sa question et ses choix. Sans limite de nombre.
@@ -13,16 +13,16 @@
  * Aucun chiffre n'est affiché : ni valeur de réponse, ni numéro, ni pourcentage.
  */
 
-import { chargerContenu, texteAffirmation, relance as relancePour } from '../contenu.js?v=74';
-import { NB_AFFIRMATIONS, ouvreUneRelance, relancesAEnvoyer } from '../calcul.js?v=74';
-import { lienResultat } from '../lien.js?v=74';
-import { icone, chemin } from '../illustration-niveau.js?v=74';
-import { lire, ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=74';
-import { envoyerReponse } from '../api.js?v=74';
+import { chargerContenu, texteAffirmation, relance as relancePour } from '../contenu.js?v=76';
+import { NB_AFFIRMATIONS, ouvreUneRelance, relancesAEnvoyer } from '../calcul.js?v=76';
+import { lienResultat } from '../lien.js?v=76';
+import { icone, chemin } from '../illustration-niveau.js?v=76';
+import { lire, ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=76';
+import { envoyerReponse } from '../api.js?v=76';
 import {
   $, $$, el, texte, vider, signalerModeDemo, typographierPage,
   messageErreur, installerEtapes, annoncer, evenement,
-} from './commun.js?v=74';
+} from './commun.js?v=76';
 
 /** Clé de la valeur « Autre » dans une relance, telle qu'enregistrée. */
 const AUTRE = 'autre';
@@ -82,7 +82,7 @@ function premiereSansReponse(reponses, depuis = 1) {
 function echelle(n, surChoix) {
   const groupe = el('div', {
     classe: 'echelle',
-    attrs: { role: 'group', 'aria-label': `Votre réponse à l'affirmation ${n}` },
+    attrs: { role: 'group', 'aria-label': `Votre réponse à la phrase ${n}` },
   });
   contenu.echelle.forEach((cran) => {
     const bouton = el('button', {
@@ -317,7 +317,7 @@ function majProgression() {
   });
   lien.addEventListener('click', () => montrerLesManques());
   recap.appendChild(document.createTextNode(
-    reste === 1 ? 'Il reste 1 affirmation' : `Il reste ${reste} affirmations`
+    reste === 1 ? 'Il reste 1 phrase' : `Il reste ${reste} phrases`
   ));
   recap.appendChild(lien);
 }
@@ -541,7 +541,7 @@ async function demarrer() {
     const reste = NB_AFFIRMATIONS - repondues();
     if (reste > 0) {
       messageErreur($('#message'), reste === 1
-        ? 'Il reste une affirmation sans réponse.'
+        ? 'Il reste une phrase sans réponse.'
         : `Il en reste ${reste} sans réponse.`);
       montrerLesManques();
       return;

@@ -10,12 +10,12 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu } from '../contenu.js?v=74';
-import { relancesAEnvoyer } from '../calcul.js?v=74';
-import { lienResultat } from '../lien.js?v=74';
-import { envoyerReponse, compteur } from '../api.js?v=74';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=74';
-import { evenement } from './commun.js?v=74';
+import { chargerContenu } from '../contenu.js?v=76';
+import { relancesAEnvoyer } from '../calcul.js?v=76';
+import { lienResultat } from '../lien.js?v=76';
+import { envoyerReponse, compteur } from '../api.js?v=76';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=76';
+import { evenement } from './commun.js?v=76';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -41,9 +41,10 @@ const TEXTES = {
   'Ce qui vous porte déjà': 'Vos réponses à côté de celles de personnes qui travaillent comme vous',
   'Ce qui peut encore évoluer': "Ce que montre l'étude : ce qui nourrit l'engagement",
   'Des mots pour en parler, avec vos collègues ou votre manager': 'Des mots pour en parler, avec votre équipe, votre manager ou votre collectif',
-  'Une étude pour mieux éclairer les équipes': "Une étude pour montrer ce qui nourrit l'engagement",
+  // Comprendre, pas montrer ; regarder, pas vérifier (Arnaud, 15 octobre 2026, audit des wordings).
+  'Une étude pour mieux éclairer les équipes': "Une étude pour comprendre ce qui nourrit l'engagement",
   "Vos réponses, anonymes et regroupées, aident nos intervenants à préparer des ateliers ancrés dans le vécu des équipes, et nos programmes à évoluer. L'étude complète est partagée avec ceux qui le souhaitent.":
-    "Vos réponses restent anonymes. Regroupées, elles servent une étude qui vérifie une idée simple : quand la confiance, le soutien et la cohésion sont là, on s'engage davantage, et les résultats suivent. En équipe comme à son compte. L'étude complète est partagée avec ceux qui le souhaitent.", // texte validé le 13 octobre 2026 (ordinateur)
+    "Vos réponses restent anonymes. Regroupées, elles servent une étude qui regarde si, là où la confiance, le soutien et la cohésion sont là, on s'engage davantage et on atteint mieux ses objectifs. En équipe comme à son compte. L'étude complète est partagée avec ceux qui le souhaitent.", // texte validé le 13 octobre 2026 (ordinateur)
   // « Ce que vous recevez en 2 minutes » : quatre blocs ancrés dans ce que la personne vit vraiment (Arnaud, 13 octobre 2026).
   "Une lecture d'ensemble": 'Votre équipe, telle que vous la voyez',
   'En quelques lignes, la façon dont vous travaillez ensemble, vue depuis votre place.':
@@ -64,7 +65,7 @@ const TEXTES = {
   'Un regard clair sur votre façon de travailler ensemble : ce qui vous porte déjà, ce qui peut encore évoluer, et des mots pour en parler.':
     "Votre équipe ou votre activité, telle que vous la voyez : la confiance, le soutien, la cohésion. À côté, ce que montrent toutes les réponses : ce qui nourrit l'engagement.",
   'Vos réponses, anonymes et regroupées, aident nos intervenants à préparer des ateliers ancrés dans le vécu des équipes, et nos programmes à évoluer.':
-    "Vos réponses restent anonymes. Regroupées, elles servent une étude qui vérifie une idée simple : quand la confiance, le soutien et la cohésion sont là, on s'engage davantage, et les résultats suivent. En équipe comme à son compte. L'étude complète est partagée avec ceux qui le souhaitent.", // la même phrase sur téléphone
+    "Vos réponses restent anonymes. Regroupées, elles servent une étude qui regarde si, là où la confiance, le soutien et la cohésion sont là, on s'engage davantage et on atteint mieux ses objectifs. En équipe comme à son compte. L'étude complète est partagée avec ceux qui le souhaitent.", // la même phrase sur téléphone
   // L'introduction du profil (Arnaud, 13 octobre 2026 : « ce texte n'est pas top »).
   "Pour lire vos réponses à côté de celles d'équipes qui vous ressemblent, quand elles seront assez nombreuses. Rien ne permet de vous identifier.":
     'Pour vous situer parmi toutes les réponses, en équipe ou à votre compte. Rien ne permet de vous identifier.',
@@ -88,24 +89,25 @@ const TEXTES = {
     "Anonyme et sans compte : personne ne sait qui a répondu. Votre résultat s'affiche tout de suite. Vos réponses, regroupées avec les autres, nourrissent l'étude.",
   // Confidentialité : « Vos chiffres par mail » envoie désormais un mail, à la demande (Arnaud, 13 octobre 2026 : « go »).
   "Aucun e-mail automatique n'est envoyé par cet outil.":
-    "Si vous demandez vos chiffres par mail, nous gardons votre prénom, votre nom, votre e-mail et le lien de votre résultat, pour vous l'envoyer. Ce lien contient vos réponses : dans ce cas, et seulement dans ce cas, vos coordonnées sont reliées à ce que vous avez répondu. Nous savons aussi si le mail a été ouvert, grâce à notre service d'envoi. Ces informations ne servent à rien d'autre. Vous pouvez demander leur effacement à tout moment à arnaud@greatly.club.",
+    "Si vous demandez votre état des lieux par mail, nous gardons votre prénom, votre nom, votre e-mail et le lien de votre résultat, pour vous l'envoyer. Ce lien contient vos réponses : dans ce cas, et seulement dans ce cas, vos coordonnées sont reliées à ce que vous avez répondu. Nous savons aussi si le mail a été ouvert, grâce à notre service d'envoi. Ces informations ne servent à rien d'autre. Vous pouvez demander leur effacement à tout moment à arnaud@greatly.club.",
   // Confidentialité mise à jour avec les évolutions (Arnaud, 14 octobre 2026) : base Supabase au lieu du tableur Google,
   // chiffres par mail (lien relié aux coordonnées, mesure d'ouverture, prestataires), rôle solo, durée de conservation.
   "État des lieux d'équipe": 'État des lieux',
-  "Vos réponses aux 16 affirmations, et les choix des questions de relance.":
-    "Vos réponses aux 16 affirmations, et les choix des questions de relance. Si vous cochez « Autre », les quelques mots que vous écrivez (sans nom, s'il vous plaît).",
+  // « 16 phrases », une seule façon de dire, dans la page aussi (Arnaud, 15 octobre 2026, audit des wordings).
+  "Vos réponses aux 16 phrases, et les choix des questions de relance.":
+    "Vos réponses aux 16 phrases, et les choix des questions de relance. Si vous cochez « Autre », les quelques mots que vous écrivez (sans nom, s'il vous plaît).",
   "Les éléments de profil que vous indiquez : rôle dans l'équipe, genre si vous le souhaitez, taille de l'entreprise, secteur d'activité, taille de l'équipe.":
     "Les éléments de profil que vous indiquez : votre façon de travailler (en encadrant une équipe, au sein d'une équipe, ou en solo), genre si vous le souhaitez, taille de l'entreprise et de l'équipe (pas pour un solo), secteur d'activité.",
   "Aucun cookie publicitaire, aucun traceur d'audience tierce.":
     "Aucun cookie publicitaire, aucun traceur d'audience tierce. Seul le mail de résultat, si vous le demandez, indique s'il a été ouvert.",
   "Votre lien personnel contient vos réponses, sous forme abrégée, directement dans l'adresse. Il reste dans votre navigateur et n'est jamais envoyé à nos serveurs. Personne ne peut s'en servir pour retrouver votre nom.":
-    "Votre lien personnel contient vos réponses, sous forme abrégée, directement dans l'adresse. Il reste dans votre navigateur et ne nous est pas envoyé, sauf si vous demandez vos chiffres par mail (voir plus bas). Personne ne peut s'en servir pour retrouver votre nom.",
+    "Votre lien personnel contient vos réponses, sous forme abrégée, directement dans l'adresse. Il reste dans votre navigateur et ne nous est pas envoyé, sauf si vous demandez votre état des lieux par mail (voir plus bas). Personne ne peut s'en servir pour retrouver votre nom.",
   "Si vous laissez votre prénom, votre nom, votre entreprise et votre e-mail professionnel pour recevoir l'étude complète, ces informations sont enregistrées dans un fichier séparé. Elles ne portent aucun identifiant de réponse ni de visite : il n'existe aucun moyen, même technique, de les relier à ce que vous avez répondu.":
     "Si vous laissez votre prénom, votre nom, votre entreprise et votre e-mail professionnel pour recevoir l'étude complète, ces informations sont enregistrées à part. Elles ne portent aucun identifiant de réponse ni de visite : il n'existe aucun moyen, même technique, de les relier à ce que vous avez répondu.",
   "Les réponses anonymes et les coordonnées sont stockées dans deux feuilles distinctes d'un tableur Google appartenant à Greatly, accessible aux seules personnes de Greatly qui en ont besoin.":
-    "Les réponses anonymes et les coordonnées sont stockées séparément dans une base de données hébergée en Allemagne par Supabase, accessible aux seules personnes de Greatly qui en ont besoin. Si vous demandez vos chiffres par mail, deux prestataires interviennent pour notre compte, uniquement pour cet envoi et sur des serveurs en Europe : Browserless, qui fabrique le PDF à partir du lien de votre résultat et de votre prénom, et Brevo, qui envoie le mail.",
+    "Les réponses anonymes et les coordonnées sont stockées séparément dans une base de données hébergée en Allemagne par Supabase, accessible aux seules personnes de Greatly qui en ont besoin. Si vous demandez votre état des lieux par mail, deux prestataires interviennent pour notre compte, uniquement pour cet envoi et sur des serveurs en Europe : Browserless, qui fabrique le PDF à partir du lien de votre résultat et de votre prénom, et Brevo, qui envoie le mail.",
   "Les coordonnées laissées pour recevoir l'étude sont conservées jusqu'à l'envoi de l'étude, puis trois ans au maximum.":
-    "Les coordonnées laissées pour recevoir l'étude sont conservées jusqu'à l'envoi de l'étude, puis cinq ans au maximum. Celles laissées pour recevoir vos chiffres par mail sont conservées cinq ans au plus après l'envoi.",
+    "Les coordonnées laissées pour recevoir l'étude sont conservées jusqu'à l'envoi de l'étude, puis cinq ans au maximum. Celles laissées pour recevoir votre état des lieux par mail sont conservées cinq ans au plus après l'envoi.",
 };
 const TEXTES_N = Object.fromEntries(Object.entries(TEXTES).map(([k, v]) => [norm(k), v]));
 
@@ -243,6 +245,8 @@ const retoucher = () => {
     else if (total != null && t === '255' && n.parentElement && /participé/.test(n.parentElement.parentElement?.textContent || '')) n.nodeValue = String(total);
   }
   // L'exemple de résultat de la maquette (huit sommets, quatre niveaux) n'existe plus : on le retire.
+  // Ces blocs et le petit compteur sont aussi retirés du HTML de base, qui porte déjà les textes de TEXTES : moteurs, aperçus
+  // et premier affichage disent la même chose que la page (Arnaud, 15 octobre 2026, audit des wordings). On garde ce filet.
   document.querySelectorAll('[data-maquette] section').forEach((s) => {
     const t = norm(s.textContent || '');
     // « Ce que vous recevez en 2 minutes » ne sert à rien (Arnaud, 13 octobre 2026) : retiré aussi.

@@ -75,17 +75,19 @@ describe('solo : contenus', () => {
   test('autant d’idées qu’avant par affirmation (la base contrôle ces nombres)', () => {
     // Q10 : 4 idées depuis le 14 octobre 2026 (doublon « regard extérieur » retiré). La base accepte toujours : elle vérifie
     // seulement qu'un numéro d'idée reste sous l'ancien maximum (5).
-    const nb = { 1: 5, 2: 4, 3: 5, 4: 5, 5: 4, 6: 5, 7: 5, 8: 5, 9: 5, 10: 4, 11: 4, 12: 4, 13: 5, 14: 4, 15: 4, 16: 5 };
+    // Q7 : 6 idées depuis le 15 octobre 2026, « Fixer mes prix plus sereinement » ajoutée à la fin (audit des wordings) :
+    // la base doit accepter l'indice 5 (migration 35).
+    const nb = { 1: 5, 2: 4, 3: 5, 4: 5, 5: 4, 6: 5, 7: 6, 8: 5, 9: 5, 10: 4, 11: 4, 12: 4, 13: 5, 14: 4, 15: 4, 16: 5 };
     for (const a of contenu.affirmations) assert.equal(a.relance.solo.choix.length, nb[a.n], 'idées ' + a.n);
   });
   test('16 phrases solo, aux mêmes numéros', () => {
     assert.equal(contenu.affirmations.length, 16);
     contenu.affirmations.forEach((a, k) => { assert.equal(a.n, k + 1); assert.ok(a.solo && a.solo.length > 10, 'phrase ' + a.n); });
   });
-  test('4 ou 5 idées par affirmation, marquées à valider', () => {
+  test('4 à 6 idées par affirmation, marquées à valider', () => {
     for (const a of contenu.affirmations) {
       const r = a.relance.solo;
-      assert.ok(r.choix.length >= 4 && r.choix.length <= 5, 'idées ' + a.n);
+      assert.ok(r.choix.length >= 4 && r.choix.length <= 6, 'idées ' + a.n);
       assert.equal(r.a_valider, true);
     }
   });

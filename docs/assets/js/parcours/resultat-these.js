@@ -6,12 +6,12 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu } from '../contenu.js?v=74';
-import { decoder } from '../lien.js?v=74';
-import { envoyerContact, compteur } from '../api.js?v=74';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=74';
-import { memoriserResultat } from '../session.js?v=74';
-import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=74';
+import { chargerContenu } from '../contenu.js?v=76';
+import { decoder } from '../lien.js?v=76';
+import { envoyerContact, compteur } from '../api.js?v=76';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=76';
+import { memoriserResultat } from '../session.js?v=76';
+import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=76';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -122,6 +122,13 @@ function afficher(lu, contenu, these) {
   const rep = lu.reponses;
   carteRegard(rep);
   const solo = lu.role === 'solo';
+  // La note « Comment lire ces chiffres » pour un solo (Arnaud, 15 octobre 2026, audit des wordings) : son activité, les autres
+  // indépendants, et ses partenaires à la place des métiers d'une escale. La page porte la version équipe.
+  if (solo) {
+    document.querySelectorAll('[data-regard-note]').forEach((n) => { n.textContent = 'C’est votre regard sur votre activité, pas une note.'; });
+    document.querySelectorAll('[data-compte-qui]').forEach((n) => { n.textContent = 'Ce sont les réponses des autres indépendants.'; });
+    document.querySelectorAll('[data-gittell-qui]').forEach((n) => { n.textContent = 'Elle a étudié pendant des années comment des personnes aux métiers différents avancent ensemble, d’abord dans les escales de compagnies aériennes, puis dans les hôpitaux. Pour vous, ce sont vos clients, vos sous-traitants et votre collectif d’indépendants.'; });
+  }
   const T = solo ? chiffresPourSolo(these) : these || DEMO; const G = T.groupes || {}; const N = T.n || 0;
   const part = (k) => (G[k] && N ? Math.round(G[k].n / N * 100) : null);
   const compte = (k, champ) => (G[k] && G[k][champ] != null ? G[k].n * G[k][champ] / 100 : 0);
@@ -145,7 +152,11 @@ function afficher(lu, contenu, these) {
     if ($('[data-lui-leger]')) $('[data-lui-leger]').textContent = 'Votre activité,';
     $('[data-lui-titre]').textContent = 'telle que vous la voyez.';
     if ($('[data-lui-sur]')) $('[data-lui-sur]').textContent = 'Votre regard';
-  } else $('[data-lui-titre]').textContent = 'votre équipe.';
+  } else {
+    // « Votre équipe » une seule fois : le surtitre dit « Votre regard », le titre garde l'équipe (Arnaud, 15 octobre 2026).
+    $('[data-lui-titre]').textContent = 'votre équipe.';
+    if ($('[data-lui-sur]')) $('[data-lui-sur]').textContent = 'Votre regard';
+  }
   // À droite, pour un solo : toujours « Ce que montrent les indépendants ». Tant que certains thèmes n'ont pas encore assez
   // d'indépendants, une ligne le dit, en positif.
   const D_SUR = !solo ? 'Toute l’étude' : 'Les indépendants';
@@ -178,7 +189,7 @@ function afficher(lu, contenu, these) {
   // Pour un solo, les phrases ne parlent que de personnes, jamais d'équipe (13 octobre 2026).
   if (solo) { NOMS.soutien = ['le soutien', 'Là où le soutien est là, ']; NOMS.cohesion = ['la cohésion', 'Là où la cohésion est là, ']; }
   // Des phrases comme « Ce qu'on peut dire, chiffres à l'appui » (Arnaud, 13 octobre 2026), au-dessus des pastilles.
-  const MANQUE = { confiance: 'Là où elle manque, ', soutien: 'Là où il manque, ', cohesion: 'Là où elle manque, ' };
+  const MANQUE = { confiance: 'Là où elle est moins présente, ', soutien: 'Là où il est moins présent, ', cohesion: 'Là où elle est moins présente, ' }; // (Arnaud, 15 octobre 2026, audit des wordings)
   const reste = (b) => (b === 0 ? 'aucune.' : pc(b) + '.');
   const LIGNES = [
     ...MOTS.map((m) => ({ affs: m.aff, icone: m.icone, nom: m.nom, oui: la(rep, m.aff), lui_p: pcLui(m.aff),
@@ -186,9 +197,9 @@ function afficher(lu, contenu, these) {
       lui_non: m.nom + ' peut encore grandir dans votre équipe.',
       comme: (oui) => (oui ? 'Comme vous, d’autres personnes ' + { confiance: 'ont la confiance', soutien: 'se sentent soutenues', cohesion: 'vivent la cohésion' }[m.cle] + ' dans leur équipe.'
         : 'Comme vous, d’autres personnes ' + { confiance: 'manquent encore de confiance', soutien: 'manquent encore de soutien', cohesion: 'manquent encore de cohésion' }[m.cle] + '.'),
-      contre: (oui) => (oui ? { confiance: 'Là où la confiance manque', soutien: 'Là où le soutien manque', cohesion: 'Là où la cohésion manque' }[m.cle]
+      contre: (oui) => (oui ? { confiance: 'Avec moins de confiance', soutien: 'Avec moins de soutien', cohesion: 'Avec moins de cohésion' }[m.cle]
         : { confiance: 'Là où la confiance est là', soutien: 'Là où le soutien est là', cohesion: 'Là où la cohésion est là' }[m.cle]),
-      p: I[m.cle], a: eng(m.groupe + '_avec'), b: eng(m.groupe + '_sans'), a_nom: { confiance: 'Avec la confiance', soutien: 'Avec du soutien', cohesion: 'Avec la cohésion' }[m.cle], b_nom: { confiance: 'Sans assez de confiance', soutien: 'Sans assez de soutien', cohesion: 'Sans assez de cohésion' }[m.cle], ici: la(rep, m.aff),
+      p: I[m.cle], a: eng(m.groupe + '_avec'), b: eng(m.groupe + '_sans'), a_nom: { confiance: 'Avec la confiance', soutien: 'Avec du soutien', cohesion: 'Avec la cohésion' }[m.cle], b_nom: { confiance: 'Avec moins de confiance', soutien: 'Avec moins de soutien', cohesion: 'Avec moins de cohésion' }[m.cle], ici: la(rep, m.aff),
       pourquoi: () => { const v = pcLui(m.aff); return 'Pourquoi vous êtes de ce côté : vos réponses sur ' + NOMS[m.cle][0] + ' donnent ' + v + ' sur 100. ' + (v >= 50 ? 'À partir de 50, on considère ' + (m.cle === 'soutien' ? 'qu’il est là.' : 'qu’elle est là.') : 'En dessous de 50, on considère ' + (m.cle === 'soutien' ? 'qu’il n’est pas encore là.' : 'qu’elle n’est pas encore là.')); },
       phrase: (a, b) => NOMS[m.cle][1] + pc(a) + ' des personnes sont engagées. ' + MANQUE[m.cle] + reste(b),
       tous: () => NOMS[m.cle][1] + dit(eng(m.groupe + '_avec'), eng(m.groupe + '_sans')) })),
@@ -199,9 +210,9 @@ function afficher(lu, contenu, these) {
       pourquoi: () => { const manquent = MOTS.filter((m) => !la(rep, m.aff)).map((m) => NOMS[m.cle][0] + ' (' + pcLui(m.aff) + ' sur 100)');
         return manquent.length ? 'Pourquoi vous êtes de ce côté : d’après vos réponses, il manque encore ' + manquent.join(' et ') + ' pour que les trois soient réunis.' : 'Pourquoi vous êtes de ce côté : d’après vos réponses, la confiance, le soutien et la cohésion sont tous les trois à 50 sur 100 ou plus.'; },
       comme: (oui) => (oui ? 'Comme vous, d’autres personnes ont la confiance, le soutien et la cohésion réunis.' : 'Comme vous, d’autres personnes n’ont pas encore les trois réunis.'),
-      contre: (oui) => (oui ? 'Là où l’un des trois manque' : 'Là où les trois sont réunis'),
-      p: I.engagement, a: eng('toutes'), b: eng('manque'), a_nom: 'Avec les trois réunis', b_nom: 'Sans les trois réunis', ici: nbLa === 3,
-      phrase: (a, b) => 'Là où la confiance, le soutien et la cohésion sont réunis, ' + pc(a) + ' des personnes sont engagées. Quand l’un des trois manque, ' + reste(b),
+      contre: (oui) => (oui ? 'Avec un ou deux des trois' : 'Là où les trois sont réunis'),
+      p: I.engagement, a: eng('toutes'), b: eng('manque'), a_nom: 'Avec les trois réunis', b_nom: 'Avec un ou deux des trois', ici: nbLa === 3,
+      phrase: (a, b) => 'Là où la confiance, le soutien et la cohésion sont réunis, ' + pc(a) + ' des personnes sont engagées. Avec un ou deux des trois, ' + reste(b),
       tous: () => 'Là où la confiance, le soutien et la cohésion sont réunis, ' + dit(eng('toutes'), eng('manque')) },
     { affs: [16], icone: ICONE_PERF, nom: 'La performance', oui: perfLui, lui_p: pcLui([16]),
       lui_oui: 'Votre équipe atteint ses objectifs : la performance suit.',
@@ -209,15 +220,15 @@ function afficher(lu, contenu, these) {
       pourquoi: () => { const manquent = MOTS.filter((m) => !la(rep, m.aff)).map((m) => NOMS[m.cle][0] + ' (' + pcLui(m.aff) + ' sur 100)');
         return manquent.length ? 'Pourquoi vous êtes de ce côté : d’après vos réponses, il manque encore ' + manquent.join(' et ') + ' pour que les trois soient réunis.' : 'Pourquoi vous êtes de ce côté : d’après vos réponses, la confiance, le soutien et la cohésion sont tous les trois à 50 sur 100 ou plus.'; },
       comme: (oui) => (oui ? 'Comme vous, d’autres personnes ont la confiance, le soutien et la cohésion réunis.' : 'Comme vous, d’autres personnes n’ont pas encore les trois réunis.'),
-      contre: (oui) => (oui ? 'Là où l’un des trois manque' : 'Là où les trois sont réunis'),
+      contre: (oui) => (oui ? 'Avec un ou deux des trois' : 'Là où les trois sont réunis'),
       mot: 'd’entre elles atteignent leurs objectifs',
-      phrase: (a, b) => 'Là où les trois sont réunis, ' + pc(a) + ' des personnes atteignent leurs objectifs. Quand l’un des trois manque, ' + reste(b),
-      p: I.performance, a: G.toutes ? G.toutes.perf : null, b: G.manque ? G.manque.perf : null, a_nom: 'Avec les trois réunis', b_nom: 'Sans les trois réunis', ici: nbLa === 3,
+      phrase: (a, b) => 'Là où les trois sont réunis, ' + pc(a) + ' des personnes atteignent leurs objectifs. Avec un ou deux des trois, ' + reste(b),
+      p: I.performance, a: G.toutes ? G.toutes.perf : null, b: G.manque ? G.manque.perf : null, a_nom: 'Avec les trois réunis', b_nom: 'Avec un ou deux des trois', ici: nbLa === 3,
       tous: () => (G.toutes && G.manque && G.toutes.perf != null && G.manque.perf != null ? 'Là où les trois sont réunis, ' + G.toutes.perf + '\u00a0% atteignent leurs objectifs, contre ' + G.manque.perf + '\u00a0% ailleurs.' : '') },
   ];
   const hote = $('[data-rangees]'); hote.textContent = '';
   LIGNES.forEach((l) => {
-    if (l.fleche) { const f = el('div', 'fleche'); f.append(el('span', '', '↓ La conséquence'), el('span', '', '↓ La conséquence')); hote.appendChild(f); return; }
+    if (l.fleche) { const f = el('div', 'fleche'); f.append(el('span', '', '↓ Ce qui va avec'), el('span', '', '↓ Ce qui va avec')); hote.appendChild(f); return; } // (Arnaud, 15 octobre 2026, audit des wordings)
     // Pour lui aussi, un pourcentage (Arnaud, 13 octobre 2026) : ses réponses sur 3, ramenées à 100.
     // Plus de jugement (Arnaud, 13 octobre 2026) : même couleur pour tous, pas de phrase « atout » / « à grandir ».
     const gauche = el('div', 'carte simple simple--la');
@@ -288,12 +299,12 @@ function afficher(lu, contenu, these) {
   // L'étoile : comment le chiffre est calculé (Arnaud, 13 octobre 2026 : « tu expliqueras avec une étoile »).
   // La note « Comment lire ces chiffres » est écrite dans la page (Arnaud, 13 octobre 2026 : détailler et citer Gittell).
   const phraseThese = t && mq && t.engages != null && mq.engages != null
-    ? 'Là où la confiance, le soutien et la cohésion sont réunis, ' + pc(t.engages) + ' des personnes sont engagées. Ailleurs, ' + pc(mq.engages) + '.' : '';
+    ? 'Là où la confiance, le soutien et la cohésion sont réunis, ' + pc(t.engages) + ' des personnes sont engagées. Avec un ou deux des trois, ' + pc(mq.engages) + '.' : '';
   document.querySelectorAll('[data-these-court]').forEach((n) => { n.textContent = phraseThese; }); // retirée : la thèse est en haut
   // La phrase de la thèse a ses pastilles (Arnaud, 13 octobre 2026) : avec les trois réunis, sans ; la sienne surlignée.
   const hR = $('[data-these-rangs]');
   if (false && hR && t && mq) { hR.textContent = '';
-    [[t.engages, 'Avec les trois réunis', true], [mq.engages, 'Sans les trois réunis', false]].forEach(([p, nom, fort]) => {
+    [[t.engages, 'Avec les trois réunis', true], [mq.engages, 'Avec un ou deux des trois', false]].forEach(([p, nom, fort]) => {
       const vous = (nbLa === 3) === fort; const r = el('div', 'rang' + (vous ? ' rang--vous' : ''));
       const tt = el('span', 'rang__nom', nom); if (vous) tt.appendChild(el('span', 'comme', 'comme vous, selon vos réponses'));
       r.append(tt, pastilles(p, true), el('span', 'rang__val', pc(p))); hR.appendChild(r); }); }
@@ -301,14 +312,15 @@ function afficher(lu, contenu, these) {
   if (t && mq && t.engages != null && mq.engages != null) {
     if ($('[data-ouverture]')) $('[data-ouverture]').hidden = false; // réaffiché quand les chiffres arrivent après un premier affichage vide
     $('[data-ouv-titre]').textContent = pc(t.engages) + ' des personnes sont engagées.';
-    $('[data-ouv-chapo]').textContent = 'Ailleurs, ' + pc(mq.engages) + '.' + (t.perf != null && mq.perf != null ? ' Et la performance suit\u00a0: ' + pc(t.perf) + ' atteignent leurs objectifs, contre ' + pc(mq.perf) + '.' : '');
+    // Parler en gain (Arnaud, 15 octobre 2026, audit des wordings).
+    $('[data-ouv-chapo]').textContent = 'Avec un ou deux des trois, ' + pc(mq.engages) + '.' + (t.perf != null && mq.perf != null ? ' Et elles atteignent plus souvent leurs objectifs\u00a0: ' + pc(t.perf) + ' contre ' + pc(mq.perf) + '.' : '');
     const hC = $('[data-ouv-chiffres]'); hC.textContent = '';
     [['L’engagement', 'sont engagées', t.engages, mq.engages], ['La performance', 'atteignent leurs objectifs', t.perf, mq.perf]].forEach(([nom, verbe, a, b]) => {
       if (a == null || b == null) return;
       const c = el('div', 'carte simple simple--tous ouv-carte');
       const tete = enTete(null, nom); if (solo) tete.appendChild(document.createTextNode(' ')); tete.appendChild(el('span', 'ecart', (a - b >= 0 ? '+' : '') + (a - b) + ' points')); c.appendChild(tete);
       const rs = el('div', 'rangs');
-      [[a, 'Avec les trois réunis', true], [b, 'Quand l’un des trois manque', false]].forEach(([p, lib, fort]) => {
+      [[a, 'Avec les trois réunis', true], [b, 'Avec un ou deux des trois', false]].forEach(([p, lib, fort]) => {
         const r = el('div', 'rang' + (fort ? ' rang--avec' : ' rang--sans'));
         r.append(el('span', 'rang__nom', lib), pastilles(p, true), el('span', 'rang__val', pc(p))); rs.appendChild(r); });
       c.append(rs, el('p', 'ouv-carte__pied', 'Part des personnes qui ' + verbe + '.')); hC.appendChild(c); });
@@ -433,6 +445,44 @@ function brancherRecevoir() {
   });
 }
 
+// « Vos chiffres par mail » s'ouvre en fenêtre quand la lecture arrive sur « Comment lire ces chiffres » (Arnaud, 15 octobre
+// 2026 : « beaucoup de monde ne voient pas le bloc »). C'est le vrai bloc, déplacé dans la fenêtre puis remis à sa place à la
+// fermeture : le formulaire garde ce qu'on a tapé et son envoi. Jamais si le bloc est déjà à l'écran ou déjà envoyé, ni en PDF.
+function fenetreMail() {
+  const bloc = $('[data-recevoir]'); const note = $('[data-note]');
+  if (!bloc || !note || !('IntersectionObserver' in window) || typeof HTMLDialogElement === 'undefined') return;
+  if (document.documentElement.classList.contains('mode-pdf')) return;
+  const visible = (x) => { const r = x.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; };
+  let ouverte = false;
+  const ouvrir = () => {
+    ouverte = true;
+    const place = document.createComment('recevoir');
+    const d = el('dialog', 'fenetre-mail'); d.setAttribute('aria-label', 'Votre état des lieux par mail');
+    const fermer = el('button', 'fenetre-mail__fermer', '×'); fermer.type = 'button'; fermer.setAttribute('aria-label', 'Fermer');
+    bloc.before(place); d.append(fermer, bloc); document.body.appendChild(d);
+    const rendre = () => { place.replaceWith(bloc); d.remove(); ouverte = false; };
+    // Une sortie douce, comme l'arrivée (Arnaud, 15 octobre 2026 : « plus smooth, en mode apparition »).
+    const partir = () => { if (d.classList.contains('fenetre-mail--sort')) return; d.classList.add('fenetre-mail--sort');
+      setTimeout(() => d.close(), matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 260); };
+    fermer.addEventListener('click', partir);
+    d.addEventListener('click', (ev) => { if (ev.target === d) partir(); }); // un clic à côté ferme
+    d.addEventListener('cancel', (ev) => { ev.preventDefault(); partir(); }); // Échap aussi, en douceur
+    d.addEventListener('close', rendre);
+    d.showModal(); fermer.focus({ focusVisible: false });
+  };
+  // Elle revient à chaque fois qu'on redescend sur la note, même après l'avoir fermée (Arnaud, 15 octobre 2026 : « si je la
+  // ferme, je remonte et je redescends, elle doit réapparaître »). Seulement en descendant (la note arrive par le bas), et
+  // plus du tout une fois les chiffres demandés.
+  let dernierY = scrollY, descend = true;
+  addEventListener('scroll', () => { if (scrollY !== dernierY) descend = scrollY > dernierY; dernierY = scrollY; }, { passive: true });
+  new IntersectionObserver((entrees) => {
+    const e = entrees.find((x) => x.isIntersecting); if (!e || ouverte) return;
+    if (!descend) return; // on remonte : rien
+    if (visible(bloc) || !bloc.querySelector('[data-recevoir-form] input') || $('[data-sans-resultat]:not([hidden])')) return;
+    ouvrir();
+  }, { threshold: 0, rootMargin: '0px 0px -30% 0px' }).observe(note);
+}
+
 async function demarrer() {
   // En PDF, la date du jour à côté de « État des lieux », comme sur un document.
   if (document.documentElement.classList.contains('mode-pdf') && $('[data-pdf-date]'))
@@ -446,6 +496,7 @@ async function demarrer() {
   brancherGarder();
   brancherEtude();
   brancherRecevoir();
+  fenetreMail();
   let [these, souhaits] = await Promise.all([lireThese(lu.role), lireSouhaits()]);
   // Démonstration d'un solo (?demo=1&solos=N) : des chiffres fictifs d'indépendants, pour voir la bascule au seuil.
   const nDemo = Number(new URLSearchParams(location.search).get('solos'));

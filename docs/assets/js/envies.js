@@ -11,7 +11,7 @@
  * Tous les textes viennent de contenu.json > envies. Rien n'est écrit en dur.
  */
 
-import { AUTRE } from './lien.js?v=74';
+import { AUTRE } from './lien.js?v=76';
 
 /** L'affirmation des résultats n'appartient à aucune dimension. */
 export const AFFIRMATION_RESULTATS = 16;

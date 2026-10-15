@@ -388,7 +388,7 @@
           "a_valider": true
         }
       },
-      "solo": "Mes clients reconnaissent la valeur de mon travail, et je la facture à son juste prix.",
+      "solo": "Mes clients reconnaissent la valeur de mon travail.",
       "groupe_solo": "Votre place"
     },
     {
@@ -422,7 +422,7 @@
           "choix": [
             "Prendre plus souvent la parole dans mon collectif",
             "Partager ce que je sais avec d'autres indépendants",
-            "Être sollicité pour mon avis",
+            "Qu'on me demande mon avis",
             "Trouver un collectif qui me ressemble",
             "Animer un temps d'échange dans mon collectif"
           ],
@@ -465,12 +465,13 @@
             "Avoir une vue simple de ma trésorerie",
             "Mieux organiser mon agenda",
             "Faire le point chaque mois",
-            "Avoir un appui sur la gestion"
+            "Avoir un appui sur la gestion",
+            "Fixer mes prix plus sereinement"
           ],
           "a_valider": true
         }
       },
-      "solo": "Je sais où j'en suis : mes priorités, mon agenda, ma trésorerie.",
+      "solo": "Je sais où j'en suis dans mon activité.",
       "groupe_solo": "Votre organisation"
     },
     {
@@ -552,7 +553,7 @@
           "a_valider": true
         }
       },
-      "solo": "Quand ça coince avec un client, on en parle vite et on trouve une solution.",
+      "solo": "Quand ça coince avec un client, on trouve une solution.",
       "groupe_solo": "Quand ça accroche"
     },
     {
@@ -713,12 +714,12 @@
           "a_valider": true
         }
       },
-      "solo": "Quand je suis bloqué ou débordé, je sais sur qui compter.",
+      "solo": "Quand ça bloque ou que ça déborde, je sais sur qui compter.",
       "groupe_solo": "La confiance et le soutien"
     },
     {
       "n": 14,
-      "groupe": "Le sens et les résultats",
+      "groupe": "Le sens du travail",
       "membre": "Je vois le sens et l'utilité de ce que fait mon équipe.",
       "manager": "Les membres de mon équipe voient le sens et l'utilité de leur travail.",
       "relance": {
@@ -754,11 +755,11 @@
         }
       },
       "solo": "Je sais pourquoi j'ai choisi de travailler à mon compte, et ça me porte encore.",
-      "groupe_solo": "Le sens et les résultats"
+      "groupe_solo": "Le sens du travail"
     },
     {
       "n": 15,
-      "groupe": "Le sens et les résultats",
+      "groupe": "Le sens du travail",
       "membre": "Dans mon équipe, on parle autant de la façon de travailler ensemble que des chiffres à atteindre.",
       "manager": "Avec mon équipe, je parle autant de la façon de travailler ensemble que des chiffres à atteindre.",
       "relance": {
@@ -794,11 +795,11 @@
         }
       },
       "solo": "Je me sens pleinement engagé dans mon activité, avec une énergie qui dure.",
-      "groupe_solo": "Le sens et les résultats"
+      "groupe_solo": "Le sens du travail"
     },
     {
       "n": 16,
-      "groupe": "Le sens et les résultats",
+      "groupe": "Le sens du travail",
       "membre": "Mon équipe obtient les résultats qu'elle vise.",
       "manager": "Mon équipe obtient les résultats qu'elle vise.",
       "relance": {
@@ -835,7 +836,7 @@
         }
       },
       "solo": "Mon activité atteint les objectifs que je me fixe.",
-      "groupe_solo": "Le sens et les résultats"
+      "groupe_solo": "Le sens du travail"
     }
   ],
   "relance": {
@@ -1195,10 +1196,10 @@
   },
   "questions": {
     "titre": "Comment vivez-vous le travail ensemble ?",
-    "intro": "Pour chaque affirmation, choisissez la réponse qui vous ressemble le plus. Il n'y a pas de bonne réponse.",
+    "intro": "Pour chaque phrase, choisissez la réponse qui vous ressemble le plus. Il n'y a pas de bonne réponse.",
     "bouton": "Voir mon résultat",
     "retour": "Retour",
-    "recapitulatif_complet": "Vous avez répondu aux 16 affirmations"
+    "recapitulatif_complet": "Vous avez répondu aux 16 phrases"
   },
   "engagement": {
     "pourquoi_prefixe": "Pourquoi on s'y intéresse",
@@ -1210,7 +1211,7 @@
       "Quand ça accroche": "On regarde comment l'équipe trouve une solution quand quelque chose coince.",
       "Le soutien du manager": "On se demande quel rôle joue le manager pour aider les métiers à travailler ensemble, au-delà du suivi des objectifs.",
       "La confiance et le soutien": "On cherche à comprendre si l'on peut parler franchement et compter sur les autres. La confiance est au cœur de ce que fait Greatly.",
-      "Le sens et les résultats": "On veut vérifier une idée qui nous tient à cœur : les équipes qui voient le sens de leur travail atteignent-elles plus facilement leurs résultats ?"
+      "Le sens du travail": "On veut vérifier une idée qui nous tient à cœur : les équipes qui voient le sens de leur travail atteignent-elles plus facilement leurs résultats ?"
     },
     "cadre": {
       "surtitre": "Ce qu'on cherche à comprendre",
@@ -1234,7 +1235,7 @@
       "texte": "Vous êtes à mi-chemin. Merci pour vos réponses, elles comptent."
     },
     "avant_resultat": {
-      "promesse": "Dans un instant : votre état des lieux en couleurs, et vos idées pour faire évoluer.",
+      "promesse": "Dans un instant : votre état des lieux, et vos idées si vous en avez coché.",
       "mention": "Vos réponses rejoignent l'étude, de façon anonyme. Elles aident nos intervenants à préparer des ateliers au plus près de ce que vivent les équipes et les indépendants."
     },
     "progression": {
@@ -1526,6 +1527,6 @@
     "Quand ça accroche": "On regarde comment se règlent les tensions avec un client ou un partenaire.",
     "Qui vous épaule": "On se demande si vous avez quelqu'un de confiance avec qui parler avant une décision importante.",
     "La confiance et le soutien": "On cherche à savoir si vous pouvez dire les choses franchement, parler d'un doute ou d'une erreur, et sur qui compter quand ça déborde.",
-    "Le sens et les résultats": "On regarde ce qui donne du sens à votre activité, et les résultats qu'elle obtient. Pour nous, les résultats sont une conséquence, pas un point de départ."
+    "Le sens du travail": "On regarde ce qui donne du sens à votre activité, et les résultats qu'elle obtient. Pour nous, les résultats sont une conséquence, pas un point de départ."
   }
 }

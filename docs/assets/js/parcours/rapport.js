@@ -6,11 +6,11 @@
  * page met data-pret sur <body> : c'est le signal qu'attend Browserless avant d'imprimer. Tout le texte en textContent.
  * Paramètres : ?prenom=… (pour la couverture), ?demo=1 (chiffres de la maquette).
  */
-import { chargerContenu } from '../contenu.js?v=74';
-import { decoder } from '../lien.js?v=74';
-import { compteur } from '../api.js?v=74';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=74';
-import { chiffresPourSolo } from '../seuil-solo.js?v=74';
+import { chargerContenu } from '../contenu.js?v=76';
+import { decoder } from '../lien.js?v=76';
+import { compteur } from '../api.js?v=76';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=76';
+import { chiffresPourSolo } from '../seuil-solo.js?v=76';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -19,19 +19,20 @@ const pc = (p) => (p == null ? '—' : p + ' %');
 
 // Les mêmes thèmes que la page de résultat (resultat-these.js), dans le même ordre.
 const MOTS = [
-  { cle: 'confiance', nom: 'La confiance', aff: [11, 12], avec: 'Avec la confiance', sans: 'Sans assez de confiance', la: 'Là où la confiance est là, ', manque: 'Là où elle manque, ' },
-  { cle: 'soutien', nom: 'Le soutien', aff: [10, 13], avec: 'Avec du soutien', sans: 'Sans assez de soutien', la: 'Là où on se sent soutenu, ', manque: 'Là où il manque, ' },
-  { cle: 'cohesion', nom: 'La cohésion', aff: [1, 2, 5, 6], avec: 'Avec la cohésion', sans: 'Sans assez de cohésion', la: 'Là où l’équipe est soudée, ', manque: 'Là où elle manque, ' },
+  { cle: 'confiance', nom: 'La confiance', aff: [11, 12], avec: 'Avec la confiance', sans: 'Avec moins de confiance', la: 'Là où la confiance est là, ', manque: 'Là où elle est moins présente, ' },
+  { cle: 'soutien', nom: 'Le soutien', aff: [10, 13], avec: 'Avec du soutien', sans: 'Avec moins de soutien', la: 'Là où on se sent soutenu, ', manque: 'Là où il est moins présent, ' },
+  { cle: 'cohesion', nom: 'La cohésion', aff: [1, 2, 5, 6], avec: 'Avec la cohésion', sans: 'Avec moins de cohésion', la: 'Là où l’équipe est soudée, ', manque: 'Là où elle est moins présente, ' },
 ];
 // Les mots de chaque rôle : couverture, pages, et qui « demande » quoi : chacun ne lit que son propre profil (15 octobre 2026).
+// « Votre équipe » une seule fois en tête de la page du regard : le surtitre dit « Votre regard » (Arnaud, 15 octobre 2026).
 const MOTS_ROLE = {
-  manager: { leger: 'Votre équipe,', role: 'En encadrant une équipe', regardSur: 'L’équipe que vous encadrez', regardLeger: 'Telle que vous la voyez,', regardGras: 'votre équipe.',
+  manager: { leger: 'Votre équipe,', role: 'En encadrant une équipe', regardSur: 'Votre regard de manager', regardLeger: 'Telle que vous la voyez,', regardGras: 'votre équipe.',
     chapo: 'Votre regard de manager sur votre équipe, thème par thème, ramené à 100. Ce n’est pas une note : c’est ce que vous voyez.',
     themesSur: 'Votre équipe, et toute l’étude', ideeTetiere: 'Ce que montre l’étude', suite: ['des personnes', 'sont engagées.'],
     envies: 'Ce que vous aimeriez voir grandir dans votre équipe,', regard: 'C’est votre regard de manager, pas une note.',
     compte: 'Ce sont les réponses des managers et des équipes qui ont répondu, sans les indépendants. Un groupe de moins de 3 personnes n’affiche pas de chiffre. Ces chiffres montrent un lien entre les thèmes et l’engagement : à eux seuls, ils ne prouvent pas une cause.',
     demandesTitre: 'Ce que demandent les autres managers', demandes: [['manager', null]] },
-  membre: { leger: 'Votre équipe,', role: 'Au sein d’une équipe', regardSur: 'Votre équipe', regardLeger: 'Telle que vous la voyez,', regardGras: 'votre équipe.',
+  membre: { leger: 'Votre équipe,', role: 'Au sein d’une équipe', regardSur: 'Votre regard', regardLeger: 'Telle que vous la voyez,', regardGras: 'votre équipe.',
     chapo: 'Votre regard sur votre équipe, thème par thème, ramené à 100. Ce n’est pas une note : c’est ce que vous vivez.',
     themesSur: 'Votre équipe, et toute l’étude', ideeTetiere: 'Ce que montre l’étude', suite: ['des personnes', 'sont engagées.'],
     envies: 'Ce que vous aimeriez voir grandir dans votre équipe,', regard: 'C’est votre regard sur votre équipe, pas une note.',
@@ -41,7 +42,8 @@ const MOTS_ROLE = {
     chapo: 'Votre regard sur votre activité et vos partenaires, thème par thème, ramené à 100. Ce n’est pas une note : c’est ce que vous vivez.',
     themesSur: 'Vous, et les autres indépendants', ideeTetiere: 'Ce que montrent les indépendants', suite: ['des indépendants', 'sont engagés.'],
     envies: 'Ce que vous aimeriez voir grandir dans votre activité,', regard: 'C’est votre regard sur votre activité, pas une note.',
-    compte: 'Ce sont les réponses des autres indépendants, jamais celles des équipes. Un groupe de moins de 3 personnes n’affiche pas de chiffre. Ces chiffres montrent un lien entre les thèmes et l’engagement : à eux seuls, ils ne prouvent pas une cause.',
+    gittell: 'Elle a étudié pendant des années comment des personnes aux métiers différents avancent ensemble, d’abord dans les escales de compagnies aériennes, puis dans les hôpitaux. Pour vous, ce sont vos clients, vos sous-traitants et votre collectif d’indépendants.',
+    compte: 'Ce sont les réponses des autres indépendants. Un groupe de moins de 3 personnes n’affiche pas de chiffre. Ces chiffres montrent un lien entre les thèmes et l’engagement : à eux seuls, ils ne prouvent pas une cause.',
     demandesTitre: 'Ce que demandent les autres indépendants', demandes: [['solo', null, 3]] },
 };
 const DEMO = { n: 412, intensites: {}, groupes: { toutes: { n: 240, engages: 86, perf: 71 }, manque: { n: 172, engages: 52, perf: 44 },
@@ -105,17 +107,19 @@ function remplir(lu, contenu, T, souhaits, total) {
   $('[data-idee-tetiere]').textContent = '01 · ' + W.ideeTetiere;
   $('[data-envies-leger]').textContent = W.envies;
   $('[data-lire-compte]').textContent = W.compte;
+  // Pour un solo, ses partenaires à la place des métiers d'une escale (Arnaud, 15 octobre 2026, audit des wordings).
+  if (W.gittell) $('[data-gittell-qui]').textContent = W.gittell;
   $('[data-lire-gauche]').textContent = $('[data-lire-gauche]').textContent.replace('C’est votre regard, pas une note.', W.regard);
 
   // 2. L'idée : la thèse en très grand, puis les deux barres, puis les deux comptes.
   if (t && mq && t.engages != null && mq.engages != null) {
     $('[data-idee-chiffre]').textContent = pc(t.engages);
     $('[data-idee-suite]').replaceChildren(document.createTextNode(W.suite[0]), el('br'), document.createTextNode(W.suite[1]));
-    $('[data-idee-ailleurs]').textContent = 'Quand l’un des trois manque, ' + pc(mq.engages) + '.' + (t.perf != null && mq.perf != null ? ' Et la performance suit : ' + pc(t.perf) + ' atteignent leurs objectifs, contre ' + pc(mq.perf) + '.' : '');
+    $('[data-idee-ailleurs]').textContent = 'Avec un ou deux des trois, ' + pc(mq.engages) + '.' + (t.perf != null && mq.perf != null ? ' Et elles atteignent plus souvent leurs objectifs : ' + pc(t.perf) + ' contre ' + pc(mq.perf) + '.' : ''); // (Arnaud, 15 octobre 2026, audit des wordings)
     const hB = $('[data-idee-barres]');
     [['L’engagement', t.engages, mq.engages], ['La performance', t.perf, mq.perf]].forEach(([nom, a, b]) => { if (a == null || b == null) return;
       const c = el('div', 'barre'); const tt = el('div', 'barre__tete'); tt.append(el('span', '', nom), ecart(a, b));
-      c.append(tt, ligne('Les trois réunis', a), ligne('L’un des trois manque', b, true)); hB.appendChild(c); });
+      c.append(tt, ligne('Les trois réunis', a), ligne('Avec un ou deux des trois', b, true)); hB.appendChild(c); });
   } else {
     $('[data-idee-chiffre]').textContent = '';
     $('[data-idee-ailleurs]').textContent = solo ? 'Le chiffre des indépendants s’affiche ici dès que 3 d’entre eux au moins sont de chaque côté.' : '';
@@ -132,7 +136,7 @@ function remplir(lu, contenu, T, souhaits, total) {
   // 3. Votre regard : cinq thèmes sur 100.
   const SCORES = [...MOTS.map((m) => [m.nom, sur100(m.aff)]), null, ['L’engagement', sur100([14, 15])], ['La performance', sur100([16])]];
   const hS = $('[data-scores]');
-  SCORES.forEach((s) => { if (!s) { hS.appendChild(el('li', 'scores__fleche', '↓ La conséquence')); return; }
+  SCORES.forEach((s) => { if (!s) { hS.appendChild(el('li', 'scores__fleche', '↓ Ce qui va avec')); return; }
     const li = el('li', 'score'); const v = el('span', 'score__val', s[1] == null ? '—' : String(s[1])); v.appendChild(el('small', '', '/100'));
     li.append(el('span', 'score__nom', s[0]), pastilles(s[1], 'vif'), v); hS.appendChild(li); });
 
@@ -144,10 +148,10 @@ function remplir(lu, contenu, T, souhaits, total) {
   const THEMES = [
     ...MOTS.map((m) => ({ nom: m.nom, affs: m.aff, a: eng(m.cle + '_avec'), b: eng(m.cle + '_sans'), an: m.avec, bn: m.sans,
       these: (a, b) => (solo && m.cle !== 'confiance' ? (m.cle === 'soutien' ? 'Là où le soutien est là, ' : 'Là où la cohésion est là, ') : m.la) + pc(a) + ' des personnes sont engagées. ' + m.manque + pc(b) + '.' })),
-    { nom: 'L’engagement', affs: [14, 15], a: eng('toutes'), b: eng('manque'), an: 'Les trois réunis', bn: 'L’un des trois manque',
-      these: (a, b) => 'Là où les trois sont réunis, ' + pc(a) + ' des personnes sont engagées. Quand l’un des trois manque, ' + pc(b) + '.' },
-    { nom: 'La performance', affs: [16], a: t ? t.perf : null, b: mq ? mq.perf : null, an: 'Les trois réunis', bn: 'L’un des trois manque',
-      these: (a, b) => 'Là où les trois sont réunis, ' + pc(a) + ' atteignent leurs objectifs. Quand l’un des trois manque, ' + pc(b) + '.' },
+    { nom: 'L’engagement', affs: [14, 15], a: eng('toutes'), b: eng('manque'), an: 'Les trois réunis', bn: 'Avec un ou deux des trois',
+      these: (a, b) => 'Là où les trois sont réunis, ' + pc(a) + ' des personnes sont engagées. Avec un ou deux des trois, ' + pc(b) + '.' },
+    { nom: 'La performance', affs: [16], a: t ? t.perf : null, b: mq ? mq.perf : null, an: 'Les trois réunis', bn: 'Avec un ou deux des trois',
+      these: (a, b) => 'Là où les trois sont réunis, ' + pc(a) + ' atteignent leurs objectifs. Avec un ou deux des trois, ' + pc(b) + '.' },
   ];
   THEMES.forEach((th, k) => {
     const c = el('article', 'theme'); const g = el('div', 'theme__gauche'); const d = el('div', 'theme__droite');
