@@ -6,11 +6,11 @@
  * page met data-pret sur <body> : c'est le signal qu'attend Browserless avant d'imprimer. Tout le texte en textContent.
  * Paramètres : ?prenom=… (pour la couverture), ?demo=1 (chiffres de la maquette).
  */
-import { chargerContenu } from '../contenu.js?v=76';
-import { decoder } from '../lien.js?v=76';
-import { compteur } from '../api.js?v=76';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=76';
-import { chiffresPourSolo } from '../seuil-solo.js?v=76';
+import { chargerContenu, ideeActive } from '../contenu.js?v=77';
+import { decoder } from '../lien.js?v=77';
+import { compteur } from '../api.js?v=77';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=77';
+import { chiffresPourSolo } from '../seuil-solo.js?v=77';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -42,7 +42,7 @@ const MOTS_ROLE = {
     chapo: 'Votre regard sur votre activité et vos partenaires, thème par thème, ramené à 100. Ce n’est pas une note : c’est ce que vous vivez.',
     themesSur: 'Vous, et les autres indépendants', ideeTetiere: 'Ce que montrent les indépendants', suite: ['des indépendants', 'sont engagés.'],
     envies: 'Ce que vous aimeriez voir grandir dans votre activité,', regard: 'C’est votre regard sur votre activité, pas une note.',
-    gittell: 'Elle a étudié pendant des années comment des personnes aux métiers différents avancent ensemble, d’abord dans les escales de compagnies aériennes, puis dans les hôpitaux. Pour vous, ce sont vos clients, vos sous-traitants et votre collectif d’indépendants.',
+    gittell: 'Elle a étudié pendant des années comment des personnes aux métiers différents avancent ensemble, d’abord dans les escales de compagnies aériennes, puis dans les hôpitaux. Pour vous, c’est votre collectif, et celles et ceux avec qui vous avancez.',
     compte: 'Ce sont les réponses des autres indépendants. Un groupe de moins de 3 personnes n’affiche pas de chiffre. Ces chiffres montrent un lien entre les thèmes et l’engagement : à eux seuls, ils ne prouvent pas une cause.',
     demandesTitre: 'Ce que demandent les autres indépendants', demandes: [['solo', null, 3]] },
 };
@@ -188,7 +188,8 @@ async function demarrer() {
   const lu = decoder(location.hash, contenu);
   if (!lu) { $('[data-sans-resultat]').hidden = false; document.body.dataset.pret = '1'; return; }
   const [T, souhaits, total] = await Promise.all([lireThese(lu.role), lireSouhaits(), modeDemo() ? Promise.resolve(294) : compteur().catch(() => 0)]);
-  remplir(lu, contenu, T, souhaits, total);
+  // Jamais une idée retirée dans « Ce que demandent les autres » (Arnaud, 15 octobre 2026, profil solo recentré).
+  remplir(lu, contenu, T, (souhaits || []).filter((x) => ideeActive(contenu, x.n, x.role, x.choix)), total);
   $('[data-rapport]').hidden = false;
   await Promise.all([document.fonts.ready, ...[...document.images].map((i) => (i.complete ? null : new Promise((r) => { i.onload = i.onerror = r; })))]);
   document.body.dataset.pret = '1';

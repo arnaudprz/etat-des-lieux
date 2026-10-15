@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { encoder, decoder, rolesConnus } from '../docs/assets/js/lien.js';
 import { relancesAEnvoyer } from '../docs/assets/js/calcul.js';
+import { codesActifs } from '../docs/assets/js/contenu.js';
 import { retoucher } from '../scripts/solo-maquette.mjs';
 
 const contenu = JSON.parse(readFileSync(new URL('../docs/assets/data/contenu.json', import.meta.url), 'utf8'));
@@ -67,28 +68,40 @@ describe('solo : envoi', () => {
 });
 
 describe('solo : contenus', () => {
-  test('les 16 phrases validées le 13 octobre', () => {
-    assert.equal(contenu.affirmations[0].solo, "J'avance avec un collectif d'indépendants qui compte pour moi.");
-    assert.equal(contenu.affirmations[9].solo, "Avant une décision importante (un prix, un client, un investissement), j'ai quelqu'un avec qui en parler.");
+  test('les phrases du profil recentré (15 octobre 2026)', () => {
+    assert.equal(contenu.affirmations[0].solo, "J'ai un collectif de pros qui compte pour moi.");
+    assert.equal(contenu.affirmations[9].solo, "Avant une décision importante, j'ai quelqu'un avec qui en parler.");
     assert.equal(contenu.affirmations[15].solo, 'Mon activité atteint les objectifs que je me fixe.');
   });
-  test('autant d’idées qu’avant par affirmation (la base contrôle ces nombres)', () => {
-    // Q10 : 4 idées depuis le 14 octobre 2026 (doublon « regard extérieur » retiré). La base accepte toujours : elle vérifie
-    // seulement qu'un numéro d'idée reste sous l'ancien maximum (5).
-    // Q7 : 6 idées depuis le 15 octobre 2026, « Fixer mes prix plus sereinement » ajoutée à la fin (audit des wordings) :
-    // la base doit accepter l'indice 5 (migration 35).
-    const nb = { 1: 5, 2: 4, 3: 5, 4: 5, 5: 4, 6: 5, 7: 6, 8: 5, 9: 5, 10: 4, 11: 4, 12: 4, 13: 5, 14: 4, 15: 4, 16: 5 };
-    for (const a of contenu.affirmations) assert.equal(a.relance.solo.choix.length, nb[a.n], 'idées ' + a.n);
+  test('chaque idée garde son code : les anciennes restent à leur place, les nouvelles viennent après', () => {
+    // Le nombre d'idées connues avant le 15 octobre 2026 (migration 35) : ces codes ne changent jamais de texte.
+    const avant = { 1: 5, 2: 4, 3: 5, 4: 5, 5: 4, 6: 5, 7: 6, 8: 5, 9: 5, 10: 4, 11: 4, 12: 4, 13: 5, 14: 4, 15: 4, 16: 5 };
+    for (const a of contenu.affirmations) assert.ok(a.relance.solo.choix.length >= avant[a.n], 'idées ' + a.n);
+    assert.equal(contenu.affirmations[6].relance.solo.choix[5], 'Fixer mes prix plus sereinement'); // retirée, pas réutilisée
+    assert.equal(contenu.affirmations[1].relance.solo.choix[1], 'Mieux cadrer le travail avec mes sous-traitants');
+  });
+  test('un code tient en un chiffre dans le lien : 10 idées au plus par phrase', () => {
+    for (const a of contenu.affirmations) assert.ok(a.relance.solo.choix.length <= 10, 'idées ' + a.n);
   });
   test('16 phrases solo, aux mêmes numéros', () => {
     assert.equal(contenu.affirmations.length, 16);
     contenu.affirmations.forEach((a, k) => { assert.equal(a.n, k + 1); assert.ok(a.solo && a.solo.length > 10, 'phrase ' + a.n); });
   });
-  test('4 à 6 idées par affirmation, marquées à valider', () => {
+  test('4 ou 5 idées proposées par phrase, marquées à valider', () => {
     for (const a of contenu.affirmations) {
       const r = a.relance.solo;
-      assert.ok(r.choix.length >= 4 && r.choix.length <= 6, 'idées ' + a.n);
+      const act = codesActifs(r);
+      assert.ok(act.length >= 4 && act.length <= 5, 'idées ' + a.n);
+      assert.equal(new Set(act).size, act.length, 'doublon ' + a.n);
       assert.equal(r.a_valider, true);
+    }
+  });
+  test('ce qu’un solo lit ne parle plus de gestion, ni au masculin seul (15 octobre 2026)', () => {
+    const lus = contenu.affirmations.flatMap((a) => [a.solo, a.groupe_solo, ...codesActifs(a.relance.solo).map((i) => a.relance.solo.choix[i])])
+      .concat(Object.keys(contenu.pourquoi_solo), Object.values(contenu.pourquoi_solo));
+    for (const t of lus) {
+      assert.doesNotMatch(t, /client|sous-traitant|trésorerie|agenda|prix|tarif/i, t);
+      assert.doesNotMatch(t, /\b(Être|être) \p{L}+é\b|\b(engagé|bloqué|débordé|soutenu|aidé|sollicité|recommandé)\b/u, t);
     }
   });
   test('règles d’écriture : pas de tiret d’incise, pas de mots interdits', () => {

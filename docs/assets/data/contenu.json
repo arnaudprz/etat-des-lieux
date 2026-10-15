@@ -230,8 +230,8 @@
           "a_valider": true
         }
       },
-      "solo": "J'avance avec un collectif d'indépendants qui compte pour moi.",
-      "groupe_solo": "Votre collectif pro"
+      "solo": "J'ai un collectif de pros qui compte pour moi.",
+      "groupe_solo": "Votre collectif"
     },
     {
       "n": 2,
@@ -263,13 +263,22 @@
             "Partager plus clairement mes objectifs avec mes partenaires",
             "Mieux cadrer le travail avec mes sous-traitants",
             "Faire le point plus souvent avec mes partenaires",
-            "Avoir un collectif avec qui partager mes réussites"
+            "Avoir un collectif avec qui partager mes réussites",
+            "Trouver un collectif qui me ressemble",
+            "Avancer avec d'autres sur toute une année",
+            "Célébrer davantage ce que je réussis"
           ],
-          "a_valider": true
+          "a_valider": true,
+          "actifs": [
+            4,
+            5,
+            3,
+            6
+          ]
         }
       },
-      "solo": "Avec mes partenaires et sous-traitants, nous visons le même résultat.",
-      "groupe_solo": "Votre collectif pro"
+      "solo": "Dans ce collectif, je me sens à ma place.",
+      "groupe_solo": "Votre collectif"
     },
     {
       "n": 3,
@@ -310,7 +319,7 @@
         }
       },
       "solo": "Je connais d'autres indépendants qui vivent les mêmes réalités que moi.",
-      "groupe_solo": "Ce qu'on sait de vous"
+      "groupe_solo": "Ce que vous partagez"
     },
     {
       "n": 4,
@@ -345,13 +354,23 @@
             "Poser plus clairement mes attentes",
             "Mieux cadrer mes missions dès le départ",
             "Avoir des retours plus réguliers de mes clients",
-            "Faire connaître tout ce que couvre mon métier"
+            "Faire connaître tout ce que couvre mon métier",
+            "Avoir un lieu où partager mes doutes",
+            "Raconter plus souvent mes réussites",
+            "Échanger avec d'autres qui vivent la même chose",
+            "Trouver une oreille bienveillante"
           ],
-          "a_valider": true
+          "a_valider": true,
+          "actifs": [
+            5,
+            6,
+            7,
+            8
+          ]
         }
       },
-      "solo": "Mes clients savent ce que je fais et ce que j'attends d'eux.",
-      "groupe_solo": "Ce qu'on sait de vous"
+      "solo": "Je partage mes réussites et mes doutes avec d'autres qui me comprennent.",
+      "groupe_solo": "Ce que vous partagez"
     },
     {
       "n": 5,
@@ -383,12 +402,21 @@
             "Fixer mes prix plus sereinement",
             "Mieux montrer la valeur de mon travail",
             "Oser revoir mes tarifs",
-            "Être recommandé plus souvent"
+            "Être recommandé plus souvent",
+            "Mettre des mots sur ce que j'apporte",
+            "Recevoir plus de retours sur mon travail",
+            "Que l'on me recommande plus souvent"
           ],
-          "a_valider": true
+          "a_valider": true,
+          "actifs": [
+            1,
+            4,
+            5,
+            6
+          ]
         }
       },
-      "solo": "Mes clients reconnaissent la valeur de mon travail.",
+      "solo": "Ce que j'apporte est reconnu à sa juste valeur.",
       "groupe_solo": "Votre place"
     },
     {
@@ -424,9 +452,17 @@
             "Partager ce que je sais avec d'autres indépendants",
             "Qu'on me demande mon avis",
             "Trouver un collectif qui me ressemble",
-            "Animer un temps d'échange dans mon collectif"
+            "Animer un temps d'échange dans mon collectif",
+            "Que ce que j'apporte soit davantage reconnu"
           ],
-          "a_valider": true
+          "a_valider": true,
+          "actifs": [
+            0,
+            1,
+            2,
+            5,
+            4
+          ]
         }
       },
       "solo": "Dans mon collectif, mon avis compte et on m'écoute.",
@@ -466,13 +502,23 @@
             "Mieux organiser mon agenda",
             "Faire le point chaque mois",
             "Avoir un appui sur la gestion",
-            "Fixer mes prix plus sereinement"
+            "Fixer mes prix plus sereinement",
+            "Me fixer un cap pour l'année",
+            "Prendre un temps pour faire le point chaque trimestre",
+            "Avoir un regard extérieur sur mon activité",
+            "Sortir un peu du quotidien pour y voir plus clair"
           ],
-          "a_valider": true
+          "a_valider": true,
+          "actifs": [
+            6,
+            7,
+            8,
+            9
+          ]
         }
       },
-      "solo": "Je sais où j'en suis dans mon activité.",
-      "groupe_solo": "Votre organisation"
+      "solo": "Je prends régulièrement du recul sur mon activité, pas seulement le nez dans le guidon.",
+      "groupe_solo": "Votre recul"
     },
     {
       "n": 8,
@@ -507,13 +553,20 @@
             "Prendre du recul avec mon collectif",
             "M'accorder une vraie pause dans l'année",
             "Mieux répartir production et pilotage",
-            "M'offrir un temps loin du quotidien"
+            "M'offrir un temps loin du quotidien",
+            "Clarifier ce qui compte pour moi cette année"
           ],
-          "a_valider": true
+          "a_valider": true,
+          "actifs": [
+            5,
+            1,
+            2,
+            4
+          ]
         }
       },
-      "solo": "Je garde du temps pour piloter mon activité, pas seulement pour produire.",
-      "groupe_solo": "Votre organisation"
+      "solo": "Je sais ce qui compte vraiment pour moi cette année.",
+      "groupe_solo": "Votre recul"
     },
     {
       "n": 9,
@@ -553,8 +606,8 @@
           "a_valider": true
         }
       },
-      "solo": "Quand ça coince avec un client, on trouve une solution.",
-      "groupe_solo": "Quand ça accroche"
+      "solo": "Quand quelque chose me pèse dans mon activité, j'en parle sans attendre.",
+      "groupe_solo": "Quand ça pèse"
     },
     {
       "n": 10,
@@ -594,7 +647,7 @@
           "a_valider": true
         }
       },
-      "solo": "Avant une décision importante (un prix, un client, un investissement), j'ai quelqu'un avec qui en parler.",
+      "solo": "Avant une décision importante, j'ai quelqu'un avec qui en parler.",
       "groupe_solo": "Qui vous épaule"
     },
     {
@@ -628,12 +681,19 @@
             "Oser dire non à un client",
             "Avoir des repères pour dire les choses",
             "Poser mes limites dès le départ",
-            "Préparer les échanges délicats avec quelqu'un de confiance"
+            "Préparer les échanges délicats avec quelqu'un de confiance",
+            "Oser dire non quand il le faut"
           ],
-          "a_valider": true
+          "a_valider": true,
+          "actifs": [
+            4,
+            1,
+            2,
+            3
+          ]
         }
       },
-      "solo": "Avec mes clients, je peux dire ce que je pense, même quand ce n'est pas ce qu'ils veulent entendre.",
+      "solo": "Je peux dire ce que je pense, même quand ce n'est pas ce qu'on veut entendre.",
       "groupe_solo": "La confiance et le soutien"
     },
     {
@@ -709,9 +769,17 @@
             "Avoir un collectif d'entraide",
             "Pouvoir déléguer certaines tâches",
             "Trouver d'autres indépendants pour s'entraider",
-            "Être soutenu dans les périodes chargées"
+            "Être soutenu dans les périodes chargées",
+            "Avoir du soutien dans les périodes chargées"
           ],
-          "a_valider": true
+          "a_valider": true,
+          "actifs": [
+            0,
+            1,
+            2,
+            3,
+            5
+          ]
         }
       },
       "solo": "Quand ça bloque ou que ça déborde, je sais sur qui compter.",
@@ -749,13 +817,20 @@
             "Me reconnecter à ce qui m'a fait choisir ce métier",
             "Choisir des missions qui me ressemblent",
             "Voir l'effet de mon travail chez mes clients",
-            "Prendre le temps de définir ce qui compte pour moi"
+            "Prendre le temps de définir ce qui compte pour moi",
+            "Voir l'effet de ce que je fais"
           ],
-          "a_valider": true
+          "a_valider": true,
+          "actifs": [
+            0,
+            1,
+            4,
+            3
+          ]
         }
       },
       "solo": "Je sais pourquoi j'ai choisi de travailler à mon compte, et ça me porte encore.",
-      "groupe_solo": "Le sens du travail"
+      "groupe_solo": "Le sens et l'énergie"
     },
     {
       "n": 15,
@@ -789,13 +864,20 @@
             "Prendre soin de mon rythme de travail",
             "Parler de ma façon de travailler avec d'autres indépendants",
             "Trouver un meilleur équilibre",
-            "Garder de l'énergie sur la durée"
+            "Garder de l'énergie sur la durée",
+            "Bouger davantage dans ma semaine"
           ],
-          "a_valider": true
+          "a_valider": true,
+          "actifs": [
+            0,
+            2,
+            3,
+            4
+          ]
         }
       },
-      "solo": "Je me sens pleinement engagé dans mon activité, avec une énergie qui dure.",
-      "groupe_solo": "Le sens du travail"
+      "solo": "J'ai de l'énergie pour mon activité, et elle dure dans le temps.",
+      "groupe_solo": "Le sens et l'énergie"
     },
     {
       "n": 16,
@@ -830,13 +912,22 @@
             "Suivre mes résultats plus simplement",
             "Trouver de nouveaux clients",
             "Être aidé pour développer mon activité",
-            "Prendre du recul sur ce qui marche"
+            "Prendre du recul sur ce qui marche",
+            "Développer mon activité avec d'autres",
+            "Avoir un appui pour faire grandir mon activité"
           ],
-          "a_valider": true
+          "a_valider": true,
+          "actifs": [
+            0,
+            1,
+            5,
+            6,
+            4
+          ]
         }
       },
       "solo": "Mon activité atteint les objectifs que je me fixe.",
-      "groupe_solo": "Le sens du travail"
+      "groupe_solo": "Le sens et l'énergie"
     }
   ],
   "relance": {
@@ -1520,13 +1611,13 @@
     "pied_rh": "Greatly n'est ni un cabinet RH, ni un organisme de formation. Pour aller plus loin avec votre équipe, votre service RH ou le cabinet qui vous accompagne sera le mieux placé."
   },
   "pourquoi_solo": {
-    "Votre collectif pro": "On regarde avec qui vous avancez : un collectif d'indépendants, vos partenaires. Travailler à son compte, c'est aussi réussir à plusieurs.",
-    "Ce qu'on sait de vous": "On veut comprendre si vos clients et d'autres indépendants savent ce que vous faites. C'est ce qui permet d'anticiper.",
-    "Votre place": "On cherche à savoir si votre travail est reconnu à sa juste valeur, et si votre avis compte dans votre collectif.",
-    "Votre organisation": "On s'interroge sur ce qui vous donne de la visibilité : vos priorités, votre agenda, votre trésorerie, et du temps pour piloter votre activité.",
-    "Quand ça accroche": "On regarde comment se règlent les tensions avec un client ou un partenaire.",
+    "Votre collectif": "On regarde avec qui vous avancez. Travailler à son compte, c'est aussi réussir à plusieurs.",
+    "Ce que vous partagez": "On regarde si vous échangez avec d'autres qui vivent les mêmes réalités. C'est ce qui aide à anticiper.",
+    "Votre place": "On cherche à savoir si ce que vous apportez est reconnu, et si votre avis compte dans votre collectif.",
+    "Votre recul": "On regarde si vous prenez le temps de lever la tête. C'est là que naît la lucidité.",
+    "Quand ça pèse": "On regarde ce que vous faites de ce qui vous pèse : le garder pour vous, ou en parler.",
     "Qui vous épaule": "On se demande si vous avez quelqu'un de confiance avec qui parler avant une décision importante.",
     "La confiance et le soutien": "On cherche à savoir si vous pouvez dire les choses franchement, parler d'un doute ou d'une erreur, et sur qui compter quand ça déborde.",
-    "Le sens du travail": "On regarde ce qui donne du sens à votre activité, et les résultats qu'elle obtient. Pour nous, les résultats sont une conséquence, pas un point de départ."
+    "Le sens et l'énergie": "On regarde ce qui vous porte, l'énergie que vous y mettez, et les objectifs que vous atteignez."
   }
 }

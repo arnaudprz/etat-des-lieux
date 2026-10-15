@@ -3,7 +3,7 @@
  * Le fichier est lu une seule fois par page puis mis en cache mémoire.
  */
 
-import { V } from './config.js?v=76';
+import { V } from './config.js?v=77';
 
 let promesse = null;
 
@@ -46,4 +46,20 @@ export function texteAffirmation(contenu, n, role) {
 export function relance(contenu, n, role) {
   const a = affirmation(contenu, n);
   return a && a.relance ? a.relance[role] : null;
+}
+
+/**
+ * Les idées « J'aimerais… » proposées aujourd'hui, dans l'ordre affiché (Arnaud, 15 octobre 2026, profil solo recentré).
+ * Chaque idée garde son code : sa place dans « choix ». Une idée retirée reste à sa place mais sort de « actifs » : les
+ * anciennes réponses et le tableau de bord la lisent toujours, le questionnaire ne la propose plus. Sans « actifs », toutes.
+ * @returns {number[]} les codes, dans l'ordre affiché
+ */
+export function codesActifs(rel) {
+  if (!rel || !Array.isArray(rel.choix)) return [];
+  return Array.isArray(rel.actifs) ? rel.actifs.filter((i) => rel.choix[i] != null) : rel.choix.map((_, i) => i);
+}
+
+/** Une idée encore proposée ? (pour ne pas montrer une idée retirée dans « Ce que demandent les autres »). */
+export function ideeActive(contenu, n, role, code) {
+  return codesActifs(relance(contenu, n, role)).includes(code);
 }

@@ -6,12 +6,12 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu } from '../contenu.js?v=76';
-import { decoder } from '../lien.js?v=76';
-import { envoyerContact, compteur } from '../api.js?v=76';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=76';
-import { memoriserResultat } from '../session.js?v=76';
-import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=76';
+import { chargerContenu, ideeActive } from '../contenu.js?v=77';
+import { decoder } from '../lien.js?v=77';
+import { envoyerContact, compteur } from '../api.js?v=77';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=77';
+import { memoriserResultat } from '../session.js?v=77';
+import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=77';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -124,10 +124,11 @@ function afficher(lu, contenu, these) {
   const solo = lu.role === 'solo';
   // La note « Comment lire ces chiffres » pour un solo (Arnaud, 15 octobre 2026, audit des wordings) : son activité, les autres
   // indépendants, et ses partenaires à la place des métiers d'une escale. La page porte la version équipe.
+  // Sans clients ni sous-traitants depuis le profil solo recentré (Arnaud, 15 octobre 2026).
   if (solo) {
     document.querySelectorAll('[data-regard-note]').forEach((n) => { n.textContent = 'C’est votre regard sur votre activité, pas une note.'; });
     document.querySelectorAll('[data-compte-qui]').forEach((n) => { n.textContent = 'Ce sont les réponses des autres indépendants.'; });
-    document.querySelectorAll('[data-gittell-qui]').forEach((n) => { n.textContent = 'Elle a étudié pendant des années comment des personnes aux métiers différents avancent ensemble, d’abord dans les escales de compagnies aériennes, puis dans les hôpitaux. Pour vous, ce sont vos clients, vos sous-traitants et votre collectif d’indépendants.'; });
+    document.querySelectorAll('[data-gittell-qui]').forEach((n) => { n.textContent = 'Elle a étudié pendant des années comment des personnes aux métiers différents avancent ensemble, d’abord dans les escales de compagnies aériennes, puis dans les hôpitaux. Pour vous, c’est votre collectif, et celles et ceux avec qui vous avancez.'; });
   }
   const T = solo ? chiffresPourSolo(these) : these || DEMO; const G = T.groupes || {}; const N = T.n || 0;
   const part = (k) => (G[k] && N ? Math.round(G[k].n / N * 100) : null);
@@ -507,7 +508,8 @@ async function demarrer() {
       groupes: Object.fromEntries(Object.entries(DEMO.groupes).map(([k, g], i) => [k, c(Math.round((nDemo || 0) * (i % 2 ? 0.4 : 0.6)), g.engages, g.perf != null ? g.perf : g.engages - 12)])) };
     souhaits = nDemo >= 6 ? [{ role: 'solo', n: 10, choix: 0, concernes: 6, choisis: 3, p: 50 }] : [];
   }
-  afficher.souhaits = souhaits || [];
+  // Jamais une idée retirée dans « Ce que demandent les autres » (Arnaud, 15 octobre 2026, profil solo recentré).
+  afficher.souhaits = (souhaits || []).filter((x) => ideeActive(contenu, x.n, x.role, x.choix));
   if (these) afficher(lu, contenu, these);
 }
 

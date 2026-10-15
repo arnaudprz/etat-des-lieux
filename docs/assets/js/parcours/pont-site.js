@@ -10,12 +10,12 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu } from '../contenu.js?v=76';
-import { relancesAEnvoyer } from '../calcul.js?v=76';
-import { lienResultat } from '../lien.js?v=76';
-import { envoyerReponse, compteur } from '../api.js?v=76';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=76';
-import { evenement } from './commun.js?v=76';
+import { chargerContenu, codesActifs } from '../contenu.js?v=77';
+import { relancesAEnvoyer } from '../calcul.js?v=77';
+import { lienResultat } from '../lien.js?v=77';
+import { envoyerReponse, compteur } from '../api.js?v=77';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=77';
+import { evenement } from './commun.js?v=77';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -442,7 +442,9 @@ window.__edlSolo = (D, st) => {
       const c = C.affirmations.find((x) => x.n === a.n); if (!c) return;
       a.solo = c.solo;
       a.relance = a.relance || {};
-      if (c.relance && c.relance.solo) a.relance.solo = { debut: c.relance.solo.debut, choix: c.relance.solo.choix };
+      // Seulement les idées encore proposées, dans leur ordre ; la maquette garde leur position, fin() la traduit en code
+      // (Arnaud, 15 octobre 2026, profil solo recentré).
+      if (c.relance && c.relance.solo) a.relance.solo = { debut: c.relance.solo.debut, choix: codesActifs(c.relance.solo).map((i) => c.relance.solo.choix[i]) };
       a.groupe = solo && c.groupe_solo ? c.groupe_solo : D.__edlOrigine.groupes[k];
     });
     if (solo) {
@@ -485,13 +487,23 @@ if (page === 'questionnaire') {
       taille_equipe: role === 'solo' ? '' : choix(P.taille_equipe.choix, st.teq),
     };
     const reponses = Array.from({ length: 16 }, (_, k) => Number(st.ans[k + 1]));
-    const relances = relancesAEnvoyer(reponses, st.rel || {}, contenu);
+    // La maquette garde la position de l'idée dans la liste affichée ; on enregistre son code, qui ne change jamais
+    // (Arnaud, 15 octobre 2026, profil solo recentré : « ne réutilise jamais un ancien code pour un autre texte »).
+    const rel = {};
+    Object.entries(st.rel || {}).forEach(([n, l]) => {
+      const r = contenu.affirmations[Number(n) - 1] && contenu.affirmations[Number(n) - 1].relance;
+      const codes = codesActifs(r && r[role]);
+      rel[n] = Array.isArray(l) ? l.map((i) => (typeof i === 'number' ? codes[i] : i)).filter((i) => i != null) : l;
+    });
+    const relances = relancesAEnvoyer(reponses, rel, contenu);
     ecrire({ role, profil });
 
     // Les mots écrits après « Autre », seulement là où « Autre » est encore coché.
     const autres = {};
     Object.keys(relances).forEach((n) => { const t = String(AUTRES[n] || '').trim().slice(0, 140); if (t && (relances[n] || []).includes('autre')) autres[n] = t; });
-    const envoi = { version: 'v1', role, profil, reponses, relances, ...(Object.keys(autres).length ? { autres } : {}) };
+    // Les réponses solo aux phrases recentrées portent leur propre version, pour les séparer des anciennes dans l'étude
+    // (Arnaud, 15 octobre 2026, profil solo recentré). Managers et membres : rien ne change.
+    const envoi = { version: role === 'solo' ? 'solo_v2' : 'v1', role, profil, reponses, relances, ...(Object.keys(autres).length ? { autres } : {}) };
     const empreinte = JSON.stringify(envoi);
     if (!dejaEnvoye(empreinte)) { envoyerReponse(envoi); retenirEnvoi(empreinte); }
     try { sessionStorage.removeItem('edl_autres'); } catch (e) { /* rien */ }
