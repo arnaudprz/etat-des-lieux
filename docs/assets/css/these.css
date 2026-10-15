@@ -533,3 +533,14 @@ html:has(dialog.fenetre-mail[open]){overflow:hidden}
 /* Contraste (WCAG 1.4.3, responsive 16 octobre 2026) : les « /100 » et petites mentions sur fond clair passent de #697374 à #455051. */
 .nv-cinq__val small,.nv-score span,.nv-cinq__nom,.nv-sur{color:#455051}
 .nv-une .nv-sur:first-child,.nv-sur--bv{color:#23545B}
+/* Second tour (relecteur, 16 octobre 2026). */
+@media (max-width:1100px){
+  /* Toutes les pages du résultat gardent 16 px de marge, y compris « Ce lien ne porte pas de résultat ». */
+  main:has(> [data-sans-resultat]){padding-inline:var(--gouttiere,1rem)!important}
+  .vide{padding-block:2.5rem}
+  /* Fenêtre e-mail : le bouton d'envoi reste visible en bas du panneau, au-dessus du clavier. */
+  .fenetre-mail .recevoir__bouton{position:sticky;bottom:max(env(safe-area-inset-bottom),.75rem);z-index:2;box-shadow:0 -.75rem 1.5rem rgba(238,244,245,.9)}
+  .fenetre-mail .recevoir__case input{width:1.375rem;height:1.375rem}
+  .fenetre-mail .recevoir__case{min-height:2.75rem;align-items:center}
+  .nv-lire__plus{width:2.75rem!important;height:2.75rem!important}
+}

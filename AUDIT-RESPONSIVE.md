@@ -158,3 +158,35 @@ Comparaison au pixel, 1440 et 1920 px, avant / après : accueil, profil, phrases
 | Résultat | 85 → **89** | 94 → **100** | 100 | 3,5 s | 0 |
 
 Ce qui pèse encore sur la performance : les polices Google et le script de l'export Astro (LCP autour de 4 à 5 s en 3G simulée). Pistes pour plus tard : héberger les polices sur le site en sous-ensemble latin et précharger la graisse du titre.
+
+## 10. Note finale du relecteur indépendant (captures WebKit, avant → après le premier tour)
+
+| Écran | Calme | Clarté | Lumière / ton | Pouce | Typo | Mouvement | Finition |
+|---|---|---|---|---|---|---|---|
+| Accueil | 8 → 8 | 8 → 8 | 8 → 8 | 7 → 7 | 7 → 8 | n. j. | 8 → 8 |
+| Profil | 6 → 7 | 7 → 8 | 7 → 8 | 5 → 8 | 6 → 7 | n. j. | 7 → 6 |
+| Phrase | 4 → 8 | 5 → 8 | 6 → 8 | 4 → 9 | 5 → 7 | n. j. | 6 → 7 |
+| Relance « J'aimerais… » | 5 → 8 | 7 → 8 | 6 → 8 | 6 → 8 | 7 → 7 | n. j. | 7 → 7 |
+| Résultat (solo) | 6 → 7 | 7 → 8 | 6 → 6 | 7 → 8 | 6 → 7 | n. j. | 4 → 7 |
+| Fenêtre e-mail | 6 → 6 | 8 → 8 | 8 → 8 | 5 → 5 | 7 → 7 | n. j. | 6 → 6 |
+| Confidentialité | 6 → 7 | 7 → 8 | 8 → 8 | 8 → 8 | 4 → 7 | n. j. | 7 → 7 |
+| Lien sans résultat | 5 → 5 | 8 → 8 | 7 → 7 | 7 → 7 | 6 → 6 | n. j. | 3 → 3 |
+
+(n. j. : non jugeable sur image fixe ; le mouvement se juge en vidéo ou sur téléphone.)
+
+### Second tour, à partir de ses remarques
+- **Lien sans résultat** (défaut bloquant, marge à 0 px) : 16 px de marge, comme partout.
+- **Pied de page** : il ne dépasse plus dans le premier écran du profil et des phrases (hauteur calculée sur l'en-tête seul, `box-sizing: border-box`).
+- **Phrase posée au centre optique** de l'espace libre entre le thème et les réponses ; texte d'aide (« pourquoi ») à 16 px.
+- **« Retour » au même endroit partout** (en haut à gauche), cible de 44 px ; une seule façon de compter dans le profil (les segments ; « Étape 1 sur 3 » est masqué à l'écran sur téléphone, le compte reste lu par les lecteurs d'écran).
+- **« Question suivante » sans soulignement** (la règle de la maquette l'emportait).
+- **Confidentialité** : le titre ne se réduit plus que si un seul mot est trop large ; les mots passent à la ligne.
+- **Paysage** : les quatre réponses sur une ligne, dans l'ordre de l'échelle ; **tablette** : la colonne centrée en hauteur, la phrase près de ses réponses.
+- **Fenêtre e-mail** : bouton d'envoi collé en bas du panneau (toujours visible, au-dessus du clavier), case de consentement de 22 px sur une ligne de 44 px.
+- Mesure de contrôle (WebKit) : sur 320 × 568, 375 × 667, 390 × 844, 430 × 932, 844 × 390, 768 × 1024 et 1024 × 768, la dernière réponse est dans l'écran sans défiler.
+
+### Ce qui reste sous 9 (à trancher ou à reprendre)
+- **Résultat, ton** : « /100 » et les barres rappellent une jauge. Retirer « /100 » change un texte : laissé à Arnaud (voir TEXTES-MOBILE.md). La « constellation » du socle n'existe plus depuis la V217 ; le moment fort est l'arrivée des chiffres un à un.
+- **Fenêtre e-mail** : croix en haut à droite (zone difficile au pouce) ; pas de poignée. Fermer par un geste n'est pas fait.
+- **Accueil** : bouton principal à mi-hauteur, pas collé en bas ; « lieux. » seul en fin de paragraphe dans la carte du compteur.
+- **Mouvement** : non noté sur images ; à juger sur téléphone.
