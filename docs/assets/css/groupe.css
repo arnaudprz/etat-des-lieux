@@ -254,3 +254,9 @@ body { background: #FFFFFF; }
 /* En pratique : les faits, sans marge négative. */
 .gr-pratique { gap: 1.25rem; }
 .gr-pratique .gr-faits { margin: 0; }
+
+/* La visite : chargement des créneaux, erreur, piège à robots. */
+.rdv__jours--charge { opacity: .45; pointer-events: none; transition: opacity .2s; }
+.rdv__erreur { grid-column: 1 / -1; margin: 0; padding: 1rem; border-radius: 0.875rem; background: var(--fond); font-size: 0.9375rem; color: var(--bv); }
+.rdv .piege { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.rdv__ferme { display: flex; align-items: center; justify-content: center; flex: 1; min-height: 9rem; border-radius: 0.75rem; background: repeating-linear-gradient(135deg, var(--fond) 0 6px, #FFFFFF 6px 12px); font-size: 0.75rem; font-weight: 700; color: var(--rubans); writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: .12em; text-transform: uppercase; }

@@ -12,8 +12,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,800&family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap">
-<link rel="stylesheet" href="assets/css/these.css?v=96">
-<link rel="stylesheet" href="assets/css/groupe.css?v=96">
+<link rel="stylesheet" href="assets/css/these.css?v=98">
+<link rel="stylesheet" href="assets/css/groupe.css?v=98">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=2"><link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 </head>
 <body>
@@ -215,7 +215,7 @@
 <footer class="pas-pied gr-pied"><span>GREATLY</span><span>Greatly éclaire celles et ceux qui, ensemble, font rayonner leur entreprise.</span><a href="/etat-des-lieux/confidentialite/">Confidentialité</a></footer>
 
 <!-- La visite, en deux étapes comme la page « Prendre rendez-vous » du site : le créneau, puis les coordonnées. Toujours à la
-     Greatly House, jamais au téléphone ni en visio (Arnaud, 15 octobre 2026). Première version : la demande part par mail, Arnaud confirme. Avant :
+     Greatly House, jamais au téléphone ni en visio (Arnaud, 15 octobre 2026). Les créneaux viennent de l'agenda du tableau de bord ; la visite s'y pose, et un mail part par Brevo. Avant :
      les créneaux sont fictifs et rien ne part (à brancher sur l'agenda Greatly.club). -->
 <dialog class="rdv" aria-label="Visiter la Greatly House" data-rdv-fenetre>
   <button class="rdv__fermer" type="button" aria-label="Fermer" data-rdv-fermer>×</button>
@@ -238,18 +238,19 @@
       <label>E-mail<input name="email" type="email" autocomplete="email" required></label>
       <label>Téléphone<input name="tel" type="tel" autocomplete="tel"></label>
     </div>
+    <div class="piege" aria-hidden="true"><label>Site<input name="site" type="text" tabindex="-1" autocomplete="off"></label></div>
     <p class="rdv__message" data-rdv-message2 role="status">Trente minutes, sans engagement.</p>
     <div class="rdv__bas">
       <button class="gr-lien" type="button" data-retour>← Changer de créneau</button>
-      <button class="gr-bouton" type="submit">Demander cette visite<span class="gr-rond" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+      <button class="gr-bouton" type="submit">Confirmer la visite<span class="gr-rond" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
     </div>
   </form>
   <div class="rdv__vue rdv__vue--fin" data-vue="3" hidden>
-    <span class="surtitre surtitre--clair">Presque fini</span>
-    <h2><span class="leger">Votre demande</span> <span class="gras">est prête.</span></h2>
+    <span class="surtitre surtitre--clair">C’est noté</span>
+    <h2><span class="leger">Votre visite</span> <span class="gras">est posée.</span></h2>
     <p data-fin-texte>Jeudi 15 octobre à 14 h, à la Greatly House. Vous recevez une confirmation par e-mail. À très vite.</p>
   </div>
 </dialog>
-<script type="module" src="assets/js/parcours/groupe.js?v=96"></script>
+<script type="module" src="assets/js/parcours/groupe.js?v=98"></script>
 </body>
 </html>
