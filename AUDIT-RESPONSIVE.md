@@ -1,6 +1,17 @@
 # Audit responsive · nuit du 15 au 16 octobre 2026
 
-> Résumé en tête (mis à jour en fin de nuit) : voir la section « Au réveil » tout en bas, recopiée ici à la fin du travail.
+## Au réveil (résumé)
+
+1. **En ligne, V227** (fusion de `responsive-2026-10-15` dans `main`), vérifié sur etat-des-lieux.greatly.club en démo : manager, membre et solo jusqu'au résultat en 390 et 1440 px, sans erreur ni débordement, aucune vraie réponse envoyée ; `/admin/` renvoie toujours au tableau de bord.
+2. **Fait** : sur téléphone et tablette, le profil puis les 16 phrases passent une par une (réponses dans la zone du pouce, progression en 8 segments, idées « J'aimerais… » dans un panneau qui monte du bas, retour du navigateur, vibration légère sur Android) ; résultat mobile (chiffres qui se dessinent, partage natif, marges) ; typographie (insécables, titres sans césure) ; arrivée sans saut ; contrastes AA. L'ordinateur validé est inchangé au pixel près (hors insécables et petites mentions foncées).
+3. **Pistes retenues** : A « Respiration » pour la phrase (7,0/10, la plus claire et la seule avec réponses au pouce et progression visible), A « Cinq chiffres » pour le résultat (6,7/10, la plus lisible), avec la lumière de la piste C. Les six maquettes restent dans `maquette/responsive/`.
+4. **Relecteur, avant → après (téléphone)** : phrase de 4-6 à 7-9, idées de 5-7 à 7-8, résultat de 4-7 à 6-8 ; un second tour a ensuite corrigé ses défauts principaux (marges, pied, centre optique, Retour, paysage, tablette, fenêtre e-mail).
+5. **Encore sous 9** : ton du résultat (« /100 », barres), fenêtre e-mail (croix en haut, pas de poignée), bouton de l'accueil à mi-hauteur, mouvement non jugeable sur images.
+6. **Lighthouse mobile** : accueil 77 / accessibilité 100 (CLS 0,001), questionnaire 80 / 100 (CLS 0,02), résultat 89 / 100 ; LCP 3,5 à 5 s en 3G simulée (polices Google et script Astro).
+7. **À tester sur un vrai iPhone** : réponses et panneau au-dessus de la barre d'accueil ; fenêtre e-mail avec le clavier ouvert ; geste retour depuis le bord ; fond figé sous la fenêtre ; partage natif ; iPhone SE (320 px) ; « Réduire les animations ».
+8. **À tester sur un vrai Android** : vibration (une seule, très légère) ; bouton retour du système ; clavier sur la fenêtre e-mail ; police système à 130 % ; mode sombre forcé de Samsung.
+9. **À trancher** : « 16 phrases » ou « 16 questions » partout ; les textes plus courts de TEXTES-MOBILE.md (dont « /100 ») ; relancer l'envoi des réponses quand le téléphone revient en ligne (toucherait `api.js`).
+10. Hors consignes : le test `agregats.test.js`, orphelin de l'ancienne admin, a été retiré ; dans `api.js` et `calcul.js`, seuls les numéros de version des imports ont changé (règle du dépôt).
 
 ## 0. Préparation
 
