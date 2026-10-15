@@ -93,3 +93,68 @@ Ce qu'on ne reprend pas : couleurs, icônes illustratives (Bumble, Jomo), barres
 - **Mouvement** : `--mvt-court` 150 ms, `--mvt-moyen` 250 ms, `--mvt-long` 400 ms, `--decalage` 60 ms, courbes `--courbe-douce` et `--courbe-sortie` (Val Head : entrées décélérées, sorties accélérées ; 150 à 300 ms pour une interface). `prefers-reduced-motion` ramène tout à 1 ms.
 - **Cible tactile** `--cible` 44 px (Apple HIG), arrondis et filet repris de l'existant, `color-scheme: light`.
 - **Vérification** : captures 1440 px avant / après comparées au pixel près. Seules différences : le soleil animé du logo et un point animé du résultat (une image d'animation), rien d'autre. Le rendu ordinateur validé est inchangé.
+
+## 7. Pistes et choix (relecteur indépendant, sur captures seulement)
+
+Maquettes : `maquette/responsive/` (390 px), captures `captures/responsive-2026-10-15/pistes/`.
+
+| Phrase | Calme | Clarté | Lumière | Pouce | Typo | Mouvement | Finition | Moyenne |
+|---|---|---|---|---|---|---|---|---|
+| A · Respiration | 8 | 8 | 6 | 8 | 7 | 6 | 6 | **7,0** |
+| B · Carte | 6 | 7 | 6 | 4 | 5 | 5 | 5 | 5,4 |
+| C · Lever du jour | 8 | 6 | 8 | 8 | 7 | 5 | 6 | 6,9 |
+
+| Résultat | Calme | Clarté | Lumière | Pouce | Typo | Mouvement | Finition | Moyenne |
+|---|---|---|---|---|---|---|---|---|
+| A · Cinq chiffres | 7 | 8 | 5 | 8 | 7 | 6 | 6 | **6,7** |
+| B · Anneaux | 6 | 7 | 6 | 8 | 6 | 6 | 5 | 6,3 |
+| C · Horizon | 7 | 6 | 7 | 8 | 5 | 4 | 5 | 6,0 |
+
+**Retenues : A pour la phrase et A pour le résultat**, en y reprenant la lumière de C (thème en italique à empattements, fond qui s'éclaire avec l'avancée). Les trois maquettes de chaque écran restent pour un autre choix au réveil.
+
+Corrections demandées par le relecteur et appliquées en phase 2 et 3 :
+- Phrase : focus invisible quand c'est le programme qui le pose (WCAG 2.4.7, `:focus-visible`) ; pas de soulignement dans un bouton ; progression en segments égaux, un par thème (Gestalt, similarité ; Nielsen n° 1) ; phrase posée au tiers supérieur, réponses dans la zone du pouce (Hoober) ; zones sûres `env(safe-area-inset-bottom)` (HIG) ; bordures des réponses à 3:1 au moins (WCAG 1.4.11) ; rappel de la réponse choisie en tête du panneau des idées (Nielsen n° 6) ; voile clair au lieu d'un voile gris ; lignes d'idées cliquables sur 44 px ; poignée retirée (pas de geste promis qu'on ne tient pas).
+- Résultat : chiffres en bleu-vert, plus petits que le titre, rail atténué (« toujours en gain ») ; barres qui se dessinent l'une après l'autre, puis les mots ; surtitre rapproché de son titre (Gestalt, proximité) ; `tabular-nums` ; un seul rayon pour les cartes ; une fin soignée (loi peak-end).
+- Texte relevé, non modifié : « 100 % sont engagées » / « 97 % sont engagés » (accord) → TEXTES-MOBILE.md.
+
+## 8. Phase 2 · le parcours jusqu'au résultat (téléphone et tablette, jusqu'à 1100 px)
+
+Code : `docs/assets/js/parcours/pont-site.js` (le pas-à-pas de l'ordinateur, étendu au téléphone avec sa propre mise en scène, classe `html.edl-tel`).
+- **Une question, une phrase par écran** (GOV.UK « one thing per page » ; Wroblewski). Le profil (5 questions, 3 pour un solo) puis les 16 phrases passent une à une, avec passage automatique après une réponse (650 ms pour voir la réponse cochée), puis une étape « Merci ».
+- **Réponses dans la zone du pouce** (Hoober) : grandes cartes de 56 px (48 px sur écran bas), bord à 3:1 (WCAG 1.4.11), toute la carte cliquable, retour visuel immédiat (`:active` à 0,975, couleur pleine pour la réponse choisie, les autres s'estompent).
+- **Phrase posée au tiers supérieur**, thème en italique Instrument Serif (la « lumière » de la piste C), « Pourquoi on s'y intéresse » en petit ; le fond s'éclaircit à mesure qu'on avance (`--avance`).
+- **Progression sentie, pas comptée** : 8 segments égaux, un par thème, le segment en cours se remplit phrase après phrase (Gestalt ; Nielsen n° 1). Profil : 5 segments ; le « Question k sur n » reste lu par les lecteurs d'écran.
+- **Idées « J'aimerais… » dans un panneau qui monte du bas** (Material 3, *bottom sheet* ; HIG, *sheets*), sur un voile clair, avec la réponse choisie rappelée en tête (Nielsen n° 6), lignes de 44 px, « Question suivante » en vrai bouton plein dans la zone du pouce, zones sûres (`env(safe-area-inset-bottom)`).
+- **Passer d'une phrase à l'autre** : fondu de sortie 280 ms puis arrivée décalée (le thème, puis la phrase 60 ms après), sans écran blanc ni saut ; la mise en page reste fixe d'une phrase à l'autre.
+- **Toucher une réponse** : vibration de 8 ms sur Android (`navigator.vibrate`), jamais sur iPhone.
+- **Retour du navigateur et geste retour** : chaque pas ajoute une entrée d'historique ; revenir en arrière ramène à la question précédente avec la réponse gardée (testé Chromium et WebKit).
+- **Écrans bas et paysage** (requêtes sur la hauteur, ≤ 720 px puis ≤ 500 px) : « pourquoi » limité à deux lignes puis masqué, réponses en 2 × 2 en paysage ; tout tient sans défiler de 320 × 568 à 844 × 390.
+- **Typographie** : insécables avant `? ! : ; »` et après `«` (Lexique IN) posées par le script sur tout le texte des pages ; plus de césure dans les titres, boutons et réponses (Bringhurst) ; un titre dont un mot dépasse l'écran se réduit jusqu'à tenir entier (« confidentialité » à 320 px) ; équilibrage des titres (`text-wrap: balance`) et paragraphes soignés (`pretty`) sur téléphone seulement.
+- **Coupure réseau et double envoi** : l'envoi des réponses est déjà protégé contre le double envoi (empreinte) et ne bloque jamais le parcours (le résultat se calcule sur le téléphone). **À signaler sans l'ajouter** : si le téléphone est hors ligne à la fin, la réponse n'est pas relancée plus tard (`api.js`, hors du périmètre de la nuit) ; la progression n'est pas sauvegardée en local pendant les 16 phrases (un rechargement repart du début du questionnaire).
+- **Arrivée sans saut** : accueil et questionnaire restent invisibles le temps que la mise en page se pose (au plus 1,2 s et 2,5 s), CLS ramené de 0,16 à 0,001 (accueil) et de 0,63 à 0,02 (questionnaire).
+
+## 9. Phase 3 · le résultat et la finition
+
+Code : `docs/assets/js/parcours/resultat-these.js` et `docs/assets/css/these.css` (règles `@media (max-width: 1100px)`).
+- **Les cinq chiffres en liste** (piste A adoucie) : nom à gauche, chiffre en bleu-vert à droite, barre fine sur un rail très léger (« toujours en gain ») ; chiffres tabulaires.
+- **Découvrir son résultat** : les lignes arrivent l'une après l'autre (160 ms), les chiffres montent, les barres se tracent, puis les mots (« Vos 16 réponses… », la carte de l'étude, le partage) arrivent 1,4 s après. Rien si `prefers-reduced-motion`.
+- **Thème par thème** : score en bleu-vert, plus petit que le nom du thème ; cartes au même rayon.
+- **Partage natif** (Web Share API) sur téléphone, sinon « Copier le lien » avec confirmation « Lien copié ».
+- **Fenêtre e-mail** : panneau ancré en bas sur téléphone (existant), page figée derrière (`html:has(dialog[open]) { overflow: hidden }`), Échap et bouton de fermeture, focus gardé par `<dialog>` modal, zones sûres.
+- **Gouttières** : 16 px à 320 et 390 px, plus de débordement (le calcul en `vw` comptait la barre de défilement).
+- **Méta** : `theme-color` sur toutes les pages, `viewport-fit=cover` sur le résultat ; l'aperçu Open Graph existant est gardé.
+- **Contraste AA** : mention légale du pied mobile (4,44:1 à 11,5 px → 13 px et plus claire), petites mentions « /100 » et surtitres du résultat foncés d'un cran.
+- **PDF** : la nouvelle mise en page ne s'applique jamais en `mode-pdf` ; le PDF est inchangé.
+
+### L'ordinateur validé
+Comparaison au pixel, 1440 et 1920 px, avant / après : accueil, profil, phrases, idées, lien sans résultat et « ce n'est pas » **identiques** (hors image d'animation du logo). Écarts voulus seulement : insécables (confidentialité, fenêtre e-mail) et petites mentions foncées du résultat (contraste).
+
+### Lighthouse mobile (local, mode démo, 3G simulée et processeur ralenti × 4)
+
+| Page | Performance | Accessibilité | Bonnes pratiques | LCP | CLS |
+|---|---|---|---|---|---|
+| Accueil | 67 → **77** | 95 → **100** | 100 | 5,0 s | 0,124 → **0,001** |
+| Questionnaire | 54 → **80** | 95 → **100** | 100 | 5,2 → 4,5 s | 0,625 → **0,018** |
+| Résultat | 85 → **89** | 94 → **100** | 100 | 3,5 s | 0 |
+
+Ce qui pèse encore sur la performance : les polices Google et le script de l'export Astro (LCP autour de 4 à 5 s en 3G simulée). Pistes pour plus tard : héberger les polices sur le site en sous-ensemble latin et précharger la graisse du titre.
