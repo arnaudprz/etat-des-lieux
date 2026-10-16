@@ -5,10 +5,10 @@
  *
  * La visite se pose dans l'agenda d'Arnaud du tableau de bord (créneaux libres, notification) et la personne reçoit un mail.
  */
-import { resultatMemorise } from '../session.js?v=228';
-import { decoder } from '../lien.js?v=228';
-import { chargerContenu } from '../contenu.js?v=228';
-import { SUPABASE_URL, SUPABASE_CLE } from '../config.js?v=228';
+import { resultatMemorise } from '../session.js?v=234';
+import { decoder } from '../lien.js?v=234';
+import { chargerContenu } from '../contenu.js?v=234';
+import { SUPABASE_URL, SUPABASE_CLE } from '../config.js?v=234';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -167,4 +167,40 @@ document.querySelectorAll('.gr-bascule').forEach((g) => {
     const envoye = location.search.includes('envoye') ? '?envoye' : '';
     setTimeout(() => { location.href = a.getAttribute('href') + envoye; }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 340);
   }));
+});
+
+// ------------------------------------------------------------- le téléphone (socle responsive, 16 octobre 2026)
+// Typographie française : espace insécable avant ? ! : ; » et après « (Lexique de l'Imprimerie nationale), sur tout le texte.
+{
+  const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+    if (n.parentElement && n.parentElement.closest('script, style, textarea, input')) continue;
+    if (/[ ][?!:;»]|«[ ]/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/ ([?!:;»])/g, ' $1').replace(/« /g, '« ');
+  }
+}
+const telephone = () => matchMedia('(max-width: 51.25em)').matches;
+// Le bouton « Visiter la maison » collé en bas, dans la zone du pouce (Steven Hoober), dès que celui du haut sort de l'écran ;
+// il s'efface quand le bloc final « Venez visiter la maison » arrive (un seul appel à la fois à l'écran).
+{
+  const premier = document.querySelectorAll('main [data-rdv]')[0]; const fin = $('.gr-fin');
+  if (premier && 'IntersectionObserver' in window) {
+    const barre = el('div', 'gr-barre'); barre.setAttribute('aria-hidden', 'true');
+    const b = el('button', 'gr-bouton gr-barre__bouton'); b.type = 'button'; b.tabIndex = -1;
+    b.innerHTML = premier.innerHTML; b.addEventListener('click', () => premier.click());
+    barre.appendChild(b); document.body.appendChild(barre);
+    let hautVu = true, finVu = false;
+    const maj = () => { const on = telephone() && !hautVu && !finVu; barre.classList.toggle('gr-barre--on', on); b.tabIndex = on ? 0 : -1; barre.setAttribute('aria-hidden', String(!on)); };
+    new IntersectionObserver((e) => { hautVu = e[0].isIntersecting; maj(); }).observe(premier);
+    if (fin) new IntersectionObserver((e) => { finVu = e[0].isIntersecting; maj(); }).observe(fin);
+    addEventListener('resize', maj);
+  }
+}
+// Les saisons du parcours se font glisser au doigt sur téléphone : un repère sous le carrousel suit la saison affichée.
+document.querySelectorAll('.gr-ans').forEach((rail) => {
+  const saisons = [...rail.querySelectorAll('.gr-ans__saison')]; if (saisons.length < 2) return;
+  const reperes = el('div', 'gr-ans__reperes'); reperes.setAttribute('aria-hidden', 'true');
+  saisons.forEach((s, i) => { const r = el('button', '', ''); r.type = 'button'; r.tabIndex = -1; r.addEventListener('click', () => s.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', inline: 'start', block: 'nearest' })); reperes.appendChild(r); });
+  rail.after(reperes);
+  const suivre = () => { const g = rail.getBoundingClientRect().left; let k = 0, d = Infinity; saisons.forEach((s, i) => { const e = Math.abs(s.getBoundingClientRect().left - g - 16); if (e < d) { d = e; k = i; } }); [...reperes.children].forEach((r, i) => r.classList.toggle('actif', i === k)); };
+  rail.addEventListener('scroll', suivre, { passive: true }); suivre();
 });

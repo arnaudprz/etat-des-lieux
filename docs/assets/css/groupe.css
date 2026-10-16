@@ -638,3 +638,53 @@ body:has(.gr--da) { overflow-x: clip; }
 /* Sur téléphone, these.css retire la marge de <main> pour la page de résultat (13 octobre 2026) ; les pages groupe la gardent :
    16 px au moins de chaque côté (responsive, 16 octobre 2026). */
 @media (max-width: 51.25em) { main.gr { padding-left: max(1rem, env(safe-area-inset-left)) !important; padding-right: max(1rem, env(safe-area-inset-right)) !important; } }
+
+/* ----------------------------------------------------------- téléphone (socle responsive, 16 octobre 2026) */
+/* Bouton « Visiter la maison » collé en bas, dans la zone du pouce. */
+.gr-barre { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; padding: .75rem max(1rem, env(safe-area-inset-left)) max(env(safe-area-inset-bottom), .75rem); background: linear-gradient(transparent, rgba(255,255,255,.96) 35%); transform: translateY(110%); transition: transform var(--mvt-long, .4s) var(--courbe-douce, ease); pointer-events: none; }
+.gr-barre--on { transform: none; pointer-events: auto; }
+.gr-barre__bouton { width: 100%; justify-content: space-between; box-shadow: 0 .5rem 1.5rem rgba(14,42,47,.18); }
+@media (min-width: 51.3em) { .gr-barre { display: none; } }
+@media (prefers-reduced-motion: reduce) { .gr-barre { transition: none; } }
+@media (max-width: 51.25em) {
+  /* Typographie : titres équilibrés, sans césure ; paragraphes soignés ; texte courant à 16 px au moins. */
+  .gr :is(h1, h2, h3, .gr-fin__titre) { text-wrap: balance; hyphens: manual; }
+  .gr p { text-wrap: pretty; }
+  .gr-section__texte, .gr-chapo, .gr-an__rang h3 + p, .gr-ans__gain { font-size: max(1rem, 1em) !important; }
+  .gr { padding-bottom: 5rem; gap: 4.5rem !important; }
+  /* Le planning : les saisons en carrousel, une à la fois, qu'on fait glisser au doigt (scroll-snap) ; plus de flèches. */
+  .gr-ans { display: flex !important; gap: .75rem !important; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(-1 * max(1rem, env(safe-area-inset-left))); padding: .25rem max(1rem, env(safe-area-inset-left)) .5rem; scroll-padding-inline: max(1rem, env(safe-area-inset-left)); scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .gr-ans::-webkit-scrollbar { display: none; }
+  .gr-ans__fleche { display: none !important; }
+  .gr-ans__saison { flex: 0 0 84%; scroll-snap-align: start; padding: 1.25rem 1.25rem 1.25rem; border-radius: 1.25rem; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DCE8EA; }
+  .gr-ans__saison .gr-jj__titre { margin-bottom: .25rem; }
+  .gr-ans__gain { min-height: 0 !important; margin-bottom: .875rem !important; }
+  .gr-ans .gr-jj__atelier { flex: 0 0 auto; padding: 1rem 1.125rem; }
+  .gr-ans__reperes { display: flex; justify-content: center; gap: .5rem; margin-top: .75rem; }
+  .gr-ans__reperes button { width: 2.75rem; height: 1.5rem; padding: 0; border: 0; background: none; cursor: pointer; position: relative; }
+  .gr-ans__reperes button::after { content: ""; position: absolute; left: .5rem; right: .5rem; top: calc(50% - 2px); height: 4px; border-radius: 999px; background: #DCE8EA; transition: background var(--mvt-moyen, .25s); }
+  .gr-ans__reperes button.actif::after { background: #23545B; }
+  /* Le rythme de l'année : une carte par ligne, la note en tête à droite. */
+  .gr--da .gr-an__rangs > .gr-an__rang { grid-template-columns: minmax(0, 1fr) auto !important; gap: .5rem 1rem !important; padding: 1.25rem 0 !important; }
+  .gr--da .gr-an__rangs > .gr-an__rang > .gr-an__quand { grid-column: 1; grid-row: 1; align-self: center; padding: 0; }
+  .gr--da .gr-an__rangs > .gr-an__rang > .gr-an__note { grid-column: 2; grid-row: 1 / span 2; align-items: flex-end; text-align: right; gap: .25rem; }
+  .gr--da .gr-an__rangs > .gr-an__rang > div:not(.gr-an__note) { grid-column: 1 / -1; grid-row: 2; padding-right: 0; margin-top: .25rem; }
+  .gr--da .gr-an__rangs > .gr-an__rang > .gr-an__note { grid-row: 1 !important; }
+  .gr--da .gr-an__note strong { font-size: 2rem !important; }
+  .gr--da .gr-an__note .gr-pastilles { gap: 2px; }
+  .gr--da .gr-an__note .gr-pastilles i { width: .5rem !important; height: .5rem !important; }
+  .gr--da .gr-an__note p { max-width: 8rem; font-size: .8125rem !important; overflow-wrap: anywhere; hyphens: auto; }
+  .gr--da .gr-an__rangs, .gr--da .gr-an__rangs > .gr-an__rang { min-width: 0; max-width: 100%; }
+  .gr-an__rang h3 { font-size: 1.625rem !important; }
+  .gr-an__themes { margin-top: .75rem; }
+}
+@media (max-width: 51.25em) {
+  /* Le carrousel reste borné par la colonne (Defensive CSS : min-width: 0 sur les enfants de grille). */
+  .gr-an, .gr-an > *, .gr-an__corps, .gr-an-hote { min-width: 0; max-width: 100%; }
+  .gr-ans { max-width: none; width: auto; }
+}
+@media (min-width: 51.3em) { .gr-ans__reperes { display: none; } }
+/* Contraste AA (WCAG 1.4.3, 16 octobre 2026) : les petits intitulés passent du bleu-vert clair (#6E979C, 3,3:1) à #3F6F76 (5,9:1). */
+.gr .gr-jj__quand, .gr dt, .gr .gr-chaine__temps, .gr .gr-carte__legende, .gr .gr-notes small, .gr .gr-an__note small { color: #3F6F76 !important; }
+/* Sur fond foncé, ces intitulés restent clairs (#DCE8EA, 6,8:1 sur #23545B). */
+.gr .gr-bande--fonce .gr-chaine__temps, .gr .gr-ans__saison:last-child .gr-jj__quand { color: #DCE8EA !important; }
