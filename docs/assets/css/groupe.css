@@ -714,14 +714,14 @@ body:has(.gr--da) { overflow-x: clip; }
   .gr-avis blockquote { font-size: var(--pas-2, 1.5rem) !important; }
   .gr-avis cite { letter-spacing: .08em; }
   .gr-etapes li, .gr-deux li { padding-left: 2.75rem !important; }
-  .gr-mosaique figcaption { white-space: nowrap; max-width: calc(100% - 1rem); overflow: hidden; text-overflow: ellipsis; }
+  .gr-mosaique figcaption { max-width: calc(100% - 1rem); }
 }
 /* Tablette : lignes de 45 à 75 caractères. */
 @media (min-width: 40em) and (max-width: 64em) { .gr-chapo, .gr-section__texte, .gr p { max-width: 38rem; } }
 /* Fenêtre de visite en paysage : un panneau qui défile, « Continuer » collé en bas. */
 @media (max-height: 30em) and (max-width: 64em) {
   .rdv { max-height: 100svh !important; margin: auto 0 0 !important; width: 100% !important; max-width: 100% !important; border-radius: 1.25rem 1.25rem 0 0 !important; overflow: auto; }
-  .rdv [data-continuer] { position: sticky; bottom: max(env(safe-area-inset-bottom), .5rem); box-shadow: 0 0 0 .75rem #FFFFFF; }
+  /* Pas de bouton collé en paysage : il cachait des créneaux (relecteur) ; le panneau défile simplement. */
 }
 /* Fenêtre de visite sur petit téléphone : la place de la croix réservée, des créneaux qui tiennent sur cinq colonnes (cible 44 px). */
 .rdv .surtitre { padding-right: 3.25rem; }
@@ -731,3 +731,20 @@ body:has(.gr--da) { overflow-x: clip; }
   .rdv__jour p { font-size: .75rem; }
   .rdv__creneau { min-height: 2.75rem; padding: 0 !important; font-size: .8125rem; letter-spacing: -.01em; }
 }
+
+/* Troisième tour (relecteur, 16 octobre 2026). */
+.gr-barre { opacity: 0; transition: transform var(--mvt-long, .4s) var(--courbe-douce, ease), opacity var(--mvt-moyen, .25s); }
+.gr-barre--on { opacity: 1; }
+.rdv__creneau:disabled { text-decoration: none !important; background: none !important; color: #A0BFC3 !important; }
+@media (max-width: 51.25em) {
+  .gr-ans { align-items: stretch !important; padding-bottom: 0 !important; }
+  .gr-ans__reperes { align-items: center; margin-top: .25rem !important; }
+  .gr-ans__reperes button { height: 2.75rem !important; }
+  .gr-ans__compte { margin-left: .5rem; font: 600 .8125rem 'DM Sans', sans-serif; color: #3F6F76; font-variant-numeric: tabular-nums; }
+  .gr-etapes li, .gr-deux li { padding-left: 2.25rem !important; }
+  .gr-regles li, .gr-deux ul li { padding-left: 1.5rem !important; }
+  .gr-ans .gr-jj__theme { hyphens: manual; text-wrap: balance; }
+  .gr-merci { text-wrap: balance; }
+}
+@media (min-width: 40em) and (max-width: 64em) { .gr-carte__points i, .gr-carte [class*="points"] i { width: min(2.5rem, 100%) !important; height: auto !important; aspect-ratio: 1; max-width: 2.5rem; } }
+@media (max-width: 22.5em) { .rdv__jours { gap: .1875rem; } .rdv__creneau { font-size: .75rem; letter-spacing: -.02em; } .rdv { padding-left: .75rem !important; padding-right: .75rem !important; } }

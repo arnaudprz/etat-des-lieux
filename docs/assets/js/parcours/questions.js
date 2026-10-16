@@ -13,16 +13,16 @@
  * Aucun chiffre n'est affiché : ni valeur de réponse, ni numéro, ni pourcentage.
  */
 
-import { chargerContenu, texteAffirmation, relance as relancePour } from '../contenu.js?v=238';
-import { NB_AFFIRMATIONS, ouvreUneRelance, relancesAEnvoyer } from '../calcul.js?v=238';
-import { lienResultat } from '../lien.js?v=238';
-import { icone, chemin } from '../illustration-niveau.js?v=238';
-import { lire, ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=238';
-import { envoyerReponse } from '../api.js?v=238';
+import { chargerContenu, texteAffirmation, relance as relancePour } from '../contenu.js?v=240';
+import { NB_AFFIRMATIONS, ouvreUneRelance, relancesAEnvoyer } from '../calcul.js?v=240';
+import { lienResultat } from '../lien.js?v=240';
+import { icone, chemin } from '../illustration-niveau.js?v=240';
+import { lire, ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=240';
+import { envoyerReponse } from '../api.js?v=240';
 import {
   $, $$, el, texte, vider, signalerModeDemo, typographierPage,
   messageErreur, installerEtapes, annoncer, evenement,
-} from './commun.js?v=238';
+} from './commun.js?v=240';
 
 /** Clé de la valeur « Autre » dans une relance, telle qu'enregistrée. */
 const AUTRE = 'autre';

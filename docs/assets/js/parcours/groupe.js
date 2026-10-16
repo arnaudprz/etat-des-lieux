@@ -5,10 +5,10 @@
  *
  * La visite se pose dans l'agenda d'Arnaud du tableau de bord (créneaux libres, notification) et la personne reçoit un mail.
  */
-import { resultatMemorise } from '../session.js?v=238';
-import { decoder } from '../lien.js?v=238';
-import { chargerContenu } from '../contenu.js?v=238';
-import { SUPABASE_URL, SUPABASE_CLE } from '../config.js?v=238';
+import { resultatMemorise } from '../session.js?v=240';
+import { decoder } from '../lien.js?v=240';
+import { chargerContenu } from '../contenu.js?v=240';
+import { SUPABASE_URL, SUPABASE_CLE } from '../config.js?v=240';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -77,7 +77,7 @@ async function peindreSemaine(auto = false) {
     hote.appendChild(v);
   }
 }
-const message1 = (t) => { $('[data-rdv-message1]').textContent = t || (etat.creneau ? majuscule(dire(etat.creneau.date, etat.creneau.heure)) + ', ' + LIEU : 'Choisissez un créneau.'); const c = $('[data-continuer]'); if (c) c.classList.toggle('gr-bouton--attente', !etat.creneau); };
+const message1 = (t) => { $('[data-rdv-message1]').textContent = t || (etat.creneau ? majuscule(dire(etat.creneau.date, etat.creneau.heure)) + ', ' + LIEU : ''); /* le bouton dit déjà « Choisissez un créneau » */ const c = $('[data-continuer]'); if (c) { c.classList.toggle('gr-bouton--attente', !etat.creneau); const t = [...c.childNodes].find((x) => x.nodeType === 3 && x.nodeValue.trim()); if (t) t.nodeValue = etat.creneau ? 'Continuer' : 'Choisissez un créneau'; } };
 const vue = (n) => d.querySelectorAll('[data-vue]').forEach((v) => { v.hidden = v.dataset.vue !== String(n); });
 
 d.querySelectorAll('[data-semaine]').forEach((b) => b.addEventListener('click', () => { etat.semaine = Math.min(SEMAINES - 1, Math.max(0, etat.semaine + Number(b.dataset.semaine))); peindreSemaine(); }));
@@ -186,7 +186,7 @@ document.querySelectorAll('.gr-bascule').forEach((g) => {
 }
 if (matchMedia('(max-width: 51.25em)').matches) document.querySelectorAll('.gr :is(h1, h2) .gras, .gr .gr-fin__titre .gras').forEach((x) => { const t = x.lastChild; if (t && t.nodeType === 3) t.nodeValue = t.nodeValue.replace(/ (\S+)\s*$/, '\u00a0$1'); else if (x.childNodes.length > 1) { const a = x.childNodes[x.childNodes.length - 2]; if (a && a.nodeType === 3) a.nodeValue = a.nodeValue.replace(/ $/, '\u00a0'); } });
 // Nombre et mot qui suit (codes postaux, « 2 h 30 ») : insécable.
-if (matchMedia('(max-width: 51.25em)').matches) { const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); for (let n = tw.nextNode(); n; n = tw.nextNode()) { if (/\d [A-Za-zÀ-ÿ]/.test(n.nodeValue) && !(n.parentElement && n.parentElement.closest('script, style'))) n.nodeValue = n.nodeValue.replace(/(\d) (?=[A-Za-zÀ-ÿ])/g, '$1\u00a0'); } }
+if (matchMedia('(max-width: 51.25em)').matches) { const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); for (let n = tw.nextNode(); n; n = tw.nextNode()) { if (/\d [A-Za-zÀ-ÿ]/.test(n.nodeValue) && !(n.parentElement && n.parentElement.closest('script, style'))) n.nodeValue = n.nodeValue.replace(/(\d) (?=[A-Za-zÀ-ÿ])/g, '$1\u00a0').replace(/([A-Za-zÀ-ÿ]) (?=\d)/g, '$1\u00a0'); } }
 const telephone = () => matchMedia('(max-width: 51.25em)').matches;
 // Le bouton « Visiter la maison » collé en bas, dans la zone du pouce (Steven Hoober), dès que celui du haut sort de l'écran ;
 // il s'efface quand le bloc final « Venez visiter la maison » arrive (un seul appel à la fois à l'écran).
@@ -211,6 +211,7 @@ document.querySelectorAll('.gr-ans').forEach((rail) => {
   const reperes = el('div', 'gr-ans__reperes'); reperes.setAttribute('aria-hidden', 'true');
   saisons.forEach((s, i) => { const r = el('button', '', ''); r.type = 'button'; r.tabIndex = -1; r.addEventListener('click', () => s.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', inline: 'start', block: 'nearest' })); reperes.appendChild(r); });
   rail.after(reperes);
-  const suivre = () => { const g = rail.getBoundingClientRect().left; let k = 0, d = Infinity; saisons.forEach((s, i) => { const e = Math.abs(s.getBoundingClientRect().left - g - 16); if (e < d) { d = e; k = i; } }); [...reperes.children].forEach((r, i) => r.classList.toggle('actif', i === k)); };
+  const suivre = () => { const g = rail.getBoundingClientRect().left; let k = 0, d = Infinity; saisons.forEach((s, i) => { const e = Math.abs(s.getBoundingClientRect().left - g - 16); if (e < d) { d = e; k = i; } }); [...reperes.querySelectorAll('button')].forEach((r, i) => r.classList.toggle('actif', i === k)); const c = reperes.querySelector('.gr-ans__compte'); if (c) c.textContent = (k + 1) + '\u00a0/\u00a0' + saisons.length; };
+  const compte = el('span', 'gr-ans__compte'); reperes.appendChild(compte);
   rail.addEventListener('scroll', suivre, { passive: true }); suivre();
 });
