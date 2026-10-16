@@ -539,8 +539,20 @@ html:has(dialog.fenetre-mail[open]){overflow:hidden}
   main:has(> [data-sans-resultat]){padding-inline:var(--gouttiere,1rem)!important}
   .vide{padding-block:2.5rem}
   /* Fenêtre e-mail : le bouton d'envoi reste visible en bas du panneau, au-dessus du clavier. */
-  .fenetre-mail .recevoir__bouton{position:sticky;bottom:max(env(safe-area-inset-bottom),.75rem);z-index:2;box-shadow:0 -.75rem 1.5rem rgba(238,244,245,.9)}
+  /* Le bouton d'envoi reste collé en bas du panneau, sur un fond plein : le texte passe dessous proprement au lieu d'être coupé
+     par un dégradé (Arnaud, 16 octobre 2026 : la case « J'accepte… » semblait cachée, puis le bouton passait sous la barre). */
+  .fenetre-mail .recevoir__bouton{position:sticky;bottom:max(env(safe-area-inset-bottom),.75rem);z-index:2;box-shadow:0 0 0 .75rem #EEF4F5,0 .75rem 0 .75rem #EEF4F5}
+  /* Sur téléphone, l'aperçu du PDF laisse la place au formulaire : les deux points disent déjà ce qu'on reçoit. */
+  .fenetre-mail .pdf{display:none}
+  /* La croix : 44 px, à 16 px du bord, plus au ras de l'écran. */
+  .fenetre-mail__fermer{width:44px;height:44px;margin:16px 16px -60px 0;top:16px}
+  /* L'aperçu du PDF plus petit, pour que tout le formulaire tienne dans le panneau. */
+  /* « 86 % » et « sont engagées » ne se touchent plus (l'espace de tête disparaît dans un bloc en ligne). */
+  .nv-etude__grand small{margin-left:.375em}
   .fenetre-mail .recevoir__case input{width:1.375rem;height:1.375rem}
   .fenetre-mail .recevoir__case{min-height:2.75rem;align-items:center}
   .nv-lire__plus{width:2.75rem!important;height:2.75rem!important}
 }
+/* L'en-tête porte « Visiter la maison » (entete.js) ; « État des lieux » n'y reste que dans le PDF (16 octobre 2026). */
+.haut .surtitre{display:none}
+html.mode-pdf .haut .surtitre{display:inline}

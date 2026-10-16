@@ -162,3 +162,36 @@ L'ancienne note de conception parlait d'un contraste à « 4 points d'écart ».
 | Le bloc Greatly devient « Notre lecture » : cinq thèmes reliés aux dimensions de la personne, sans chiffre | Greatly se présente par sa façon de lire l'état des lieux de la personne, pas par un texte générique. |
 | Le lien et « Recevoir l'étude globale » sont regroupés dans « Garder et revenir » ; la phrase sur les RH passe dans le pied de page | Garder son lien et recevoir l'étude sont la suite naturelle du résultat. |
 | Pas de rappel « Et dans 6 mois ? » | Retiré par Arnaud : le serveur ne sait pas l'enregistrer, et une promesse non tenue ne doit pas apparaître. Le formulaire reste celui de l'étude, avec les champs qu'attend le serveur. |
+
+## Formulaire : dix points d'UX (16 octobre 2026)
+
+Aucun texte de `contenu.json` modifié ; parcours manager et membre, page résultat et envoi vers Supabase inchangés (même `version`, mêmes `relances` à l'envoi, vérifié). Code : `docs/assets/js/parcours/pont-site.js`. Publié en V262 avec la suite ci-dessous. Contrôle : `scripts/responsive/parcours-ux.mjs` (trois profils, 1280 et 375, `?demo=1`, écritures interceptées), captures `scripts/responsive/points-ux.mjs` → `captures/ux-2026-10-16/{avant,apres}`.
+
+| Décision | Pourquoi |
+| --- | --- |
+| Ordinateur : essayé en colonne le 16 au matin, puis **retour à la ligne de quatre au-dessus du bloc bleu** (Arnaud : « je préférais l'ancienne version ») | Choix d'Arnaud après essai. |
+| Ordinateur : « Voir tous les secteurs » agrandit la carte et montre les 20 secteurs, sans défilement interne ; la recherche reste en haut (remplace la liste défilante du 15 octobre) | Une liste qui défile dans une carte cache des secteurs sans le dire. |
+| « Retour » dans le profil revient à la question précédente, sa réponse toujours cochée ; seulement sur « Vous travaillez », il ramène à l'accueil | On revient corriger, pas recommencer. |
+| Téléphone : le panneau des idées se ferme (croix, toucher au-dessus, ou la réponse choisie en bouton en haut du panneau) et ramène aux quatre réponses, la réponse en cours cochée ; la toucher le rouvre. Passer à « En bonne partie » ou « Pleinement » ferme le panneau et efface les idées cochées | Un panneau sans sortie enferme ; le toucher au-dessus ne coche jamais une réponse cachée sous le voile. Les boutons vivent hors de la maquette, qui refuse les éléments ajoutés dans son panneau. |
+| Téléphone : les choix du profil en bas de l'écran, la question posée au centre de l'espace libre ; le secteur commence sous sa recherche ; chaque question s'ouvre en haut de l'écran | La zone du pouce, comme pour les 16 questions. |
+| Téléphone : « Retour » est une zone de 44 × 44 avec sa flèche, détachée de la barre de progression | Cible tactile minimale (WCAG 2.5.5), et on ne le confond plus avec la barre. |
+| Téléphone : « Thème 1 sur 8 » au-dessus du thème, dans le style de l'ordinateur (italique, puis le thème en gras) | On sait où l'on en est sans compter les segments. |
+| Téléphone : 16 px de marge partout, panneau des idées compris ; le panneau occupe toute la largeur | Une seule marge ; la taille de base de la maquette rétrécit sur petit écran, d'où des valeurs en px. |
+| Téléphone : tranches de salariés en deux colonnes, chacune sur une ligne ; taille d'équipe sur une ligne aussi (vérifié jusqu'à 320 px) | Des chiffres coupés en deux lignes se lisent mal. |
+| Téléphone : l'écran « Merci, place à vos 16 questions » a son texte en haut et « Commencer les 16 questions » en bas, sous le pouce | Le geste suivant tombe là où se trouve le pouce. |
+
+### Suite du 16 octobre 2026 (retours d'Arnaud sur iPhone)
+
+| Décision | Pourquoi |
+| --- | --- |
+| Téléphone, questionnaire : pas de pied de page, pas de menu | Il apparaissait sous la barre d'adresse flottante de Safari ; « pour ne pas polluer le parcours ». |
+| Téléphone, questions : piste B, un filet fin sous le thème et la question collée à ses réponses, dans la zone du pouce ; sans aplat | La question flottait au milieu de l'écran. |
+| Téléphone, panneau des idées : la réponse choisie en petite étiquette (avec la croix), puis la question, puis les idées | Se rappeler à quoi on répond ; l'étiquette ne doit pas peser autant que la question. |
+| Ordinateur : le champ « Autre » prend toute la largeur sous les idées | Il était tout petit, dans une colonne. |
+| Accueil : « 16 questions, deux minutes » ; « questions » remplace « phrases » dans les textes visibles | Choix d'Arnaud (question ouverte le 15). |
+| Résultat : plus de « Copier le lien » ; fenêtre mail sans aperçu PDF sur téléphone, bouton collé sur fond plein ; « 86 % » ne touche plus « sont engagées » | Retours sur capture. |
+| « Visiter la maison » dans l'en-tête de toutes les pages (ordinateur) ; sur téléphone, menu à deux traits qui ouvre une page blanche | Un seul appel, partout, comme en fin de parcours. |
+| La fenêtre de visite est commune (`assets/js/visite.js`, `assets/css/visite.css`) et s'ouvre sur place partout | « Le bouton doit fonctionner de la même façon que dans le parcours ». |
+| L'ancien menu du site, les colonnes du pied et les liens vers la préprod sont retirés des gabarits et des pages (`scripts/nettoyer-site.mjs`), pas masqués ; gabarits renommés `-s16` pour casser le cache ; 10 fichiers orphelins supprimés | « Masque rien, fais tout propre ». Retirer à l'exécution cassait le moteur du site. |
+| Adresse du pied : la Greatly House partout | Le formulaire affichait encore La Madeleine. |
+| Page indépendants : un seul « Visiter la maison » à l'écran, légendes des photos en étiquettes, fenêtre de visite au-dessus du clavier | Retours sur capture. |

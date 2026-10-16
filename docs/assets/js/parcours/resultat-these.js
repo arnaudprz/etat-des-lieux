@@ -6,12 +6,13 @@
  * se trouve. Les chiffres d'ensemble viennent de edl_these (chiffres regroupés, rien sous 3 personnes) ; ses réponses
  * viennent du lien et ne partent jamais au serveur. Tout le texte est posé en textContent.
  */
-import { chargerContenu, ideeActive } from '../contenu.js?v=241';
-import { decoder } from '../lien.js?v=241';
-import { envoyerContact, compteur } from '../api.js?v=241';
-import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=241';
-import { memoriserResultat } from '../session.js?v=241';
-import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=241';
+import { chargerContenu, ideeActive } from '../contenu.js?v=262';
+import '../entete.js?v=262';
+import { decoder } from '../lien.js?v=262';
+import { envoyerContact, compteur } from '../api.js?v=262';
+import { SUPABASE_URL, SUPABASE_CLE, modeDemo } from '../config.js?v=262';
+import { memoriserResultat } from '../session.js?v=262';
+import { caseSolo, chiffresPourSolo } from '../seuil-solo.js?v=262';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -584,15 +585,7 @@ function vueNouvelle({ solo, role, D_SUR, vue, t, mq }) {
     d.appendChild(nvRangs({ a: t.engages, b: mq.engages, a_nom: 'Avec les trois réunis', b_nom: 'Avec un ou deux des trois' }));
     if (t.perf != null && mq.perf != null) d.appendChild(el('p', 'nv-etude__pied', 'Et elles atteignent plus souvent leurs objectifs : ' + pc(t.perf) + ' contre ' + pc(mq.perf) + '.'));
   } else d.appendChild(el('p', 'nv-etude__pied', solo ? 'Le chiffre des indépendants s’affiche ici dès que 3 d’entre eux au moins sont de chaque côté.' : 'Les chiffres de l’étude s’affichent ici dès qu’ils sont assez nombreux.'));
-  // Partager son résultat (responsive, 16 octobre 2026) : le partage natif du téléphone quand il existe, sinon « Copier le lien ».
-  const part = el('button', 'nv-partager'); part.type = 'button';
-  part.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg><span>' + (navigator.share ? 'Partager mon état des lieux' : 'Copier le lien de mon état des lieux') + '</span>';
-  part.addEventListener('click', async () => {
-    const lien = location.href.replace(/[?&]demo=1/, '');
-    try { if (navigator.share) { await navigator.share({ title: 'Mon état des lieux · Greatly', url: lien }); return; }
-      await navigator.clipboard.writeText(lien); part.querySelector('span').textContent = 'Lien copié'; setTimeout(() => { part.querySelector('span').textContent = 'Copier le lien de mon état des lieux'; }, 2400);
-    } catch (e) { /* partage annulé */ } });
-  g.appendChild(part);
+  // Plus de bouton « Partager / Copier le lien » sous les cinq chiffres (Arnaud, 16 octobre 2026, capture barrée).
   cadre.append(g, d); une.appendChild(cadre);
   const desc = el('a', 'nv-descendre'); desc.href = '#nv-themes'; desc.innerHTML = '<span class="nv-descendre__fleche">' + FLECHE_BAS + '</span><span>Voir le détail</span>';
   une.appendChild(desc);
@@ -676,3 +669,4 @@ async function demarrer() {
 
 window.addEventListener('hashchange', () => location.reload());
 demarrer();
+

@@ -10,12 +10,13 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import { chargerContenu, codesActifs } from '../contenu.js?v=241';
-import { relancesAEnvoyer } from '../calcul.js?v=241';
-import { lienResultat } from '../lien.js?v=241';
-import { envoyerReponse, compteur } from '../api.js?v=241';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=241';
-import { evenement } from './commun.js?v=241';
+import '../entete.js?v=262';
+import { chargerContenu, codesActifs } from '../contenu.js?v=262';
+import { relancesAEnvoyer } from '../calcul.js?v=262';
+import { lienResultat } from '../lien.js?v=262';
+import { envoyerReponse, compteur } from '../api.js?v=262';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=262';
+import { evenement } from './commun.js?v=262';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -48,7 +49,7 @@ const TEXTES = {
   // « Ce que vous recevez en 2 minutes » : quatre blocs ancrés dans ce que la personne vit vraiment (Arnaud, 13 octobre 2026).
   "Une lecture d'ensemble": 'Votre équipe, telle que vous la voyez',
   'En quelques lignes, la façon dont vous travaillez ensemble, vue depuis votre place.':
-    "16 phrases simples, comme « Je peux parler franchement à mon manager, y compris d'une erreur ». Pour la confiance, le soutien, la cohésion, puis l'engagement et la performance : un chiffre sur 100. Votre regard, pas une note.",
+    "16 questions simples, comme « Je peux parler franchement à mon manager, y compris d'une erreur ». Pour la confiance, le soutien, la cohésion, puis l'engagement et la performance : un chiffre sur 100. Votre regard, pas une note.",
   'Huit repères, quatre niveaux': 'Ce qui engage une équipe',
   "Le cap commun, l'info, la confiance, le soutien… Chaque repère prend l'un des quatre niveaux, de « À construire » à « Bien installé ». Jamais de note.":
     "À côté de votre regard, celui de toutes les personnes qui ont répondu : là où la confiance, le soutien et la cohésion sont là, et là où ils manquent, combien de personnes sont engagées. Puis combien atteignent leurs objectifs : la performance vient après, elle n'est pas le point de départ.",
@@ -95,7 +96,7 @@ const TEXTES = {
   "État des lieux d'équipe": 'État des lieux',
   // « 16 phrases », une seule façon de dire, dans la page aussi (Arnaud, 15 octobre 2026, audit des wordings).
   "Vos réponses aux 16 phrases, et les choix des questions de relance.":
-    "Vos réponses aux 16 phrases, et les choix des questions de relance. Si vous cochez « Autre », les quelques mots que vous écrivez (sans nom, s'il vous plaît).",
+    "Vos réponses aux 16 questions, et les choix des questions de relance. Si vous cochez « Autre », les quelques mots que vous écrivez (sans nom, s'il vous plaît).",
   "Les éléments de profil que vous indiquez : rôle dans l'équipe, genre si vous le souhaitez, taille de l'entreprise, secteur d'activité, taille de l'équipe.":
     "Les éléments de profil que vous indiquez : votre façon de travailler (en encadrant une équipe, au sein d'une équipe, ou en solo), genre si vous le souhaitez, taille de l'entreprise et de l'équipe (pas pour un solo), secteur d'activité.",
   "Aucun cookie publicitaire, aucun traceur d'audience tierce.":
@@ -173,7 +174,8 @@ const nombre = () => {
     const f = document.createElement('ol'); f.className = 'edl-frise';
     f.innerHTML = [
       ['Votre façon de travailler', 'En équipe ou à votre compte, la taille de l’entreprise, le secteur.'],
-      ['16 phrases', 'Pour chacune, de « Pas encore » à « Pleinement ». Environ 2 minutes.'],
+      // « 16 questions, deux minutes » (Arnaud, 16 octobre 2026) : « questions » partout, plus « phrases ».
+      ['16 questions, deux minutes', 'Pour chacune, de « Pas encore » à « Pleinement ».'],
       ['Votre état des lieux', 'Votre regard, comparé à des centaines de réponses.'],
     ].map(([t, d], k) => '<li><span class="edl-frise__num">' + (k + 1) + '</span><span class="edl-frise__titre">' + t + '</span><span class="edl-frise__texte">' + d + '</span></li>').join('');
     const nb = hero.querySelector('.edl-nombre');
@@ -336,26 +338,12 @@ const retoucher = () => {
       if (idees.style.order !== o) idees.style.order = o;
     });
   }
-  // Aucun lien vers les nouveaux sites de Greatly ni vers les préprods (Arnaud, 13 octobre 2026). La politique de
-  // confidentialité renvoie à celle de l'état des lieux ; les autres liens (rendez-vous, mentions…) disparaissent.
-  // Le logo GREATLY reste en haut à gauche, et ramène à l'accueil de l'état des lieux (la maquette le remet à chaque rendu).
-  document.querySelectorAll('[data-maquette] header a').forEach((a) => { if (a.getAttribute('href') !== '/') a.setAttribute('href', '/'); });
-  document.querySelectorAll('a[href]').forEach((a) => {
-    const h = a.getAttribute('href') || '';
-    if (!/arnaudprz\.github\.io|(^|\/\/)(www\.)?greatly\.club/.test(h)) return;
-    if (/confidentialit/i.test(a.textContent || '')) { a.setAttribute('href', '/etat-des-lieux/confidentialite/'); return; }
-    a.style.display = 'none';
-    const n = a.nextSibling; // le séparateur « · » qui suivait le lien retiré
-    if (n && n.nodeType === 3 && /^\s*·\s*$/.test(n.nodeValue)) n.nodeValue = '';
-  });
 };
 
 const style = document.createElement('style');
 style.textContent = [
-  // Plus de menu en haut (Arnaud, 13 octobre 2026) : le logo seul.
-  '[data-maquette] header nav, [data-maquette] header > div > div, [data-maquette] header > button { display: none !important; }',
-  // Ni les liens du pied de page : il garde le logo et les mentions légales.
-  '[data-maquette] footer > div:not(:last-child), [data-maquette] footer > details, [data-maquette] footer > p:not(:last-child) { display: none !important; }',
+  // Pas de menu sur téléphone pendant le questionnaire (Arnaud, 16 octobre 2026 : « pour ne pas polluer le parcours »).
+  '@media (max-width: 51.25em) { html[data-edl="questionnaire"] .ent { display: none !important; } }',
   // Plus de montagne dans le haut de l'accueil, ni les trois mentions dessous (Anonyme, Aucun compte, Résultat immédiat).
   'html[data-edl="accueil"] [data-maquette] section:first-of-type > div:first-child[style*="position:absolute"] { display: none !important; }',
   'html[data-edl="accueil"] [data-maquette="MEtatDesLieux"] section:first-of-type > div[style*="position:relative;height"] { display: none !important; }',
@@ -397,6 +385,9 @@ style.textContent = [
   // Le champ « Autre » : dans la DA des réponses, aligné sur le texte des idées.
   '.edl-autre { display: block; width: calc(100% - 2.25rem); box-sizing: border-box; margin: 0.25rem 0 0.5rem 2.25rem; min-height: 3rem; padding: 0.75rem 1rem !important; border: 1.5px solid #A0BFC3 !important; border-radius: 0.75rem !important; background: #FFFFFF !important; font: inherit; font-size: 1rem; color: #0C1011; }',
   '.edl-autre::placeholder { color: #697374; }',
+  // Sur ordinateur, les idées sont sur deux colonnes : le champ « Autre » prend toute la largeur sous la liste, en grand
+  // (Arnaud, 16 octobre 2026 : « l'encadré Autre est tout petit »).
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open .edl-autre { grid-column: 1 / -1; width: 100%; margin: 0.25rem 0 0.25rem; min-height: 3.25rem; font-size: 1rem !important; }',
   '.edl-autre:focus { outline: none; border-color: #23545B !important; box-shadow: 0 0 0 3px rgba(35,84,91,.15); }',
   '@media (max-width: 1023px) { .edl-autre { width: 100%; margin-left: 0; font-size: 1.0625rem; } }',
   // Le bloc « Greatly, ce n'est pas… » : aplat bleu-vert, titre en deux temps, la liste des dix, le mantra, la pilule à flèche.
@@ -510,11 +501,10 @@ style.textContent = [
   'html.edl-pas-a-pas .edl-profil > div:nth-child(2) { padding: 2rem 2.25rem !important; }',
   // Le secteur garde ses deux colonnes (des intitulés longs), en un peu plus petit pour tenir sur une ligne.
   'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) div[style*="display:grid"] { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); }',
-  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) div[style*="display:grid"] > button { font-size: 0.8125rem !important; min-height: 2.625rem !important; padding: 0 1.5rem !important; }',
+  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) div[style*="display:grid"] > button { font-size: 0.8125rem !important; min-height: 2.625rem !important; padding: 0 0.75rem !important; }',
   'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) div[style*="display:grid"] { gap: 0.5rem !important; }',
-  // « Voir tous les secteurs » : la liste complète défile dans la carte, à la même hauteur, au lieu d'allonger la page (Arnaud,
-  // 15 octobre 2026 : « quand on clique sur tous les secteurs, c'est étrange »).
-  'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) div[style*="display:grid"]:has(> :nth-child(9)) { max-height: 13.25rem; overflow-y: auto; overscroll-behavior: contain; padding-right: 0.5rem; mask-image: linear-gradient(#000 85%, transparent); -webkit-mask-image: linear-gradient(#000 85%, transparent); }',
+  // « Voir tous les secteurs » : la carte s'agrandit et montre les 20 secteurs, sans défilement interne ; la recherche reste en
+  // haut (points UX du 16 octobre 2026, qui remplacent la liste défilante du 15).
   'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:has(input) div[style*="display:grid"]:has(> :nth-child(9)) > button { font-size: 0.8125rem !important; }',
   'html.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:not(.edl-etape-cachee) { animation: edlEtape .5s cubic-bezier(.2,.7,.2,1) both; }',
   'html.edl-pas-a-pas .edl-etape-sortie { opacity: 0; transform: translateX(-10px); transition: opacity .28s ease, transform .28s ease; }',
@@ -545,13 +535,18 @@ style.textContent = [
   'html.edl-phrases [data-maquette] div[style*="grid-template-columns:16.75rem"] > aside { display: none !important; }',
   'html.edl-phrases .edl-ph { display: grid !important; grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr); grid-template-rows: auto auto 1fr auto; column-gap: 3.5rem; align-items: start; }',
   // Les idées « J'aimerais… » s'ouvrent sous les réponses, en fondu ; la carte se resserre pour que tout tienne à l'écran,
-  // sans défiler, quelle que soit la hauteur de la fenêtre (Arnaud, 15 octobre 2026).
+  // sans défiler. Les réponses passent en ligne de quatre au-dessus du bloc bleu (Arnaud, 15 octobre 2026 ; essayé en colonne
+  // le 16 au matin, Arnaud préfère la ligne de quatre).
   'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open { animation: edlOuvre .45s ease both; }',
   '@keyframes edlOuvre { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }',
   'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) { gap: 1.25rem; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) .e-opt { min-height: clamp(2.5rem, 6vh, 3.25rem) !important; }',
-  // Les réponses passent de la colonne à une ligne de quatre quand les idées s'ouvrent (Arnaud, 15 octobre 2026 : « le passage de vertical à horizontal était top »).
   'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) > [role="group"]:not(.e-open) { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 0.5rem !important; }',
+  // En ligne, les pastilles sont étroites : la couleur suffit à montrer la réponse choisie, la coche se retire.
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) .e-opt > svg { display: none !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) .e-opt { padding: 0.375rem 0.5rem !important; font-size: 0.9375rem !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) { padding-top: clamp(1.25rem, 3vh, 2rem) !important; padding-bottom: clamp(1.25rem, 3vh, 2rem) !important; gap: clamp(0.75rem, 2vh, 1.25rem) !important; }',
+  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) > p:first-child { font-size: clamp(1.375rem, 3.2vh, 2rem) !important; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open { margin-top: 0 !important; padding: clamp(1rem, 2.6vh, 1.5rem) 1.75rem clamp(0.875rem, 2.2vh, 1.25rem) !important; gap: clamp(0.5rem, 1.6vh, 0.875rem) !important; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > div:first-of-type { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: clamp(0.125rem, 0.8vh, 0.375rem) 2rem !important; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open .e-row { min-height: clamp(2.25rem, 6vh, 3rem) !important; margin: 0 !important; padding: 0.25rem 0 !important; gap: 0.75rem !important; font-size: 0.9375rem !important; line-height: 1.3 !important; align-items: center !important; }',
@@ -574,9 +569,6 @@ style.textContent = [
   'html.edl-phrases .edl-ph > div > .edl-ph-carte > [role="group"]:not(.e-open) { display: grid !important; grid-template-columns: 1fr !important; gap: 0.5rem !important; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt { position: relative; justify-content: center !important; text-align: center !important; white-space: nowrap; min-height: 2.875rem !important; padding: 0.375rem 1.75rem !important; }',
   'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-opt > svg { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); }',
-  // En ligne, les pastilles sont étroites : la couleur suffit à montrer la réponse choisie, la coche se retire.
-  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) .e-opt > svg { display: none !important; }',
-  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) .e-opt { padding: 0.375rem 0.5rem !important; font-size: 0.9375rem !important; }',
   // Fenêtres très basses : tout se resserre encore, toujours sans défiler.
   '@media (max-height: 590px) { html.edl-phrases .edl-ph > div > .edl-ph-carte { padding-top: 1.25rem !important; padding-bottom: 1.25rem !important; gap: 0.875rem !important; } html.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { font-size: 1.375rem !important; } html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open .e-row { min-height: 2rem !important; } html.edl-phrases [data-maquette] div[style*="grid-template-columns:16.75rem"] { padding-top: 1rem !important; } }',
   'html.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > div:first-of-type { display: grid !important; }',
@@ -603,8 +595,6 @@ style.textContent = [
   'html.edl-phrases main > section:has(.edl-ph) > div { width: 100%; padding: clamp(1.25rem, 4vh, 2.5rem) 0 !important; }',
   // Tout reste fixe d'une question à l'autre (Arnaud, 15 octobre 2026) : la frise, le thème et le haut de la carte ne bougent plus
   // quand la carte s'allonge ; elle grandit vers le bas.
-  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) { padding-top: clamp(1.25rem, 3vh, 2rem) !important; padding-bottom: clamp(1.25rem, 3vh, 2rem) !important; gap: clamp(0.75rem, 2vh, 1.25rem) !important; }',
-  'html.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) > p:first-child { font-size: clamp(1.375rem, 3.2vh, 2rem) !important; }',
   'html.edl-phrases .edl-ph { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr) !important; column-gap: 3.5rem !important; align-items: start !important; grid-template-rows: auto auto auto !important; }',
   'html.edl-phrases .edl-frise3__pas i { box-shadow: 0 0 0 4px #FFFFFF; background: #C7D9DC; }',
   'html.edl-phrases .edl-frise3__pas:not(:last-child)::after { background: #C7D9DC; }',
@@ -747,6 +737,60 @@ style.textContent = [
     + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:not(.edl-etape-cachee) { flex: 0 0 auto !important; }'
     + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) h2 { margin: 0 !important; }'
     + ' }',
+  // ----------------------------------------------------------- points UX du formulaire (16 octobre 2026)
+  // Les boutons ajoutés au panneau des idées n'existent que sur téléphone et tablette.
+  '.edl-feuille-tete { display: none; }',
+  '@media (max-width: 1100px) {'
+    // 4. Le panneau des idées se ferme : la croix, la réponse choisie en haut (pour la changer), ou un toucher au-dessus.
+    + ' html.edl-tel.edl-phrases .edl-ph-carte.edl-feuille-fermee .e-open { display: none !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > p::before { display: none !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open { padding-top: calc(var(--feuille-tete, 64px) + 1.75rem) !important; overscroll-behavior: contain; }'
+    + ' html.edl-tel.edl-phrases .edl-feuille-tete:not([hidden]) { display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 12px 8px; position: fixed; left: 0; right: 0; z-index: 61; box-sizing: border-box; padding: 20px 8px 0 16px; animation: edlVoile .25s .3s both; }'
+    + ' html.edl-tel.edl-phrases:has(.edl-ph-carte .e-open):not(:has(.edl-ph-carte.edl-feuille-fermee)), html.edl-tel.edl-phrases:has(.edl-ph-carte .e-open):not(:has(.edl-ph-carte.edl-feuille-fermee)) body { overflow: hidden; }'
+    + ' html.edl-tel .edl-feuille-q { grid-column: 1 / -1; grid-row: 2; margin: 4px 0 0; font: 800 clamp(1.25rem, 5.4vw, 1.5rem)/1.2 "Bricolage Grotesque", sans-serif; letter-spacing: -.02em; color: #0C1011; text-wrap: balance; }'
+    + ' html.edl-tel .edl-feuille-tete .edl-feuille-x { grid-column: 2; grid-row: 1; }'
+    + ' html.edl-tel .edl-feuille-tete .edl-feuille-choix { grid-column: 1; grid-row: 1; justify-self: start; align-self: center; }'
+    + ' html.edl-tel .edl-feuille-x { display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 999px; background: transparent; color: #23545B; cursor: pointer; }'
+    + ' html.edl-tel .edl-feuille-x svg { width: 1.375rem; height: 1.375rem; }'
+    // La réponse choisie, en petite étiquette (Arnaud, 16 octobre 2026 : « aussi gros que la question ») ; la zone tactile garde 44 px.
+    + ' html.edl-tel .edl-feuille-choix { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 12px; border: 1px solid #C7D9DC; border-radius: 999px; background: #FFFFFF; color: #23545B; font: 700 max(.75rem, 12px) "DM Sans", sans-serif; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }'
+    + ' html.edl-tel .edl-feuille-choix::after { content: ""; position: absolute; inset: -7px -4px; }'
+    + ' html.edl-tel .edl-feuille-choix svg { width: .875rem; height: .875rem; flex-shrink: 0; }'
+    // 5. Les choix du profil en bas de l'écran, comme les questions ; la question posée au centre de l'espace libre au-dessus.
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:not(:has(input)) > div:has(> h2) { margin: auto 0 !important; padding: 1.5rem 0; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:not(:has(input)) h2 { margin: 0 !important; padding: 0 !important; }'
+    // 6. « Retour » : une zone de 44 × 44 avec sa flèche, détachée de la barre de progression.
+    + ' html.edl-tel .edl-retour { min-height: 44px !important; min-width: 44px; gap: .375rem; padding: 0 .75rem 0 0 !important; margin-left: -.125rem; text-decoration: none !important; }'
+    + ' html.edl-tel .edl-retour::before { content: ""; width: 1.125rem; height: 1.125rem; flex-shrink: 0; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23000%27 stroke-width=%272.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M19 12H5M11 6l-6 6 6 6%27/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23000%27 stroke-width=%272.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M19 12H5M11 6l-6 6 6 6%27/%3E%3C/svg%3E") center / contain no-repeat; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > .edl-ph-nav, html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(n+3) { margin: 0 0 .75rem !important; }'
+    // 7. « Thème 1 sur 8 » au-dessus du nom du thème, dans le style de l'ordinateur (italique, puis le thème en gras).
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete h2::before { display: block !important; margin: 0 0 .125rem !important; font-size: clamp(1.25rem, 5.3vw, 1.625rem) !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete h2 { font-family: "Bricolage Grotesque", sans-serif !important; font-style: normal !important; font-weight: 800 !important; font-size: clamp(1.5rem, 6.4vw, 2rem) !important; line-height: 1.1 !important; letter-spacing: -.025em !important; color: #0C1011 !important; }'
+    // La question ne flotte plus au milieu de l'écran (Arnaud, 16 octobre 2026, piste B retenue) : un filet fin sous le thème,
+    // et la question collée à ses réponses, ensemble dans la zone du pouce. Sans aplat de couleur.
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete { padding-bottom: 1.25rem; border-bottom: 1px solid #DCE8EA; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { margin: auto 0 1.75rem !important; padding: 1.5rem 0 0 !important; font-size: clamp(1.75rem, 7.4vw, 2.25rem) !important; }'
+    // 8. 16 px de marge partout, panneau des idées compris (en px : la maquette réduit la taille de base sur les petits écrans).
+    + ' html.edl-tel.edl-phrases main > section:has(.edl-ph), html.edl-tel.edl-pas-a-pas main > section:has(.edl-profil) { padding-left: max(var(--gouttiere, 1rem), 16px) !important; padding-right: max(var(--gouttiere, 1rem), 16px) !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open { padding-left: max(var(--gouttiere, 1rem), 16px) !important; padding-right: max(var(--gouttiere, 1rem), 16px) !important; }'
+    // Le panneau occupe toute la largeur : l'animation d'entrée de la carte ne doit pas lui servir de cadre.
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte:has(.e-open) { animation: none !important; transform: none !important; }'
+    + ' html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open > div:first-of-type, html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte .e-open .e-row { padding-left: 0 !important; padding-right: 0 !important; margin-left: 0 !important; margin-right: 0 !important; }'
+    // 9. Les tranches de salariés en deux colonnes, chacune sur une ligne ; la taille d'équipe aussi sur une ligne.
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) div[style*="display:grid"]:has(> :nth-child(6):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:not(:first-child):not(:has(input)) div[style*="display:grid"]:has(> :nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:not(:first-child):not(:has(input)) div[style*="display:grid"]:is(:has(> :nth-child(3):last-child), :has(> :nth-child(6):last-child)) > button { white-space: nowrap !important; padding: .25rem .5rem !important; }'
+    // Pas de pied de page pendant le questionnaire sur téléphone (Arnaud, 16 octobre 2026 : « personne ne va cliquer dessus à
+    // cet endroit ») : il apparaissait sous la barre d'adresse flottante de Safari. Les mentions restent sur l'accueil et le résultat.
+    + ' html.edl-tel:is(.edl-phrases, .edl-pas-a-pas) [data-maquette] footer { display: none !important; }'
+    // 10. « Merci, place à vos 16 questions » : le texte en haut, le bouton en bas, sous le pouce.
+    + ' html.edl-tel.edl-pas-a-pas .edl-merci { justify-content: flex-start !important; padding-top: 1.5rem; }'
+    + ' html.edl-tel.edl-pas-a-pas .edl-merci__cta { margin-top: auto; }'
+    + ' }',
+  // Tablette : la question du profil reste près de ses réponses (le centrage en hauteur ci-dessus prime).
+  '@media (min-width: 700px) and (max-width: 1100px) and (min-height: 700px) { html.edl-tel.edl-pas-a-pas .edl-profil > div:nth-child(2) > div:not(:has(input)) > div:has(> h2) { margin: 0 !important; } html.edl-tel.edl-pas-a-pas .edl-merci { justify-content: center !important; } html.edl-tel.edl-pas-a-pas .edl-merci__cta { margin-top: 1rem; } }',
+  // Piste B sur les écrans bas (petit téléphone) : tout tient sans défiler.
+  '@media (max-width: 1100px) and (max-height: 620px) { html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete { padding-bottom: .75rem; } html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-carte > p:first-child { margin-bottom: 1rem !important; padding-top: .75rem !important; font-size: clamp(1.375rem, 6.6vw, 1.75rem) !important; } html.edl-tel.edl-phrases .edl-ph { padding-top: .25rem !important; padding-bottom: max(env(safe-area-inset-bottom), .25rem) !important; } html.edl-tel.edl-phrases .edl-ph > .edl-ph-nav { margin-bottom: .25rem !important; } html.edl-tel.edl-phrases .edl-ph > div > .edl-ph-tete { margin-top: .5rem !important; } }',
   '@keyframes edlFeuille { from { transform: translateY(100%); } to { transform: none; } }',
   '@keyframes edlVoile { from { opacity: 0; } }',
   '[data-maquette] [tabindex="-1"]:focus:not(:focus-visible), [data-maquette] p:focus:not(:focus-visible) { outline: none; }',
@@ -858,12 +902,15 @@ const carteProfil = () => {
 };
 const groupesProfil = (carte) => [...carte.children].filter((g) => !g.classList.contains('edl-merci') && !g.classList.contains('edl-passer') && !g.hasAttribute('data-edl-cache') && !/display:\s*none/.test(g.getAttribute('style') || ''));
 // Changer de question : un léger fondu en sortie, puis la suivante arrive en fondu (Arnaud, 15 octobre 2026).
+const focusTitre = (x) => { if (!x) return; if (!x.hasAttribute('tabindex')) x.setAttribute('tabindex', '-1'); x.focus({ preventScroll: true }); };
 const allerEtape = (n, sansHistorique) => {
   if (!sansHistorique && n > etapeProfil) pousserPas('profil', n);
   const carte = carteProfil(); const g = carte && (groupesProfil(carte)[etapeProfil] || carte.querySelector(':scope > .edl-merci'));
-  if (!g || calme()) { etapeProfil = n; etapesProfil(); return; }
+  // Sur téléphone, chaque question s'ouvre en haut de l'écran (points UX du 16 octobre 2026) : rien ne reste coupé au-dessus.
+  const poser = () => { etapeProfil = n; etapesProfil(); if (TEL()) { scrollTo(0, 0); focusTitre(document.querySelector('.edl-profil > div:nth-child(2) > div:not(.edl-etape-cachee) h2, .edl-merci:not([hidden]) .edl-merci__titre')); } };
+  if (!g || calme()) { poser(); return; }
   g.classList.add('edl-etape-sortie');
-  setTimeout(() => { g.classList.remove('edl-etape-sortie'); etapeProfil = n; etapesProfil(); }, 280);
+  setTimeout(() => { g.classList.remove('edl-etape-sortie'); poser(); }, 280);
 };
 const etapesProfil = () => {
   const racine = document.documentElement;
@@ -1004,6 +1051,10 @@ const etapesPhrases = () => {
   if (courante) { const memes = cartes.filter((c) => c.parentElement === courante.parentElement); racine.style.setProperty('--p-theme', String(memes.indexOf(courante) / memes.length)); }
   // Le panneau des idées rappelle la réponse choisie (Nielsen n° 6 : reconnaître plutôt que se souvenir).
   if (courante) { const ch = courante.querySelector('.e-opt[aria-pressed="true"]'); const tete = courante.querySelector('.e-open > p'); if (tete && ch) { const v = norm(ch.textContent || ''); if (tete.dataset.choix !== v) tete.dataset.choix = v; } }
+  // Sur téléphone, le panneau se ferme (points UX du 16 octobre 2026) : une croix, et la réponse choisie en bouton, en haut,
+  // pour la changer. Les deux ramènent aux quatre réponses, la réponse en cours toujours cochée. Ils vivent hors de la maquette
+  // (qui n'accepte pas d'éléments ajoutés dans son panneau), dans un bandeau posé sur le haut du panneau.
+  bandeauFeuille(courante);
   // Le bloc de gauche ne bouge plus d'un thème à l'autre (Arnaud, 15 octobre 2026) : le titre a une hauteur fixe, et sa taille
   // s'ajuste s'il est plus long ; le « pourquoi » dessous aussi. Rien ne dépend de la longueur des textes.
   if (tete && TEL()) { tete.querySelectorAll('h2, p').forEach((x) => x.style.removeProperty('font-size')); }
@@ -1016,10 +1067,33 @@ const etapesPhrases = () => {
     void base;
   });
 };
+const bandeauFeuille = (courante) => {
+  let t = document.querySelector('.edl-feuille-tete');
+  const o = courante && courante.querySelector('.e-open'); const ch = courante && courante.querySelector('.e-opt[aria-pressed="true"]');
+  const voir = Boolean(TEL() && o && ch && !courante.classList.contains('edl-feuille-fermee'));
+  if (!t) {
+    if (!voir) return;
+    t = document.createElement('div'); t.className = 'edl-feuille-tete';
+    t.innerHTML = '<p class="edl-feuille-q"></p><button type="button" class="edl-feuille-choix"><span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>'
+      + '<button type="button" class="edl-feuille-x" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
+    t.hidden = true; document.body.appendChild(t);
+  }
+  const ouvre = voir && t.hidden !== false; t.hidden = !voir; if (!voir) return;
+  if (ouvre) requestAnimationFrame(() => t.querySelector('.edl-feuille-choix').focus({ preventScroll: true }));
+  // La réponse choisie, puis la question, en haut du panneau (Arnaud, 16 octobre 2026), au-dessus des idées.
+  const q = courante.querySelector(':scope > p:first-child'); const tq = t.querySelector('.edl-feuille-q');
+  if (q && tq.textContent !== q.textContent) tq.textContent = q.textContent;
+  const v = norm(ch.textContent || ''); const r = t.querySelector('.edl-feuille-choix');
+  if (r.firstChild.textContent !== v) { r.firstChild.textContent = v; r.setAttribute('aria-label', 'Changer de réponse : ' + v); }
+  // Le bandeau suit le haut du panneau, compté depuis le bas (la hauteur ne dépend pas de l'animation d'entrée).
+  // Le panneau garde la place du bandeau (sa hauteur dépend de la longueur de la question), puis le bandeau se pose en haut.
+  const h = t.offsetHeight + 'px'; if (document.documentElement.style.getPropertyValue('--feuille-tete') !== h) document.documentElement.style.setProperty('--feuille-tete', h);
+  const bas = (o.offsetHeight - t.offsetHeight) + 'px'; if (t.style.bottom !== bas) t.style.bottom = bas;
+};
 const allerPhrase = (n, sansHistorique) => {
   if (!sansHistorique && n > etapePhrase) pousserPas('phrase', n);
   const w = zonePhrases(); const c = w && (w.querySelector('.edl-ph-carte') || w.querySelector(':scope > .edl-merci2'));
-  const poser = () => { etapePhrase = n; etapesPhrases(); scrollTo(0, 0); };
+  const poser = () => { etapePhrase = n; document.querySelectorAll('.edl-feuille-fermee').forEach((x) => x.classList.remove('edl-feuille-fermee')); etapesPhrases(); scrollTo(0, 0); if (TEL()) focusTitre(document.querySelector('.edl-ph-carte > p:first-child, .edl-merci2:not([hidden]) .edl-merci__titre')); };
   if (!c || calme()) { poser(); return; }
   c.classList.add('edl-etape-sortie');
   setTimeout(() => { c.classList.remove('edl-etape-sortie'); poser(); }, 280);
@@ -1039,8 +1113,13 @@ if (page === 'questionnaire') {
     }
     if (c && c.contains(b)) {
       const reponse = b.classList.contains('e-opt') || (b.hasAttribute('aria-pressed') && !b.closest('.e-open'));
-      if (reponse && b.getAttribute('aria-pressed') === 'true') { e.preventDefault(); e.stopImmediatePropagation(); if (!c.querySelector('.e-open')) allerPhrase(etapePhrase + 1); return; }
+      // La réponse déjà choisie : rouvre le panneau des idées s'il a été fermé, sinon passe à la suivante.
+      if (reponse && b.getAttribute('aria-pressed') === 'true') { e.preventDefault(); e.stopImmediatePropagation(); if (c.classList.contains('edl-feuille-fermee')) { c.classList.remove('edl-feuille-fermee'); bandeauFeuille(c); } else if (!c.querySelector('.e-open')) allerPhrase(etapePhrase + 1); return; }
       if (reponse) {
+        c.classList.remove('edl-feuille-fermee');
+        // Passer à « En bonne partie » ou « Pleinement » efface les idées cochées (points UX du 16 octobre 2026) : en revenant à
+        // « Un peu », on repart d'une liste vierge. L'envoi n'en dépend pas : il ignore déjà les idées des réponses hautes.
+        if (/^(En bonne partie|Pleinement)$/.test(t)) c.querySelectorAll('.e-open [role="checkbox"][aria-checked="true"]').forEach((x) => x.click());
         vibrer();
         setTimeout(() => { scrollTo(0, 0); if (b.getAttribute('aria-pressed') === 'true' && !c.querySelector('.e-open') && etapePhrase < nb) allerPhrase(etapePhrase + 1); }, 650);
         setTimeout(() => scrollTo(0, 0), 60);
@@ -1072,6 +1151,26 @@ const friseEtapes = () => {
   if (f.innerHTML !== html) f.innerHTML = html;
 };
 
+// Fermer le panneau des idées sur téléphone (points UX du 16 octobre 2026) : la croix, la réponse en haut du panneau, ou un
+// toucher au-dessus du panneau. Ce toucher ne fait rien d'autre : il ne coche pas une réponse cachée sous le voile.
+if (page === 'questionnaire') addEventListener('click', (e) => {
+  if (!TEL() || !document.documentElement.classList.contains('edl-phrases')) return;
+  const c = document.querySelector('.edl-ph-carte'); const o = c && c.querySelector('.e-open');
+  if (!o || c.classList.contains('edl-feuille-fermee') || !o.getClientRects().length) return;
+  if (o.contains(e.target) && !e.target.closest('.edl-feuille-x, .edl-feuille-choix')) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  c.classList.add('edl-feuille-fermee'); bandeauFeuille(c);
+  const ch = c.querySelector('.e-opt[aria-pressed="true"]'); if (ch && e.target.closest('.edl-feuille-choix')) ch.focus({ preventScroll: true });
+}, true);
+if (page === 'questionnaire') addEventListener('keydown', (e) => {
+  if (!TEL() || (e.key !== 'Escape' && e.key !== 'Tab')) return;
+  const c = document.querySelector('.edl-ph-carte'); const o = c && c.querySelector('.e-open'); const t = document.querySelector('.edl-feuille-tete');
+  if (!o || !t || t.hidden || c.classList.contains('edl-feuille-fermee')) return;
+  if (e.key === 'Escape') { e.preventDefault(); c.classList.add('edl-feuille-fermee'); bandeauFeuille(c); const ch = c.querySelector('.e-opt[aria-pressed="true"]'); if (ch) ch.focus({ preventScroll: true }); return; }
+  const l = [...t.querySelectorAll('button'), ...o.querySelectorAll('button, input, textarea, a[href]')].filter((x) => x.getClientRects().length);
+  if (!l.length) return; const k = l.indexOf(document.activeElement);
+  if (e.shiftKey && k <= 0) { e.preventDefault(); l[l.length - 1].focus(); } else if (!e.shiftKey && (k === l.length - 1 || k < 0)) { e.preventDefault(); l[0].focus(); }
+});
 if (page === 'questionnaire') addEventListener('popstate', (e) => {
   const st = e.state || {};
   if (document.documentElement.classList.contains('edl-phrases')) { const n = st.edl === 'phrase' ? st.n : 0; if (n !== etapePhrase) allerPhrase(n, true); }

@@ -748,3 +748,15 @@ body:has(.gr--da) { overflow-x: clip; }
 }
 @media (min-width: 40em) and (max-width: 64em) { .gr-carte__points i, .gr-carte [class*="points"] i { width: min(2.5rem, 100%) !important; height: auto !important; aspect-ratio: 1; max-width: 2.5rem; } }
 @media (max-width: 22.5em) { .rdv__jours { gap: .1875rem; } .rdv__creneau { font-size: .75rem; letter-spacing: -.02em; } .rdv { padding-left: .75rem !important; padding-right: .75rem !important; } }
+/* Sur téléphone, le « Visiter la maison » de l'en-tête est rangé dans le menu (entete.js) : la barre du bas reste seule à l'écran. */
+/* Légendes des petites photos sur téléphone (Arnaud, 16 octobre 2026) : sur deux lignes, une pilule ronde faisait bulle ; une
+   étiquette aux coins doux, plus près du coin, coupée après le « · ». */
+@media (max-width: 51.25em) {
+  .gr-mosaique figcaption { left: .5rem; bottom: .5rem; max-width: calc(100% - 1rem); padding: .375rem .625rem; border-radius: .75rem; font-size: .75rem; line-height: 1.3; text-wrap: balance; }
+}
+/* Fenêtre de visite au-dessus du clavier (16 octobre 2026) : sa hauteur suit la partie visible de l'écran, et le bas
+   (« Changer de créneau », « Confirmer la visite ») reste collé, sur un fond plein. */
+@media (max-width: 51.25em) {
+  .rdv.rdv--clavier { margin-bottom: var(--clavier, 0px) !important; max-height: var(--vue, 100svh) !important; padding-bottom: .75rem !important; }
+  .rdv .rdv__bas { position: sticky; bottom: 0; z-index: 2; background: #FFFFFF; box-shadow: 0 0 0 .75rem #FFFFFF; }
+}

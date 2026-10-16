@@ -5,10 +5,11 @@
  *
  * La visite se pose dans l'agenda d'Arnaud du tableau de bord (créneaux libres, notification) et la personne reçoit un mail.
  */
-import { resultatMemorise } from '../session.js?v=241';
-import { decoder } from '../lien.js?v=241';
-import { chargerContenu } from '../contenu.js?v=241';
-import { SUPABASE_URL, SUPABASE_CLE } from '../config.js?v=241';
+import { resultatMemorise } from '../session.js?v=262';
+import '../entete.js?v=262';
+import '../visite.js?v=262';
+import { decoder } from '../lien.js?v=262';
+import { chargerContenu } from '../contenu.js?v=262';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -20,104 +21,7 @@ if (new URLSearchParams(location.search).has('envoye')) {
   $('[data-merci-texte]').textContent = (prenom ? 'Merci ' + prenom + '. ' : 'Merci. ') + 'Votre état des lieux arrive dans votre boîte mail.';
 }
 
-// ------------------------------------------------------------------ la visite
-// Les vrais créneaux et la vraie réservation (Arnaud, 15 octobre 2026 : « un mail avec notre techno habituelle, une notification
-// dans le dashboard, et que ça se pose dans l'agenda d'Arnaud avec les créneaux dispo ») : visite_creneaux dit ce qui est libre
-// dans l'agenda du tableau de bord (migration 37), la fonction « visite » pose la visite et envoie le mail par Brevo.
-const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-const MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-const SEMAINES = 8; // de la semaine en cours à huit semaines, comme la base
-// Toujours à la maison (Arnaud, 15 octobre 2026 : « venez visiter la maison, pas de téléphone ni visio »).
-const LIEU = 'à la Greatly House';
-const d = $('[data-rdv-fenetre]');
-const etat = { semaine: 0, creneau: null };
-
-const iso = (x) => x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
-const lundi = (decalage) => { const j = new Date(); j.setHours(0, 0, 0, 0); const k = (j.getDay() + 6) % 7; j.setDate(j.getDate() - k + 7 * decalage); return j; };
-const heureDite = (hm) => { const [h, m] = hm.split(':'); return Number(h) + '\u00a0h' + (m !== '00' ? '\u00a0' + m : ''); }; // insécables (Lexique IN)
-const dire = (date, hm) => JOURS[date.getDay()] + '\u00a0' + date.getDate() + '\u00a0' + MOIS[date.getMonth()] + ' à\u00a0' + heureDite(hm);
-const majuscule = (t) => t.charAt(0).toUpperCase() + t.slice(1);
-const appel = async (chemin, corps) => {
-  const r = await fetch(SUPABASE_URL + chemin, { method: 'POST', headers: { apikey: SUPABASE_CLE, Authorization: 'Bearer ' + SUPABASE_CLE, 'Content-Type': 'application/json' }, body: JSON.stringify(corps) });
-  return { statut: r.status, j: await r.json().catch(() => ({})) };
-};
-
-let tour = 0;
-async function peindreSemaine(auto = false) {
-  const l = lundi(etat.semaine); const n = ++tour;
-  $('[data-semaine-titre]').textContent = 'Semaine du ' + l.getDate() + '\u00a0' + MOIS[l.getMonth()];
-  $('[data-semaine="-1"]').disabled = etat.semaine === 0; $('[data-semaine="1"]').disabled = etat.semaine >= SEMAINES - 1;
-  const hote = $('[data-jours]'); hote.setAttribute('aria-busy', 'true'); hote.classList.add('rdv__jours--charge');
-  let jours = null;
-  try { const { j } = await appel('/rest/v1/rpc/visite_creneaux', { p_lundi: iso(l) }); if (j && j.ok) jours = j.jours; } catch (e) { /* plus bas */ }
-  if (n !== tour) return; // une autre semaine a été demandée entre-temps
-  hote.textContent = ''; hote.removeAttribute('aria-busy'); hote.classList.remove('rdv__jours--charge');
-  if (!jours) { hote.appendChild(el('p', 'rdv__erreur', 'Les créneaux ne se chargent pas. Réessayez dans un instant, ou écrivez à arnaud@greatly.club.')); return; }
-  // À l'ouverture, on va directement à la première semaine qui a un créneau libre (vacances, jours fériés, agenda plein).
-  if (auto && etat.semaine < SEMAINES - 1 && !jours.some((jr) => jr.creneaux.some((c) => c.libre))) { etat.semaine += 1; return peindreSemaine(true); }
-  jours.forEach((jr) => {
-    const date = new Date(jr.jour + 'T12:00:00');
-    const col = el('div', 'rdv__jour'); col.appendChild(el('p', '', majuscule(JOURS[date.getDay()]).slice(0, 3) + '. ' + date.getDate()));
-    // Vacances scolaires (zone B) ou jour férié : la maison ne reçoit pas ce jour-là.
-    if (jr.ferme) { const x = el('span', 'rdv__ferme', /férié/.test(jr.ferme) ? 'Férié' : 'Vacances'); x.title = jr.ferme; col.appendChild(x); hote.appendChild(col); return; }
-    jr.creneaux.forEach((c) => {
-      const b = el('button', 'rdv__creneau', heureDite(c.heure)); b.type = 'button'; b.disabled = !c.libre;
-      b.setAttribute('aria-label', dire(date, c.heure) + (c.libre ? '' : ', pas disponible'));
-      const choisi = etat.creneau && etat.creneau.jour === jr.jour && etat.creneau.heure === c.heure;
-      b.setAttribute('aria-pressed', String(!!choisi));
-      b.addEventListener('click', () => { etat.creneau = { jour: jr.jour, heure: c.heure, date }; hote.querySelectorAll('.rdv__creneau').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); message1(); });
-      col.appendChild(b);
-    });
-    hote.appendChild(col);
-  });
-  // Une semaine sans créneau libre le dit, et propose la suivante (état vide dessiné, responsive 16 octobre 2026).
-  if (!jours.some((jr) => !jr.ferme && jr.creneaux.some((c) => c.libre))) {
-    const v = el('p', 'rdv__vide', etat.semaine < SEMAINES - 1 ? 'Pas de créneau libre cette semaine. ' : 'Pas de créneau libre pour l’instant. ');
-    if (etat.semaine < SEMAINES - 1) { const b = el('button', 'gr-lien', 'Voir la semaine suivante'); b.type = 'button'; b.addEventListener('click', () => { etat.semaine += 1; peindreSemaine(); }); v.appendChild(b); }
-    hote.appendChild(v);
-  }
-}
-const message1 = (t) => { $('[data-rdv-message1]').textContent = t || (etat.creneau ? majuscule(dire(etat.creneau.date, etat.creneau.heure)) + ', ' + LIEU : ''); /* le bouton dit déjà « Choisissez un créneau » */ const c = $('[data-continuer]'); if (c) { c.classList.toggle('gr-bouton--attente', !etat.creneau); const t = [...c.childNodes].find((x) => x.nodeType === 3 && x.nodeValue.trim()); if (t) t.nodeValue = etat.creneau ? 'Continuer' : 'Choisissez un créneau'; } };
-const vue = (n) => d.querySelectorAll('[data-vue]').forEach((v) => { v.hidden = v.dataset.vue !== String(n); });
-
-d.querySelectorAll('[data-semaine]').forEach((b) => b.addEventListener('click', () => { etat.semaine = Math.min(SEMAINES - 1, Math.max(0, etat.semaine + Number(b.dataset.semaine))); peindreSemaine(); }));
-$('[data-continuer]').addEventListener('click', () => {
-  if (!etat.creneau) { message1('Choisissez un créneau pour continuer.'); return; }
-  const c = etat.creneau;
-  $('[data-recap-jour]').textContent = majuscule(JOURS[c.date.getDay()]) + '\u00a0' + c.date.getDate() + '\u00a0' + MOIS[c.date.getMonth()];
-  $('[data-recap-heure]').textContent = 'à ' + heureDite(c.heure) + ', ' + LIEU + '.';
-  vue(2);
-  const nom = d.querySelector('input[name=nom]'); if (prenom && !nom.value) nom.value = prenom + ' ';
-  nom.focus();
-});
-$('[data-retour]').addEventListener('click', () => vue(1));
-d.querySelector('form').addEventListener('submit', async (ev) => {
-  ev.preventDefault(); const f = new FormData(ev.target); const m = $('[data-rdv-message2]'); const bouton = ev.target.querySelector('button[type=submit]');
-  const nom = String(f.get('nom') || '').trim(), email = String(f.get('email') || '').trim();
-  if (!nom || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { m.textContent = 'Indiquez votre nom et votre e-mail pour confirmer.'; return; }
-  const c = etat.creneau; bouton.disabled = true; m.textContent = 'Nous posons votre visite…';
-  try {
-    const { statut, j } = await appel('/functions/v1/visite', { nom, email, activite: String(f.get('activite') || '').trim(), tel: String(f.get('tel') || '').trim(), jour: c.jour, heure: c.heure, sujet: d.dataset.sujet || 'groupe', site: String(f.get('site') || '') }); // pour lui, ou pour un séminaire
-    if (j && j.ok) {
-      $('[data-fin-texte]').textContent = majuscule(j.quand || dire(c.date, c.heure)) + ', ' + LIEU + '. Vous recevez une confirmation par e-mail. Un empêchement ? Répondez simplement à ce mail.';
-      vue(3); bouton.disabled = false; return;
-    }
-    if (statut === 409) { etat.creneau = null; vue(1); message1(j.erreur || 'Ce créneau vient d’être pris. Choisissez-en un autre.'); peindreSemaine(); bouton.disabled = false; return; }
-    m.textContent = (j && j.erreur) || 'La demande n’a pas abouti. Réessayez dans un instant.';
-  } catch (e) { m.textContent = 'La demande n’a pas abouti. Réessayez dans un instant, ou écrivez à arnaud@greatly.club.'; }
-  bouton.disabled = false;
-});
-
-const partir = () => { if (d.classList.contains('rdv--sort')) return; d.classList.add('rdv--sort');
-  setTimeout(() => { d.close(); d.classList.remove('rdv--sort'); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 260); };
-$('[data-rdv-fermer]').addEventListener('click', partir);
-d.addEventListener('click', (ev) => { if (ev.target === d) partir(); });
-d.addEventListener('cancel', (ev) => { ev.preventDefault(); partir(); });
-document.querySelectorAll('[data-rdv]').forEach((b) => b.addEventListener('click', () => {
-  if (!d.querySelector('[data-vue="3"]').hidden) { etat.creneau = null; vue(1); message1(); d.querySelector('form').reset(); }
-  if (!etat.creneau) etat.semaine = 0;
-  peindreSemaine(!etat.creneau); message1(); d.showModal();
-}));
+const d = $('[data-rdv-fenetre]'); // la fenêtre de visite (visite.js), suivie par la barre du bas
 
 // Les notes des membres en dix pastilles, comme le résultat : pleines jusqu'à la note, la dernière en partie.
 document.querySelectorAll('.gr-notes [data-note]').forEach((h) => {
@@ -203,7 +107,7 @@ const telephone = () => matchMedia('(max-width: 51.25em)').matches;
     b.innerHTML = premier.innerHTML; b.addEventListener('click', () => premier.click());
     barre.appendChild(b); document.body.appendChild(barre);
     let hautVu = true, finVu = false;
-    const maj = () => { const on = telephone() && !hautVu && !finVu && !document.querySelector('dialog[open]'); barre.classList.toggle('gr-barre--on', on); b.tabIndex = on ? 0 : -1; barre.setAttribute('aria-hidden', String(!on)); };
+    const maj = () => { const on = telephone() && !hautVu && !finVu && !document.querySelector('dialog[open]'); barre.classList.toggle('gr-barre--on', on); document.documentElement.classList.toggle('gr-barre-active', on); b.tabIndex = on ? 0 : -1; barre.setAttribute('aria-hidden', String(!on)); };
     new IntersectionObserver((e) => { hautVu = e[0].isIntersecting || e[0].boundingClientRect.top > 0; maj(); }).observe(premier);
     if (fin) new IntersectionObserver((e) => { finVu = e[0].isIntersecting; maj(); }).observe(fin);
     addEventListener('resize', maj);
