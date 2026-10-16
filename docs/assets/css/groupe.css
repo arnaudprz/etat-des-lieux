@@ -635,3 +635,6 @@ body:has(.gr--da) { overflow-x: clip; }
 .gr.gr--large { max-width: 96rem; }
 /* Le parcours de « Pour vous » repris sur la page des indépendants : l'enveloppe ne fait que porter les styles (.gr--da). */
 .gr-an-hote { display: contents; }
+/* Sur téléphone, these.css retire la marge de <main> pour la page de résultat (13 octobre 2026) ; les pages groupe la gardent :
+   16 px au moins de chaque côté (responsive, 16 octobre 2026). */
+@media (max-width: 51.25em) { main.gr { padding-left: max(1rem, env(safe-area-inset-left)) !important; padding-right: max(1rem, env(safe-area-inset-right)) !important; } }

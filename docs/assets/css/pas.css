@@ -77,3 +77,5 @@ body { background: #FFFFFF; }
 .pas-intertitre .leger { font: 400 italic clamp(2.25rem, 5vw, 3.75rem)/1 'Instrument Serif', serif; color: var(--texte); }
 .pas-intertitre .gras { font: 800 clamp(2.5rem, 6vw, 4.5rem)/1 'Bricolage Grotesque', sans-serif; letter-spacing: -.04em; color: var(--texte); }
 .pas-ni { font: 800 0.8em 'Bricolage Grotesque', sans-serif; font-style: normal; letter-spacing: -.01em; color: var(--bv); }
+/* Même chose pour « Greatly, ce n'est pas… » (responsive, 16 octobre 2026). */
+@media (max-width: 51.25em) { main.pas { padding-left: max(1rem, env(safe-area-inset-left)) !important; padding-right: max(1rem, env(safe-area-inset-right)) !important; } }
