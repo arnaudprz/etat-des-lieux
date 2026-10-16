@@ -10,7 +10,11 @@ for (const [nom, m] of [['chromium', chromium], ['webkit', webkit]]) {
   for (const t of CHOIX) {
     const [w, h] = TAILLES[t];
     const p = await b.newPage({ viewport: { width: w, height: h }, hasTouch: w < 900 }); const err = []; p.on('pageerror', (e) => err.push(e.message));
-    await p.route(/supabase\.co/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"jours":[],"lundi":"2026-10-19","premier":"2026-10-19","dernier":"2026-12-07"}' }));
+    // Des créneaux simulés pour voir la fenêtre comme en vrai (aucune visite n'est réservée).
+    await p.route(/supabase\.co/, (r) => { const corps = r.request().postDataJSON() || {}; const l = new Date((corps.p_lundi || '2026-10-19') + 'T12:00:00');
+      const jours = [0, 1, 2, 3, 4].map((k) => { const d = new Date(l); d.setDate(l.getDate() + k); const iso = d.toISOString().slice(0, 10);
+        return { jour: iso, ferme: k === 2 ? 'Vacances scolaires' : null, creneaux: ['09:30', '11:00', '14:00', '16:00'].map((h, i) => ({ heure: h, libre: (k + i) % 3 !== 0 })) }; });
+      r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, jours }) }); });
     await p.goto(`http://localhost:4522/${PAGE}.html?envoye`, { waitUntil: 'networkidle' }); await p.waitForTimeout(1500);
     await p.screenshot({ path: `${SORTIE}/${nom}/${t}-haut.png` });
     await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 300) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 50)); } });

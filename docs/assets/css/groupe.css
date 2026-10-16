@@ -688,3 +688,46 @@ body:has(.gr--da) { overflow-x: clip; }
 .gr .gr-jj__quand, .gr dt, .gr .gr-chaine__temps, .gr .gr-carte__legende, .gr .gr-notes small, .gr .gr-an__note small { color: #3F6F76 !important; }
 /* Sur fond foncé, ces intitulés restent clairs (#DCE8EA, 6,8:1 sur #23545B). */
 .gr .gr-bande--fonce .gr-chaine__temps, .gr .gr-ans__saison:last-child .gr-jj__quand { color: #DCE8EA !important; }
+/* Second tour (relecteur, 16 octobre 2026). */
+.gr-bouton--attente { opacity: .55; }
+.rdv__vide { grid-column: 1 / -1; margin: .5rem 0 0; font-size: 1rem; color: var(--second); }
+.rdv__vide .gr-lien { margin-left: .25rem; }
+@media (max-width: 51.25em) {
+  /* En-tête opaque : le texte ne se lit plus au travers. */
+  .haut { background: #FFFFFF !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  /* Carrousel : cartes à la hauteur de leur contenu, sans pavé dans la carte ; la saison 4 garde son aplat foncé ; repères visibles. */
+  .gr-ans { align-items: flex-start; }
+  .gr-ans .gr-jj__atelier { padding: 0 !important; background: none !important; margin-top: .25rem; }
+  .gr-ans__saison:last-child { background: #23545B; box-shadow: none; color: #FFFFFF; }
+  .gr-ans__saison:last-child .gr-jj__titre, .gr-ans__saison:last-child .gr-jj__theme { color: #FFFFFF !important; }
+  .gr-ans__saison:last-child .gr-jj__titre span, .gr-ans__saison:last-child .gr-ans__gain { color: #DCE8EA !important; }
+  .gr-ans__reperes { margin-top: .5rem; }
+  .gr-ans__reperes button::after { background: #A0BFC3; height: 3px; }
+  .gr-ans__reperes button.actif::after { background: #23545B; height: 4px; }
+  /* Les notes repassent sous leur texte, en second plan, alignées à gauche ; pas de césure dans les légendes. */
+  .gr--da .gr-an__rangs > .gr-an__rang { grid-template-columns: 1fr !important; }
+  .gr--da .gr-an__rangs > .gr-an__rang > .gr-an__note { grid-column: 1 !important; grid-row: auto !important; flex-direction: row !important; align-items: baseline !important; flex-wrap: wrap; gap: .25rem .75rem !important; text-align: left !important; margin-top: .25rem; }
+  .gr--da .gr-an__rangs > .gr-an__rang > div:not(.gr-an__note) { grid-row: auto !important; }
+  .gr--da .gr-an__note strong { font-size: 1.25rem !important; }
+  .gr--da .gr-an__note p { max-width: none !important; hyphens: manual !important; overflow-wrap: normal !important; }
+  /* Citations plus légères, étapes sans retrait inutile, légendes des photos sur une ligne. */
+  .gr-avis blockquote { font-size: var(--pas-2, 1.5rem) !important; }
+  .gr-avis cite { letter-spacing: .08em; }
+  .gr-etapes li, .gr-deux li { padding-left: 2.75rem !important; }
+  .gr-mosaique figcaption { white-space: nowrap; max-width: calc(100% - 1rem); overflow: hidden; text-overflow: ellipsis; }
+}
+/* Tablette : lignes de 45 à 75 caractères. */
+@media (min-width: 40em) and (max-width: 64em) { .gr-chapo, .gr-section__texte, .gr p { max-width: 38rem; } }
+/* Fenêtre de visite en paysage : un panneau qui défile, « Continuer » collé en bas. */
+@media (max-height: 30em) and (max-width: 64em) {
+  .rdv { max-height: 100svh !important; margin: auto 0 0 !important; width: 100% !important; max-width: 100% !important; border-radius: 1.25rem 1.25rem 0 0 !important; overflow: auto; }
+  .rdv [data-continuer] { position: sticky; bottom: max(env(safe-area-inset-bottom), .5rem); box-shadow: 0 0 0 .75rem #FFFFFF; }
+}
+/* Fenêtre de visite sur petit téléphone : la place de la croix réservée, des créneaux qui tiennent sur cinq colonnes (cible 44 px). */
+.rdv .surtitre { padding-right: 3.25rem; }
+@media (max-width: 26em) {
+  .rdv { width: 100% !important; max-width: 100% !important; padding: 1.25rem 1rem max(env(safe-area-inset-bottom), 1rem) !important; }
+  .rdv__jours { gap: .25rem; }
+  .rdv__jour p { font-size: .75rem; }
+  .rdv__creneau { min-height: 2.75rem; padding: 0 !important; font-size: .8125rem; letter-spacing: -.01em; }
+}

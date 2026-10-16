@@ -5,10 +5,10 @@
  *
  * La visite se pose dans l'agenda d'Arnaud du tableau de bord (créneaux libres, notification) et la personne reçoit un mail.
  */
-import { resultatMemorise } from '../session.js?v=234';
-import { decoder } from '../lien.js?v=234';
-import { chargerContenu } from '../contenu.js?v=234';
-import { SUPABASE_URL, SUPABASE_CLE } from '../config.js?v=234';
+import { resultatMemorise } from '../session.js?v=238';
+import { decoder } from '../lien.js?v=238';
+import { chargerContenu } from '../contenu.js?v=238';
+import { SUPABASE_URL, SUPABASE_CLE } from '../config.js?v=238';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -34,8 +34,8 @@ const etat = { semaine: 0, creneau: null };
 
 const iso = (x) => x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
 const lundi = (decalage) => { const j = new Date(); j.setHours(0, 0, 0, 0); const k = (j.getDay() + 6) % 7; j.setDate(j.getDate() - k + 7 * decalage); return j; };
-const heureDite = (hm) => { const [h, m] = hm.split(':'); return Number(h) + ' h' + (m !== '00' ? ' ' + m : ''); };
-const dire = (date, hm) => JOURS[date.getDay()] + ' ' + date.getDate() + ' ' + MOIS[date.getMonth()] + ' à ' + heureDite(hm);
+const heureDite = (hm) => { const [h, m] = hm.split(':'); return Number(h) + '\u00a0h' + (m !== '00' ? '\u00a0' + m : ''); }; // insécables (Lexique IN)
+const dire = (date, hm) => JOURS[date.getDay()] + '\u00a0' + date.getDate() + '\u00a0' + MOIS[date.getMonth()] + ' à\u00a0' + heureDite(hm);
 const majuscule = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 const appel = async (chemin, corps) => {
   const r = await fetch(SUPABASE_URL + chemin, { method: 'POST', headers: { apikey: SUPABASE_CLE, Authorization: 'Bearer ' + SUPABASE_CLE, 'Content-Type': 'application/json' }, body: JSON.stringify(corps) });
@@ -45,7 +45,7 @@ const appel = async (chemin, corps) => {
 let tour = 0;
 async function peindreSemaine(auto = false) {
   const l = lundi(etat.semaine); const n = ++tour;
-  $('[data-semaine-titre]').textContent = 'Semaine du ' + l.getDate() + ' ' + MOIS[l.getMonth()];
+  $('[data-semaine-titre]').textContent = 'Semaine du ' + l.getDate() + '\u00a0' + MOIS[l.getMonth()];
   $('[data-semaine="-1"]').disabled = etat.semaine === 0; $('[data-semaine="1"]').disabled = etat.semaine >= SEMAINES - 1;
   const hote = $('[data-jours]'); hote.setAttribute('aria-busy', 'true'); hote.classList.add('rdv__jours--charge');
   let jours = null;
@@ -70,15 +70,21 @@ async function peindreSemaine(auto = false) {
     });
     hote.appendChild(col);
   });
+  // Une semaine sans créneau libre le dit, et propose la suivante (état vide dessiné, responsive 16 octobre 2026).
+  if (!jours.some((jr) => !jr.ferme && jr.creneaux.some((c) => c.libre))) {
+    const v = el('p', 'rdv__vide', etat.semaine < SEMAINES - 1 ? 'Pas de créneau libre cette semaine. ' : 'Pas de créneau libre pour l’instant. ');
+    if (etat.semaine < SEMAINES - 1) { const b = el('button', 'gr-lien', 'Voir la semaine suivante'); b.type = 'button'; b.addEventListener('click', () => { etat.semaine += 1; peindreSemaine(); }); v.appendChild(b); }
+    hote.appendChild(v);
+  }
 }
-const message1 = (t) => { $('[data-rdv-message1]').textContent = t || (etat.creneau ? majuscule(dire(etat.creneau.date, etat.creneau.heure)) + ', ' + LIEU : 'Choisissez un créneau.'); };
+const message1 = (t) => { $('[data-rdv-message1]').textContent = t || (etat.creneau ? majuscule(dire(etat.creneau.date, etat.creneau.heure)) + ', ' + LIEU : 'Choisissez un créneau.'); const c = $('[data-continuer]'); if (c) c.classList.toggle('gr-bouton--attente', !etat.creneau); };
 const vue = (n) => d.querySelectorAll('[data-vue]').forEach((v) => { v.hidden = v.dataset.vue !== String(n); });
 
 d.querySelectorAll('[data-semaine]').forEach((b) => b.addEventListener('click', () => { etat.semaine = Math.min(SEMAINES - 1, Math.max(0, etat.semaine + Number(b.dataset.semaine))); peindreSemaine(); }));
 $('[data-continuer]').addEventListener('click', () => {
   if (!etat.creneau) { message1('Choisissez un créneau pour continuer.'); return; }
   const c = etat.creneau;
-  $('[data-recap-jour]').textContent = majuscule(JOURS[c.date.getDay()]) + ' ' + c.date.getDate() + ' ' + MOIS[c.date.getMonth()];
+  $('[data-recap-jour]').textContent = majuscule(JOURS[c.date.getDay()]) + '\u00a0' + c.date.getDate() + '\u00a0' + MOIS[c.date.getMonth()];
   $('[data-recap-heure]').textContent = 'à ' + heureDite(c.heure) + ', ' + LIEU + '.';
   vue(2);
   const nom = d.querySelector('input[name=nom]'); if (prenom && !nom.value) nom.value = prenom + ' ';
@@ -110,7 +116,7 @@ d.addEventListener('cancel', (ev) => { ev.preventDefault(); partir(); });
 document.querySelectorAll('[data-rdv]').forEach((b) => b.addEventListener('click', () => {
   if (!d.querySelector('[data-vue="3"]').hidden) { etat.creneau = null; vue(1); message1(); d.querySelector('form').reset(); }
   if (!etat.creneau) etat.semaine = 0;
-  peindreSemaine(!etat.creneau); d.showModal();
+  peindreSemaine(!etat.creneau); message1(); d.showModal();
 }));
 
 // Les notes des membres en dix pastilles, comme le résultat : pleines jusqu'à la note, la dernière en partie.
@@ -178,6 +184,9 @@ document.querySelectorAll('.gr-bascule').forEach((g) => {
     if (/[ ][?!:;»]|«[ ]/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/ ([?!:;»])/g, ' $1').replace(/« /g, '« ');
   }
 }
+if (matchMedia('(max-width: 51.25em)').matches) document.querySelectorAll('.gr :is(h1, h2) .gras, .gr .gr-fin__titre .gras').forEach((x) => { const t = x.lastChild; if (t && t.nodeType === 3) t.nodeValue = t.nodeValue.replace(/ (\S+)\s*$/, '\u00a0$1'); else if (x.childNodes.length > 1) { const a = x.childNodes[x.childNodes.length - 2]; if (a && a.nodeType === 3) a.nodeValue = a.nodeValue.replace(/ $/, '\u00a0'); } });
+// Nombre et mot qui suit (codes postaux, « 2 h 30 ») : insécable.
+if (matchMedia('(max-width: 51.25em)').matches) { const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); for (let n = tw.nextNode(); n; n = tw.nextNode()) { if (/\d [A-Za-zÀ-ÿ]/.test(n.nodeValue) && !(n.parentElement && n.parentElement.closest('script, style'))) n.nodeValue = n.nodeValue.replace(/(\d) (?=[A-Za-zÀ-ÿ])/g, '$1\u00a0'); } }
 const telephone = () => matchMedia('(max-width: 51.25em)').matches;
 // Le bouton « Visiter la maison » collé en bas, dans la zone du pouce (Steven Hoober), dès que celui du haut sort de l'écran ;
 // il s'efface quand le bloc final « Venez visiter la maison » arrive (un seul appel à la fois à l'écran).
@@ -189,10 +198,11 @@ const telephone = () => matchMedia('(max-width: 51.25em)').matches;
     b.innerHTML = premier.innerHTML; b.addEventListener('click', () => premier.click());
     barre.appendChild(b); document.body.appendChild(barre);
     let hautVu = true, finVu = false;
-    const maj = () => { const on = telephone() && !hautVu && !finVu; barre.classList.toggle('gr-barre--on', on); b.tabIndex = on ? 0 : -1; barre.setAttribute('aria-hidden', String(!on)); };
-    new IntersectionObserver((e) => { hautVu = e[0].isIntersecting; maj(); }).observe(premier);
+    const maj = () => { const on = telephone() && !hautVu && !finVu && !document.querySelector('dialog[open]'); barre.classList.toggle('gr-barre--on', on); b.tabIndex = on ? 0 : -1; barre.setAttribute('aria-hidden', String(!on)); };
+    new IntersectionObserver((e) => { hautVu = e[0].isIntersecting || e[0].boundingClientRect.top > 0; maj(); }).observe(premier);
     if (fin) new IntersectionObserver((e) => { finVu = e[0].isIntersecting; maj(); }).observe(fin);
     addEventListener('resize', maj);
+    if (d) { new MutationObserver(maj).observe(d, { attributes: true, attributeFilter: ['open'] }); }
   }
 }
 // Les saisons du parcours se font glisser au doigt sur téléphone : un repère sous le carrousel suit la saison affichée.
