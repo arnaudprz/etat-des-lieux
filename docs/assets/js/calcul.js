@@ -12,7 +12,7 @@
  * les niveaux dans l'autre sens ; les comparaisons sont donc inversées ici.
  */
 
-import { minusculeInitiale } from './typo.js?v=262';
+import { minusculeInitiale } from './typo.js?v=264';
 
 /** Nombre d'affirmations du questionnaire. */
 export const NB_AFFIRMATIONS = 16;

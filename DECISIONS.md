@@ -195,3 +195,5 @@ Aucun texte de `contenu.json` modifié ; parcours manager et membre, page résul
 | L'ancien menu du site, les colonnes du pied et les liens vers la préprod sont retirés des gabarits et des pages (`scripts/nettoyer-site.mjs`), pas masqués ; gabarits renommés `-s16` pour casser le cache ; 10 fichiers orphelins supprimés | « Masque rien, fais tout propre ». Retirer à l'exécution cassait le moteur du site. |
 | Adresse du pied : la Greatly House partout | Le formulaire affichait encore La Madeleine. |
 | Page indépendants : un seul « Visiter la maison » à l'écran, légendes des photos en étiquettes, fenêtre de visite au-dessus du clavier | Retours sur capture. |
+| Accueil : dans « L'étude en cours », une personne au hasard grandit doucement en vert vif puis reprend sa place, une à la fois (pas en mouvement réduit, seulement à l'écran) | « Une animation où l'on zoome sur les gens, plutôt qu'un serpent qui file ». |
+| Accueil sur téléphone : les trois étapes se replient sous un + (« En trois étapes »), comme les blocs du dessous | Moins long à faire défiler ; même geste que « Pour vous ». |

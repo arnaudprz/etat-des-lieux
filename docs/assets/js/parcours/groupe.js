@@ -5,11 +5,11 @@
  *
  * La visite se pose dans l'agenda d'Arnaud du tableau de bord (créneaux libres, notification) et la personne reçoit un mail.
  */
-import { resultatMemorise } from '../session.js?v=262';
-import '../entete.js?v=262';
-import '../visite.js?v=262';
-import { decoder } from '../lien.js?v=262';
-import { chargerContenu } from '../contenu.js?v=262';
+import { resultatMemorise } from '../session.js?v=264';
+import '../entete.js?v=264';
+import '../visite.js?v=264';
+import { decoder } from '../lien.js?v=264';
+import { chargerContenu } from '../contenu.js?v=264';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };

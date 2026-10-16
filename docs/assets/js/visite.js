@@ -4,7 +4,7 @@
  * les coordonnées), avec les vrais créneaux de l'agenda du tableau de bord et la vraie réservation. Sur les pages qui n'ont pas
  * la fenêtre dans leur HTML, elle est ajoutée, avec sa feuille de style (visite.css).
  */
-import { SUPABASE_URL, SUPABASE_CLE } from './config.js?v=262';
+import { SUPABASE_URL, SUPABASE_CLE } from './config.js?v=264';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -31,7 +31,7 @@ const GABARIT = '<button class="rdv__fermer" type="button" aria-label="Fermer" d
 const fenetre = () => {
   let f = $('[data-rdv-fenetre]'); if (f) return f;
   if (!document.querySelector('link[href*="groupe.css"], link[href*="visite.css"]')) {
-    const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/assets/css/visite.css?v=262'; document.head.appendChild(l);
+    const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/assets/css/visite.css?v=264'; document.head.appendChild(l);
   }
   f = el('dialog', 'rdv'); f.setAttribute('aria-label', 'Visiter la Greatly House'); f.setAttribute('data-rdv-fenetre', '');
   f.innerHTML = GABARIT; document.body.appendChild(f); return f;

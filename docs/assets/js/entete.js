@@ -2,7 +2,7 @@
 // bouton de fin de parcours des pages groupe (aplat bleu-vert, rond vert vif) ; sur téléphone, rangé dans un menu à deux
 // traits, sans bulle, qui se croisent à l'ouverture, et le menu s'ouvre en pleine page blanche. Partout, le bouton ouvre la
 // fenêtre de visite sur place, comme dans le parcours (visite.js). Jamais dans le PDF.
-import './visite.js?v=262';
+import './visite.js?v=264';
 // Tailles en px : le même bouton sur toutes les pages, dont la taille de base diffère (site Astro, pages groupe).
 const STYLE = `
 .ent{display:flex;align-items:center;margin-left:auto}

@@ -10,13 +10,13 @@
  */
 // Les fichiers changés pour le rôle solo portent leur version : un navigateur qui gardait l'ancien lien.js en cache
 // ne savait pas fabriquer un lien solo, et « Voir mon résultat » ne faisait rien (13 octobre 2026).
-import '../entete.js?v=262';
-import { chargerContenu, codesActifs } from '../contenu.js?v=262';
-import { relancesAEnvoyer } from '../calcul.js?v=262';
-import { lienResultat } from '../lien.js?v=262';
-import { envoyerReponse, compteur } from '../api.js?v=262';
-import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=262';
-import { evenement } from './commun.js?v=262';
+import '../entete.js?v=264';
+import { chargerContenu, codesActifs } from '../contenu.js?v=264';
+import { relancesAEnvoyer } from '../calcul.js?v=264';
+import { lienResultat } from '../lien.js?v=264';
+import { envoyerReponse, compteur } from '../api.js?v=264';
+import { ecrire, dejaEnvoye, retenirEnvoi } from '../session.js?v=264';
+import { evenement } from './commun.js?v=264';
 
 const page = document.documentElement.dataset.edl || '';
 
@@ -132,9 +132,35 @@ const lancer = (b) => {
   const t0 = performance.now(), duree = 1800;
   const pas = (t) => { const x = Math.min(1, (t - t0) / duree); const e = 1 - Math.pow(1 - x, 3);
     const live = document.querySelector('.edl-nombre'); if (live) peindre(live, Math.round(total * e));
-    if (x < 1) requestAnimationFrame(pas); };
+    if (x < 1) requestAnimationFrame(pas); else setTimeout(balayer, 900); };
   requestAnimationFrame(pas);
 };
+// Les points sont des personnes : de temps en temps, l'une d'elles grandit doucement en vert vif, puis reprend sa place
+// (Arnaud, 16 octobre 2026 : « une animation où l'on zoome sur les gens, plutôt qu'un serpent qui file »). Une à la fois,
+// au hasard, lentement. Seulement quand la carte est à l'écran, et jamais si l'on a demandé moins de mouvement.
+let balayage = null;
+const balayer = () => {
+  if (balayage || calme()) return;
+  let visible = true, derniere = null;
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver((e) => { visible = e[0].isIntersecting; }) : null;
+  const b0 = document.querySelector('.edl-nombre'); if (io && b0) io.observe(b0);
+  balayage = setInterval(() => {
+    if (!visible || document.hidden) return;
+    const pts = [...document.querySelectorAll('.edl-nombre__points i.on:not(.fluo)')]; if (!pts.length) return;
+    let x = pts[Math.floor(Math.random() * pts.length)]; if (x === derniere && pts.length > 1) x = pts[(pts.indexOf(x) + 7) % pts.length];
+    derniere = x; x.classList.add('fluo'); setTimeout(() => x.classList.remove('fluo'), 1600);
+  }, 1300);
+};
+// Sur téléphone, les trois étapes se replient sous un + comme « Pour vous » et les blocs du dessous (Arnaud, 16 octobre 2026) :
+// la même ligne, le même +, au-dessus d'eux. Fermé à l'arrivée.
+const friseRepliable = () => {
+  const m = document.querySelector('[data-maquette="MEtatDesLieux"]'); if (!m || !m.getClientRects().length) return;
+  const f = m.querySelector('.edl-frise'); if (!f || f.closest('.edl-acc-frise')) return;
+  const modele = m.querySelector('details.m-acc'); if (!modele) return;
+  const d = modele.cloneNode(false); d.classList.add('edl-acc-frise'); d.removeAttribute('open');
+  const sm = modele.querySelector('summary').cloneNode(true); sm.firstElementChild.textContent = 'En trois étapes';
+  f.before(d); d.append(sm, f);
+}
 const nombre = () => {
   const m = [...document.querySelectorAll('[data-maquette]')].find((x) => x.getClientRects().length); if (!m) return;
   const hero = m.querySelector('section'); if (!hero) return;
@@ -284,7 +310,7 @@ const retoucher = () => {
   if (page === 'accueil') document.querySelectorAll('[data-maquette] section:first-of-type p').forEach((x) => {
     if (/^(En 2 minutes|Regardez votre équipe|Votre équipe telle que vous la voyez)/.test(norm(x.textContent || '')) && x.style.display !== 'none') x.style.display = 'none';
   });
-  if (page === 'accueil') { nombre(); blocPas(); }
+  if (page === 'accueil') { nombre(); blocPas(); friseRepliable(); }
   if (page === 'accueil' && document.querySelector('[data-maquette] .edl-nombre')) document.documentElement.classList.add('edl-pret');
   // « vous » surligné en vert vif dans le titre de l'étape 1, comme le titre de l'accueil (Arnaud, 14 octobre 2026).
   if (page === 'questionnaire') document.querySelectorAll('[data-maquette] h1 span, [data-maquette] h2 span').forEach((x) => {
@@ -863,6 +889,11 @@ style.textContent = [
   '.edl-nombre__points { display: grid; grid-template-columns: repeat(auto-fill, minmax(7px, 1fr)); gap: 4px; margin-top: 1rem; }',
   '.edl-nombre__points i { display: block; aspect-ratio: 1; border-radius: 999px; background: #DCE8EA; transition: background-color .25s ease, transform .25s ease; }',
   '.edl-nombre__points i.on { background: #23545B; }',
+  '.edl-acc-frise { margin-top: 24px; } .edl-acc-frise > .edl-frise { margin: 4px 0 20px !important; } .edl-acc-frise + div { margin-top: 0 !important; }',
+  // Une personne grandit en vert vif, puis reprend sa place, en douceur.
+  '.edl-nombre__points i { position: relative; }',
+  '.edl-nombre__points i.on { transition: background-color .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1), box-shadow .9s cubic-bezier(.2,.7,.2,1); }',
+  '.edl-nombre__points i.on.fluo { z-index: 1; background: #B4F25C; transform: scale(2.4); box-shadow: 0 0 0 2px #FFFFFF, 0 4px 12px rgba(14, 42, 47, .18); }',
   '.edl-nombre__legende { font-size: 0.8125rem; color: #697374; margin-top: 0.25rem; }',
   '@media (max-width: 1100px) { .edl-hero { flex-wrap: wrap; } .edl-nombre { flex-basis: 100%; align-self: auto; } }',
   '.edl-nombre--mobile { margin: 26px 0 6px; padding: 22px 20px 18px; }',
