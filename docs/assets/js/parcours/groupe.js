@@ -5,10 +5,10 @@
  *
  * La visite se pose dans l'agenda d'Arnaud du tableau de bord (créneaux libres, notification) et la personne reçoit un mail.
  */
-import { resultatMemorise } from '../session.js?v=240';
-import { decoder } from '../lien.js?v=240';
-import { chargerContenu } from '../contenu.js?v=240';
-import { SUPABASE_URL, SUPABASE_CLE } from '../config.js?v=240';
+import { resultatMemorise } from '../session.js?v=241';
+import { decoder } from '../lien.js?v=241';
+import { chargerContenu } from '../contenu.js?v=241';
+import { SUPABASE_URL, SUPABASE_CLE } from '../config.js?v=241';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (balise, classe, texte) => { const n = document.createElement(balise); if (classe) n.className = classe; if (texte != null) n.textContent = texte; return n; };
@@ -184,7 +184,12 @@ document.querySelectorAll('.gr-bascule').forEach((g) => {
     if (/[ ][?!:;»]|«[ ]/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/ ([?!:;»])/g, ' $1').replace(/« /g, '« ');
   }
 }
-if (matchMedia('(max-width: 51.25em)').matches) document.querySelectorAll('.gr :is(h1, h2) .gras, .gr .gr-fin__titre .gras').forEach((x) => { const t = x.lastChild; if (t && t.nodeType === 3) t.nodeValue = t.nodeValue.replace(/ (\S+)\s*$/, '\u00a0$1'); else if (x.childNodes.length > 1) { const a = x.childNodes[x.childNodes.length - 2]; if (a && a.nodeType === 3) a.nodeValue = a.nodeValue.replace(/ $/, '\u00a0'); } });
+// Pas de mot seul en fin de titre (téléphone) : on soude les deux derniers mots, sauf si le titre ne tient plus dans sa colonne.
+if (matchMedia('(max-width: 51.25em)').matches) document.querySelectorAll('.gr :is(h1, h2) .gras, .gr .gr-fin__titre .gras').forEach((x) => {
+  const t = x.lastChild; if (!t || t.nodeType !== 3 || !/ \S+\s*$/.test(t.nodeValue)) return;
+  const avant = t.nodeValue; t.nodeValue = avant.replace(/ (\S+)\s*$/, '\u00a0$1');
+  const boite = x.closest('h1, h2, .gr-fin__titre'); if (boite && boite.scrollWidth > boite.clientWidth + 1) t.nodeValue = avant;
+});
 // Nombre et mot qui suit (codes postaux, « 2 h 30 ») : insécable.
 if (matchMedia('(max-width: 51.25em)').matches) { const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); for (let n = tw.nextNode(); n; n = tw.nextNode()) { if (/\d [A-Za-zÀ-ÿ]/.test(n.nodeValue) && !(n.parentElement && n.parentElement.closest('script, style'))) n.nodeValue = n.nodeValue.replace(/(\d) (?=[A-Za-zÀ-ÿ])/g, '$1\u00a0').replace(/([A-Za-zÀ-ÿ]) (?=\d)/g, '$1\u00a0'); } }
 const telephone = () => matchMedia('(max-width: 51.25em)').matches;
